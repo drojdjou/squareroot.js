@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Polygons | v0.21</title>
+
+    <script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
+
+    <script type="text/javascript" src="../src/SQR.js"></script>
+
+    <script type="text/javascript" src="../src/engine/Engine.js"></script>
+    <script type="text/javascript" src="../src/engine/Transform.js"></script>
+    <script type="text/javascript" src="../src/engine/Geometry.js"></script>
+    <script type="text/javascript" src="../src/engine/Triangle.js"></script>
+    <script type="text/javascript" src="../src/engine/renderers/DOMElement.js"></script>
+    <script type="text/javascript" src="../src/engine/renderers/Particle.js"></script>
+    <script type="text/javascript" src="../src/engine/renderers/Segment.js"></script>
+    <script type="text/javascript" src="../src/engine/renderers/Polygon.js"></script>
+
+    <script type="text/javascript" src="../src/math/Vector2.js"></script>
+    <script type="text/javascript" src="../src/math/Vector3.js"></script>
+    <script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
+    <script type="text/javascript" src="../src/math/Matrix44.js"></script>
+
+    <script type="text/javascript" src="../src/engine/util/Stringify.js"></script>
+    <script type="text/javascript" src="../src/engine/util/DOMUtil.js"></script>
+    <script type="text/javascript" src="../src/engine/util/Time.js"></script>
+    <script type="text/javascript" src="../src/engine/util/Color.js"></script>
+
+    <style type="text/css">
+
+        body {
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var engine, camera, geometry, renderer;
+
+        var zero = new SQR.V3()
+
+        function addPointer(x, y, z) {
+            var p1 = new SQR.Transform();
+            p1.geometry = geometry;
+            p1.renderer = renderer;
+            p1.position.set(x, y, z).norm().mul(radius);
+            p1.lookInDirection(zero);
+            return p1;
+        }
+
+        function addRing() {
+            var mesh = new SQR.Transform();
+
+            mesh.add(addPointer(0, 10, 0));
+            mesh.add(addPointer(0, -10, 0));
+
+            mesh.add(addPointer(10, 0, 0));
+            mesh.add(addPointer(-10, 0, 0));
+
+            mesh.add(addPointer(10, 10, 0));
+            mesh.add(addPointer(10, -10, 0));
+            mesh.add(addPointer(-10, 10, 0));
+            mesh.add(addPointer(-10, -10, 0));
+
+            mesh.add(addPointer(0, 0, 10));
+            mesh.add(addPointer(0, 0, -10));
+
+            mesh.add(addPointer(0, 10, 10));
+            mesh.add(addPointer(0, 10, -10));
+            mesh.add(addPointer(0, -10, 10));
+            mesh.add(addPointer(0, -10, -10));
+
+            mesh.add(addPointer(10, 0, 10));
+            mesh.add(addPointer(10, 0, -10));
+            mesh.add(addPointer(-10, 0, 10));
+            mesh.add(addPointer(-10, 0, -10));
+            engine.add(mesh);
+
+            return mesh;
+        }
+
+        window.onload = function() {
+
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, false);
+
+            engine = new SQR.Engine(document.getElementById('canvas'), document.getElementById("div-container"));
+            engine.setBackground("#000000");
+            engine.setSize(window.innerWidth, window.innerHeight);
+            engine.setProjection(45);
+
+            camera = new SQR.Transform();
+            camera.position.z = 80;
+            engine.add(camera);
+
+            geometry = new SQR.Geometry();
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), 'rgb(0,0,155)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(0,0,255)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0), 'rgb(0,0,205)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(0,0,205)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0), 'rgb(0,0,50)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(0,0,150)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0), 'rgb(0,0,100)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(0,0,100)');
+
+            renderer = new SQR.Polygon();
+            radius = 7;
+            m1 = addRing();
+
+            geometry = new SQR.Geometry();
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), 'rgb(155,0,0)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(255,0,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0), 'rgb(205,0,0)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(205,0,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0), 'rgb(50,0,0)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(150,0,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0), 'rgb(100,0,0)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(100,0,0)');
+
+            radius = 16;
+            m2 = addRing();
+
+            geometry = new SQR.Geometry();
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), 'rgb(0,155,0)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(0,255,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0), 'rgb(0,205,0)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0), 'rgb(0,205,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0), 'rgb(0,50,0)');
+            geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(0,150,0)');
+
+            geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0), 'rgb(0,100,0)');
+            geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), 'rgb(0,100,0)');
+
+            radius = 25;
+            //m3 = addRing();
+
+            render();
+        }
+
+        function v(x, y, z) {
+            return new SQR.V3(x, y, z);
+        }
+
+        var th = 0;
+
+        function render() {
+            requestAnimFrame(render);
+            //if(th++ % 2 == 1) return;
+
+            m1.rotation.y -= 0.5 * SQR.Time.deltaTime;
+            m1.rotation.x -= 0.5 * SQR.Time.deltaTime;
+
+            m2.rotation.y += 0.3 * SQR.Time.deltaTime;
+            m2.rotation.x += 0.3 * SQR.Time.deltaTime;
+
+            //m3.rotation.y -= 0.1 * SQR.Time.deltaTime;
+            //m3.rotation.x += 0.1 * SQR.Time.deltaTime;
+
+            engine.render(camera);
+        }
+
+    </script>
+
+</head>
+<body>
+<div id="canvas-container">
+    <canvas id="canvas"></canvas>
+</div>
+<div id="div-container"></div>
+</body>
+</html>

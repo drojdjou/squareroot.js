@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CSS3D + Canvas | v0.20</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<style type="text/css">
+
+    body {
+        overflow: hidden;
+    }
+
+    #canvas {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    #div-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    #div-container div {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-color: black;
+        margin-left: -50px;
+        margin-top: -50px;
+        background-image: url('assets/globe.jpg');
+        background-size: cover;
+        -webkit-backface-visibility: hidden;
+    }
+
+</style>
+
+<script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
+
+<script type="text/javascript" src="../src/SQR.js"></script>
+
+<script type="text/javascript" src="../src/engine/Engine.js"></script>
+<script type="text/javascript" src="../src/engine/Transform.js"></script>
+<script type="text/javascript" src="../src/engine/Geometry.js"></script>
+<script type="text/javascript" src="../src/engine/renderers/DOMElement.js"></script>
+<script type="text/javascript" src="../src/engine/renderers/Particle.js"></script>
+<script type="text/javascript" src="../src/engine/renderers/Segment.js"></script>
+
+<script type="text/javascript" src="../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../src/math/Matrix44.js"></script>
+
+<script type="text/javascript" src="../src/engine/util/Stringify.js"></script>
+<script type="text/javascript" src="../src/engine/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../src/engine/util/Time.js"></script>
+<script type="text/javascript" src="../src/engine/util/Color.js"></script>
+
+<script type="text/javascript">
+
+    var engine, camera, cubeOutline, particles, container, root;
+
+    var s = 50;
+
+    var mx = 0, my = 0;
+
+    window.onload = function() {
+        container = document.getElementById("div-container");
+        engine = new SQR.Engine(document.getElementById('canvas'), container);
+        engine.setBackground("#222222");
+        engine.setClearColor("rgba(22,22,22,0.1)");
+        onResize();
+
+        var addDiv = function(x, y, z, rx, ry, rz) {
+            var el = document.createElement('div');
+            container.appendChild(el);
+            var t = new SQR.Transform();
+            t.position.set(x, y, z);
+            t.rotation.set(rx, ry, rz);
+            t.renderer = new SQR.DOMElement(el);
+            t.renderer.setBackfaceVisibility();
+            root.add(t);
+        }
+
+        var makeParticleTexture = function(hue, radius) {
+            var fill = SQR.Color.hsl(hue, 100, 50);
+            var prerender = document.createElement('canvas');
+            prerender.width = prerender.height = radius * 2;
+
+            var pctx = prerender.getContext('2d');
+            pctx.fillStyle = fill;
+            pctx.beginPath();
+            pctx.arc(radius, radius, radius, 0, SQR.twoPI);
+            pctx.fill();
+
+            return prerender;
+        }
+
+        root = new SQR.Transform('root');
+
+        var deg90 = 90 * SQR.deg2rad;
+
+        addDiv(0, 0, s, 0, 0, 0);
+        addDiv(0, 0, -s, 0, Math.PI, 0);
+
+        addDiv(s, 0, 0, 0, -deg90, 0);
+        addDiv(-s, 0, 0, 0, deg90, 0);
+
+        addDiv(0, s, 0, deg90, 0, 0);
+        addDiv(0, -s, 0, -deg90, 0, 0);
+
+        cubeOutline = new SQR.Transform('cubeOutline');
+        cubeOutline.renderer = new SQR.Segment(3);
+        cubeOutline.geometry = new SQR.Geometry();
+
+        cubeOutline.geometry.vertices = [
+            new SQR.V3(s, s, s), new SQR.V3(-s, s, s),
+            new SQR.V3(s, -s, s), new SQR.V3(-s, -s, s),
+
+            new SQR.V3(s, s, -s), new SQR.V3(-s, s, -s),
+            new SQR.V3(s, -s, -s), new SQR.V3(-s, -s, -s),
+
+            new SQR.V3(s, -s, s), new SQR.V3(s, s, s),
+            new SQR.V3(-s, -s, s), new SQR.V3(-s, s, s),
+
+            new SQR.V3(s, -s, -s), new SQR.V3(s, s, -s),
+            new SQR.V3(-s, -s, -s), new SQR.V3(-s, s, -s),
+
+            new SQR.V3(s, s, -s), new SQR.V3(s, s, s),
+            new SQR.V3(-s, s, -s), new SQR.V3(-s, s, s),
+
+            new SQR.V3(s, -s, -s), new SQR.V3(s, -s, s),
+            new SQR.V3(-s, -s, -s), new SQR.V3(-s, -s, s)
+        ];
+
+        cubeOutline.geometry.colors = [
+            SQR.Color.hsl(24, 100, 50),
+            SQR.Color.hsl(28, 100, 50),
+
+            SQR.Color.hsl(32, 100, 50),
+            SQR.Color.hsl(26, 100, 50),
+
+            SQR.Color.hsl(40, 100, 50),
+            SQR.Color.hsl(44, 100, 50),
+
+            SQR.Color.hsl(48, 100, 50),
+            SQR.Color.hsl(52, 100, 50),
+
+            SQR.Color.hsl(56, 100, 50),
+            SQR.Color.hsl(60, 100, 50),
+
+            SQR.Color.hsl(64, 100, 50),
+            SQR.Color.hsl(68, 100, 50)
+        ];
+
+        particles = new SQR.Transform('particles');
+        particles.renderer = new SQR.Particle(5, 'rgb(255,0,0)');
+        particles.geometry = new SQR.Geometry();
+
+        s *= 1.2;
+
+        particles.geometry.vertices = [
+            new SQR.V3(s, s, s),
+            new SQR.V3(s, -s, s),
+            new SQR.V3(s, s, -s),
+            new SQR.V3(s, -s, -s),
+
+            new SQR.V3(-s, s, s),
+            new SQR.V3(-s, -s, s),
+            new SQR.V3(-s, s, -s),
+            new SQR.V3(-s, -s, -s)
+        ];
+
+        particles.geometry.particleTextures = [
+            makeParticleTexture(24, 5),
+            makeParticleTexture(26, 5),
+            makeParticleTexture(28, 5),
+            makeParticleTexture(30, 5),
+            makeParticleTexture(32, 5),
+            makeParticleTexture(34, 5),
+            makeParticleTexture(36, 5),
+            makeParticleTexture(38, 5)
+        ];
+
+        camera = new SQR.Transform();
+        camera.position.z = s * 8;
+//        camera.lookAt(root);
+
+        root.add(particles, cubeOutline);
+        engine.add(root, camera);
+
+        window.addEventListener('resize', onResize, false);
+
+        document.addEventListener('mousemove', function(e) {
+            mx = e.pageX / window.innerWidth * 2 - 1;
+            my = e.pageY / window.innerHeight * 2 - 1;
+        }, false)
+
+        render();
+    }
+
+    function onResize() {
+        engine.setSize(window.innerWidth, window.innerHeight);
+        engine.setProjection(30);
+    }
+
+    var a = 0;
+
+    function render() {
+
+        requestAnimFrame(render);
+
+        a += SQR.Time.deltaTime / 1000;
+//        a = Math.PI / 4;
+
+//        camera.position.x = 500;
+//        camera.position.y = 500;
+        camera.position.x = mx * 500;
+//        camera.position.y = my * 500;
+
+        var v = new SQR.V3();
+        v.sub(root.position, camera.position);
+        camera.lookInDirection(v);
+
+//        root.position.x = 200;
+//        root.position.y = 200;
+//        root.position.x = Math.sin(a) * s,
+//        root.rotation.set(a, a / 2, a / 4);
+
+        engine.render(camera);
+    }
+
+</script>
+
+</head>
+<body>
+<div id="canvas-container">
+    <canvas id="canvas"></canvas>
+</div>
+<div id="div-container"></div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> | v0.1</title>
+
+    <style type="text/css">
+
+        body {
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var canvas, context;
+
+        window.onload = function() {
+            canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            context = canvas.getContext('2d');
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            context.strokeStyle = 'rgb(0, 255, 0)';
+            context.fillStyle = 'rgb(255, 0, 0)';
+            context.beginPath();
+
+//            context.moveTo(100, 100);
+//            context.lineTo(100, 300);
+//            context.lineTo(300, 300);
+//            context.lineTo(300, 100);
+
+            context.moveTo(100, 100);
+            context.lineTo(200, 100);
+            context.lineTo(200, 200);
+
+            context.closePath();
+            context.stroke();
+            context.fill();
+        }
+
+    </script>
+
+</head>
+<body>
+<div id="container">
+    <canvas id="canvas"></canvas>
+</div>
+</body>
+</html>
