@@ -29,7 +29,7 @@ SQR.V2.prototype.set = function(x, y) {
  * @param c an optional 3rd vector to store the
  * @returns this vector
  */
-SQR.V2.prototype.sum = function(a, b) {
+SQR.V2.prototype.add = function(a, b) {
     this.x = a.x + b.x;
     this.y = a.y + b.y;
     return this;
@@ -44,11 +44,19 @@ SQR.V2.prototype.mul = function(s) {
 
 SQR.V2.prototype.magsq = function() {
     return this.x * this.x + this.y * this.y;
-};
+}
 
 SQR.V2.prototype.mag = function() {
     return Math.sqrt(this.magsq());
-};
+}
+
+SQR.V2.prototype.norm = function() {
+    var m = this.mag();
+    if(m == 0) return this;
+    this.x /= m
+    this.y /= m;
+    return this;
+}
 
 /**
  * Subtracts this vector from v. Used to get a vector going from current to v.
@@ -86,7 +94,7 @@ SQR.V2.prototype.setAngleRadius = function(a, r) {
     return this;
 }
 
-SQR.V2.prototype.add = function(x ,y) {
+SQR.V2.prototype.addc = function(x ,y) {
     this.x += x;
     this.y += y;
     return this;

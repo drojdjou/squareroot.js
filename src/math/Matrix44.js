@@ -68,17 +68,21 @@ SQR.Matrix44 = function() {
         var d = m || this.data;
         this.identity(m);
 
-        d[0]  = (1 - 2 * qy * qy - 2 * qz * qz) * sx;
-        d[4]  = (2 * qx * qy + 2 * qz * qw) * sx;
-        d[8]  = (2 * qx * qz - 2 * qy * qw) * sx;
+        var sqx = qx * qx;
+        var sqy = qy * qy;
+        var sqz = qz * qz;
 
-        d[1]  = (2 * qx * qy - 2 * qz * qw) * sy;
-        d[5]  = (1 - 2 * qx * qx - 2 * qz * qz) * sy;
-        d[9]  = (2 * qy * qz + 2 * qx * qw) * sy;
+        d[0]  = (1 - 2 * sqy - 2 * sqz) * sx;
+        d[1]  = (2 * qx * qy - 2 * qz * qw) * sx;
+        d[2]  = (2 * qx * qz + 2 * qy * qw) * sx;
 
-        d[2]  = (2 * qx * qz + 2 * qy * qw) * sz;
-        d[6]  = (2 * qy * qz - 2 * qx * qw) * sz;
-        d[10] = (1 - 2 * qx * qx - 2 * qy * qy) * sz;
+        d[4]  = (2 * qx * qy + 2 * qz * qw) * sy;
+        d[5]  = (1 - 2 * sqx - 2 * sqz) * sy;
+        d[6]  = (2 * qy * qz - 2 * qx * qw) * sy;
+
+        d[8]  = (2 * qx * qz - 2 * qy * qw) * sz;
+        d[9]  = (2 * qy * qz + 2 * qx * qw) * sz;
+        d[10] = (1 - 2 * sqx - 2 * sqy) * sz;
 
         d[12] = tx;
         d[13] = ty;

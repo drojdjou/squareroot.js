@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Single Agent | v0.1</title>
+
+    <style type="text/css">
+
+        body {
+            overflow: hidden;
+        }
+
+        #cnv {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+    </style>
+
+    <script type="text/javascript" src="../../lib/requestAnimFrame.js"></script>
+
+    <script type="text/javascript" src="../../src/SQR.js"></script>
+    <script type="text/javascript" src="../../src/animation/Particle2D.js"></script>
+
+    <script type="text/javascript" src="../../src/math/Vector2.js"></script>
+    <script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
+
+    <script type="text/javascript">
+
+        var context, agent;
+        function getAgentImage() {
+            var vh = document.createElement('canvas');
+            vh.width = 16;
+            vh.height = 16;
+            var vx = vh.getContext('2d');
+            vx.fillStyle = 'rgb(255,0,0)';
+            vx.beginPath();
+            vx.moveTo(4, 0);
+            vx.lineTo(8, 16);
+            vx.lineTo(12, 0);
+            vx.fill();
+
+            return vh;
+        }
+
+        var mousePos = new SQR.V2();
+        var __tv1 = new SQR.V2();
+
+        window.onload = function() {
+
+            var canvas = document.getElementById('cnv');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            context = canvas.getContext('2d');
+
+            document.addEventListener('mousemove', function(e) {
+                mousePos.x = e.pageX;
+                mousePos.y = e.pageY;
+            }, false);
+
+            agent = new SQR.Particle2D( getAgentImage() );
+
+            agent.update = function() {
+                this.position.sub(mousePos, __tv1);
+
+                __tv1.norm();
+
+                //console.log(__tv1.x, __tv1.y);
+                
+                __tv1.mul(3);
+
+                //console.log(__tv1.x, __tv1.y);
+
+                this.position.add(this.position, __tv1);
+
+                this.rotation = Math.atan2(__tv1.x, __tv1.y);
+            }
+
+            function render() {
+                requestAnimFrame(render);
+                
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                agent.update();
+
+                agent.render(context);
+                
+            }
+
+            render();
+        }
+
+
+    </script>
+
+</head>
+<body>
+<div id="container">
+    <canvas id="cnv"></canvas>
+</div>
+</body>
+</html>

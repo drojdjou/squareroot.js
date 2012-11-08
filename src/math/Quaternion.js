@@ -68,32 +68,28 @@ SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr = qr || new SQR.Quaternion();
 
     var cha = qa.w * qb.w + qa.x * qb.x + qa.y * qb.y + qa.z * qb.z;
-
-    if(Math.abs(cha) >= 1) {
-        qr.copyFrom(qa);
-        return qr;
-    }
-
     var ha = Math.acos(cha);
     var sha = Math.sqrt(1 - cha * cha);
-
     var ra = Math.sin((1 - t) * ha) / sha;
     var rb = Math.sin(t * ha) / sha;
 
-    // If angle is 180 (i.e. sin(a) == 0) degrees there is an infinite amount of possible rotations
-    if (Math.abs(sha) < 0.001){
-		qr.w = (qa.w * 0.5 + qb.w * 0.5);
-		qr.x = (qa.x * 0.5 + qb.x * 0.5);
-		qr.y = (qa.y * 0.5 + qb.y * 0.5);
-		qr.z = (qa.z * 0.5 + qb.z * 0.5);
-		return qr;
-	}
+    if (Math.abs(cha) >= 1) {
+        // If angle is 0 (i.e cos(a) = 1) just
+        // return the first quaternion
+        ra = 1;
+        rb = 0;
+    } else if (Math.abs(sha) < 0.001) {
+        // If angle is 180 deg (i.e. sin(a) = 0) there is
+        // an infinite amount of possible rotations between those 2
+        ra = 0.5;
+        rb = 0.5;
+    }
 
     qr.w = (qa.w * ra + qb.w * rb);
-	qr.x = (qa.x * ra + qb.x * rb);
-	qr.y = (qa.y * ra + qb.y * rb);
-	qr.z = (qa.z * ra + qb.z * rb);
-	return qr;
+    qr.x = (qa.x * ra + qb.x * rb);
+    qr.y = (qa.y * ra + qb.y * rb);
+    qr.z = (qa.z * ra + qb.z * rb);
+    return qr;
 }
 
 SQR.Quaternion.__tv1 = new SQR.V3();
