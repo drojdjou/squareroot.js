@@ -1,7 +1,7 @@
 /**
- Creates a new 4x4 Matrix
-
- @class The 4x4 matrix is used mostly for perspective and orthographic projection.
+ * Creates a new 4x4 Matrix
+ *
+ * @class The 4x4 matrix is used mostly for perspective and orthographic projection.
  */
 SQR.ProjectionMatrix = function() {
     if (typeof Float32Array !== 'undefined') Float32Array = Array;

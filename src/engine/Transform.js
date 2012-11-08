@@ -2,6 +2,7 @@ SQR.Transform = function(n) {
 
     this.name = n;
     this.directMatrixMode = false;
+    this.useQuaternion = false;
 
     this.renderer = null;
     this.geometry = null;
@@ -10,6 +11,7 @@ SQR.Transform = function(n) {
 
     this.position = new SQR.V3();
     this.rotation = new SQR.V3();
+    this.rotationQ = new SQR.Quaternion();
     this.scale = new SQR.V3(1, 1, 1);
 
     this.matrix = new SQR.Matrix44();
@@ -40,15 +42,20 @@ SQR.Transform = function(n) {
     this.transformWorld = function() {
 
         if (!this.directMatrixMode) {
+
             var p = this.position;
+            var q = this.rotationQ;
             var r = this.rotation;
             var s = this.scale;
-            this.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+
+            if(this.useQuaternion)
+                this.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
+            else
+                this.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
         }
 
         if (this.lookDirection) {
             this.matrix.lookAt(this.lookDirection, SQR.V3.up);
-//            this.matrix.transpose();
         }
 
         if (this.parent) {

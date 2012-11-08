@@ -8,6 +8,10 @@ SQR.Stringify = {
         return v.x + " | " + v.y + " | " + v.z;
     },
 
+    q: function(q) {
+        return q.w + " || " + q.x + " | " + q.y + " | " + q.z;
+    },
+
     m33: function(m) {
         var d = m.data || m;
 

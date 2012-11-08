@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>CSS3D + Canvas | v0.20</title>
+<title>CSS3D + Canvas | v0.56</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,16 +25,19 @@
         left: 50%;
     }
 
-    #div-container div {
+    .globe, .globeRed {
         position: absolute;
         width: 100px;
         height: 100px;
-        background-color: black;
         margin-left: -50px;
         margin-top: -50px;
         background-image: url('assets/globe.jpg');
         background-size: cover;
         -webkit-backface-visibility: hidden;
+    }
+
+    .globeRed {
+        background: red;
     }
 
 </style>
@@ -54,6 +57,8 @@
 <script type="text/javascript" src="../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
 <script type="text/javascript" src="../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../src/math/MathUtil.js"></script>
+<script type="text/javascript" src="../src/math/Quaternion.js"></script>
 
 <script type="text/javascript" src="../src/engine/util/Stringify.js"></script>
 <script type="text/javascript" src="../src/engine/util/DOMUtil.js"></script>
@@ -66,7 +71,10 @@
 
     var s = 50;
 
-    var mx = 0, my = 0;
+    var mx = 0, my = 0, isDown = false;
+
+    var lastMV, currMV, deltaR;
+    var initQ;
 
     window.onload = function() {
         container = document.getElementById("div-container");
@@ -75,8 +83,9 @@
         engine.setClearColor("rgba(22,22,22,0.1)");
         onResize();
 
-        var addDiv = function(x, y, z, rx, ry, rz) {
+        var addDiv = function(x, y, z, rx, ry, rz, cl) {
             var el = document.createElement('div');
+            el.setAttribute('class', cl);
             container.appendChild(el);
             var t = new SQR.Transform();
             t.position.set(x, y, z);
@@ -104,18 +113,20 @@
 
         var deg90 = 90 * SQR.deg2rad;
 
-        addDiv(0, 0, s, 0, 0, 0);
-        addDiv(0, 0, -s, 0, Math.PI, 0);
+        addDiv(0, 0, s, 0, 0, 0, 'globeRed');
+        addDiv(0, 0, -s, 0, Math.PI, 0, 'globe');
 
-        addDiv(s, 0, 0, 0, -deg90, 0);
-        addDiv(-s, 0, 0, 0, deg90, 0);
+        addDiv(s, 0, 0, 0, -deg90, 0, 'globe');
+        addDiv(-s, 0, 0, 0, deg90, 0, 'globe');
 
-        addDiv(0, s, 0, deg90, 0, 0);
-        addDiv(0, -s, 0, -deg90, 0, 0);
+        addDiv(0, s, 0, deg90, 0, 0, 'globe');
+        addDiv(0, -s, 0, -deg90, 0, 0, 'globe');
 
         cubeOutline = new SQR.Transform('cubeOutline');
         cubeOutline.renderer = new SQR.Segment(3);
         cubeOutline.geometry = new SQR.Geometry();
+
+        s *= 1.1;
 
         cubeOutline.geometry.vertices = [
             new SQR.V3(s, s, s), new SQR.V3(-s, s, s),
@@ -161,7 +172,7 @@
         particles.renderer = new SQR.Particle(5, 'rgb(255,0,0)');
         particles.geometry = new SQR.Geometry();
 
-        s *= 1.2;
+        s *= 1.1;
 
         particles.geometry.vertices = [
             new SQR.V3(s, s, s),
@@ -188,17 +199,43 @@
 
         camera = new SQR.Transform();
         camera.position.z = s * 8;
-//        camera.lookAt(root);
 
         root.add(particles, cubeOutline);
+        root.useQuaternion = true;
+
         engine.add(root, camera);
 
         window.addEventListener('resize', onResize, false);
 
+        lastMV = new SQR.V3();
+        currMV = new SQR.V3();
+        deltaR = new SQR.Quaternion();
+        initQ = new SQR.Quaternion();
+
+        var aspect = window.innerWidth / window.innerHeight;
+
         document.addEventListener('mousemove', function(e) {
-            mx = e.pageX / window.innerWidth * 2 - 1;
+            mx = (e.pageX / window.innerWidth * 2 - 1) * aspect;
             my = e.pageY / window.innerHeight * 2 - 1;
-        }, false)
+
+            SQR.MathUtil.mouseToUnitSphereVector(mx, my, 0.5, currMV);
+
+            var a = Math.min(1, SQR.V3.dot(lastMV, currMV));
+            lastMV.cross(currMV, lastMV);
+            deltaR.set(a, lastMV.x, lastMV.y, lastMV.z);
+            if(isDown) root.rotationQ.mul(deltaR);
+
+            lastMV.copyFrom(currMV);
+
+        }, false);
+
+        document.addEventListener('mousedown', function(e) {
+            isDown = true;
+        }, false);
+
+        document.addEventListener('mouseup', function(e) {
+            isDown = false;
+        }, false);
 
         render();
     }
@@ -208,28 +245,14 @@
         engine.setProjection(30);
     }
 
-    var a = 0;
+    var t = 0.9;
 
     function render() {
-
         requestAnimFrame(render);
 
-        a += SQR.Time.deltaTime / 1000;
-//        a = Math.PI / 4;
-
-//        camera.position.x = 500;
-//        camera.position.y = 500;
-        camera.position.x = mx * 500;
-//        camera.position.y = my * 500;
-
-        var v = new SQR.V3();
-        v.sub(root.position, camera.position);
-        camera.lookInDirection(v);
-
-//        root.position.x = 200;
-//        root.position.y = 200;
-//        root.position.x = Math.sin(a) * s,
-//        root.rotation.set(a, a / 2, a / 4);
+        if(!isDown) {
+            SQR.Quaternion.slerp(initQ, root.rotationQ, t, root.rotationQ)
+        }
 
         engine.render(camera);
     }

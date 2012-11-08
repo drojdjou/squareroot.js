@@ -1,4 +1,4 @@
-SQR.Polygon = function(color) {
+SQR.Polygon = function() {
 
 
     var mvp = new SQR.Matrix44();

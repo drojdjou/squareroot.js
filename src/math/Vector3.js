@@ -49,6 +49,10 @@ SQR.V3.prototype.mag = function() {
     return Math.sqrt(this.magsq());
 };
 
+SQR.V3.prototype.isZero = function() {
+    return this.x == 0 && this.y == 0 && this.z == 0;
+};
+
 SQR.V3.prototype.mul = function(s) {
     this.x *= s;
     this.y *= s;
@@ -100,9 +104,10 @@ SQR.V3.dot = function(a, b) {
 }
 
 SQR.V3.prototype.cross = function(a, b) {
-    this.x = a.y * b.z - a.z * b.y;
-    this.y = a.z * b.x - a.x * b.z;
-    this.z = a.x * b.y - a.y * b.x;
+    var x = a.y * b.z - a.z * b.y;
+    var y = a.z * b.x - a.x * b.z;
+    var z = a.x * b.y - a.y * b.x;
+    this.set(x, y, z, this.w);
     return this;
 }
 

@@ -10,7 +10,7 @@
     <script type="text/javascript" src="../src/engine/Engine.js"></script>
     <script type="text/javascript" src="../src/engine/Transform.js"></script>
     <script type="text/javascript" src="../src/engine/Geometry.js"></script>
-    <script type="text/javascript" src="../src/engine/Triangle.js"></script>
+    <script type="text/javascript" src="../src/engine/objects/Triangle.js"></script>
     <script type="text/javascript" src="../src/engine/renderers/DOMElement.js"></script>
     <script type="text/javascript" src="../src/engine/renderers/Particle.js"></script>
     <script type="text/javascript" src="../src/engine/renderers/Segment.js"></script>
@@ -93,7 +93,7 @@
             }, false);
 
             engine = new SQR.Engine(document.getElementById('canvas'), document.getElementById("div-container"));
-            engine.setBackground("#000000");
+            engine.setBackground('#000000');
             engine.setSize(window.innerWidth, window.innerHeight);
             engine.setProjection(45);
 

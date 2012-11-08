@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hairy Ball | v0.10</title>
+<title>Hairy Ball | v0.23</title>
 
 <script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
 
@@ -18,6 +18,8 @@
 <script type="text/javascript" src="../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
 <script type="text/javascript" src="../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../src/math/MathUtil.js"></script>
 
 <script type="text/javascript" src="../src/engine/util/Stringify.js"></script>
 <script type="text/javascript" src="../src/engine/util/DOMUtil.js"></script>
@@ -46,12 +48,19 @@
         display: none;
     }
 
+    #instr {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: Georgia, sans-serif;
+        color: #ffffff;
+    }
+
 </style>
 
 <script type="text/javascript">
 
-    var engine, camera, hairyBall;
-    var a = 0;
+    var engine, camera, hairyBall, aspect;
 
     window.onload = function() {
 
@@ -66,19 +75,16 @@
         engine.setProjection(60);
 
         engine.setBackground("#000000");
-        engine.setClearColor("rgba(0,0,0,0.2)");
-
-//        engine.setBackground("#ffffff");
-//        engine.setClearColor("rgba(255,255,255,0.4)");
+        //engine.setClearColor("rgba(0,0,0,0.2)");
 
         camera = new SQR.Transform();
-        camera.position.z = 250;
-//            camera.position.x = -100;
+        camera.position.z = 200;
         engine.add(camera);
 
         hairyBall = new SQR.Transform();
-        hairyBall.directMatrixMode = true;
+        hairyBall.useQuaternion = true;
         hairyBall.renderer = new SQR.Segment(2);
+        hairyBall.renderer.culling = true;
         hairyBall.geometry = new SQR.Geometry();
 
         var innerRadius = 70;
@@ -168,33 +174,56 @@
         //console.log(createdPins);
         //ectx.putImageData(earthpixels, 0, 0);
 
-        document.addEventListener('touchstart', onTouchStart, false);
-        document.addEventListener('touchmove', onTouchMove, false);
-        document.addEventListener('touchend', onTouchEnd, false);
+        aspect = window.innerWidth / window.innerHeight;
+        lastMV = new SQR.V3();
+        currMV = new SQR.V3();
+        deltaR = new SQR.Quaternion();
+
+        document.addEventListener('touchstart', onInteractionStart, false);
+        document.addEventListener('touchmove', onInteractionMove, false);
+        document.addEventListener('touchend', onInteractionEnd, false);
+
+        document.addEventListener('mousedown', onInteractionStart, false);
+        document.addEventListener('mousemove', onInteractionMove, false);
+        document.addEventListener('mouseup', onInteractionEnd, false);
 
         engine.add(hairyBall);
-
         render();
     }
 
-    function onTouchStart() {
+    var mx = 0, my = 0, isDown = false, isTracked = false;;
+    var lastMV, currMV, deltaR;
 
+    function onInteractionStart() {
+        isDown = true;
     }
 
-    function onTouchMove() {
+    function onInteractionMove(e) {
+        if (isDown) {
+            e = ('ontouchstart' in window) ? e.targetTouches[0] : e;
 
+            mx = (e.pageX / window.innerWidth * 2 - 1) * aspect;
+            my = e.pageY / window.innerHeight * 2 - 1;
+
+            SQR.MathUtil.mouseToUnitSphereVector(mx, my, 1.0, currMV);
+
+            var a = Math.min(1, SQR.V3.dot(lastMV, currMV));
+            lastMV.cross(currMV, lastMV);
+            deltaR.set(a, lastMV.x, lastMV.y, lastMV.z);
+            if(isTracked) hairyBall.rotationQ.mul(deltaR);
+
+            lastMV.copyFrom(currMV);
+            isTracked = true;
+        }
     }
 
-    function onTouchEnd() {
-
+    function onInteractionEnd() {
+        isDown = false;
+        isTracked = false;
     }
 
     function render() {
         requestAnimFrame(render);
-        a += SQR.Time.deltaTime * 0.4;
-        //hairyBall.matrix.setTRS(0, 0, 0, a, a / 2, a / 4, an, an, an);
-        hairyBall.matrix.setTRS(0, 0, 0, Math.sin(a * 2) / 4, a, 0, 1, 1, 1);
-
         engine.render(camera);
     }
 
@@ -211,5 +240,7 @@
     <img id="map" src="assets/map.jpg"><br>
     <img id="depth" src="assets/map-height-noa.jpg"><br>
 </div>
+
+<div id="instr">Click/touch and drag the globe to rotate</div>
 </body>
 </html>

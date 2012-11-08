@@ -1,5 +1,7 @@
 SQR.Segment = function(thickness) {
 
+    this.culling = false;
+
     var ps = new SQR.V3();
     var pe = new SQR.V3();
     var mvp = new SQR.Matrix44();
@@ -26,7 +28,7 @@ SQR.Segment = function(thickness) {
             if (ps.z < 0 || pe.z < 0) continue;
 
             dir.sub(ps, pe).norm();
-            if (SQR.V3.dot(dir, front) < 0.25) continue;
+            if (SQR.V3.dot(dir, front) < 0 && this.culling) continue;
             
             //r++;
 

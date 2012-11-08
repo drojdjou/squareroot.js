@@ -32,6 +32,7 @@ SQR.Engine = function(canvas, divContainer) {
         uniforms.height = h;
         canvas.width = w;
         canvas.height = h;
+        uniforms.aspect = w / h;
         uniforms.centerX = w * 0.5;
         uniforms.centerY = h * 0.5;
     }
