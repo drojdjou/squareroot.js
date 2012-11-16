@@ -10,10 +10,11 @@ SQR.CanvasUtil = {
     },
 
     getPixelNormRed: function(imageData, nx, ny) {
-        var x = nx * imageData.width | 0;
-        var y = ny * imageData.height | 0;
-        console.log(x, y);
-        return imageData.data[ (y * imageData.width + x) * 4 ];
+        var x = nx * (imageData.width-1) | 0;
+        var y = ny * (imageData.height-1) | 0;
+
+        var i = y * imageData.width + x;
+        return imageData.data[ i * 4 ];
     }
     
 };

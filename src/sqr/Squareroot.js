@@ -1,9 +1,13 @@
-SQR.Engine = function(canvas, divContainer) {
+SQR.Squareroot = function(canvas, divContainer) {
 
     var uniforms = {};
     uniforms.context = canvas.getContext("2d");
     uniforms.projection = new SQR.ProjectionMatrix();
     uniforms.container = divContainer;
+
+    uniforms.supportsCSS3D = (typeof(Modernizr) != "undefined" && Modernizr.csstransforms3d) ? true : false;
+
+    uniforms.lightDirection = new SQR.V3(0, 1, 0.1).norm();
 
     var clearColor = null;
 
@@ -70,15 +74,13 @@ SQR.Engine = function(canvas, divContainer) {
 
         SQR.Time.tick();
 
-        renderObjects.length = 0
+        renderObjects.length = 0;
 
         uniforms.context.setTransform(1, 0, 0, 1, 0, 0);
 
         if (clearColor != null) {
             uniforms.context.fillStyle = clearColor;
             uniforms.context.fillRect(0, 0, canvas.width, canvas.height);
-
-            //boxBlurCanvasRGB(canvas, 0, 0, canvas.width, canvas.height, 8, 1);
         } else {
             uniforms.context.clearRect(0, 0, canvas.width, canvas.height);
         }
@@ -88,9 +90,9 @@ SQR.Engine = function(canvas, divContainer) {
             updateTransform(t);
         }
 
-        var l = renderObjects.length;
-        var c;
+        var l = renderObjects.length, c;
 
+        uniforms.camera = camera;
         uniforms.viewMatrix = camera.computeInverseMatrix();
 
         for (var i = 0; i < l; i++) {

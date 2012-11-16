@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hairy globe | v0.23</title>
+<title>Hairy globe | v0.25</title>
 
-<script type="text/javascript" src="../../lib/requestAnimFrame.js"></script>
+<script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
 
-<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../src/SQR.js"></script>
 
-<script type="text/javascript" src="../../src/engine/Engine.js"></script>
-<script type="text/javascript" src="../../src/engine/Transform.js"></script>
-<script type="text/javascript" src="../../src/engine/Geometry.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/DOMElement.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/Particle.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/Segment.js"></script>
+<script type="text/javascript" src="../src/sqr/Squareroot.js"></script>
+<script type="text/javascript" src="../src/sqr/Transform.js"></script>
+<script type="text/javascript" src="../src/sqr/Geometry.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/DOMElement3D.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/Segment.js"></script>
 
-<script type="text/javascript" src="../../src/math/Vector2.js"></script>
-<script type="text/javascript" src="../../src/math/Vector3.js"></script>
-<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
-<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
-<script type="text/javascript" src="../../src/math/MathUtil.js"></script>
+<script type="text/javascript" src="../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../src/math/Matrix2D.js"></script>
+<script type="text/javascript" src="../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../src/math/VectorUtil.js"></script>
 
-<script type="text/javascript" src="../../src/engine/util/Stringify.js"></script>
-<script type="text/javascript" src="../../src/engine/util/DOMUtil.js"></script>
-<script type="text/javascript" src="../../src/engine/util/Time.js"></script>
-<script type="text/javascript" src="../../src/engine/util/Color.js"></script>
+<script type="text/javascript" src="../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../src/sqr/util/Time.js"></script>
+<script type="text/javascript" src="../src/color/Color.js"></script>
 
-<script type="text/javascript" src="../../lib/FastBlur.js"></script>
+<script type="text/javascript" src="../lib/FastBlur.js"></script>
 
 <style type="text/css">
 
@@ -62,14 +64,26 @@
 <script type="text/javascript">
 
     var engine, camera, hairyBall, aspect;
+    var maptemplate, mapDepthTemplate;
 
     window.onload = function() {
+        maptemplate = new Image();
+        maptemplate.onload = function() {
+            mapDepthTemplate = new Image();
+            mapDepthTemplate.onload = function() {
+                setup();
+            }
+            mapDepthTemplate.src = 'assets/map-height-noa.jpg';
+        }
+        maptemplate.src = 'assets/map.jpg';
+    }
 
+    window.setup = function() {
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, false);
 
-        engine = new SQR.Engine(document.getElementById('canvas'), document.getElementById("div-container"));
+        engine = new SQR.Squareroot(document.getElementById('canvas'), document.getElementById("div-container"));
 
         engine.setSize(window.innerWidth, window.innerHeight);
 
@@ -103,22 +117,17 @@
 
         var x, y;
 
-        var maptemplate = document.getElementById('map');
-        var mapDethTemplate = document.getElementById('depth');
-
         var earthmap = document.createElement('canvas');
         earthmap.width = maptemplate.width;
         earthmap.height = maptemplate.height;
         var ectx = earthmap.getContext('2d');
 
-        ectx.drawImage(mapDethTemplate, 0, 0);
+        ectx.drawImage(mapDepthTemplate, 0, 0);
+
         var depthpixels = ectx.getImageData(0, 0, earthmap.width, earthmap.height);
 
         ectx.drawImage(maptemplate, 0, 0);
         var earthpixels = ectx.getImageData(0, 0, earthmap.width, earthmap.height);
-
-
-        document.getElementById('map-container').appendChild(earthmap);
 
         var createdPins = 0;
         var oddPin = 0;
@@ -189,7 +198,7 @@
         document.addEventListener('mouseup', onInteractionEnd, false);
 
         engine.add(hairyBall);
-        render();
+        render(true);
     }
 
     var mx = 0, my = 0, isDown = false, isTracked = false;;
@@ -206,7 +215,7 @@
             mx = (e.pageX / window.innerWidth * 2 - 1) * aspect;
             my = e.pageY / window.innerHeight * 2 - 1;
 
-            SQR.MathUtil.mouseToUnitSphereVector(mx, my, 1.0, currMV);
+            SQR.VectorUtil.mouseToUnitSphereVector(mx, my, 1.0, currMV);
 
             var a = Math.min(1, SQR.V3.dot(lastMV, currMV));
             lastMV.cross(currMV, lastMV);
@@ -223,9 +232,9 @@
         isTracked = false;
     }
 
-    function render() {
+    function render(f) {
         requestAnimFrame(render);
-        engine.render(camera);
+        if(isDown || f) engine.render(camera);
     }
 
 </script>
@@ -236,11 +245,6 @@
     <canvas id="canvas"></canvas>
 </div>
 <div id="div-container"></div>
-
-<div id="map-container">
-    <img id="map" src="assets/map.jpg"><br>
-    <img id="depth" src="assets/map-height-noa.jpg"><br>
-</div>
 
 <div id="instr">Click/touch and drag on the screen to rotate the globe</div>
 </body>

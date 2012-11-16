@@ -40,6 +40,40 @@ SQR.Quaternion.prototype.mul = function(q, rq) {
     return rq;
 }
 
+SQR.Quaternion.prototype.lookAt = function(_dir, _up) {
+
+        var dir = SQR.Quaternion.__tv1;
+        var right = SQR.Quaternion.__tv2;
+        var up = SQR.Quaternion.__tv3;
+
+        _dir.copyTo(dir);
+        _up.copyTo(up);
+
+        dir.norm();
+
+        // If direction is back, the returned quaternion is flipped. Not sure why, but that fixes it.
+        if(dir.z == -1) {
+            dir.x = 0.0001;
+            dir.norm();
+        }
+
+        // Probably should do the orthonormalization but not sure how that works :)
+        // tangent.sub(up, forward.mul(SQR.V3.dot(forward, up))).norm();
+
+        right.cross(up, dir);
+        up.cross(dir, right);
+
+        this.w = Math.sqrt(1 + right.x + up.y + dir.z) * 0.5;
+        var rc = 4 * this.w;
+        this.x = (dir.y - up.z) / rc;
+        this.y = (right.z - dir.x) / rc;
+        this.z = (up.x - right.y) / rc;
+
+        this.normalize();
+    
+        return this;
+}
+
 SQR.Quaternion.prototype.fromAngleAxis = function(a, x, y, z) {
     var s = Math.sin(a / 2);
     this.x = x * s;
@@ -91,10 +125,6 @@ SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr.z = (qa.z * ra + qb.z * rb);
     return qr;
 }
-
-SQR.Quaternion.__tv1 = new SQR.V3();
-SQR.Quaternion.__tv2 = new SQR.V3();
-SQR.Quaternion.__tv3 = new SQR.V3();
 
 
 

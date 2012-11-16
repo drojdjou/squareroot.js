@@ -14,6 +14,8 @@ SQR.Transform = function(n) {
     this.rotationQ = new SQR.Quaternion();
     this.scale = new SQR.V3(1, 1, 1);
 
+    var _globalPosition = new SQR.V3();
+
     this.matrix = new SQR.Matrix44();
     this.globalMatrix = new SQR.Matrix44();
     this.inverseWorldMatrix = new SQR.Matrix44();
@@ -70,12 +72,8 @@ SQR.Transform = function(n) {
         }
     }
 
-    var _globalPosition = new SQR.V3();
-
     this.globalPosition = function() {
-        var d = this.globalMatrix.data;
-//        console.log("Global position: ", d[12],d[13], d[14]);
-        _globalPosition.set(d[12],d[13], d[14]);
+        this.globalMatrix.extractPosition(_globalPosition);
         return _globalPosition;
     }
 
@@ -94,23 +92,9 @@ SQR.Transform = function(n) {
     }
 
     this.computeInverseMatrix = function() {
-
-//        console.log("1. Matrix before inverse");
-//        console.log(SQR.Stringify.m44(this.globalMatrix));
-
-//        console.log("2: Determinant " + this.worldMatrix.determinant());
         this.globalMatrix.copyTo(this.inverseWorldMatrix);
         this.inverseWorldMatrix.transpose();
         this.inverseWorldMatrix.inverse();
-
-//        console.log("3: Inverse matrix");
-//        console.log(SQR.Stringify.m44(this.inverseWorldMatrix));
-
-        //this.inverseWorldMatrix.transpose();
-
-//        console.log("4: Inverse transposed matrix");
-//        console.log(SQR.Stringify.m44(this.inverseWorldMatrix));
-
         return this.inverseWorldMatrix;
     }
 }

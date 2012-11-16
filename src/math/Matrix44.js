@@ -1,6 +1,5 @@
 SQR.Matrix44 = function() {
 
-    if (typeof Float32Array !== 'undefined') Float32Array = Array;
     this.data = new Float32Array(16);
 
     this.identity = function(m) {
@@ -220,6 +219,12 @@ SQR.Matrix44 = function() {
             ')';
     }
 
+    this.extractPosition = function(v) {
+        var d = this.data;
+        v.set(d[12],d[13], d[14]);
+        return v;
+    }
+
     this.determinant = function() {
         var d = this.data;
 
@@ -233,20 +238,17 @@ SQR.Matrix44 = function() {
         var a = (m) ? m.data || m : this.data;
         var det = this.determinant();
 
+        if (Math.abs(det) < 0.0001) {
+            console.warn("Attempt to inverse a singular matrix44. ", this.data);
+            console.trace();
+            return m;
+        }
+
         var d0 = d[0], d4 = d[4], d8 = d[8],   d12 = d[12],
             d1 = d[1], d5 = d[5], d9 = d[9],   d13 = d[13],
             d2 = d[2], d6 = d[6], d10 = d[10], d14 = d[14];
 
-        if (Math.abs(det) < 0.0001) {
-            console.warn("Attempt to inverse a singular matrix. ", this.data);
-            return m;
-        }
-
         det = 1 / det;
-
-        // m11 = d[0] // m12 = d[4] // m13 = d[8]
-        // m21 = d[1] // m22 = d[5] // m23 = d[9]
-        // m31 = d[2] // m32 = d[6] // m33 = d[10]
 
         a[0] = (d5 * d10 - d9 * d6) * det;
         a[4] = (d8 * d6 - d4 * d10) * det;
@@ -259,8 +261,6 @@ SQR.Matrix44 = function() {
         a[2] = (d1 * d6 - d5 * d2) * det;
         a[6] = (d4 * d2 - d0 * d6) * det;
         a[10] = (d0 * d5 - d4 * d1) * det;
-
-        // d[12] = tx // d[13] = ty // d[14] = tz;
 
         a[12] = - (d12 * a[0] + d13 * a[1] + d14 * a[2]);
         a[13] = - (d12 * a[4] + d13 * a[5] + d14 * a[6]);
@@ -317,11 +317,6 @@ SQR.Matrix44 = function() {
 
     this.identity();
 }
-
-SQR.Matrix44.__temp = new Float32Array(16);
-SQR.Matrix44.__tv1 = new SQR.V3();
-SQR.Matrix44.__tv2 = new SQR.V3();
-SQR.Matrix44.__tv3 = new SQR.V3();
 
 
 

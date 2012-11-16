@@ -1,4 +1,4 @@
-SQR.DOMElement = function(element) {
+SQR.DOMElement3D = function(element) {
 
     this.element = element;
 

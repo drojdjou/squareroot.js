@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Planets | v0.15</title>
+
+    <script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
+    <script type="text/javascript" src="../lib/modernizr.custom.56278.js"></script>
+
+    <script type="text/javascript" src="../src/SQR.js"></script>
+
+    <script type="text/javascript" src="../src/sqr/Squareroot.js"></script>
+    <script type="text/javascript" src="../src/sqr/Transform.js"></script>
+    <script type="text/javascript" src="../src/sqr/Geometry.js"></script>
+    <script type="text/javascript" src="../src/sqr/renderers/DOMElement2D.js"></script>
+    <script type="text/javascript" src="../src/sqr/renderers/DOMElement3D.js"></script>
+    <script type="text/javascript" src="../src/sqr/renderers/Particle.js"></script>
+    <script type="text/javascript" src="../src/sqr/renderers/Segment.js"></script>
+
+    <script type="text/javascript" src="../src/math/Vector2.js"></script>
+    <script type="text/javascript" src="../src/math/Vector3.js"></script>
+    <script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
+    <script type="text/javascript" src="../src/math/Matrix2D.js"></script>
+    <script type="text/javascript" src="../src/math/Matrix33.js"></script>
+    <script type="text/javascript" src="../src/math/Matrix44.js"></script>
+    <script type="text/javascript" src="../src/math/Quaternion.js"></script>
+    <script type="text/javascript" src="../src/math/VectorUtil.js"></script>
+
+    <script type="text/javascript" src="../src/sqr/util/Stringify.js"></script>
+    <script type="text/javascript" src="../src/sqr/util/DOMUtil.js"></script>
+    <script type="text/javascript" src="../src/sqr/util/Time.js"></script>
+    <script type="text/javascript" src="../src/color/Color.js"></script>
+
+    <style type="text/css">
+
+        body {
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        #div-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        #div-container div {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin-top: -64px;
+            margin-left: -64px;
+            width: 128px;
+            height: 128px;
+            overflow: hidden;
+        }
+
+        .planet img {
+            position: absolute;
+            width: 128px;
+            height: 128px;
+        }
+
+        #instr {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Georgia, sans-serif;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var s = 100;
+
+        var planets = ['assets/earth.png', 'assets/moon.png', 'assets/mars.png', 'assets/sun.png'];
+
+        var container, engine, camera, hairyBall, root;
+
+        var mx = 0, my = 0;
+
+        function addPlanet(root, x, y, z, r, title) {
+            var v = new SQR.V3(x, y, z).norm().mul(r);
+
+
+            var ht = document.createElement('div');
+            ht.setAttribute('class', 'planet');
+
+            var hti = new Image()
+            hti.src = planets[Math.random() * 4 | 0];
+
+            ht.appendChild(hti);
+
+            container.appendChild(ht);
+
+            var t = new SQR.Transform();
+            t.position.set(v.x, v.y, v.z);
+            t.rotation.set(0, 0, SQR.twoPI * Math.random());
+
+            t.renderer = new SQR.DOMElement2D(ht);
+//        t.renderer = new SQR.DOMElement3D(ht);
+
+            root.add(t);
+
+            return t;
+        }
+
+        window.onload = function() {
+
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+
+                mx = e.pageX / window.innerWidth * 2 - 1;
+                my = e.pageY / window.innerHeight * 2 - 1;
+                
+            }, false);
+
+            document.addEventListener('mousemove', function(e) {
+                e.preventDefault();
+
+                mx = e.pageX / window.innerWidth * 2 - 1;
+                my = e.pageY / window.innerHeight * 2 - 1;
+
+            }, false);
+
+            container = document.getElementById("div-container")
+
+            engine = new SQR.Squareroot(document.getElementById('canvas'), container);
+            engine.setBackground("#000000");
+            engine.setSize(window.innerWidth, window.innerHeight);
+            engine.setProjection(60);
+
+            camera = new SQR.Transform();
+            camera.position.z = 700;
+            engine.add(camera);
+
+            root = new SQR.Transform();
+            engine.add(root);
+
+//        root.add(createCubeOutline());
+
+            var r = (s * 16) / SQR.twoPI;
+
+            var segmentsY = 4;
+
+            var phiStart = 0;
+            var phiLength = SQR.twoPI;
+            var thetaStart = 0;
+            var thetaLength = Math.PI;
+            var x, y;
+
+            for (y = 0; y <= segmentsY; y ++) {
+
+                var segmentsX;
+                var phiStart = 0;
+
+                switch (y) {
+                    case 0:
+                    case 4:
+                        segmentsX = 1;
+                        break;
+                    case 1:
+                    case 3:
+                        segmentsX = 4;
+                        break;
+                    case 2:
+                        segmentsX = 8;
+                        break;
+                }
+
+                for (x = 0; x < segmentsX; x ++) {
+
+                    var u = x / segmentsX;
+                    var v = y / segmentsY;
+
+                    var xp = -Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+                    var yp = Math.cos(thetaStart + v * thetaLength);
+                    var zp = Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+
+                    addPlanet(root, xp, yp, zp, r, '');
+                }
+            }
+
+            render();
+        }
+
+        function render() {
+            requestAnimFrame(render);
+
+            root.rotation.y += 0.03 * mx;
+            root.rotation.x += 0.015 * my;
+
+            engine.render(camera);
+        }
+
+    </script>
+
+</head>
+<body>
+<div id="canvas-container">
+    <canvas id="canvas"></canvas>
+</div>
+<div id="div-container"></div>
+
+<div id="instr">Move your mouse/touch to rotate the planets.</div>
+
+</body>
+</html>

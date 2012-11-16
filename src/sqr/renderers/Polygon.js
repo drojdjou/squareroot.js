@@ -28,7 +28,11 @@ SQR.Polygon = function() {
 
         for (i = 0; i < tris; i++) {
             t = geo.triangles[i];
-            ctx.fillStyle = t.color;
+
+            var l = Math.max(0, SQR.V3.dot(t.normal, uniforms.lightDirection));
+            var c = t.color.applyLight(l);
+
+            ctx.fillStyle = c;
             ctx.beginPath();
             ctx.moveTo(t.sa.x, t.sa.y);
             ctx.lineTo(t.sb.x, t.sb.y);

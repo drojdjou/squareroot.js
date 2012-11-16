@@ -41,47 +41,33 @@ SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
 
             }
 
-            var color = SQR.Color.hsl(0, 0, 30 + 30 * Math.random());
+            var color = new SQR.Color(0, 100, 70);
             this.triangles.push(new SQR.Triangle(va, vb, vc, color));
-
-            //var color = SQR.Color.hsl(0, 0, 30 + 30 * Math.random());
             this.triangles.push(new SQR.Triangle(va, vc, vd, color));
         }
     }
 
-    this.applyHeightMap = function(heightMap, maxHeight, offset) {
+    this.applyHeightMap = function(heightMap, maxHeight, offset, range) {
 
         var numTriangles = this.triangles.length;
+ 
+        var processVertex = function(t) {
+            var row = (t.z / h + 1) / 2;
+            var col = (t.x / w + 1) / 2;
 
-        var minrow = 0, mincol = 0;
-        var maxrow = 0, maxcol = 0;
-        var ol = Math.floor(offset);
-        var oh = Math.ceil(offset);
-        var od = offset - Math.floor(offset);
-
-        var processTri = function(t) {
-            //var row = Math.round((t.x / w + 1) / 2 * wd);
-            //var col = Math.round((t.z / h + 1) / 2 * hd);
-
-            var row = (t.x / w + 1) / 2;
-            var col = (t.z / h + 1) / 2;
+            row = (offset + row * range) % 1;
 
             var hl = SQR.CanvasUtil.getPixelNormRed(heightMap, col, row) / 255 * maxHeight;
-            var hh = SQR.CanvasUtil.getPixelNormRed(heightMap, col, row) / 255 * maxHeight;
+            t.y = maxHeight - hl;
 
-            var he = hl;
-            if (od > 0) {
-                he += (hh - hl) * od;
-            }
 
-            t.y = maxHeight - he;
         }
 
         for (var i = 0; i < numTriangles; i++) {
             var t = this.triangles[i];
-            processTri(t.a);
-            processTri(t.b);
-            processTri(t.c);
+            processVertex(t.a);
+            processVertex(t.b);
+            processVertex(t.c);
         }
     }
 }

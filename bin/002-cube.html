@@ -42,28 +42,30 @@
 
 </style>
 
-<script type="text/javascript" src="../../lib/requestAnimFrame.js"></script>
+<script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
 
-<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../src/SQR.js"></script>
 
-<script type="text/javascript" src="../../src/engine/Engine.js"></script>
-<script type="text/javascript" src="../../src/engine/Transform.js"></script>
-<script type="text/javascript" src="../../src/engine/Geometry.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/DOMElement.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/Particle.js"></script>
-<script type="text/javascript" src="../../src/engine/renderers/Segment.js"></script>
+<script type="text/javascript" src="../src/sqr/Squareroot.js"></script>
+<script type="text/javascript" src="../src/sqr/Transform.js"></script>
+<script type="text/javascript" src="../src/sqr/Geometry.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/DOMElement3D.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../src/sqr/renderers/Segment.js"></script>
 
-<script type="text/javascript" src="../../src/math/Vector2.js"></script>
-<script type="text/javascript" src="../../src/math/Vector3.js"></script>
-<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
-<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../../src/math/MathUtil.js"></script>
-<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../src/math/Matrix2D.js"></script>
+<script type="text/javascript" src="../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../src/math/VectorUtil.js"></script>
 
-<script type="text/javascript" src="../../src/engine/util/Stringify.js"></script>
-<script type="text/javascript" src="../../src/engine/util/DOMUtil.js"></script>
-<script type="text/javascript" src="../../src/engine/util/Time.js"></script>
-<script type="text/javascript" src="../../src/engine/util/Color.js"></script>
+<script type="text/javascript" src="../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../src/sqr/util/Time.js"></script>
+<script type="text/javascript" src="../src/color/Color.js"></script>
 
 <script type="text/javascript">
 
@@ -78,7 +80,7 @@
 
     window.onload = function() {
         container = document.getElementById("div-container");
-        engine = new SQR.Engine(document.getElementById('canvas'), container);
+        engine = new SQR.Squareroot(document.getElementById('canvas'), container);
         engine.setBackground("#222222");
         engine.setClearColor("rgba(22,22,22,0.1)");
         onResize();
@@ -90,7 +92,7 @@
             var t = new SQR.Transform();
             t.position.set(x, y, z);
             t.rotation.set(rx, ry, rz);
-            t.renderer = new SQR.DOMElement(el);
+            t.renderer = new SQR.DOMElement3D(el);
             t.renderer.setBackfaceVisibility();
             root.add(t);
         }
@@ -218,7 +220,7 @@
             mx = (e.pageX / window.innerWidth * 2 - 1) * aspect;
             my = e.pageY / window.innerHeight * 2 - 1;
 
-            SQR.MathUtil.mouseToUnitSphereVector(mx, my, 0.5, currMV);
+            SQR.VectorUtil.mouseToUnitSphereVector(mx, my, 0.5, currMV);
 
             var a = Math.min(1, SQR.V3.dot(lastMV, currMV));
             lastMV.cross(currMV, lastMV);

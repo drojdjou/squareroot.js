@@ -5,7 +5,7 @@
  * @param my mouse Y position in range [ -1 , 1 ]
  * @param radius of the arc ball for interaction. Default value: 0.5
  */
-SQR.MathUtil = {
+SQR.VectorUtil = {
     mouseToUnitSphereVector: function(mx, my, gr, v) {
         gr = gr || 0.5;
         v = v || new SQR.V3();
@@ -25,3 +25,19 @@ SQR.MathUtil = {
         return v;
     }
 }
+
+SQR.Quaternion.__tv1 = new SQR.V3();
+SQR.Quaternion.__tv2 = new SQR.V3();
+SQR.Quaternion.__tv3 = new SQR.V3();
+
+SQR.Matrix2D.__temp = new Float32Array(9);
+SQR.Matrix33.__temp = new Float32Array(9);
+SQR.Matrix44.__temp = new Float32Array(16);
+
+SQR.Matrix44.__tv1 = new SQR.V3();
+SQR.Matrix44.__tv2 = new SQR.V3();
+SQR.Matrix44.__tv3 = new SQR.V3();
+
+SQR.VectorUtil.__tv1 = new SQR.V3();
+SQR.VectorUtil.__tv2 = new SQR.V3();
+SQR.VectorUtil.__tv3 = new SQR.V3();

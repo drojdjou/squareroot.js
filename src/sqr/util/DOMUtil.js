@@ -11,6 +11,10 @@ SQR.DOMUtil = {
         return ' translate3d(' + x + 'px,' + y + 'px,' + z + 'px)';
     },
 
+    translate2dCss: function(x, y, z) {
+        return ' translate(' + x + 'px,' + y + 'px)';
+    },
+
     rotate3dCss: function(x, y, z) {
         return ' rotateX(' + x + 'deg) rotateY(' + y + 'deg) rotateZ(' + z + 'deg)';
     }
