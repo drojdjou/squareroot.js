@@ -94,7 +94,7 @@
             var ht = document.createElement('div');
             ht.setAttribute('class', 'planet');
 
-            var hti = new Image()
+            var hti = new Image();
             hti.src = planets[Math.random() * 4 | 0];
 
             ht.appendChild(hti);
@@ -105,8 +105,8 @@
             t.position.set(v.x, v.y, v.z);
             t.rotation.set(0, 0, SQR.twoPI * Math.random());
 
-            t.renderer = new SQR.DOMElement2D(ht);
-//        t.renderer = new SQR.DOMElement3D(ht);
+//            t.renderer = new SQR.DOMElement2D(ht);
+        t.renderer = new SQR.DOMElement3D(ht);
 
             root.add(t);
 
@@ -192,11 +192,16 @@
             render();
         }
 
+        var a = 0;
+
         function render() {
             requestAnimFrame(render);
 
-            root.rotation.y += 0.03 * mx;
-            root.rotation.x += 0.015 * my;
+//            root.rotation.y += 0.03 * mx;
+//            root.rotation.x += 0.015 * my;
+
+            camera.position.x = Math.sin(a) * 100;
+            a += 0.01;
 
             engine.render(camera);
         }
