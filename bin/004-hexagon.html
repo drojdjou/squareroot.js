@@ -214,11 +214,16 @@
         render();
     }
 
+    var a = 1;
+
     function render() {
         requestAnimFrame(render);
 
         root.rotation.y += 0.01;
         root.rotation.x += 0.005;
+
+        camera.rotation.y = Math.sin(a) * 0.4;
+        a += 0.03;
 
         engine.render(camera);
     }

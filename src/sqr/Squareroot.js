@@ -1,7 +1,7 @@
 SQR.Squareroot = function(canvas, divContainer) {
 
     var uniforms = {};
-    uniforms.context = canvas.getContext("2d");
+    if(canvas) uniforms.context = canvas.getContext("2d");
     uniforms.projection = new SQR.ProjectionMatrix();
     uniforms.container = divContainer;
 
@@ -12,7 +12,7 @@ SQR.Squareroot = function(canvas, divContainer) {
     var clearColor = null;
 
     this.setBackground = function(c) {
-        canvas.style.backgroundColor = c;
+        if(canvas) canvas.style.backgroundColor = c;
     }
 
     this.setClearColor = function(c) {
@@ -31,11 +31,19 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
+    this.cssDistance = function() {
+        return uniforms.cssDistance;
+    }
+
     this.setSize = function(w, h) {
         uniforms.width = w;
         uniforms.height = h;
-        canvas.width = w;
-        canvas.height = h;
+
+        if(canvas) {
+            canvas.width = w;
+            canvas.height = h;
+        }
+        
         uniforms.aspect = w / h;
         uniforms.centerX = w * 0.5;
         uniforms.centerY = h * 0.5;
@@ -76,13 +84,15 @@ SQR.Squareroot = function(canvas, divContainer) {
 
         renderObjects.length = 0;
 
-        uniforms.context.setTransform(1, 0, 0, 1, 0, 0);
+        if(!!uniforms.context) {
+            uniforms.context.setTransform(1, 0, 0, 1, 0, 0);
 
-        if (clearColor != null) {
-            uniforms.context.fillStyle = clearColor;
-            uniforms.context.fillRect(0, 0, canvas.width, canvas.height);
-        } else {
-            uniforms.context.clearRect(0, 0, canvas.width, canvas.height);
+            if (clearColor != null) {
+                uniforms.context.fillStyle = clearColor;
+                uniforms.context.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                uniforms.context.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
 
         for (var i = 0; i < this.numChildren; i++) {
