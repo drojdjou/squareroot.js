@@ -24,10 +24,10 @@ SQR.Squareroot = function(canvas, divContainer) {
         uniforms.projection.perspective(fov, uniforms.width / uniforms.height, 0.1, 1000);
 
         if (divContainer) {
-            divContainer.style['perspective'] = uniforms.cssDistance;
-            divContainer.style['-webkit-perspective'] = uniforms.cssDistance;
-            divContainer.style['-moz-perspective'] = uniforms.cssDistance;
-            divContainer.style['-o-perspective'] = uniforms.cssDistance;
+            divContainer.style['perspective'] = uniforms.cssDistance + 'px';
+            divContainer.style['-webkit-perspective'] = uniforms.cssDistance + 'px';
+            divContainer.style['-moz-perspective'] = uniforms.cssDistance + 'px';
+            divContainer.style['-o-perspective'] = uniforms.cssDistance + 'px';
         }
     }
 

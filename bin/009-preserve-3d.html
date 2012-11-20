@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Side by side CSS 2D and 3D | v0.15</title>
+    <title>Preserve 3D example | v0.15</title>
 
     <script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
     <script type="text/javascript" src="../lib/modernizr.custom.56278.js"></script>
@@ -55,14 +55,17 @@
             margin-left: -200px;
             width: 400px;
             height: 400px;
-            overflow: hidden;
             background: red;
+            -webkit-transform-style: preserve-3d;
         }
 
-        .plane img {
+        .picture {
             position: absolute;
-            width: 400px;
-            height: 400px;
+        }
+
+        .portrait {
+            position: absolute;
+            -webkit-transform: translate3d(0px, 0px, 30px);
         }
 
         #instr {
@@ -80,13 +83,19 @@
 
         var container, engine, camera, div2d, div3d;
 
-        function createDiv(imageUrl) {
+        function createDiv(imageUrl, portraitUrl) {
             var ht = document.createElement('div');
             ht.setAttribute('class', 'plane');
 
             var hti = new Image();
+            hti.setAttribute('class', 'picture');
             hti.src = imageUrl;
             ht.appendChild(hti);
+
+            var htp = new Image();
+            htp.setAttribute('class', 'portrait');
+            htp.src = portraitUrl;
+            ht.appendChild(htp);
 
             // You need to add the DIV to the container - the engine will not add it for you
             container.appendChild(ht);
@@ -107,15 +116,9 @@
             camera.position.z = engine.cssDistance();
             engine.add(camera);
 
-            div2d = new SQR.Transform();
-            div2d.renderer = new SQR.DOMElement2D(createDiv("assets/fruits-400.jpg"));
-            div2d.position.x = -220;
-            engine.add(div2d);
-
             div3d = new SQR.Transform();
-            div3d.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg"));
-            div3d.renderer.setBackfaceVisibility(false);
-            div3d.position.x = 220;
+            div3d.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg", "assets/fruits-100.jpg"));
+            div3d.renderer.setBackfaceVisibility(true);
             engine.add(div3d);
 
             render();
@@ -126,11 +129,11 @@
         function render() {
             requestAnimFrame(render);
 
-//            div2d.position.z = Math.sin(a) * 200;
 //            div3d.position.z = Math.sin(a) * 200;
+            div3d.rotation.y = a;
 
-            camera.rotation.y = Math.sin(a) * 0.4
-            camera.position.z = engine.cssDistance() + Math.sin(a) * 200;
+//            camera.rotation.y = Math.sin(a) * 0.4
+//            camera.position.z = engine.cssDistance() + Math.sin(a) * 200;
 
             a += 0.03;
 
