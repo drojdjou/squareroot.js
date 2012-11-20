@@ -16,15 +16,15 @@ SQR.DOMElement3D = function(element) {
         element.style['-o-backface-visibility'] = p;
     }
 
-    // Do not call this function directly
-    this.domAppendTo = function(c) {
+    // Do not call this functions directly
+    this.appendToDom = function(c) {
         if(addedToDom && c == container) return;
         container = c;
         container.appendChild(this.element);
         addedToDom = true;
     }
 
-    this.destroy = function() {
+    this.removeFromDom = function() {
         container.removeChild(this.element);
     }
 

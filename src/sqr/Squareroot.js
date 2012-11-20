@@ -68,9 +68,9 @@ SQR.Squareroot = function(canvas, divContainer) {
     var updateTransform = function(t) {
         if(t.renderer) {
             if(t.renderer.isDom3d && SQR.usePreserve3d && t.parent && t.parent.renderer && t.parent.renderer.isDom3d) {
-                t.renderer.domAppendTo(t.parent.renderer.element);
+                t.renderer.appendToDom(t.parent.renderer.element);
             } else if(t.renderer.isDom2d || t.renderer.isDom3d) {
-                t.renderer.domAppendTo(divContainer);
+                t.renderer.appendToDom(divContainer);
             }
         }
 

@@ -10,12 +10,16 @@ SQR.DOMElement2D = function(element) {
     var matrix2D = new SQR.Matrix2D();
     var mvp = new SQR.Matrix44();
 
-    // Do not call this function directly
-    this.domAppendTo = function(c) {
+    // Do not call this functions directly
+    this.appendToDom = function(c) {
         if (addedToDom && c == container) return;
         container = c;
         container.appendChild(this.element);
         addedToDom = true;
+    }
+
+    this.removeFromDom = function() {
+        container.removeChild(this.element);
     }
 
     this.draw = function(transform, uniforms) {
