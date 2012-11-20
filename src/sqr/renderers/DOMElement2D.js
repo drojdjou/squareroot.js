@@ -18,6 +18,10 @@ SQR.DOMElement2D = function(element) {
         addedToDom = true;
     }
 
+	this.setBackfaceVisibility = function() {
+		//empty function just to prevent needing logic for 2d/3d
+	}
+
     this.draw = function(transform, uniforms) {
         uniforms.projection.copyTo(mvp);
         mvp.multiply(transform.globalMatrix);

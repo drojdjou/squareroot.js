@@ -29,6 +29,15 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
+	this.setPerspectiveOrigin = function(x, y) {
+		if (divContainer) {
+			divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
+            divContainer.style['-webkit-perspective-origin'] = x + 'px ' + y + 'px';
+            divContainer.style['-moz-perspective-origin'] = x + 'px ' + y + 'px';
+            divContainer.style['-o-perspective-origin'] = x + 'px ' + y + 'px';
+		}
+	}
+
     this.cssDistance = function() {
         return uniforms.cssDistance;
     }
