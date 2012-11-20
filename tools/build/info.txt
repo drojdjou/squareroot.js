@@ -1,0 +1,12 @@
+/*
+
+Squareroot.js
+A micro 3d engine for Canvas and CSS
+
+Version 1
+Build 0 | Tue Nov 20 14:38:37 2012
+
+Uses requestAnimationFrame
+http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+
+*/

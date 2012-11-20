@@ -1,4 +1,4 @@
-squareroot.js
+Squareroot.js
 =============
 
-A library of math functions + a small canvas 3d engine (mostly to test the math stuff)
+Squareroot.js is a micro 3d engine for Canvas and CSS. 
