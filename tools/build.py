@@ -27,22 +27,21 @@ def listSourceFiles():
 def minifyWithClosure(jsf):
 	os.system('touch %s' % outputMinTemp)
 
-	_cmd =  "java -jar tools/build/compiler.jar --js_output_file %s --warning_level QUIET" % outputMinTemp
-	_cmd += " --js lib/requestAnimFrame.js  --js "
+	_cmd =  "java -jar tools/build/compiler.jar --js_output_file %s --warning_level QUIET --js " % outputMinTemp
 	_cmd += ' --js '.join(jsf)
 	os.system(_cmd)
 
-	_cmd = "cat "
-	_cmd += ' '.join(jsf)
-	_cmd += ' > %s' % outputTemp
-	os.system(_cmd)
+#	_cmd = "cat "
+#	_cmd += ' '.join(jsf)
+#	_cmd += ' > %s' % outputTemp
+#	os.system(_cmd)
 
 def finalizeBuild():
-	os.system("cat %s %s > %s" % (infoTxt, outputTemp, output))
+#	os.system("cat %s %s > %s" % (infoTxt, outputTemp, output))
 	os.system("cat %s %s > %s" % (infoTxt, outputMinTemp, outputMin))
 
 def cleanup():
-	os.remove(outputTemp)
+#	os.remove(outputTemp)
 	os.remove(outputMinTemp)
 
 def incrementVersion():
