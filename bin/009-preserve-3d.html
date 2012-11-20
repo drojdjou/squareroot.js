@@ -4,7 +4,6 @@
     <title>Preserve 3D example | v0.15</title>
 
     <script type="text/javascript" src="../lib/requestAnimFrame.js"></script>
-    <script type="text/javascript" src="../lib/modernizr.custom.56278.js"></script>
 
     <script type="text/javascript" src="../src/SQR.js"></script>
 
@@ -49,23 +48,9 @@
             left: 50%;
         }
 
-        .plane {
+        #div-container img {
+            display: block;
             position: absolute;
-            margin-top: -200px;
-            margin-left: -200px;
-            width: 400px;
-            height: 400px;
-            background: red;
-            -webkit-transform-style: preserve-3d;
-        }
-
-        .picture {
-            position: absolute;
-        }
-
-        .portrait {
-            position: absolute;
-            -webkit-transform: translate3d(0px, 0px, 30px);
         }
 
         #instr {
@@ -81,29 +66,31 @@
 
     <script type="text/javascript">
 
-        var container, engine, camera, div2d, div3d;
+        var container, engine, camera, divp, divc;
 
-        function createDiv(imageUrl, portraitUrl) {
+        function createDiv(imageUrl, size) {
             var ht = document.createElement('div');
-            ht.setAttribute('class', 'plane');
+
+            ht.style.position = 'absolute';
+            ht.style['-webkit-transform-style'] = 'preserve-3d';
+
 
             var hti = new Image();
-            hti.setAttribute('class', 'picture');
             hti.src = imageUrl;
+            hti.style.marginTop = (size / -2) + 'px';
+            hti.style.marginLeft = (size / -2) + 'px';
+            hti.style.width = size + 'px';
+            hti.style.height = size + 'px';
+
             ht.appendChild(hti);
-
-            var htp = new Image();
-            htp.setAttribute('class', 'portrait');
-            htp.src = portraitUrl;
-            ht.appendChild(htp);
-
-            // You need to add the DIV to the container - the engine will not add it for you
-            container.appendChild(ht);
 
             return ht
         }
 
         window.onload = function() {
+            // Uncomment this line if on IE 10 and preserve-3d doesn't work
+//            SQR.usePreserve3d = false;
+
             container = document.getElementById("div-container");
 
             // Parameters are: canvas, container
@@ -116,10 +103,19 @@
             camera.position.z = engine.cssDistance();
             engine.add(camera);
 
-            div3d = new SQR.Transform();
-            div3d.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg", "assets/fruits-100.jpg"));
-            div3d.renderer.setBackfaceVisibility(true);
-            engine.add(div3d);
+            divp = new SQR.Transform('divp');
+            divp.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg", 400));
+            divp.renderer.setBackfaceVisibility(true);
+            engine.add(divp);
+
+            divc = new SQR.Transform('divc');
+            divc.renderer = new SQR.DOMElement3D(createDiv("assets/fruits-100.jpg", 100));
+//            divc.renderer = new SQR.DOMElement3D(createDiv("assets/fruits-100.jpg", 100), container);
+            divc.renderer.setBackfaceVisibility(true);
+
+            divc.position.z = 20;
+            divc.position.x = -100;
+            divp.add(divc);
 
             render();
         }
@@ -129,12 +125,7 @@
         function render() {
             requestAnimFrame(render);
 
-//            div3d.position.z = Math.sin(a) * 200;
-            div3d.rotation.y = a;
-
-//            camera.rotation.y = Math.sin(a) * 0.4
-//            camera.position.z = engine.cssDistance() + Math.sin(a) * 200;
-
+            divp.rotation.y = a;
             a += 0.03;
 
             engine.render(camera);

@@ -87,14 +87,14 @@
             var hti = new Image();
             hti.src = imageUrl;
             ht.appendChild(hti);
-
-            // You need to add the DIV to the container - the engine will not add it for you
-            container.appendChild(ht);
-
+            
             return ht
         }
 
         window.onload = function() {
+            SQR.supportsCss3d = Modernizr.csstransforms3d;
+            console.log("Browser supports CSS 2D: " + SQR.supportsCss3d);
+
             container = document.getElementById("div-container");
 
             // Parameters are: canvas, container
@@ -113,7 +113,10 @@
             engine.add(div2d);
 
             div3d = new SQR.Transform();
-            div3d.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg"));
+
+            if(SQR.supportsCss3d) div3d.renderer = new SQR.DOMElement3D(createDiv("assets/square-400.jpg"));
+            else div3d.renderer = new SQR.DOMElement2D(createDiv("assets/square-400.jpg"));
+
             div3d.renderer.setBackfaceVisibility(false);
             div3d.position.x = 220;
             engine.add(div3d);

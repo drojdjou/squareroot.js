@@ -5,8 +5,6 @@ SQR.Squareroot = function(canvas, divContainer) {
     uniforms.projection = new SQR.ProjectionMatrix();
     uniforms.container = divContainer;
 
-    uniforms.supportsCSS3D = (typeof(Modernizr) != "undefined" && Modernizr.csstransforms3d) ? true : false;
-
     uniforms.lightDirection = new SQR.V3(0, 1, 0.1).norm();
 
     var clearColor = null;
@@ -68,6 +66,14 @@ SQR.Squareroot = function(canvas, divContainer) {
     }
 
     var updateTransform = function(t) {
+        if(t.renderer) {
+            if(t.renderer.isDom3d && SQR.usePreserve3d && t.parent && t.parent.renderer && t.parent.renderer.isDom3d) {
+                t.renderer.domAppendTo(t.parent.renderer.element);
+            } else if(t.renderer.isDom2d || t.renderer.isDom3d) {
+                t.renderer.domAppendTo(divContainer);
+            }
+        }
+
         t.transformWorld();
         renderObjects.push(t);
 

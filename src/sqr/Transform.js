@@ -3,6 +3,7 @@ SQR.Transform = function(n) {
     this.name = n;
     this.directMatrixMode = false;
     this.useQuaternion = false;
+    this.cssPreserve3dMode = false;
 
     this.renderer = null;
     this.geometry = null;
@@ -43,6 +44,10 @@ SQR.Transform = function(n) {
 
     this.transformWorld = function() {
 
+        this.cssPreserve3dMode = SQR.usePreserve3d
+            && this.renderer && this.renderer.isDom3d
+            && this.parent && this.parent.renderer && this.parent.renderer.isDom3d;
+
         if (!this.directMatrixMode) {
 
             var p = this.position;
@@ -60,7 +65,7 @@ SQR.Transform = function(n) {
             this.matrix.lookAt(this.lookDirection, SQR.V3.up);
         }
 
-        if (this.parent) {
+        if (this.parent && !this.cssPreserve3dMode) {
             this.parent.globalMatrix.copyTo(this.globalMatrix);
             this.globalMatrix.multiply(this.matrix);
         } else {
@@ -78,6 +83,7 @@ SQR.Transform = function(n) {
     }
 
     this.transformView = function(v) {
+        if(this.cssPreserve3dMode) return;
         this.globalMatrix.copyTo(this.matrix);
         v.copyTo(this.globalMatrix);
         this.globalMatrix.multiply(this.matrix);

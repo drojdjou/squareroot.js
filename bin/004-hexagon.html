@@ -133,7 +133,6 @@
     function addHexagon(root, x, y, z, r, title) {
         var v = new SQR.V3(x, y, z).norm().mul(r)
         var ht = createHexagonTexture(Math.random(), s, title);
-        container.appendChild(ht);
 
         var t = new SQR.Transform();
         t.position.set(v.x, v.y, v.z);
@@ -222,7 +221,7 @@
         root.rotation.y += 0.01;
         root.rotation.x += 0.005;
 
-        camera.rotation.y = Math.sin(a) * 0.4;
+//        camera.rotation.y = Math.sin(a) * 0.4;
         a += 0.03;
 
         engine.render(camera);
