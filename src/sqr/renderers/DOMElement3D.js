@@ -25,7 +25,9 @@ SQR.DOMElement3D = function(element) {
     }
 
     this.removeFromDom = function() {
+        if(!addedToDom) return;
         container.removeChild(this.element);
+        addedToDom = false;
     }
 
     this.setBackfaceVisibility = function() {

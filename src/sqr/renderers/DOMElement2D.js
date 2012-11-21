@@ -19,7 +19,9 @@ SQR.DOMElement2D = function(element) {
     }
 
     this.removeFromDom = function() {
+        if(!addedToDom) return;
         container.removeChild(this.element);
+        addedToDom = false;
     }
 
     this.draw = function(transform, uniforms) {
