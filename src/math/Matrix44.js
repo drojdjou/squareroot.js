@@ -233,6 +233,61 @@ SQR.Matrix44 = function() {
             d[8] * (d[1] * d[6] - d[5] * d[2]);
     }
 
+    /*
+    this.inverse = function(m) {
+        var d = this.data;
+        var a = (m) ? m.data || m : this.data;
+
+        var a00 = d[0], a01 = d[1], a02 = d[2], a03 = d[3],
+            a10 = d[4], a11 = d[5], a12 = d[6], a13 = d[7],
+            a20 = d[8], a21 = d[9], a22 = d[10], a23 = d[11],
+            a30 = d[12], a31 = d[13], a32 = d[14], a33 = d[15],
+
+            b00 = a00 * a11 - a01 * a10,
+            b01 = a00 * a12 - a02 * a10,
+            b02 = a00 * a13 - a03 * a10,
+            b03 = a01 * a12 - a02 * a11,
+            b04 = a01 * a13 - a03 * a11,
+            b05 = a02 * a13 - a03 * a12,
+            b06 = a20 * a31 - a21 * a30,
+            b07 = a20 * a32 - a22 * a30,
+            b08 = a20 * a33 - a23 * a30,
+            b09 = a21 * a32 - a22 * a31,
+            b10 = a21 * a33 - a23 * a31,
+            b11 = a22 * a33 - a23 * a32,
+
+            det = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
+            invDet;
+
+        if (Math.abs(det) < 0.0001) {
+            console.warn("Attempt to inverse a singular matrix44. ", this.data);
+            console.trace();
+            return m;
+        }
+
+        invDet = 1 / det;
+
+        a[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+        a[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+        a[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+        a[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+        a[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+        a[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+        a[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+        a[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+        a[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+        a[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+        a[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+        a[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+        a[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+        a[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+        a[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+        a[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+
+        return a;
+    };
+    */
+
     this.inverse = function(m) {
         var d = this.data;
         var a = (m) ? m.data || m : this.data;
@@ -262,9 +317,9 @@ SQR.Matrix44 = function() {
         a[6] = (d4 * d2 - d0 * d6) * det;
         a[10] = (d0 * d5 - d4 * d1) * det;
 
-        a[12] = - (d12 * a[0] + d13 * a[1] + d14 * a[2]);
-        a[13] = - (d12 * a[4] + d13 * a[5] + d14 * a[6]);
-        a[14] = - (d12 * a[8] + d13 * a[9] + d14 * a[10]);
+        a[12] = - (d12 * a[0] + d13 * a[4] + d14 * a[8]);
+        a[13] = - (d12 * a[1] + d13 * a[5] + d14 * a[9]);
+        a[14] = - (d12 * a[2] + d13 * a[6] + d14 * a[10]);
 
         return m;
 

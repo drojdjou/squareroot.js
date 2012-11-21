@@ -14,5 +14,5 @@ var SQR = (function() {
 
 })();
 
-// Built on Tue Nov 20 18:05:16 2012
-SQR.BUILD = 16;
+// Built on Tue Nov 20 20:52:02 2012
+SQR.BUILD = 18;

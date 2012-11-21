@@ -131,9 +131,7 @@ SQR.Transform = function(n) {
     }
 
     this.computeInverseMatrix = function() {
-        this.globalMatrix.copyTo(this.inverseWorldMatrix);
-        this.inverseWorldMatrix.transpose();
-        this.inverseWorldMatrix.inverse();
+        this.globalMatrix.inverse(this.inverseWorldMatrix);
         return this.inverseWorldMatrix;
     }
 }
