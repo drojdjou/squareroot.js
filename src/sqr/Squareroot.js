@@ -80,7 +80,7 @@ SQR.Squareroot = function(canvas, divContainer) {
             t.parent = null;
 
             if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
-                t.removeFromDom();
+                t.renderer.removeFromDom();
             }
 
             this.children.splice(j, 1);
@@ -99,7 +99,7 @@ SQR.Squareroot = function(canvas, divContainer) {
             t.parent = null;
 
             if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
-                t.removeFromDom();
+                t.renderer.removeFromDom();
             }
         }
 
