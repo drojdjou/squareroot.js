@@ -64,7 +64,7 @@ SQR.Squareroot = function(canvas, divContainer) {
     this.add = function() {
         for (var i = 0; i < arguments.length; i++) {
             var t = arguments[i];
-            t.parent = this;
+            t.parent = null;
             if (this.children.indexOf(t) == -1) this.children.push(t);
         }
         this.numChildren = this.children.length;
@@ -82,7 +82,6 @@ SQR.Squareroot = function(canvas, divContainer) {
             if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
                 t.removeFromDom();
             }
-
 
             this.children.splice(j, 1);
         }
