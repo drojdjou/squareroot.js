@@ -47,7 +47,7 @@ SQR.Transform = function(n) {
             t.parent = null;
 
             if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
-                t.removeFromDom();
+                t.renderer.removeFromDom();
             }
             
 
@@ -67,7 +67,7 @@ SQR.Transform = function(n) {
             t.parent = null;
 
             if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
-                t.removeFromDom();
+                t.renderer.removeFromDom();
             }
         }
 
