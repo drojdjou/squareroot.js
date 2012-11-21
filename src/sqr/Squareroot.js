@@ -64,12 +64,46 @@ SQR.Squareroot = function(canvas, divContainer) {
     this.add = function() {
         for (var i = 0; i < arguments.length; i++) {
             var t = arguments[i];
+            t.parent = this;
             if (this.children.indexOf(t) == -1) this.children.push(t);
         }
         this.numChildren = this.children.length;
     }
 
+    this.remove = function() {
+        for (var i = 0; i < arguments.length; i++) {
+            var t = arguments[i];
+            var j = this.children.indexOf(t);
+
+            if (j == -1) return false;
+
+            t.parent = null;
+
+            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+                t.removeFromDom();
+            }
+
+
+            this.children.splice(j, 1);
+        }
+
+        this.numChildren = this.children.length;
+    }
+
+    this.contains = function(t) {
+        return this.children.indexOf(t) > -1;
+    }
+
     this.removeAll = function() {
+        for (var i = 0; i < this.numChildren; i++) {
+            var t = this.children[i];
+            t.parent = null;
+
+            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+                t.removeFromDom();
+            }
+        }
+
         this.children = [];
         this.numChildren = this.children.length;
     }

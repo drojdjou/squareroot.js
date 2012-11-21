@@ -1,5 +1,7 @@
 SQR.Color = function(h, s, l, a) {
+    
     this.applyLight = function(dot) {
+        // TODO: remove the hardcoded value!
         return SQR.Color.hsl(h, s, l - 60 + 80 * dot, a);
     }
 
