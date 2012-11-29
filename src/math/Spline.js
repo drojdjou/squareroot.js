@@ -15,12 +15,14 @@
  *
  */
 SQR.Spline = function(s1, s2, s3, s4) {
+    var that = this;
 
     this.rawPoints = [];
     this.controlPoints = [];
-    
+
     var numSegments = 1;
     var numRawPoints = 4;
+    var closed = false;
 
     this.rawPoints.push(s1, s2, s3, s4);
     this.controlPoints.push(s1, s2, s3, s4);
@@ -31,36 +33,43 @@ SQR.Spline = function(s1, s2, s3, s4) {
         return new SQR.V2().sub(b, a).mul(0.5).addTo(a);
     }
 
-    var interpolate = function(t, p0, c0, c1, p1) {
-        return p0 * (1 - t) * (1 - t) * (1 - t) +
-            c0 * 3 * t * (1 - t) * (1 - t) +
-            c1 * 3 * t * t * (1 - t) +
-            p1 * t * t * t;
-    }
-
-    this.valueAt = function(t, v) {
+    var interpolate = function(t, v, func) {
         var s, st;
-        var cs = this.controlPoints;
+        var cs = that.controlPoints;
 
         s = Math.floor(t * numSegments)
         st = (t * numSegments) - s;
 
-        if(s == cs.length / 4) {
+        if (s == cs.length / 4) {
             s = Math.max(0, s - 1);
+            st = 1;
             st = 1;
         }
 
         s *= 4;
 
         v = v || interpolatedValue;
-        v.x = interpolate(st, cs[s+0].x, cs[s+1].x, cs[s+2].x, cs[s+3].x);
-        v.y = interpolate(st, cs[s+0].y, cs[s+1].y, cs[s+2].y, cs[s+3].y);
+        v.x = func(st, cs[s + 0].x, cs[s + 1].x, cs[s + 2].x, cs[s + 3].x);
+        v.y = func(st, cs[s + 0].y, cs[s + 1].y, cs[s + 2].y, cs[s + 3].y);
         return v;
+    }
+
+    this.valueAt = function(t, v) {
+        return interpolate(t, v, SQR.QuadraticBezier.position);
+    }
+
+    this.velocityAt = function(t, v) {
+        return interpolate(t, v, SQR.QuadraticBezier.velocity);
     }
 
     this.add = function(p1, p2) {
         this.rawPoints.push(p1, p2);
         numRawPoints = this.rawPoints.length;
+        this.calculateControlPoints();
+    }
+
+    this.closePath = function() {
+        closed = true;
         this.calculateControlPoints();
     }
 
@@ -78,7 +87,15 @@ SQR.Spline = function(s1, s2, s3, s4) {
             var r = this.rawPoints[i];
 
             if (i < 3) {
-                this.controlPoints.push(r);
+
+                if (closed && i == 0) {
+                    var l = this.rawPoints[i + 1];
+                    var m = findMidpoint(l, r);
+                    this.controlPoints.push(m);
+                } else {
+                    this.controlPoints.push(r);
+                }
+
                 continue;
             }
 
@@ -87,7 +104,7 @@ SQR.Spline = function(s1, s2, s3, s4) {
                 continue;
             }
 
-            if (i >= 3 && i % 2 == 1 && i == numRawPoints - 1) {
+            if (i >= 3 && i % 2 == 1 && i == numRawPoints - 1 && !closed) {
                 this.controlPoints.push(r);
                 continue;
             }
@@ -99,6 +116,21 @@ SQR.Spline = function(s1, s2, s3, s4) {
                 numSegments++;
                 continue;
             }
+        }
+
+        if (closed) {
+            var beflast = this.rawPoints[this.rawPoints.length-2];
+            var last = this.rawPoints[this.rawPoints.length-1];
+
+            var first = this.rawPoints[0];
+            var second = this.rawPoints[1];
+
+            var m1 = findMidpoint(last, beflast);
+            var m2 = findMidpoint(first, second);
+
+            this.controlPoints.push(m1, m1, last, first, m2);
+
+            numSegments++;
         }
 
 //        console.log("numSegments", numSegments, "cpl: " + this.controlPoints.length);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>009 Animation with Spline class | v0.1</title>
+    <title>011 Closed splines and orientation | v0.1</title>
 
     <link rel="stylesheet" href="curves.css">
 
@@ -15,6 +15,8 @@
     <script type="text/javascript">
 
         var ctx, sp;
+        var p = new SQR.V2();
+        var v = new SQR.V2();
 
         function drawControlPoints(s) {
             ctx.globalAlpha = 0.2;
@@ -49,7 +51,7 @@
 
         function drawPointsOnSpline(s, freq) {
             ctx.globalAlpha = 1;
-            ctx.strokeStyle = 'rgb(0,0,128)';
+            ctx.fillStyle = 'rgb(0,0,128)';
 
             for (var i = 0; i <= freq; i++) {
                 var t = i / freq;
@@ -60,35 +62,51 @@
             }
         }
 
-        function drawPointOnSpline(s, t) {
+        function drawPointOnSpline(s, t, d, c) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.globalAlpha = 1;
-            ctx.strokeStyle = 'rgb(128,0,0)';
-            var cv = s.valueAt(t);
+            ctx.fillStyle = c;
+            
+
+            p = s.valueAt(t, p);
+            v = s.velocityAt(t, v).norm();
+
+            var orientation = Math.atan2(v.y, v.x) + Math.PI * d;
+
+
+
+            ctx.translate(p.x, p.y);
+            ctx.rotate(orientation);
+
             ctx.beginPath();
-            ctx.arc(cv.x, cv.y, 6, 0, Math.PI * 2);
+            ctx.moveTo(-10, 10);
+            ctx.lineTo(10, 10);
+            ctx.lineTo(20, 0);
+            ctx.lineTo(10, -10);
+            ctx.lineTo(-10, -10);
+            ctx.lineTo(0, 0);
             ctx.fill();
         }
 
         window.onload = function() {
             ctx = document.getElementById('cnv').getContext('2d');
 
-            var k1 = new SQR.V2(100, 350);
-            var k2 = new SQR.V2(300, 300);
-            var k3 = new SQR.V2(100, 120);
-            var k4 = new SQR.V2(400, 80);
+            var k1 = new SQR.V2(300, 60);
+            var k2 = new SQR.V2(500, 230);
+            var k3 = new SQR.V2(800,  50);
+            var k4 = new SQR.V2(700, 450);
+
             sp = new SQR.Spline(k1, k2, k3, k4);
 
-            var k5 = new SQR.V2(400, 300);
-            var k6 = new SQR.V2(600, 350);
-            sp.add(k5, k6);
+            k1 = new SQR.V2(550, 280);
+            k2 = new SQR.V2(350, 300);
+            sp.add(k1, k2);
 
-            var k7 = new SQR.V2(600, 100);
-            var k8 = new SQR.V2(900, 50);
-            sp.add(k7, k8);
+            k1 = new SQR.V2(200, 450);
+            k2 = new SQR.V2(100, 200);
+            sp.add(k1, k2);
 
-            var k9 = new SQR.V2(700, 400);
-            var k10 = new SQR.V2(900, 450);
-            sp.add(k9, k10);
+            sp.closePath();
 
             draw();
         }
@@ -98,25 +116,18 @@
         function draw() {
             requestAnimFrame(draw);
 
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, 1000, 500);
-
-            for (var i = 0; i < sp.rawPoints.length; i++) {
-                var p = sp.rawPoints[i];
-                var msa = Math.sin(a * 2) * 0.8;
-                var mca = Math.cos(a * 4) * 0.6;
-                p.x += (i % 2 == 1) ? mca : -mca;
-                p.y += (i % 2 == 0) ? msa : -msa;
-            }
-
-            sp.calculateControlPoints();
 
             drawControlPoints(sp);
             drawSpline(sp);
             drawPointsOnSpline(sp, 75);
 
-            a += 0.01;
-            var t = (Math.sin(a) + 1) * 0.5;
-            drawPointOnSpline(sp, t);
+            a += 0.002;
+            var t = a % 1;
+            drawPointOnSpline(sp, t, 0, 'rgb(0,128,0)');
+            var t = 1 - (a * 2 % 1);
+            drawPointOnSpline(sp, t, 1, 'rgb(255,128,0)');
         }
 
     </script>
@@ -125,9 +136,9 @@
 <body>
 
 <div id="desc">
-    <h1>009 Animation along a spline</h1>
+    <h1>011 Closed splines and orientation</h1>
 
-    <p>A example of using Bezier splines to create an animation along a (changing) path</p>
+    <p>A example featuring a closed spline and orienting an object to the spline during animation</p>
 </div>
 
 

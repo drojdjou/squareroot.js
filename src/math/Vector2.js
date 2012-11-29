@@ -5,13 +5,25 @@ SQR.V2 = function(x, y) {
 
 /**
  * Set the vector to the given values
- * 
+ *
  * @param x x component
  * @param y y component
  */
 SQR.V2.prototype.set = function(x, y) {
     this.x = x || 0;
     this.y = y || 0;
+    return this;
+}
+
+SQR.V2.prototype.copyTo = function(v) {
+    v.x = this.x;
+    v.y = this.y;
+    // Don't return anything - it's can be dangerous
+}
+
+SQR.V2.prototype.copyFrom = function(v) {
+    this.x = v.x;
+    this.y = v.y;
     return this;
 }
 
@@ -32,6 +44,13 @@ SQR.V2.prototype.set = function(x, y) {
 SQR.V2.prototype.add = function(a, b) {
     this.x = a.x + b.x;
     this.y = a.y + b.y;
+    return this;
+}
+
+
+SQR.V2.prototype.neg = function() {
+    this.x *= -1;
+    this.y *= -1;
     return this;
 }
 
@@ -59,7 +78,7 @@ SQR.V2.prototype.mag = function() {
 
 SQR.V2.prototype.norm = function() {
     var m = this.mag();
-    if(m == 0) return this;
+    if (m == 0) return this;
     this.x /= m
     this.y /= m;
     return this;
@@ -71,6 +90,13 @@ SQR.V2.prototype.norm = function() {
 SQR.V2.prototype.sub = function(a, b) {
     this.x = a.x - b.x;
     this.y = a.y - b.y;
+    return this;
+}
+
+SQR.V2.prototype.perpendicular = function(a, b) {
+    var tx = this.x, ty = this.y;
+    this.x = -ty
+    this.y = tx
     return this;
 }
 
@@ -95,7 +121,7 @@ SQR.V2.prototype.setAngleRadius = function(a, r) {
     return this;
 }
 
-SQR.V2.prototype.addc = function(x ,y) {
+SQR.V2.prototype.addc = function(x, y) {
     this.x += x;
     this.y += y;
     return this;
@@ -105,4 +131,8 @@ SQR.V2.prototype.addAngleRadius = function(a, r) {
     this.x += Math.cos(a) * r;
     this.y += Math.sin(a) * r;
     return this;
+}
+
+SQR.V2.dot = function(a, b) {
+    return (a.x * b.x + a.y * b.y)
 }
