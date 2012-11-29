@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>005 Bezier interpolation curve | v0.1</title>
+
+    <link rel="stylesheet" href="curves.css">
+
+    <script type="text/javascript">
+
+        var ctx;
+
+        var sx = 100;
+        var sy = 100;
+
+        var mx = 800;
+        var my = 300;
+
+        var cp = [ 0.5, 0, 1, 0.5 ];
+
+        window.onload = function() {
+            ctx = document.getElementById('cnv').getContext('2d');
+
+            // 1 ############################################
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = 'rgb(255,0,0)';
+
+            ctx.beginPath();
+
+            ctx.moveTo(sx,          sy + my * cp[0]);
+            ctx.lineTo(sx,          sy + my * cp[1]);
+            ctx.lineTo(sx + mx,     sy + my * cp[2]);
+            ctx.lineTo(sx + mx,     sy + my * cp[3]);
+
+            ctx.stroke();
+
+            // 2 ############################################
+            drawBezier(bezier0, 0);
+            drawBezier(bezier1, 80);
+            drawBezier(bezier2, 160);
+            drawBezier(bezier3, 240);
+
+            // 3 ############################################
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var y1 = cp[0] * bezier0(t);
+                var y2 = cp[1] * bezier1(t);
+                var y3 = cp[2] * bezier2(t);
+                var y4 = cp[3] * bezier3(t);
+
+                if(i == 0) ctx.moveTo(sx + t * mx, sy + (y1+y2+y3+y4) * my);
+                else ctx.lineTo(sx + t * mx, sy + (y1+y2+y3+y4) * my);
+            }
+
+            ctx.stroke();
+
+            // 4 ############################################
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            for (var i = 0; i <= 50; i += 1) {
+                var t = i / 50;
+                var y1 = cp[0] * bezier0(t);
+                var y2 = cp[1] * bezier1(t);
+                var y3 = cp[2] * bezier2(t);
+                var y4 = cp[3] * bezier3(t);
+
+                ctx.beginPath();
+                ctx.arc(sx + t * mx, sy + (y1+y2+y3+y4) * my, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawBezier(hfunc, c) {
+            ctx.strokeStyle = 'rgb(0,' + c + ',0)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var y = hfunc(t);
+
+                if (i == 0) ctx.moveTo(sx + t * mx, sy + y * my);
+                else ctx.lineTo(sx + t * mx, sy + y * my);
+            }
+
+            ctx.stroke();
+        }
+
+        function bezier0(t) {
+            return (1 - t) * (1 - t) * (1 - t);
+        }
+
+        function bezier1(t) {
+            return 3 * t * (1 - t) * (1 - t);
+        }
+
+        function bezier2(t) {
+            return 3 * t * t * (1 - t);
+        }
+
+        function bezier3(t) {
+            return t * t * t;
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div id="desc">
+    <h1>005 Bezier curve</h1>
+    <p>Drawing a curve using Bezier interpolation</p>
+</div>
+
+<div id="container">
+    <canvas id="cnv" width="1000" height="500"></canvas>
+</div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>004 2D Hermite interpolation curve | v0.1</title>
+
+    <link rel="stylesheet" href="curves.css">
+
+    <script type="text/javascript" src="../../src/SQR.js"></script>
+    <script type="text/javascript" src="../../src/math/Vector2.js"></script>
+
+    <script type="text/javascript">
+
+        var ctx;
+
+        var sx = 100;
+        var sy = 100;
+
+        var mx = 800;
+        var my = 300;
+
+        var p0 = new SQR.V2(100, 250);
+        var v0 = new SQR.V2(500, 1500);
+        var v1 = new SQR.V2(500, 1500);
+        var p1 = new SQR.V2(900, 250);
+
+        var d0 = p0.sub(v0).mul(0.1);
+        var d1 = p1.sub(v1).mul(0.1);
+
+        d0.add(d0, p0);
+        d1.add(d1, p1);
+
+        var p0i = new SQR.V2();
+        var v0i = new SQR.V2();
+        var v1i = new SQR.V2();
+        var p1i = new SQR.V2();
+
+        window.onload = function() {
+            ctx = document.getElementById('cnv').getContext('2d');
+
+            // 1 ############################################
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = 'rgb(255,0,0)';
+
+            ctx.beginPath();
+
+            ctx.moveTo(p0.x, p0.y);
+            ctx.lineTo(d0.x, d0.y);
+
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(d1.x, d1.y);
+
+            ctx.stroke();
+
+            // 2 ############################################
+            drawHermite(hermite0, 0);
+            drawHermite(hermite1, 80);
+            drawHermite(hermite2, 160);
+            drawHermite(hermite3, 240);
+
+            // 3 ############################################
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+
+                p0.mul(hermite0(t), p0i);
+                v0.mul(hermite1(t), v0i);
+                v1.mul(hermite2(t), v1i);
+                p1.mul(hermite3(t), p1i);
+
+                var x = p0i.x + v0i.x + v1i.x + p1i.x;
+                var y = p0i.y + v0i.y + v1i.y + p1i.y;
+
+                if (i == 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+
+            // 4 ############################################
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            for (var i = 0; i <= 50; i += 1) {
+                var t = i / 50;
+
+                p0.mul(hermite0(t), p0i);
+                v0.mul(hermite1(t), v0i);
+                v1.mul(hermite2(t), v1i);
+                p1.mul(hermite3(t), p1i);
+
+                var x = p0i.x + v0i.x + v1i.x + p1i.x;
+                var y = p0i.y + v0i.y + v1i.y + p1i.y;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawHermite(hfunc, c) {
+            ctx.strokeStyle = 'rgb(0,' + c + ',0)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var h = hfunc(t);
+                var x = p0.x + (p1.x - p0.x) * t;
+                var y = sy + h * my;
+                if (i == 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+        }
+
+        function twoPointInterpolation(t, y1, y2, t1, t2) {
+            return ((t2 - t) * y1 + (t - t1) * y2) / (t2 - t1);
+        }
+
+        function hermite0(t) {
+            return 1 - (3 * t * t) + (2 * t * t * t);
+        }
+
+        function hermite1(t) {
+            return t - (2 * t * t) + (t * t * t);
+        }
+
+        function hermite2(t) {
+            return -(t * t) + (t * t * t);
+        }
+
+        // smoothstep
+        function hermite3(t) {
+            return (3 * t * t) - (2 * t * t * t);
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div id="desc">
+    <h1>004 2D Hermite curve</h1>
+    <p>Drawing a curve using Hermite algorithm for interpolation with control points defined as 2D vectors</p>
+</div>
+
+<div id="container">
+    <canvas id="cnv" width="1000" height="500"></canvas>
+</div>
+</body>
+</html>

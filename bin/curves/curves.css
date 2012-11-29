@@ -1,0 +1,22 @@
+body {
+    background: #000000;
+    font-family: Georgia, sans-serif;
+    color: #ffffff;
+}
+
+h1 {
+    font-size: 1.3em;
+    font-weight: normal;
+}
+
+p {
+    font-size: 0.8em;
+}
+
+#container {
+
+}
+
+canvas {
+    background: #ffffff;
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>008 Spline | v0.1</title>
+
+    <link rel="stylesheet" href="curves.css">
+
+    <script type="text/javascript" src="../../src/SQR.js"></script>
+    <script type="text/javascript" src="../../src/math/Vector2.js"></script>
+    <script type="text/javascript" src="../../src/math/QuadraticBezier.js"></script>
+
+    <script type="text/javascript">
+
+        var ctx, c;
+
+        window.onload = function() {
+            ctx = document.getElementById('cnv').getContext('2d');
+
+            c = new SQR.QuadraticBezier();
+            c.set(100, 350, 400, 50, 700, 450, 900, 250);
+
+            // 1 ############################################
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = 'rgb(255,0,0)';
+
+            ctx.beginPath();
+
+            ctx.moveTo(c.p0.x, c.p0.y);
+            ctx.lineTo(c.c0.x, c.c0.y);
+            ctx.lineTo(c.c1.x, c.c1.y);
+            ctx.lineTo(c.p1.x, c.p1.y);
+
+            ctx.stroke();
+
+            // 2 ############################################
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var cv = c.valueAt(t);
+                if (i == 0) ctx.moveTo(cv.x, cv.y);
+                else ctx.lineTo(cv.x, cv.y);
+            }
+
+            ctx.stroke();
+
+            // 3 ############################################
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            for (var i = 0; i <= 50; i += 1) {
+                var t = i / 50;
+                var cv = c.valueAt(t);
+                ctx.beginPath();
+                ctx.arc(cv.x, cv.y, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div id="desc">
+    <h1>008 Spline</h1>
+
+    <p>A simple spline using multiple QuadraticBezier curves</p>
+</div>
+
+
+<div id="container">
+    <canvas id="cnv" width="1000" height="500"></canvas>
+</div>
+</body>
+</html>

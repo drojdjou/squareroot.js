@@ -36,10 +36,11 @@ SQR.V2.prototype.add = function(a, b) {
 }
 
 
-SQR.V2.prototype.mul = function(s) {
-    this.x *= s;
-    this.y *= s;
-    return this;
+SQR.V2.prototype.mul = function(s, v) {
+    v = v || this;
+    v.x = this.x * s;
+    v.y = this.y * s;
+    return v;
 }
 
 SQR.V2.prototype.magsq = function() {

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>003 Hermite interpolation curve | v0.1</title>
+
+    <link rel="stylesheet" href="curves.css">
+
+    <script type="text/javascript">
+
+        var ctx;
+
+        var sx = 100;
+        var sy = 100;
+
+        var mx = 800;
+        var my = 300;
+
+        var cp = [ 0.5, 5, 5, 0.5 ];
+
+        window.onload = function() {
+            ctx = document.getElementById('cnv').getContext('2d');
+
+            // 1 ############################################
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = 'rgb(255,0,0)';
+
+            ctx.beginPath();
+
+            ctx.moveTo(sx, sy + my * 0.5);
+            ctx.lineTo(sx, sy + my * 0.5 + cp[1] * 0.1 * my);
+
+            ctx.moveTo(sx + mx, sy + my * 0.5);
+            ctx.lineTo(sx + mx, sy + my * 0.5 + cp[2] * 0.1 * my);
+
+            ctx.stroke();
+
+            // 2 ############################################
+            drawHermite(hermite0, 0);
+            drawHermite(hermite1, 80);
+            drawHermite(hermite2, 160);
+            drawHermite(hermite3, 240);
+
+            // 3 ############################################
+            ctx.strokeStyle = 'rgb(0,0,128)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var y1 = cp[0] * hermite0(t);
+                var y2 = cp[1] * hermite1(t);
+                var y3 = cp[2] * hermite2(t);
+                var y4 = cp[3] * hermite3(t);
+
+                if(i == 0) ctx.moveTo(sx + t * mx, sy + (y1+y2+y3+y4) * my);
+                else ctx.lineTo(sx + t * mx, sy + (y1+y2+y3+y4) * my);
+            }
+
+            ctx.stroke();
+
+            // 4 ############################################
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = 'rgb(0,0,128)';
+
+
+
+            for (var i = 0; i <= 50; i += 1) {
+                var t = i / 50;
+                var y1 = cp[0] * hermite0(t);
+                var y2 = cp[1] * hermite1(t);
+                var y3 = cp[2] * hermite2(t);
+                var y4 = cp[3] * hermite3(t);
+
+                ctx.beginPath();
+                ctx.arc(sx + t * mx, sy + (y1+y2+y3+y4) * my, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+        }
+
+        function drawHermite(hfunc, c) {
+            ctx.strokeStyle = 'rgb(0,' + c + ',0)';
+
+            ctx.beginPath();
+
+            for (var i = 0; i <= 100; i += 1) {
+                var t = i / 100;
+                var y = hfunc(t);
+
+                if(i == 0) ctx.moveTo(sx + t * mx, sy + y * my);
+                else ctx.lineTo(sx + t * mx, sy + y * my);
+            }
+
+            ctx.stroke();
+        }
+
+        function twoPointInterpolation(t, y1, y2, t1, t2) {
+            return ((t2 - t) * y1 + (t - t1) * y2) / (t2 - t1);
+        }
+
+        function hermite0(t) {
+            return 1 - 3 * t * t + 2 * t * t * t;
+        }
+
+        function hermite1(t) {
+            return t - 2 * t * t + t * t * t;
+        }
+
+        function hermite2(t) {
+            return -(t * t) + t * t * t;
+        }
+
+        // smoothstep
+        function hermite3(t) {
+            return 3 * t * t - 2 * t * t * t;
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div id="desc">
+    <h1>003 Hermite curve</h1>
+    <p>Drawing a curve using Hermite algorithm for interpolation</p>
+</div>
+
+<div id="container">
+    <canvas id="cnv" width="1000" height="500"></canvas>
+</div>
+</body>
+</html>
