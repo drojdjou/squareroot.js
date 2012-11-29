@@ -35,6 +35,12 @@ SQR.V2.prototype.add = function(a, b) {
     return this;
 }
 
+SQR.V2.prototype.addTo = function(a) {
+    this.x += a.x;
+    this.y += a.y;
+    return this;
+}
+
 
 SQR.V2.prototype.mul = function(s, v) {
     v = v || this;
@@ -60,18 +66,12 @@ SQR.V2.prototype.norm = function() {
 }
 
 /**
- * Subtracts this vector from v. Used to get a vector going from current to v.
- * In order to limit creation of new objects pass en existing vector as 2nd argument.
- *
- * @param v the vector to subtract from the current vector
- * @param r the resulting vector, if omitted, new vector is returned
- * @returns the resulting vector
+ * Subtracts b from a and stores the result in this vector
  */
-SQR.V2.prototype.sub = function(v, r) {
-    r = r || new SQR.V2();
-    r.x = v.x - this.x;
-    r.y = v.y - this.y;
-    return r;
+SQR.V2.prototype.sub = function(a, b) {
+    this.x = a.x - b.x;
+    this.y = a.y - b.y;
+    return this;
 }
 
 /**

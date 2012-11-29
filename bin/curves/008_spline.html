@@ -11,15 +11,9 @@
 
     <script type="text/javascript">
 
-        var ctx, c;
+        var ctx;
 
-        window.onload = function() {
-            ctx = document.getElementById('cnv').getContext('2d');
-
-            c = new SQR.QuadraticBezier();
-            c.set(100, 350, 400, 50, 700, 450, 900, 250);
-
-            // 1 ############################################
+        function drawControlPoints(c) {
             ctx.globalAlpha = 0.2;
             ctx.strokeStyle = 'rgb(255,0,0)';
 
@@ -31,8 +25,9 @@
             ctx.lineTo(c.p1.x, c.p1.y);
 
             ctx.stroke();
+        }
 
-            // 2 ############################################
+        function drawCurve(c) {
             ctx.globalAlpha = 0.2;
             ctx.strokeStyle = 'rgb(0,0,128)';
 
@@ -46,18 +41,52 @@
             }
 
             ctx.stroke();
+        }
 
-            // 3 ############################################
+        function drawPointOnCurve(c, freq) {
             ctx.globalAlpha = 1;
             ctx.strokeStyle = 'rgb(0,0,128)';
 
-            for (var i = 0; i <= 50; i += 1) {
-                var t = i / 50;
+            for (var i = 0; i <= freq; i += 1) {
+                var t = i / freq;
                 var cv = c.valueAt(t);
                 ctx.beginPath();
                 ctx.arc(cv.x, cv.y, 1, 0, Math.PI * 2);
                 ctx.fill();
             }
+        }
+
+        function findMidpoint(a, b) {
+            return new SQR.V2().sub(b, a).mul(0.5).addTo(a);
+        }
+
+        window.onload = function() {
+            ctx = document.getElementById('cnv').getContext('2d');
+
+            var k1 = new SQR.V2(100, 350);
+            var k2 = new SQR.V2(400, 300);
+            var k3 = new SQR.V2(200, 120);
+
+            var k4 = new SQR.V2(800, 80);
+            var k5 = new SQR.V2(600, 300);
+            var k6 = new SQR.V2(900, 350);
+
+            var ik = findMidpoint(k3, k4);
+
+            var s1 = new SQR.QuadraticBezier(k1, k2, k3, ik);
+            var s2 = new SQR.QuadraticBezier(ik, k4, k5, k6);
+
+            // 1 ############################################
+            drawControlPoints(s1);
+            drawControlPoints(s2);
+
+            // 2 ############################################
+            drawCurve(s1);
+            drawCurve(s2);
+
+            // 3 ############################################
+            drawPointOnCurve(s1, 25);
+            drawPointOnCurve(s2, 25);
         }
 
     </script>
