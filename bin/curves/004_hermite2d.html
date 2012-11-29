@@ -23,11 +23,13 @@
         var v1 = new SQR.V2(500, 1500);
         var p1 = new SQR.V2(900, 250);
 
-        var d0 = p0.sub(v0).mul(0.1);
-        var d1 = p1.sub(v1).mul(0.1);
+        var d0 = new SQR.V2();
+        d0.sub(v0, p0).mul(0.1);
+        var d1 = new SQR.V2();
+        d1.sub(v1, p1).mul(0.1);
 
-        d0.add(d0, p0);
-        d1.add(d1, p1);
+        d0.addTo(p0);
+        d1.addTo(p1);
 
         var p0i = new SQR.V2();
         var v0i = new SQR.V2();
@@ -145,6 +147,7 @@
 
 <div id="desc">
     <h1>004 2D Hermite curve</h1>
+
     <p>Drawing a curve using Hermite algorithm for interpolation with control points defined as 2D vectors</p>
 </div>
 
