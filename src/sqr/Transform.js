@@ -115,10 +115,10 @@ SQR.Transform = function(n) {
         return _globalPosition;
     }
 
-    this.transformView = function(v) {
+    this.transformView = function(viewMatrix) {
         if(this.cssPreserve3dMode) return;
         this.globalMatrix.copyTo(this.matrix);
-        v.copyTo(this.globalMatrix);
+        viewMatrix.copyTo(this.globalMatrix);
         this.globalMatrix.multiply(this.matrix);
     }
 
@@ -132,6 +132,7 @@ SQR.Transform = function(n) {
 
     this.computeInverseMatrix = function() {
         this.globalMatrix.inverse(this.inverseWorldMatrix);
+//        this.inverseWorldMatrix.transpose();
         return this.inverseWorldMatrix;
     }
 }

@@ -306,15 +306,15 @@ SQR.Matrix44 = function() {
         det = 1 / det;
 
         a[0] = (d5 * d10 - d9 * d6) * det;
-        a[4] = (d8 * d6 - d4 * d10) * det;
-        a[8] = (d4 * d9 - d8 * d5) * det;
+        a[1] = (d8 * d6 - d4 * d10) * det;
+        a[2] = (d4 * d9 - d8 * d5) * det;
 
-        a[1] = (d9 * d2 - d1 * d10) * det;
+        a[4] = (d9 * d2 - d1 * d10) * det;
         a[5] = (d0 * d10 - d8 * d2) * det;
-        a[9] = (d8 * d1 - d0 * d9) * det;
+        a[6] = (d8 * d1 - d0 * d9) * det;
 
-        a[2] = (d1 * d6 - d5 * d2) * det;
-        a[6] = (d4 * d2 - d0 * d6) * det;
+        a[8] = (d1 * d6 - d5 * d2) * det;
+        a[9] = (d4 * d2 - d0 * d6) * det;
         a[10] = (d0 * d5 - d4 * d1) * det;
 
         a[12] = - (d12 * a[0] + d13 * a[4] + d14 * a[8]);
@@ -325,24 +325,25 @@ SQR.Matrix44 = function() {
 
     }
 
-    this.transpose = function() {
+    this.transpose = function(m) {
         var d = this.data;
+        var a = (m) ? m.data || m : this.data;
 
         var d0 = d[0], d4 = d[4], d8 = d[8],
             d1 = d[1], d5 = d[5], d9 = d[9],
             d2 = d[2], d6 = d[6], d10 = d[10];
 
-        d[0] = d0;
-        d[1] = d4;
-        d[2] = d8;
+        a[0] = d0;
+        a[1] = d4;
+        a[2] = d8;
 
-        d[4] = d1;
-        d[5] = d5;
-        d[6] = d9;
+        a[4] = d1;
+        a[5] = d5;
+        a[6] = d9;
 
-        d[8] = d2;
-        d[9] = d6;
-        d[10] = d10;
+        a[8] = d2;
+        a[9] = d6;
+        a[10] = d10;
     }
 
     this.lookAt = function (target, up) {
