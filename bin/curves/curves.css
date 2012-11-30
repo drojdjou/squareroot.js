@@ -2,6 +2,7 @@ body {
     background: #000000;
     font-family: Georgia, sans-serif;
     color: #ffffff;
+    overflow: hidden;
 }
 
 h1 {
