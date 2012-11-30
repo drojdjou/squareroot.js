@@ -1,40 +1,56 @@
 SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
 
-    this.p0 = _p0 || new SQR.V2();
-    this.c0 = _c0 || new SQR.V2();
-    this.c1 = _c1 || new SQR.V2();
-    this.p1 = _p1 || new SQR.V2();
+    if(!_p0 || !_c0 && !_c1 || !_p1) throw("Failed to create cruve: 4 2D or 2D vectors are required.");
 
-    var interpolatedValue = new SQR.V2();
+    this.p0 = _p0;
+    this.c0 = _c0;
+    this.c1 = _c1;
+    this.p1 = _p1;
 
-    this.set = function(p0x, p0y, c0x, c0y, c1x, c1y, p1x, p1y) {
-        this.p0.x = p0x;
-        this.p0.y = p0y;
+    // This way it's the same type as the points (V2 or V3)
+    var interpolatedValue = _p0.clone().set();
 
-        this.c0.x = c0x;
-        this.c0.y = c0y;
-
-        this.c1.x = c1x;
-        this.c1.y = c1y;
-
-        this.p1.x = p1x;
-        this.p1.y = p1y;
-
-        return this;
-    }
+    var pfunc = SQR.Interpolation.bezierPosition;
+    var vfunc = SQR.Interpolation.bezierVelocity;
 
     this.velocityAt = function(t, v) {
         v = v || interpolatedValue;
-        v.x = SQR.Interpolation.bezierVelocity(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
-        v.y = SQR.Interpolation.bezierVelocity(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+        v.x = vfunc(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
+        v.y = vfunc(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+
+        if(v.z && this.p0.z) {
+            v.z = vfunc(t, this.p0.z, this.c0.z, this.c1.z, this.p1.z);
+        }
+
         return v;
     }
 
     this.valueAt = function(t, v) {
         v = v || interpolatedValue;
-        v.x = SQR.Interpolation.bezierPosition(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
-        v.y = SQR.Interpolation.bezierPosition(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+        v.x = pfunc(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
+        v.y = pfunc(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+
+        if(v.z != null && this.p0.z != null) {
+            v.z = pfunc(t, this.p0.z, this.c0.z, this.c1.z, this.p1.z);
+        }
+        
         return v;
+    }
+
+    this.createGeometry = function(numVertices) {
+        var g = new SQR.Geometry();
+        g.continous = true;
+
+        g.vertices = [];
+        g.tangents = [];
+
+        for(var i = 0; i < numVertices; i++) {
+            var t = i / numVertices;
+            g.vertices.push(this.valueAt(t, new SQR.V3()));
+            g.tangents.push(this.velocityAt(t, new SQR.V3()));
+        }
+
+        return g;
     }
 }
 

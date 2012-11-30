@@ -4,6 +4,6 @@ Squareroot.js
 A micro 3d engine for Canvas and CSS
 
 Version 1
-Build 23 | Fri Nov 30 12:20:35 2012
+Build 24 | Fri Nov 30 15:32:07 2012
 
 */

@@ -1,14 +1,5 @@
 SQR.Squareroot = function(canvas, divContainer) {
 
-    var uniforms = {};
-    if(canvas) uniforms.context = canvas.getContext("2d");
-    uniforms.projection = new SQR.ProjectionMatrix();
-    uniforms.container = divContainer;
-
-    uniforms.lightDirection = new SQR.V3(0, 1, 0.1).norm();
-
-    var clearColor = null;
-
     this.setBackground = function(c) {
         if(canvas) canvas.style.backgroundColor = c;
     }
@@ -175,4 +166,18 @@ SQR.Squareroot = function(canvas, divContainer) {
             }
         }
     }
+
+     var uniforms = {};
+
+    if(canvas) {
+        uniforms.context = canvas.getContext("2d");
+        this.setSize(canvas.width, canvas.height);
+    }
+
+    uniforms.projection = new SQR.ProjectionMatrix();
+    uniforms.container = divContainer;
+
+    uniforms.lightDirection = new SQR.V3(0, 1, 0.1).norm();
+
+    var clearColor = null;
 }

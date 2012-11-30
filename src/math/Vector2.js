@@ -18,7 +18,6 @@ SQR.V2.prototype.set = function(x, y) {
 SQR.V2.prototype.copyTo = function(v) {
     v.x = this.x;
     v.y = this.y;
-    // Don't return anything - it's can be dangerous
 }
 
 SQR.V2.prototype.copyFrom = function(v) {
@@ -28,18 +27,10 @@ SQR.V2.prototype.copyFrom = function(v) {
 }
 
 /**
- * Adds two vectors. Vectors can be recylced to avoid creating vec vectors like this:
+ * a.add(a, b).add(a, c) -> a + b + c
  *
- * a.sum(a, b);
- *
- * Since this method returns the current instance, method calls can be chained:
- *
- * a.sum(a, b).sum(a, c) means: a + b + c
- *
- * @param a a vector
- * @param b another vector
- * @param c an optional 3rd vector to store the
- * @returns this vector
+ * @param a
+ * @param b
  */
 SQR.V2.prototype.add = function(a, b) {
     this.x = a.x + b.x;
@@ -47,6 +38,17 @@ SQR.V2.prototype.add = function(a, b) {
     return this;
 }
 
+/**
+ * a.sub(b, a) ->  a = from a to b
+ *
+ * @param a
+ * @param b
+ */
+SQR.V2.prototype.sub = function(a, b) {
+    this.x = a.x - b.x;
+    this.y = a.y - b.y;
+    return this;
+}
 
 SQR.V2.prototype.neg = function() {
     this.x *= -1;
@@ -84,15 +86,6 @@ SQR.V2.prototype.norm = function() {
     return this;
 }
 
-/**
- * Subtracts b from a and stores the result in this vector
- */
-SQR.V2.prototype.sub = function(a, b) {
-    this.x = a.x - b.x;
-    this.y = a.y - b.y;
-    return this;
-}
-
 SQR.V2.prototype.perpendicular = function(a, b) {
     var tx = this.x, ty = this.y;
     this.x = -ty
@@ -121,7 +114,7 @@ SQR.V2.prototype.setAngleRadius = function(a, r) {
     return this;
 }
 
-SQR.V2.prototype.addc = function(x, y) {
+SQR.V2.prototype.append = function(x, y) {
     this.x += x;
     this.y += y;
     return this;
@@ -131,6 +124,10 @@ SQR.V2.prototype.addAngleRadius = function(a, r) {
     this.x += Math.cos(a) * r;
     this.y += Math.sin(a) * r;
     return this;
+}
+
+SQR.V2.prototype.clone = function() {
+    return new SQR.V2(this.x, this.y);
 }
 
 SQR.V2.dot = function(a, b) {

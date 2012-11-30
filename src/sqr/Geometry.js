@@ -21,10 +21,32 @@ SQR.Geometry = function() {
     this.particleTextures = null;
 
     /**
-     * Array of normals per polygon
+     * Array of normals per polygon or per vertex
      */
     this.normals = null;
 
+    /**
+     * Array of tangents per vertex or point (ex in case of curves)
+     */
+    this.tangents = null;
+
+    /**
+     * Use for segments. If continous = true it will draw lines
+     * from vertices[0] to vertices[1], vertices[1] to vertices[2], etc...
+     *
+     * Otherwise, by default, lines are draw using pairs of vertices
+     * vertices[0] to vertices[1], vertices[2] to vertices[3], etc...
+     */
+    this.continous = false;
+
+    /**
+     * Instead of using per vertex colors from the color array,
+     * the renderer can use a single color defined in this variable.
+     *
+     * Note: colors array override the single color setting, in order for this to be used
+     * colors must be null.
+     */
+    this.color = null
 }
 
 SQR.Geometry.prototype.addTriangle = function(a, b, c, color) {
@@ -34,8 +56,10 @@ SQR.Geometry.prototype.addTriangle = function(a, b, c, color) {
 
 SQR.Geometry.prototype.addSegment = function(a, b, color) {
     if(!this.vertices) this.vertices = [];
-    if(!this.colors) this.colors = [];
-
     this.vertices.push(a, b);
-    this.colors.push(color);
+
+    if(color) {
+        if(!this.colors) this.colors = [];
+        this.colors.push(color);
+    }
 }

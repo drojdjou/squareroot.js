@@ -17,8 +17,12 @@
         window.onload = function() {
             ctx = document.getElementById('cnv').getContext('2d');
 
-            c = new SQR.QuadraticBezier();
-            c.set(100, 350, 400, 50, 700, 450, 900, 250);
+            c = new SQR.QuadraticBezier(
+                    new SQR.V2(100, 350),
+                    new SQR.V2(400, 50),
+                    new SQR.V2(700, 450),
+                    new SQR.V2(900, 250)
+            );
 
             // 1 ############################################
             ctx.globalAlpha = 0.2;
