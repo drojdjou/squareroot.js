@@ -55,11 +55,11 @@ SQR.Spline = function(s1, s2, s3, s4) {
     }
 
     this.valueAt = function(t, v) {
-        return interpolate(t, v, SQR.QuadraticBezier.position);
+        return interpolate(t, v, SQR.Interpolation.bezierPosition);
     }
 
     this.velocityAt = function(t, v) {
-        return interpolate(t, v, SQR.QuadraticBezier.velocity);
+        return interpolate(t, v, SQR.Interpolation.bezierVelocity);
     }
 
     this.add = function(p1, p2) {

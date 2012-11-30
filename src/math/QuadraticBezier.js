@@ -25,15 +25,15 @@ SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
 
     this.velocityAt = function(t, v) {
         v = v || interpolatedValue;
-        v.x = SQR.QuadraticBezier.velocity(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
-        v.y = SQR.QuadraticBezier.velocity(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+        v.x = SQR.Interpolation.bezierVelocity(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
+        v.y = SQR.Interpolation.bezierVelocity(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
         return v;
     }
 
     this.valueAt = function(t, v) {
         v = v || interpolatedValue;
-        v.x = SQR.QuadraticBezier.position(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
-        v.y = SQR.QuadraticBezier.position(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
+        v.x = SQR.Interpolation.bezierPosition(t, this.p0.x, this.c0.x, this.c1.x, this.p1.x);
+        v.y = SQR.Interpolation.bezierPosition(t, this.p0.y, this.c0.y, this.c1.y, this.p1.y);
         return v;
     }
 }
