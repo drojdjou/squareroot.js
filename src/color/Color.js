@@ -1,13 +1,22 @@
 SQR.Color = function(h, s, l, a) {
-    
+
+    this.set = function(h, s, l, a) {
+        this.hue = h;
+        this.saturation = s;
+        this.lightness = l;
+        this.alpha = a;
+    }
+
     this.applyLight = function(dot) {
         // TODO: remove the hardcoded value!
-        return SQR.Color.hsl(h, s, l - 60 + 80 * dot, a);
+        return SQR.Color.hsl(this.hue, this.saturation, this.lightness - 60 + 80 * dot, this.alpha);
     }
 
     this.toHSLString = function() {
-        return SQR.Color.hsl(h, s, l, a);
+        return SQR.Color.hsl(this.hue, this.saturation, this.lightness, this.alpha);
     }
+
+    this.set(h, s, l, a);
 }
 
 SQR.Color.hsl = function(hue, sat, lht, alp) {

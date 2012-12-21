@@ -1,14 +1,14 @@
 SQR.Geometry = function() {
 
     /**
-     * Array of SQR.2D or SQR.3D used as vertices
+     * Array of SQR.V2 or SQR.V3 used as vertices
      */
     this.vertices = null;
 
     /**
-     * Array of SQR.Face used to secribe a triangle mesh
+     * Array of SQR.Triangle or SQR.Quad used to define a mesh
      */
-    this.triangles = null;
+    this.polygons = null;
 
     /**
      * Array or numbers or color strings used to define color per-vertex
@@ -40,6 +40,11 @@ SQR.Geometry = function() {
     this.continous = false;
 
     /**
+     * Use for segments. If a geometry is continous, and closed is true a line will be drawn betwee the last and the first point
+     */
+    this.closed = false;
+
+    /**
      * Instead of using per vertex colors from the color array,
      * the renderer can use a single color defined in this variable.
      *
@@ -50,8 +55,13 @@ SQR.Geometry = function() {
 }
 
 SQR.Geometry.prototype.addTriangle = function(a, b, c, color) {
-    if(!this.triangles) this.triangles = [];
-    this.triangles.push(new SQR.Triangle(a, b, c, color));
+    if(!this.polygons) this.polygons = [];
+    this.polygons.push(new SQR.Triangle(a, b, c, color));
+}
+
+SQR.Geometry.prototype.addQuad = function(a, b, c, d, color) {
+    if(!this.polygons) this.polygons = [];
+    this.polygons.push(new SQR.Quad(a, b, c, d, color));
 }
 
 SQR.Geometry.prototype.addSegment = function(a, b, color) {

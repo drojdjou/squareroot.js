@@ -15,9 +15,14 @@ p {
 }
 
 #container {
-
+    position: absolute;
+    top: 80px;
+    left: 10px;
 }
 
 canvas {
+    position: absolute;
+    top: 80px;
+    left: 10px;
     background: #ffffff;
 }

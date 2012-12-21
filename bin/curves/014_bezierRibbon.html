@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>013 Bezier curves in 3D | v0.1</title>
+    <title>014 3D Ribbons | v0.1</title>
 
     <link rel="stylesheet" href="curves.css">
 
@@ -49,61 +49,63 @@
 
     <script type="text/javascript">
 
-        var engine, camera, curves;
-
-        function makeCurve(p0, c0, c1, p1, color) {
-            var c = new SQR.QuadraticBezier(p0, c0, c1, p1);
-            var curve = new SQR.Transform();
-            curve.geometry = c.createSegment(30);
-            curve.geometry.color = color;
-            curve.renderer = new SQR.Segment(1);
-            return curve;
-        }
+        var engine, camera, curve;
 
         window.onload = function() {
 
             engine = new SQR.Squareroot(document.getElementById('cnv'), container);
             engine.setProjection(30);
 
-            var curve1 = makeCurve(
+            engine.lightDirection.set(1, 1, 1).norm();
+
+
+
+            var curve1 = new SQR.QuadraticBezier(
                     new SQR.V3(-40,  15, -40),
                     new SQR.V3(-10, -20, -10),
                     new SQR.V3( 10,  20,  10),
-                    new SQR.V3( 40,   5, -20),
-                    new SQR.Color(0, 100, 50)
+                    new SQR.V3( 40,   5, -20)
             );
 
-            var curve2 = makeCurve(
+            var curve2 = new SQR.QuadraticBezier(
                     new SQR.V3( 10, -40,  -40),
                     new SQR.V3( 20, -20,  10),
-                    new SQR.V3(-30,   0, -10),
-                    new SQR.V3( -5,   40, 20),
-                    new SQR.Color(100, 50, 50)
+                    new SQR.V3(-30,  10, -10),
+                    new SQR.V3( -5,  35, 20)
             );
 
-            var curve3 = makeCurve(
+            var curve3 = new SQR.QuadraticBezier(
                     new SQR.V3(-10, -25, -20),
-                    new SQR.V3( -5,  30, -60),
-                    new SQR.V3(  8,  35,  10),
-                    new SQR.V3( 12, -15,  20),
-                    new SQR.Color(200, 100, 50)
+                    new SQR.V3( -5,  20, -90),
+                    new SQR.V3(  8,  10,  10),
+                    new SQR.V3( 12,  35,  20)
             );
 
-            curves = new SQR.Transform();
-            curves.add(curve1, curve2, curve3);
+            var ribgeo = new SQR.Geometry();
+            curve1.createRibbon(30, 10, new SQR.Color(  0, 100, 50), ribgeo);
+            curve2.createRibbon(30, 12, new SQR.Color(100,  50, 50), ribgeo);
+            curve3.createRibbon(30, 14, new SQR.Color(200, 100, 50), ribgeo);
+
+            curve = new SQR.Transform();
+            curve.geometry = ribgeo;
+            curve.renderer = new SQR.Polygon(false);
+            curve.renderer.culling = true;
+            curve.renderer.useLight = true;
+
+            engine.add(curve);
 
             camera = new SQR.Transform();
             camera.position.z = 160;
 
-            engine.add(camera, curves);
+            engine.add(camera);
 
             render();
         }
 
         function render() {
             requestAnimFrame(render);
-            curves.rotation.y += 0.01;
-            curves.rotation.x += 0.008;
+            curve.rotation.y += 0.01;
+//            curve.rotation.x += 0.008;
             engine.render(camera);
         }
 
@@ -113,9 +115,9 @@
 <body>
 
 <div id="desc">
-    <h1>013 Quadratic Bezier in 3D</h1>
+    <h1>013 3D Ribbons</h1>
 
-    <p>An exmaple of using SQR.QuadraticBezier class to render w curve in 3D</p>
+    <p>Ribbons made from bezier curves, rendered on canvas</p>
 </div>
 
 

@@ -120,6 +120,13 @@ SQR.V2.prototype.append = function(x, y) {
     return this;
 }
 
+SQR.V2.prototype.appendVec = function(v) {
+    if(!v) return;
+    this.x += v.x;
+    this.y += v.y;
+    return this;
+}
+
 SQR.V2.prototype.addAngleRadius = function(a, r) {
     this.x += Math.cos(a) * r;
     this.y += Math.sin(a) * r;

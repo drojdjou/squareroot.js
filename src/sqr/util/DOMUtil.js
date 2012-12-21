@@ -17,5 +17,23 @@ SQR.DOMUtil = {
 
     rotate3dCss: function(x, y, z) {
         return ' rotateX(' + x + 'deg) rotateY(' + y + 'deg) rotateZ(' + z + 'deg)';
+    },
+
+    setTransformCss: function(element, tx, ty, s, r) {
+
+        tx = tx || 0;
+        ty = ty || 0;
+
+        s = s || 1;
+        r = r || 0;
+
+        var t =
+            'translateZ(0px) ' +
+            'translate(' + tx + 'px, ' + ty + 'px) ' +
+            'scale(' + s + ') ' +
+            'rotate(' + r + 'deg)';
+
+        element.style['-webkit-transform'] = t;
+
     }
 }

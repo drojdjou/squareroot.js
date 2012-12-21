@@ -21,6 +21,15 @@ SQR.V3.prototype.append = function(x, y, z, w) {
     return this;
 }
 
+SQR.V3.prototype.appendVec = function(v) {
+    if(!v) return;
+    this.x += v.x;
+    this.y += v.y;
+    this.z += v.z;
+    this.w += v.w;
+    return this;
+}
+
 SQR.V3.prototype.copyTo = function(p) {
     p.x = this.x;
     p.y = this.y;
@@ -118,3 +127,4 @@ SQR.V3.prototype.cross = function(a, b) {
 }
 
 SQR.V3.up = new SQR.V3(0,1,0);
+SQR.V3.forward = new SQR.V3(0,0,-1);

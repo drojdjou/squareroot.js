@@ -1,5 +1,7 @@
 /**
  * A matrix that implements 2D affine transformations.
+ *
+ * TODO: make it column major
  */
 SQR.Matrix2D = function() {
 

@@ -71,16 +71,16 @@ SQR.Matrix44 = function() {
         var sqy = qy * qy;
         var sqz = qz * qz;
 
-        d[0]  = (1 - 2 * sqy - 2 * sqz) * sx;
-        d[1]  = (2 * qx * qy - 2 * qz * qw) * sx;
-        d[2]  = (2 * qx * qz + 2 * qy * qw) * sx;
+        d[0] = (1 - 2 * sqy - 2 * sqz) * sx;
+        d[1] = (2 * qx * qy - 2 * qz * qw) * sx;
+        d[2] = (2 * qx * qz + 2 * qy * qw) * sx;
 
-        d[4]  = (2 * qx * qy + 2 * qz * qw) * sy;
-        d[5]  = (1 - 2 * sqx - 2 * sqz) * sy;
-        d[6]  = (2 * qy * qz - 2 * qx * qw) * sy;
+        d[4] = (2 * qx * qy + 2 * qz * qw) * sy;
+        d[5] = (1 - 2 * sqx - 2 * sqz) * sy;
+        d[6] = (2 * qy * qz - 2 * qx * qw) * sy;
 
-        d[8]  = (2 * qx * qz - 2 * qy * qw) * sz;
-        d[9]  = (2 * qy * qz + 2 * qx * qw) * sz;
+        d[8] = (2 * qx * qz - 2 * qy * qw) * sz;
+        d[9] = (2 * qy * qz + 2 * qx * qw) * sz;
         d[10] = (1 - 2 * sqx - 2 * sqy) * sz;
 
         d[12] = tx;
@@ -221,7 +221,7 @@ SQR.Matrix44 = function() {
 
     this.extractPosition = function(v) {
         var d = this.data;
-        v.set(d[12],d[13], d[14]);
+        v.set(d[12], d[13], d[14]);
         return v;
     }
 
@@ -234,59 +234,59 @@ SQR.Matrix44 = function() {
     }
 
     /*
-    this.inverse = function(m) {
-        var d = this.data;
-        var a = (m) ? m.data || m : this.data;
+     this.inverse = function(m) {
+     var d = this.data;
+     var a = (m) ? m.data || m : this.data;
 
-        var a00 = d[0], a01 = d[1], a02 = d[2], a03 = d[3],
-            a10 = d[4], a11 = d[5], a12 = d[6], a13 = d[7],
-            a20 = d[8], a21 = d[9], a22 = d[10], a23 = d[11],
-            a30 = d[12], a31 = d[13], a32 = d[14], a33 = d[15],
+     var a00 = d[0], a01 = d[1], a02 = d[2], a03 = d[3],
+     a10 = d[4], a11 = d[5], a12 = d[6], a13 = d[7],
+     a20 = d[8], a21 = d[9], a22 = d[10], a23 = d[11],
+     a30 = d[12], a31 = d[13], a32 = d[14], a33 = d[15],
 
-            b00 = a00 * a11 - a01 * a10,
-            b01 = a00 * a12 - a02 * a10,
-            b02 = a00 * a13 - a03 * a10,
-            b03 = a01 * a12 - a02 * a11,
-            b04 = a01 * a13 - a03 * a11,
-            b05 = a02 * a13 - a03 * a12,
-            b06 = a20 * a31 - a21 * a30,
-            b07 = a20 * a32 - a22 * a30,
-            b08 = a20 * a33 - a23 * a30,
-            b09 = a21 * a32 - a22 * a31,
-            b10 = a21 * a33 - a23 * a31,
-            b11 = a22 * a33 - a23 * a32,
+     b00 = a00 * a11 - a01 * a10,
+     b01 = a00 * a12 - a02 * a10,
+     b02 = a00 * a13 - a03 * a10,
+     b03 = a01 * a12 - a02 * a11,
+     b04 = a01 * a13 - a03 * a11,
+     b05 = a02 * a13 - a03 * a12,
+     b06 = a20 * a31 - a21 * a30,
+     b07 = a20 * a32 - a22 * a30,
+     b08 = a20 * a33 - a23 * a30,
+     b09 = a21 * a32 - a22 * a31,
+     b10 = a21 * a33 - a23 * a31,
+     b11 = a22 * a33 - a23 * a32,
 
-            det = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
-            invDet;
+     det = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
+     invDet;
 
-        if (Math.abs(det) < 0.0001) {
-            console.warn("Attempt to inverse a singular matrix44. ", this.data);
-            console.trace();
-            return m;
-        }
+     if (Math.abs(det) < 0.0001) {
+     console.warn("Attempt to inverse a singular matrix44. ", this.data);
+     console.trace();
+     return m;
+     }
 
-        invDet = 1 / det;
+     invDet = 1 / det;
 
-        a[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
-        a[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
-        a[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
-        a[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
-        a[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
-        a[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
-        a[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
-        a[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
-        a[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
-        a[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
-        a[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
-        a[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
-        a[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
-        a[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
-        a[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
-        a[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+     a[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+     a[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+     a[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+     a[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+     a[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+     a[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+     a[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+     a[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+     a[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+     a[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+     a[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+     a[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+     a[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+     a[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+     a[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+     a[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
 
-        return a;
-    };
-    */
+     return a;
+     };
+     */
 
     this.inverse = function(m) {
         var d = this.data;
@@ -364,9 +364,9 @@ SQR.Matrix44 = function() {
 
         y.cross(z, x);
 
-        d[0] = x.x, d[4] = y.x, d[8] = z.x;
-        d[1] = x.y, d[5] = y.y, d[9] = z.y;
-        d[2] = x.z, d[6] = y.z, d[10] = z.z;
+        d[0] = x.x,d[4] = y.x,d[8] = z.x;
+        d[1] = x.y,d[5] = y.y,d[9] = z.y;
+        d[2] = x.z,d[6] = y.z,d[10] = z.z;
 
         return this;
     }

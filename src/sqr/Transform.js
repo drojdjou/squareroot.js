@@ -1,12 +1,14 @@
 SQR.Transform = function(n) {
 
+    var that = this;
+
     this.name = n;
     this.directMatrixMode = false;
     this.useQuaternion = false;
-    this.cssPreserve3dMode = false;
 
     this.renderer = null;
     this.geometry = null;
+    this.collider = null;
     this.parent = null;
     this.engine = null;
 
@@ -19,7 +21,13 @@ SQR.Transform = function(n) {
 
     this.matrix = new SQR.Matrix44();
     this.globalMatrix = new SQR.Matrix44();
+    this.viewMatrix = new SQR.Matrix44();
     this.inverseWorldMatrix = new SQR.Matrix44();
+
+    // 0 - dynamic object
+    // 1 - static object
+    // 2 - static object after recalculation
+    this.positioningMode = 0;
 
     this.depth = function() {
         return this.globalMatrix.data[14]; // t.z
@@ -46,10 +54,10 @@ SQR.Transform = function(n) {
 
             t.parent = null;
 
-            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+            if (t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
                 t.renderer.removeFromDom();
             }
-            
+
 
             this.children.splice(j, 1);
         }
@@ -61,12 +69,19 @@ SQR.Transform = function(n) {
         return this.children.indexOf(t) > -1;
     }
 
+    this.recurse = function(f) {
+        f(this);
+        for (var i = 0; i < this.numChildren; i++) {
+            this.children[i].recurse(f);
+        }
+    }
+
     this.removeAll = function() {
         for (var i = 0; i < this.numChildren; i++) {
             var t = this.children[i];
             t.parent = null;
 
-            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+            if (t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
                 t.renderer.removeFromDom();
             }
         }
@@ -77,9 +92,7 @@ SQR.Transform = function(n) {
 
     this.transformWorld = function() {
 
-        this.cssPreserve3dMode = SQR.usePreserve3d
-            && this.renderer && this.renderer.isDom3d
-            && this.parent && this.parent.renderer && this.parent.renderer.isDom3d;
+        if (this.positioningMode == 2) return;
 
         if (!this.directMatrixMode) {
 
@@ -88,7 +101,7 @@ SQR.Transform = function(n) {
             var r = this.rotation;
             var s = this.scale;
 
-            if(this.useQuaternion)
+            if (this.useQuaternion)
                 this.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
             else
                 this.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
@@ -98,7 +111,7 @@ SQR.Transform = function(n) {
             this.matrix.lookAt(this.lookDirection, SQR.V3.up);
         }
 
-        if (this.parent && !this.cssPreserve3dMode) {
+        if (this.parent) {
             this.parent.globalMatrix.copyTo(this.globalMatrix);
             this.globalMatrix.multiply(this.matrix);
         } else {
@@ -108,6 +121,8 @@ SQR.Transform = function(n) {
         if (this.lookTarget) {
             this.globalMatrix.lookAt(this.lookTarget.globalPosition(), SQR.V3.up);
         }
+
+        if (this.positioningMode == 1) this.positioningMode = 2;
     }
 
     this.globalPosition = function() {
@@ -115,11 +130,9 @@ SQR.Transform = function(n) {
         return _globalPosition;
     }
 
-    this.transformView = function(viewMatrix) {
-        if(this.cssPreserve3dMode) return;
-        this.globalMatrix.copyTo(this.matrix);
-        viewMatrix.copyTo(this.globalMatrix);
-        this.globalMatrix.multiply(this.matrix);
+    this.transformView = function(inverseCamMatrix) {
+        inverseCamMatrix.copyTo(this.viewMatrix);
+        this.viewMatrix.multiply(this.globalMatrix);
     }
 
     this.lookAt = function(target) {

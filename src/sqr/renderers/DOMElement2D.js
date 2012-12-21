@@ -24,9 +24,13 @@ SQR.DOMElement2D = function(element) {
         addedToDom = false;
     }
 
+    this.setBackfaceVisibility = function() {
+        // empty function just to prevent needing logic for 2d/3d
+    }
+
     this.draw = function(transform, uniforms) {
         uniforms.projection.copyTo(mvp);
-        mvp.multiply(transform.globalMatrix);
+        mvp.multiply(transform.viewMatrix);
 
         var p = new SQR.V3(0, 0, 0);
 
@@ -41,6 +45,7 @@ SQR.DOMElement2D = function(element) {
         matrix2D.setTRS(p.x, p.y, r, s, s);
 
         var t3d = (SQR.supportsCss3d) ? SQR.DOMUtil.translate3dCss(0, 0, 0) : '';
+//        var t3d = SQR.DOMUtil.translate3dCss(0, 0, 0);
         var m = t3d + matrix2D.getAsCSSProperty(false);
 
         element.style.zIndex = uniforms.depth;

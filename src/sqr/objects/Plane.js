@@ -1,5 +1,5 @@
 SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
-    this.triangles = [];
+    this.polygons = [];
 
     wo = wo || 0;
     ho = ho || 0;
@@ -42,14 +42,14 @@ SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
             }
 
             var color = new SQR.Color(0, 100, 70);
-            this.triangles.push(new SQR.Triangle(va, vb, vc, color));
-            this.triangles.push(new SQR.Triangle(va, vc, vd, color));
+            this.polygons.push(new SQR.Triangle(va, vb, vc, color));
+            this.polygons.push(new SQR.Triangle(va, vc, vd, color));
         }
     }
 
     this.applyHeightMap = function(heightMap, maxHeight, offset, range) {
 
-        var numTriangles = this.triangles.length;
+        var numTriangles = this.polygons.length;
  
         var processVertex = function(t) {
             var row = (t.z / h + 1) / 2;
@@ -64,7 +64,7 @@ SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
         }
 
         for (var i = 0; i < numTriangles; i++) {
-            var t = this.triangles[i];
+            var t = this.polygons[i];
             processVertex(t.a);
             processVertex(t.b);
             processVertex(t.c);

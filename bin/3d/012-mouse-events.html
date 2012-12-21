@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Terrain | v0.30</title>
+    <title>MouseEvents in 3D | v0.15</title>
 
-    <script type="text/javascript" src="../../lib/Stats.js"></script>
+
+    <script type="text/javascript" src="../../lib/modernizr.custom.56278.js"></script>
     <script type="text/javascript" src="../../lib/requestAnimFrame.js"></script>
 
 <!-- SQRLIB -->
@@ -50,6 +51,7 @@
 
         body {
             overflow: hidden;
+            background-color: #000000;
         }
 
         #canvas {
@@ -58,116 +60,140 @@
             left: 0px;
         }
 
-        #hm-container {
+        #container {
             position: absolute;
-            top: 0px;
-            left: 0px;
+            top: 50%;
+            left: 50%;
+        }
+
+        .plane {
+            position: absolute;
+            margin-top: -200px;
+            margin-left: -200px;
+            width: 400px;
+            height: 400px;
+            overflow: hidden;
+            background: red;
+        }
+
+        .plane img {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+        }
+
+        #instr {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Georgia, sans-serif;
+            color: #ffffff;
+            font-size: 14px;
         }
 
     </style>
 
     <script type="text/javascript">
 
-        var engine, camera, geometry, renderer, terrain;
-        var hmc, hctx, hdata;
-        var zero = new SQR.V3();
-        var mx = 0, my = 0;
-        var stats;
+        var container, canvas;
+        var engine, camera;
+        var root, div3d, outline;
+        var interactor;
+
+        function createDiv(imageUrl) {
+            var ht = document.createElement('div');
+            ht.setAttribute('class', 'plane');
+
+            var hti = new Image();
+            hti.src = imageUrl;
+            ht.appendChild(hti);
+
+            return ht
+        }
 
         window.onload = function() {
+            SQR.supportsCss3d = Modernizr.csstransforms3d;
 
-//            stats = new Stats();
-//            stats.setMode(0);
-//            stats.domElement.style.position = 'absolute';
-//            stats.domElement.style.left = '0px';
-//            stats.domElement.style.top = '0px';
-//            document.body.appendChild(stats.domElement);
+            interactor = new SQR.Interactor();
 
-            document.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-            }, false);
+            container = document.getElementById("container");
+            canvas = document.getElementById("canvas");
 
-            document.addEventListener('mousemove', function(e) {
-                mx = e.pageX / window.innerWidth;
-            }, false);
-
-            engine = new SQR.Squareroot(document.getElementById('canvas'), document.getElementById("div-container"));
-            engine.setBackground("#000000");
+            // Parameters are: canvas, container
+            engine = new SQR.Squareroot(canvas, container);
             engine.setSize(window.innerWidth, window.innerHeight);
-            engine.setProjection(45);
-            engine.setClearColor("rgba(0,0,0,0.2)");
-
-            terrain = new SQR.Transform();
-            terrain.renderer = new SQR.Polygon();
-            terrain.geometry = new SQR.Plane(100, 100, 16, 16, 0, 0, true);
+            engine.setProjection(30);
 
             camera = new SQR.Transform();
-            camera.position.z = 140;
-            camera.position.y = -140;
+            camera.position.z = engine.cssDistance();
+            engine.add(camera);
 
-            camera.rotation.x = 0.9;
-//            camera.lookInDirection(terrain.position);
+            root = new SQR.Transform();
 
-            engine.add(camera, terrain);
+            div3d = new SQR.Transform();
+            div3d.renderer = new SQR.DOMElement3D(createDiv("../assets/square-400.jpg"));
+            div3d.renderer.setBackfaceVisibility(true);
 
-            hmc = document.createElement('canvas');
-//            document.getElementById('hm-container').appendChild(hmc);
-            hctx = hmc.getContext('2d');
+            div3d.collider = new SQR.CSSCollider(400, 400);
 
-            var hmimage = new Image();
-            hmimage.onload = function() {
+            root.add(div3d);
 
-                hmc.width = hmimage.width;
-                hmc.height = hmimage.height;
+            outline = new SQR.Transform();
+            
+            outline.renderer = new SQR.Segment(2);
 
-                hctx.drawImage(hmimage, 0, 0);
-                hdata = hctx.getImageData(0, 0, hmc.width, hmc.height);
+            outline.geometry = new SQR.Geometry();
+            outline.geometry.color = new SQR.Color(0, 100, 50);
+            outline.geometry.continous = true;
+            outline.geometry.closed = true;
+            
+            outline.geometry.vertices = [
+                new SQR.V3(-200,  200, 0),
+                new SQR.V3( 200,  200, 0),
+                new SQR.V3( 200, -200, 0),
+                new SQR.V3(-200, -200, 0)
+            ];
 
-                render();
-            }
+            root.add(outline);
 
-            hmimage.src = '../assets/terrain-heightmap.jpg';
+            engine.add(root);
+
+            render();
         }
 
-        function v(x, y, z) {
-            return new SQR.V3(x, y, z);
-        }
-
-        var th = 0;
-        var a = 0;
+        var a = SQR.twoPI * Math.random();
 
         function render() {
-            //stats.begin();
-
             requestAnimFrame(render);
-            
-            if(th++ % 2 == 1) {
-                //stats.end();
-                //return;
-            };
 
-            terrain.rotation.y += 0.002;
+            root.rotation.y = a;
+            root.position.x = Math.sin(a) * 200;
 
-            terrain.geometry.applyHeightMap(hdata, 40, a, 0.1);
-            a += 0.02 * SQR.Time.deltaTime;
+            a += 0.04;
+//            a += 0.01;
+
+            var i = div3d.collider.intersects(interactor.pageX, interactor.pageY);
+
+            if(i) {
+                outline.geometry.color.set(0, 100, 50);
+            } else {
+                outline.geometry.color.set(128, 100, 50);
+            }
 
             engine.render(camera);
-
-            camera.rotation.y = Math.sin(a * 60) * 0.4;
-            camera.rotation.z = Math.cos(a * 40) * 0.4;
-
-            //stats.end();
         }
 
     </script>
 
 </head>
 <body>
-<div id="canvas-container">
-    <canvas id="canvas"></canvas>
-</div>
-<div id="div-container"></div>
 
-<div id="hm-container"></div>
+
+<div id="container"></div>
+<canvas id="canvas"></canvas>
+
+
+<div id="instr">Alternate way to detect mouse/touch events on 3d divs (regular events are buggy in some browsers)</div>
+
 </body>
 </html>

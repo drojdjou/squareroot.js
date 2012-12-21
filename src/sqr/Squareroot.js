@@ -1,7 +1,7 @@
 SQR.Squareroot = function(canvas, divContainer) {
 
     this.setBackground = function(c) {
-        if(canvas) canvas.style.backgroundColor = c;
+        if (canvas) canvas.style.backgroundColor = c;
     }
 
     this.setClearColor = function(c) {
@@ -20,14 +20,14 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
-	this.setPerspectiveOrigin = function(x, y) {
-		if (divContainer) {
-			divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
+    this.setPerspectiveOrigin = function(x, y) {
+        if (divContainer) {
+            divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
             divContainer.style['-webkit-perspective-origin'] = x + 'px ' + y + 'px';
             divContainer.style['-moz-perspective-origin'] = x + 'px ' + y + 'px';
             divContainer.style['-o-perspective-origin'] = x + 'px ' + y + 'px';
-		}
-	}
+        }
+    }
 
     this.cssDistance = function() {
         return uniforms.cssDistance;
@@ -37,11 +37,11 @@ SQR.Squareroot = function(canvas, divContainer) {
         uniforms.width = w;
         uniforms.height = h;
 
-        if(canvas) {
+        if (canvas) {
             canvas.width = w;
             canvas.height = h;
         }
-        
+
         uniforms.aspect = w / h;
         uniforms.centerX = w * 0.5;
         uniforms.centerY = h * 0.5;
@@ -70,7 +70,7 @@ SQR.Squareroot = function(canvas, divContainer) {
 
             t.parent = null;
 
-            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+            if (t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
                 t.renderer.removeFromDom();
             }
 
@@ -84,12 +84,18 @@ SQR.Squareroot = function(canvas, divContainer) {
         return this.children.indexOf(t) > -1;
     }
 
+    this.recurse = function(f) {
+        for (var i = 0; i < this.numChildren; i++) {
+            this.children[i].recurse(f);
+        }
+    }
+
     this.removeAll = function() {
         for (var i = 0; i < this.numChildren; i++) {
             var t = this.children[i];
             t.parent = null;
 
-            if(t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
+            if (t.renderer && (t.renderer.isDom2d || t.renderer.isDom3d)) {
                 t.renderer.removeFromDom();
             }
         }
@@ -99,10 +105,10 @@ SQR.Squareroot = function(canvas, divContainer) {
     }
 
     var updateTransform = function(t) {
-        if(t.renderer) {
-            if(t.renderer.isDom3d && SQR.usePreserve3d && t.parent && t.parent.renderer && t.parent.renderer.isDom3d) {
+        if (t.renderer) {
+            if (t.renderer.isDom3d && SQR.usePreserve3d && t.parent && t.parent.renderer && t.parent.renderer.isDom3d) {
                 t.renderer.appendToDom(t.parent.renderer.element);
-            } else if(t.renderer.isDom2d || t.renderer.isDom3d) {
+            } else if (t.renderer.isDom2d || t.renderer.isDom3d) {
                 t.renderer.appendToDom(divContainer);
             }
         }
@@ -123,7 +129,7 @@ SQR.Squareroot = function(canvas, divContainer) {
 
         renderObjects.length = 0;
 
-        if(!!uniforms.context) {
+        if (!!uniforms.context) {
             uniforms.context.setTransform(1, 0, 0, 1, 0, 0);
 
             if (clearColor != null) {
@@ -143,6 +149,7 @@ SQR.Squareroot = function(canvas, divContainer) {
 
         uniforms.camera = camera;
         uniforms.viewMatrix = camera.computeInverseMatrix();
+        uniforms.lightDirection = this.lightDirection;
 
         for (var i = 0; i < l; i++) {
             c = renderObjects[i];
@@ -164,12 +171,16 @@ SQR.Squareroot = function(canvas, divContainer) {
                 uniforms.depth = i;
                 c.renderer.draw(c, uniforms);
             }
+
+            if(c.collider) {
+                c.collider.project(c, uniforms);
+            }
         }
     }
 
-     var uniforms = {};
+    var uniforms = {};
 
-    if(canvas) {
+    if (canvas) {
         uniforms.context = canvas.getContext("2d");
         this.setSize(canvas.width, canvas.height);
     }
@@ -177,7 +188,7 @@ SQR.Squareroot = function(canvas, divContainer) {
     uniforms.projection = new SQR.ProjectionMatrix();
     uniforms.container = divContainer;
 
-    uniforms.lightDirection = new SQR.V3(0, 1, 0.1).norm();
+    this.lightDirection = new SQR.V3(0, 1, 0).norm();
 
     var clearColor = null;
 }

@@ -38,23 +38,30 @@ SQR.Segment = function(thickness) {
         var geo = transform.geometry;
 
         uniforms.projection.copyTo(mvp);
-        mvp.multiply(transform.globalMatrix);
+        mvp.multiply(transform.viewMatrix);
 
         var numVertices = geo.vertices.length;
 
         for (var i = 0; i < numVertices; i++) {
-            if( (!geo.continous && i % 2 == 1) || (geo.continous && i == numVertices - 1) ) continue;
+            if (
+                (!geo.continous && i % 2 == 1)
+                    ||
+                (geo.continous && !geo.closed && i == numVertices - 1)
+            ) {
+                continue;
+            }
+
+            var n = (i == numVertices - 1) ? 0 : i + 1;
 
             geo.vertices[i].copyTo(ps);
-            geo.vertices[i + 1].copyTo(pe);
+            geo.vertices[n].copyTo(pe);
 
-            ctx.strokeStyle = (geo.colors) ? geo.colors[ i / 2 | 0 ] : geo.color;
+            var c = (geo.colors) ? geo.colors[ i / 2 | 0 ] : geo.color;
+
+            ctx.strokeStyle = c.toHSLString();
             ctx.lineWidth = thickness;
 
-            ctx.beginPath();
-
             drawLine(ctx, ps, pe, uniforms.centerX, uniforms.centerY);
-            ctx.stroke();
         }
     }
 }

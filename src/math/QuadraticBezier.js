@@ -37,17 +37,77 @@ SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
         return v;
     }
 
-    this.createGeometry = function(numVertices) {
-        var g = new SQR.Geometry();
+    this.createSegment = function(numVertices, geometry) {
+        var g = geometry || new SQR.Geometry();
         g.continous = true;
 
-        g.vertices = [];
-        g.tangents = [];
+        g.vertices = g.vertices || [];
+        g.tangents = g.tangents || [];
 
-        for(var i = 0; i < numVertices; i++) {
+        for(var i = 0; i <= numVertices; i++) {
             var t = i / numVertices;
             g.vertices.push(this.valueAt(t, new SQR.V3()));
             g.tangents.push(this.velocityAt(t, new SQR.V3()));
+        }
+
+        return g;
+    }
+
+    /**
+     * This function assumes it is a 3D curve (i.e control points are of type SQR.V3)
+
+     * @param numVertices The number of polygons the ribbon will have
+     * @param width The width of the ribbon
+     * @param up The vector up
+     */
+    this.createRibbon = function(numVertices, width, color, geometry) {
+        var g = geometry || new SQR.Geometry();
+        
+        for(var i = 0; i < numVertices; i++) {
+
+            var t1 = (i) / numVertices;
+            var t2 = (i + 1) / numVertices;
+
+            var p1 = this.valueAt(t1, new SQR.V3());
+            var p2 = this.valueAt(t2, new SQR.V3());
+
+            var v1 = this.velocityAt(t1, new SQR.V3()).norm();
+            var v2 = this.velocityAt(t2, new SQR.V3()).norm();
+
+            var up = new SQR.V3();
+            up.cross(v1, v2).norm();
+
+            var n1 = new SQR.V3();
+            n1.cross(v1, up);
+
+            var n2 = new SQR.V3();
+            n2.cross(v2, up);
+
+            n1.mul(width * 0.5);
+            n2.mul(width * 0.5);
+
+            var a = new SQR.V3();
+            var b = new SQR.V3();
+            var c = new SQR.V3();
+            var d = new SQR.V3();
+
+            a.add(p1, n1);
+            b.add(p1, n1.neg());
+
+            c.add(p2, n2);
+            d.add(p2, n2.neg());
+
+
+            g.color = color;
+
+//            g.addQuad(a, b, d, c, color);
+//            g.addQuad(d, b, a, c, color);
+
+            g.addTriangle(a, c, b, color);
+            g.addTriangle(c, b, d, color);
+
+            g.addTriangle(a, b, c, color);
+            g.addTriangle(c, d, b, color);
         }
 
         return g;

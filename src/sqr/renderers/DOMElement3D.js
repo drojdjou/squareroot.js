@@ -19,33 +19,34 @@ SQR.DOMElement3D = function(element) {
     // Do not call this functions directly
     this.appendToDom = function(c) {
         if (addedToDom && c == container) return;
+        console.log("Adding to dom " + this.element);
         container = c;
         container.appendChild(this.element);
         addedToDom = true;
     }
 
     this.removeFromDom = function() {
-        if(!addedToDom) return;
+        if (!addedToDom) return;
         container.removeChild(this.element);
         addedToDom = false;
     }
 
     this.setBackfaceVisibility = function() {
-        //empty function just to prevent needing logic for 2d/3d
+        // empty function just to prevent needing logic for 2d/3d
     }
 
     this.draw = function(transform, uniforms) {
-        var t3d = (transform.cssPreserve3dMode) ? '' : SQR.DOMUtil.translate3dCss(0, 0, uniforms.cssDistance);
+        var t3d = SQR.DOMUtil.translate3dCss(0, 0, uniforms.cssDistance);
         var ps = 'perspective(' + uniforms.cssDistance + 'px)';
+        var p = t3d + ' ' + transform.viewMatrix.getAsCSSProperty();
 
-        var p = t3d + ' ' + transform.globalMatrix.getAsCSSProperty();
-
-        element.style.zIndex = uniforms.depth;
-        element.style['transform'] = ps + p;
+        element.style['transform'] = p;
         element.style['-webkit-transform'] = p;
-        element.style['-moz-transform'] = ps + p;
+        element.style['-moz-transform'] = p;
         element.style['-ms-transform'] = ps + p;
         element.style['-o-transform'] = ps + p; // TODO: to ps or not ps in Opera?
+
+        element.style.zIndex = uniforms.depth;
 
     }
 }
