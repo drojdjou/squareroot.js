@@ -10,7 +10,7 @@ SQR.Segment = function(thickness) {
     var front = new SQR.V3(0, 0, 1);
     var dir = new SQR.V3();
 
-    var drawLine = function(ctx, a, b, cx, cy) {
+    var project = function(a, b, cx, cy) {
         mvp.transformVector(a);
         mvp.transformVector(b);
 
@@ -24,11 +24,19 @@ SQR.Segment = function(thickness) {
 
         b.x = b.x / b.z * cx + cx;
         b.y = b.y / b.z * cy + cy;
+    }
 
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
+    var drawLine = function(ctx, a, b, m, ctn) {
+
+        if (!ctn) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+        } else {
+            if (m) ctx.moveTo(a.x, a.y);
+            else ctx.lineTo(a.x, a.y);
+        }
     }
 
 
@@ -42,12 +50,16 @@ SQR.Segment = function(thickness) {
 
         var numVertices = geo.vertices.length;
 
+        if (geo.continous) {
+            ctx.beginPath();
+        }
+
         for (var i = 0; i < numVertices; i++) {
             if (
                 (!geo.continous && i % 2 == 1)
                     ||
-                (geo.continous && !geo.closed && i == numVertices - 1)
-            ) {
+                    (geo.continous && !geo.closed && i == numVertices - 1)
+                ) {
                 continue;
             }
 
@@ -61,7 +73,13 @@ SQR.Segment = function(thickness) {
             ctx.strokeStyle = c.toHSLString();
             ctx.lineWidth = thickness;
 
-            drawLine(ctx, ps, pe, uniforms.centerX, uniforms.centerY);
+            project(ps, pe, uniforms.centerX, uniforms.centerY);
+            drawLine(ctx, ps, pe, i == 0, geo.continous);
+        }
+
+        if (geo.continous) {
+            if (geo.closed) ctx.closePath();
+            ctx.stroke();
         }
     }
 }

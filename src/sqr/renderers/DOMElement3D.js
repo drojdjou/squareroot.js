@@ -19,7 +19,6 @@ SQR.DOMElement3D = function(element) {
     // Do not call this functions directly
     this.appendToDom = function(c) {
         if (addedToDom && c == container) return;
-        console.log("Adding to dom " + this.element);
         container = c;
         container.appendChild(this.element);
         addedToDom = true;

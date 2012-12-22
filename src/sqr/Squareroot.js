@@ -165,7 +165,9 @@ SQR.Squareroot = function(canvas, divContainer) {
         });
 
         for (var i = 0; i < l; i++) {
-            c = renderObjects[i];
+            c = renderObjects[i]
+
+            if(!c.enabled) continue;
 
             if (c.renderer) {
                 uniforms.depth = i;

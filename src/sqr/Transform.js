@@ -3,6 +3,8 @@ SQR.Transform = function(n) {
     var that = this;
 
     this.name = n;
+    this.enabled = true;
+
     this.directMatrixMode = false;
     this.useQuaternion = false;
 

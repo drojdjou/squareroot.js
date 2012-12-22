@@ -97,8 +97,10 @@
 
         var container, canvas;
         var engine, camera;
-        var root, div3d, outline;
+        var root;
         var interactor;
+
+        var photos = [];
 
         function createDiv(imageUrl) {
             var ht = document.createElement('div');
@@ -109,6 +111,18 @@
             ht.appendChild(hti);
 
             return ht
+        }
+
+
+        function createPhoto(name, x, y, z, ry, h, src) {
+            var p = new SQR.Transform(name);
+            p.renderer = new SQR.DOMElement3D(createDiv(src));
+            p.renderer.setBackfaceVisibility(true);
+            p.collider = new SQR.CSSCollider(400, 400);
+            p.position.set(x, y, z);
+            photos.push(p);
+
+            root.add(p);
         }
 
         window.onload = function() {
@@ -130,31 +144,11 @@
 
             root = new SQR.Transform();
 
-            div3d = new SQR.Transform();
-            div3d.renderer = new SQR.DOMElement3D(createDiv("../assets/square-400.jpg"));
-            div3d.renderer.setBackfaceVisibility(true);
-
-            div3d.collider = new SQR.CSSCollider(400, 400);
-
-            root.add(div3d);
-
-            outline = new SQR.Transform();
-            
-            outline.renderer = new SQR.Segment(2);
-
-            outline.geometry = new SQR.Geometry();
-            outline.geometry.color = new SQR.Color(0, 100, 50);
-            outline.geometry.continous = true;
-            outline.geometry.closed = true;
-            
-            outline.geometry.vertices = [
-                new SQR.V3(-200,  200, 0),
-                new SQR.V3( 200,  200, 0),
-                new SQR.V3( 200, -200, 0),
-                new SQR.V3(-200, -200, 0)
-            ];
-
-            root.add(outline);
+            createPhoto("sq", 0, 0, 0,   0, 50, "../assets/square-400.jpg");
+            createPhoto("ft", 0, 0, 100, 0, 60, "../assets/fruits-400.jpg");
+            createPhoto("ft", 0, 0, 200, 0, 70, "../assets/square-400.jpg");
+            createPhoto("ft", 0, 0, 300, 0, 80, "../assets/fruits-400.jpg");
+            createPhoto("ft", 0, 0, 400, 0, 90, "../assets/square-400.jpg");
 
             engine.add(root);
 
@@ -162,6 +156,7 @@
         }
 
         var a = SQR.twoPI * Math.random();
+        var hits = [];
 
         function render() {
             requestAnimFrame(render);
@@ -169,16 +164,32 @@
             root.rotation.y = a;
             root.position.x = Math.sin(a) * 200;
 
-            a += 0.04;
-//            a += 0.01;
+//            a += 0.04;
+            a += 0.01;
 
-            var i = div3d.collider.intersects(interactor.pageX, interactor.pageY);
+            hits.length = 0;
 
-            if(i) {
-                outline.geometry.color.set(0, 100, 50);
-            } else {
-                outline.geometry.color.set(128, 100, 50);
+            for(var i = 0; i < photos.length; i++) {
+                var p = photos[i];
+
+                // Disable all before eventually enabling the hovered one
+                p.renderer.element.style.opacity = 0.2;
+
+                // This needs to be in local coordinates of the canvas and/or container
+                if(p.collider.intersects(interactor.pageX, interactor.pageY)) {
+                    hits.push(p);
+                }
             }
+
+            hits.sort(function(a, b) {
+                var ad = a.depth();
+                var bd = b.depth();
+                if (ad < bd) return 1;
+                if (ad > bd) return -1;
+                return 0;
+            });
+
+            if(hits.length > 0) hits[0].renderer.element.style.opacity = 1;
 
             engine.render(camera);
         }
@@ -188,9 +199,9 @@
 </head>
 <body>
 
-
-<div id="container"></div>
 <canvas id="canvas"></canvas>
+<div id="container"></div>
+
 
 
 <div id="instr">Alternate way to detect mouse/touch events on 3d divs (regular events are buggy in some browsers)</div>
