@@ -32,7 +32,7 @@ SQR.Transform = function(n) {
     this.positioningMode = 0;
 
     this.depth = function() {
-        return this.globalMatrix.data[14]; // t.z
+        return this.viewMatrix.data[14]; // t.z
     }
 
     this.children = [];

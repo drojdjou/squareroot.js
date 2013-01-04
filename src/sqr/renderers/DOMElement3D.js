@@ -30,10 +30,6 @@ SQR.DOMElement3D = function(element) {
         addedToDom = false;
     }
 
-    this.setBackfaceVisibility = function() {
-        // empty function just to prevent needing logic for 2d/3d
-    }
-
     this.draw = function(transform, uniforms) {
         var t3d = SQR.DOMUtil.translate3dCss(0, 0, uniforms.cssDistance);
         var ps = 'perspective(' + uniforms.cssDistance + 'px)';
