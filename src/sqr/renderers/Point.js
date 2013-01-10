@@ -1,4 +1,4 @@
-SQR.Particle = function(radius, fill, stroke) {
+SQR.Point = function(radius) {
 
     var p = new SQR.V3();
     var mvp = new SQR.Matrix44();
@@ -8,7 +8,7 @@ SQR.Particle = function(radius, fill, stroke) {
         var geo = transform.geometry;
 
         uniforms.projection.copyTo(mvp);
-        mvp.multiply(transform.globalMatrix);
+        mvp.multiply(transform.viewMatrix);
 
         for (var i = 0; i < geo.vertices.length; i++) {
             geo.vertices[i].copyTo(p);
@@ -23,5 +23,4 @@ SQR.Particle = function(radius, fill, stroke) {
             ctx.drawImage(geo.particleTextures[i], p.x, p.y);
         }
     }
-
 }

@@ -1,3 +1,12 @@
+/**
+ * @class
+ *
+ * The SQR.DOMElement2D is essentially a billboard made of a div. It is useful for billboard,
+ * but most typically it will be used as replacement for SQR.DOMElement3D for browsers that
+ * do not support CSS 3D.
+ *
+ * @param element
+ */
 SQR.DOMElement2D = function(element) {
 
     // Used to identify the type of the renderer instead of using insfanceof
@@ -24,8 +33,10 @@ SQR.DOMElement2D = function(element) {
         addedToDom = false;
     }
 
+    /**
+     * This function doesn't do anything, but it's here to match the interface of SQR.DOMElement3D
+     */
     this.setBackfaceVisibility = function() {
-        // empty function just to prevent needing logic for 2d/3d
     }
 
     this.draw = function(transform, uniforms) {
@@ -45,7 +56,6 @@ SQR.DOMElement2D = function(element) {
         matrix2D.setTRS(p.x, p.y, r, s, s);
 
         var t3d = (SQR.supportsCss3d) ? SQR.DOMUtil.translate3dCss(0, 0, 0) : '';
-//        var t3d = SQR.DOMUtil.translate3dCss(0, 0, 0);
         var m = t3d + matrix2D.getAsCSSProperty(false);
 
         element.style.zIndex = uniforms.depth;

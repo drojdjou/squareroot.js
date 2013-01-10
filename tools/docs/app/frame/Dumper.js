@@ -24,7 +24,7 @@ See http://www.perl.com/perl/misc/Artistic.html
  * @static
  */
 Dumper = {
-	/** @param [...] The objects to dump. */
+	/** @param [...] The geometry to dump. */
 	dump: function () {
 	    if (arguments.length > 1)
 	        return this._dump(arguments);

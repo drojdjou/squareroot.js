@@ -30,7 +30,7 @@ SQR.Spline = function(s1, s2, s3, s4) {
     var interpolatedValue = new SQR.V2();
 
     var findMidpoint = function(a, b) {
-        return new SQR.V2().sub(b, a).mul(0.5).addTo(a);
+        return new SQR.V2().sub(b, a).mul(0.5).appendVec(a);
     }
 
     var interpolate = function(t, v, func) {

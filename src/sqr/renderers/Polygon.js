@@ -11,7 +11,7 @@ SQR.Polygon = function() {
         var geo = transform.geometry;
 
         uniforms.projection.copyTo(mvp);
-        mvp.multiply(transform.globalMatrix);
+        mvp.multiply(transform.viewMatrix);
 
         var i, t, tris = geo.polygons.length;
 

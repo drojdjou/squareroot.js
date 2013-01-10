@@ -22,7 +22,7 @@ SQR.V3.prototype.append = function(x, y, z, w) {
 }
 
 SQR.V3.prototype.appendVec = function(v) {
-    if(!v) return;
+    if(!v) return this;
     this.x += v.x;
     this.y += v.y;
     this.z += v.z;

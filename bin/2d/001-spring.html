@@ -6,14 +6,23 @@
     <style type="text/css">
 
         body {
-            background-color: #483d8b;
+            background-color: #000000;
         }
 
         #cnv {
             position: absolute;
             top: 0px;
             left: 0px;
-            background-color: #ffffff;
+            background-color: #000000;
+        }
+
+        #instr {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Georgia, sans-serif;
+            color: #ffffff;
+            font-size: 14px;
         }
 
     </style>
@@ -38,17 +47,17 @@
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/VectorUtil.js"></script>
-<script type="text/javascript" src="../../src/sqr/Geometry.js"></script>
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Particle2D.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Quad.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Triangle.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/physics/CSSCollider.js"></script>
+<script type="text/javascript" src="../../src/sqr/physics/Particle.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement3D.js"></script>
-<script type="text/javascript" src="../../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../../src/sqr/renderers/Point.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Polygon.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Segment.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
@@ -62,18 +71,20 @@
 
         var ctx, sp;
 
-        SpringImage = function() {
+        SpringBall = function() {
 
             var spring = new SQR.Spring();
+            spring.friction = 0.8;
+            spring.k = 0.9;
 
             this.draw = function(ctx) {
 
                 spring.update();
 
-                ctx.clearRect(0, 0, 800, 450);
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-                ctx.strokeStyle = 'rgb(0,0,0)';
-                ctx.fillStyle = 'rgb(0,0,0)';
+                ctx.strokeStyle = 'rgb(255,255,255)';
+                ctx.fillStyle = 'rgb(255,255,255)';
 
                 ctx.beginPath();
                 ctx.moveTo(spring.anchor.x, spring.anchor.y);
@@ -95,12 +106,20 @@
 
         window.onload = function() {
 
-            ctx = document.getElementById('cnv').getContext('2d');
-            sp = new SpringImage();
+            var cnv = document.getElementById('cnv');
+
+            ctx = cnv.getContext('2d');
+
+            cnv.width = window.innerWidth;
+            cnv.height = window.innerHeight;
+
+            sp = new SpringBall();
 
             document.addEventListener('click', onClick, false);
             draw();
-            
+
+            sp.moveAnchor(window.innerWidth * 0.5, window.innerHeight * 0.5);
+
         }
 
         function onClick(e) {
@@ -117,8 +136,11 @@
 </head>
 <body>
 <div id="container">
-    <canvas id="cnv" width="800" height="450">
+    <canvas id="cnv"></canvas>
 </div>
+
+<div id="instr">Click anywhere to activate the spring animation</div>
+
 </body>
 </html>
 

@@ -157,10 +157,13 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
 
         renderObjects.sort(function(a, b) {
+
             var ad = a.depth();
             var bd = b.depth();
+
             if (ad < bd) return -1;
             if (ad > bd) return 1;
+            
             return 0;
         });
 
@@ -189,7 +192,6 @@ SQR.Squareroot = function(canvas, divContainer) {
 
     uniforms.projection = new SQR.ProjectionMatrix();
     uniforms.container = divContainer;
-
     this.lightDirection = new SQR.V3(0, 1, 0).norm();
 
     var clearColor = null;

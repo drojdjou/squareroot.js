@@ -25,17 +25,17 @@
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/VectorUtil.js"></script>
-<script type="text/javascript" src="../../src/sqr/Geometry.js"></script>
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Particle2D.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Quad.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Triangle.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/physics/CSSCollider.js"></script>
+<script type="text/javascript" src="../../src/sqr/physics/Particle.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement3D.js"></script>
-<script type="text/javascript" src="../../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../../src/sqr/renderers/Point.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Polygon.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Segment.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
@@ -120,8 +120,9 @@
             t.position.set(v.x, v.y, v.z);
             t.rotation.set(0, 0, SQR.twoPI * Math.random());
 
-//            t.renderer = new SQR.DOMElement2D(ht);
-        t.renderer = new SQR.DOMElement3D(ht);
+            // Toggle this line to
+            t.renderer2d = t.renderer = new SQR.DOMElement2D(ht);
+            t.renderer3d = new SQR.DOMElement3D(ht);
 
             root.add(t);
 
@@ -144,6 +145,15 @@
                 mx = e.pageX / window.innerWidth * 2 - 1;
                 my = e.pageY / window.innerHeight * 2 - 1;
 
+            }, false);
+
+            document.addEventListener('click', function(e) {
+                root.recurse(function(t) {
+                    if(t == root) return;
+
+                    if(t.renderer == t.renderer2d) t.renderer = t.renderer3d;
+                    else if(t.renderer == t.renderer3d) t.renderer = t.renderer2d;
+                });
             }, false);
 
             container = document.getElementById("div-container")
@@ -207,16 +217,11 @@
             render();
         }
 
-        var a = 0;
-
         function render() {
             requestAnimFrame(render);
 
             root.rotation.y += 0.03 * mx;
             root.rotation.x += 0.015 * my;
-
-            camera.position.x = Math.sin(a) * 100;
-            a += 0.01;
 
             engine.render(camera);
         }
@@ -230,7 +235,7 @@
 </div>
 <div id="div-container"></div>
 
-<div id="instr">Move your mouse/touch to rotate the planets.</div>
+<div id="instr">Move your mouse/touch to rotate the planets.<br>(click to toggle between 2D and 3D rendering)</div>
 
 </body>
 </html>

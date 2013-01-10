@@ -25,17 +25,17 @@
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/VectorUtil.js"></script>
-<script type="text/javascript" src="../../src/sqr/Geometry.js"></script>
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Particle2D.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Quad.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Triangle.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/physics/CSSCollider.js"></script>
+<script type="text/javascript" src="../../src/sqr/physics/Particle.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement3D.js"></script>
-<script type="text/javascript" src="../../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../../src/sqr/renderers/Point.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Polygon.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Segment.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
@@ -65,8 +65,8 @@
         var d1 = new SQR.V2();
         d1.sub(v1, p1).mul(0.1);
 
-        d0.addTo(p0);
-        d1.addTo(p1);
+        d0.appendVec(p0);
+        d1.appendVec(p1);
 
         var p0i = new SQR.V2();
         var v0i = new SQR.V2();

@@ -28,7 +28,7 @@ SQR.Transform = function(n) {
 
     // 0 - dynamic object
     // 1 - static object
-    // 2 - static object after recalculation
+    // 2 - static object after matrices were calculated
     this.positioningMode = 0;
 
     this.depth = function() {

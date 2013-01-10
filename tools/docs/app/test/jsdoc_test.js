@@ -335,7 +335,7 @@ Circle.prototype.setRadius = function(radius){
 
 /** 
  * An example of a  class (static) method that acts as a factory for Circle
- * objects. Given a radius value, this method creates a new Circle.
+ * geometry. Given a radius value, this method creates a new Circle.
  * @param {int} radius The radius value to use for the new Circle.
  * @type Circle
  */

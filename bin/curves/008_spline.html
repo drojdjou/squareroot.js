@@ -25,17 +25,17 @@
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/VectorUtil.js"></script>
-<script type="text/javascript" src="../../src/sqr/Geometry.js"></script>
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Particle2D.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Quad.js"></script>
-<script type="text/javascript" src="../../src/sqr/objects/Triangle.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/physics/CSSCollider.js"></script>
+<script type="text/javascript" src="../../src/sqr/physics/Particle.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement3D.js"></script>
-<script type="text/javascript" src="../../src/sqr/renderers/Particle.js"></script>
+<script type="text/javascript" src="../../src/sqr/renderers/Point.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Polygon.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Segment.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
@@ -93,7 +93,7 @@
         }
 
         function findMidpoint(a, b) {
-            return new SQR.V2().sub(b, a).mul(0.5).addTo(a);
+            return new SQR.V2().sub(b, a).mul(0.5).appendVec(a);
         }
 
         window.onload = function() {

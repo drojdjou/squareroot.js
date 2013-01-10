@@ -56,9 +56,10 @@ SQR.V2.prototype.neg = function() {
     return this;
 }
 
-SQR.V2.prototype.addTo = function(a) {
-    this.x += a.x;
-    this.y += a.y;
+SQR.V2.prototype.appendVec = function(v) {
+    if(!v) return this;
+    this.x += v.x;
+    this.y += v.y;
     return this;
 }
 
@@ -117,13 +118,6 @@ SQR.V2.prototype.setAngleRadius = function(a, r) {
 SQR.V2.prototype.append = function(x, y) {
     this.x += x;
     this.y += y;
-    return this;
-}
-
-SQR.V2.prototype.appendVec = function(v) {
-    if(!v) return;
-    this.x += v.x;
-    this.y += v.y;
     return this;
 }
 

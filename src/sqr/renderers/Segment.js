@@ -14,16 +14,18 @@ SQR.Segment = function(thickness) {
         mvp.transformVector(a);
         mvp.transformVector(b);
 
-        if (a.z < 0 || b.z < 0) return;
+        if (a.z < 0 || b.z < 0) return false;
 
         dir.sub(a, b).norm();
-        if (SQR.V3.dot(dir, front) < 0 && that.culling) return;
+        if (SQR.V3.dot(dir, front) < 0 && that.culling) return false;
 
         a.x = a.x / a.z * cx + cx;
         a.y = a.y / a.z * cy + cy;
 
         b.x = b.x / b.z * cx + cx;
         b.y = b.y / b.z * cy + cy;
+
+        return true;
     }
 
     var drawLine = function(ctx, a, b, m, ctn) {
@@ -73,8 +75,9 @@ SQR.Segment = function(thickness) {
             ctx.strokeStyle = c.toHSLString();
             ctx.lineWidth = thickness;
 
-            project(ps, pe, uniforms.centerX, uniforms.centerY);
-            drawLine(ctx, ps, pe, i == 0, geo.continous);
+            var canDraw = project(ps, pe, uniforms.centerX, uniforms.centerY);
+
+            if(canDraw) drawLine(ctx, ps, pe, i == 0, geo.continous);
         }
 
         if (geo.continous) {

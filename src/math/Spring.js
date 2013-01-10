@@ -8,14 +8,13 @@ SQR.Spring = function(_anchor) {
     this.velocity = this.anchor.clone();
 
     this.friction = 0.85;
-    this.restLength = 0;
     this.k = 0.1;
 
     var x = 0;
 
     this.update = function() {
         this.acceleration.sub(this.location, this.anchor);
-        x = this.acceleration.mag() - this.restLength;
+        x = this.acceleration.mag();
         this.acceleration.norm().mul(-this.k * x);
 
         this.velocity.add(this.velocity, this.acceleration);
