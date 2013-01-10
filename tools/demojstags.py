@@ -59,6 +59,7 @@ if(__name__ == '__main__'):
 	parseDemos(debug, "bin/curves")
 	parseDemos(debug, "bin/noise")
 	parseDemos(debug, "bin/sandbox")
+	parseDemos(debug, "bin/anim")
 
 
 

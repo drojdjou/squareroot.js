@@ -12,8 +12,8 @@ var SQR = (function() {
         deg2rad: Math.PI / 180,
         rad2deg: 180 / Math.PI,
 
-        supportsCss3d: true,
-        usePreserve3d: true
+        supportsCss3d: false,
+        usePreserve3d: false
     }
 
 })();

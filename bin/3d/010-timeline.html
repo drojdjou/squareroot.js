@@ -3,6 +3,8 @@
 <head>
 <title>Perspective Origin | v0.15</title>
 
+<link href='http://fonts.googleapis.com/css?family=Denk+One' rel='stylesheet' type='text/css'>
+
 <script type="text/javascript" src="../../lib/modernizr.custom.56278.js"></script>
 <script type="text/javascript" src="../../lib/requestAnimFrame.js"></script>
 
@@ -51,7 +53,7 @@
     body {
         overflow: hidden;
         background-color: #000000;
-        font-family: Georgia, sans-serif;
+        font-family: 'Denk One', sans-serif;
     }
 
     #canvas {
@@ -72,7 +74,6 @@
         margin-left: -200px;
         width: 400px;
         height: 400px;
-        overflow: hidden;
     }
 
     .light {
@@ -173,7 +174,7 @@
 
         // Parameters are: canvas, container
         engine = new SQR.Squareroot(null, container);
-        engine.setBackground("#000000");
+//        engine.setBackground("#000000");
         engine.setSize(window.innerWidth, window.innerHeight);
         engine.setProjection(30);
 
@@ -187,11 +188,15 @@
             div3d = new SQR.Transform();
             div3d.positioningMode = SQR.DYNAMIC_TRANSFORM;
 
-            if (SQR.supportsCss3d) div3d.renderer = new SQR.DOMElement3D(createDiv("../assets/square-400.jpg"));
-            else div3d.renderer = new SQR.DOMElement2D(createDiv("../assets/square-400.jpg"));
+//            if (SQR.supportsCss3d)
+//                div3d.renderer = new SQR.DOMElement3D(createDiv("../assets/square-400.jpg"));
+//            else
+                div3d.renderer = new SQR.DOMElement2D(createDiv("../assets/square-400.jpg"));
 
-            div3d.renderer.setBackfaceVisibility(false);
+//            div3d.renderer.setBackfaceVisibility(false);
             div3d.position.z = z;
+
+            div3d.collider = new SQR.CSSCollider(400, 400);
 
             if (!eo) {
                 div3d.position.x = 320;
@@ -218,7 +223,6 @@
     }
 
     var a = 1;
-
     var throttle = 0;
 
     function render() {
@@ -227,11 +231,15 @@
         camera.position.z += -100 * SQR.Time.deltaTime;
 
         camera.rotation.y = (mx * 2 - 1) / -4;
-        camera.rotation.x = (my * 2 - 1) / -4;
+//        camera.rotation.x = (my * 2 - 1) / -4;
 
         engine.recurse(function(t) {
             if(t.name != 'camera') {
                 t.rotation.y = (t.position.x > 0 ) ? my : -my;
+
+                // Just check the collider
+                var c = t.collider.intersects(200, 200);
+                
             }
         });
 
