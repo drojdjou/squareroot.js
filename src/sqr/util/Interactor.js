@@ -28,8 +28,10 @@ SQR.Interactor = function () {
         that.pageCenterX = e.pageX - window.innerWidth * 0.5;
         that.pageCenterY = e.pageY - window.innerHeight * 0.5;
 
-        that.absPageX = e.pageX - window.scrollX;
-        that.absPageY = e.pageY - window.scrollY;
+        that.absPageX = e.pageX - document.body.scrollLeft;
+        that.absPageY = e.pageY - document.body.scrollTop;
+//        that.absPageX = e.pageX - window.scrollX;
+//        that.absPageY = e.pageY - window.scrollY;
 
         that.normX = e.pageX / window.innerWidth;
         that.normY = e.pageY / window.innerHeight;
