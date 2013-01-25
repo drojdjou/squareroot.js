@@ -2,19 +2,11 @@
 
 import os, glob, sys, fileinput, shutil, time
 
-srcfolder = "src"
-
 infoTxt = "tools/build/info.txt"
-
-outputTemp = "build/squareroot-temp.js"
-outputMinTemp = "build/squareroot-temp-min.js"
-
-output = "build/squareroot.js"
-outputMin = "build/squareroot-min.js"
 
 now = ""
 
-def listSourceFiles():
+def listSourceFiles(srcfolder):
 	jsf = []
 	for root, dirs, files in os.walk(srcfolder):
 		for name in files:
@@ -24,25 +16,16 @@ def listSourceFiles():
 				print "J %s" % fname
 	return jsf
 
-def minifyWithClosure(jsf):
-	os.system('touch %s' % outputMinTemp)
+def minifyWithClosure(jsf, output):
+	os.system('touch %s.temp' % output)
 
-	_cmd =  "java -jar tools/build/compiler.jar --js_output_file %s --warning_level QUIET --js " % outputMinTemp
+	_cmd =  "java -jar tools/build/compiler.jar --js_output_file %s.temp --warning_level QUIET --js " % output
 	_cmd += ' --js '.join(jsf)
 	os.system(_cmd)
 
-#	_cmd = "cat "
-#	_cmd += ' '.join(jsf)
-#	_cmd += ' > %s' % outputTemp
-#	os.system(_cmd)
-
-def finalizeBuild():
-#	os.system("cat %s %s > %s" % (infoTxt, outputTemp, output))
-	os.system("cat %s %s > %s" % (infoTxt, outputMinTemp, outputMin))
-
-def cleanup():
-#	os.remove(outputTemp)
-	os.remove(outputMinTemp)
+def finalizeBuild(output):
+	os.system("cat %s %s.temp > %s" % (infoTxt, output, output))
+	os.remove("%s.temp" % output)
 
 def incrementVersion():
 	global now
@@ -64,7 +47,7 @@ def incrementVersion():
 		else:
 			print line,
 
-def build():
+def build(srcfolder, output):
 	global now
 	now = time.asctime( time.localtime(time.time()) )
 	print "[ Starting build at %s ]" % now
@@ -72,13 +55,12 @@ def build():
 	print "[ Update version ]"
 	incrementVersion()
 	print "[ Getting JS source files ]"
-	f = listSourceFiles()
+	f = listSourceFiles(srcfolder)
 	print "[ Minifying ]"
-	minifyWithClosure(f)
+	minifyWithClosure(f, output)
 	print "[ Finalizing build ]"
-	finalizeBuild()
-	print "[ Cleanup ]"
-	cleanup()
+	finalizeBuild(output)
+	print "[ Done ]"
 
 # # # # # #
 if(__name__ == '__main__'):
@@ -86,7 +68,8 @@ if(__name__ == '__main__'):
 	if cwd == "tools":
 		os.chdir('../')
 
-	build()
+	build("src", "build/squareroot-min.js")
+	build("src/math", "build/squareroot-math-min.js")
 
 
 

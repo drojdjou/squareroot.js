@@ -1,3 +1,4 @@
+// Based on http://natureofcode.com/book/chapter-2-forces/
 SQR.Particle = function(p) {
 
     p = p || new SQR.V2();
@@ -5,6 +6,9 @@ SQR.Particle = function(p) {
     this.position = p;
     this.velocity = p.clone().set();
     this.acceleration = p.clone().set();
+
+    this.angularVelocity = 0;
+    this.angularAcceleration = 0;
 
     this.mass = 1;
     this.friction = 2;

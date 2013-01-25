@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Write-2-Canvas utility | v0.1</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+        body {
+            font-family: "Monda", serif;
+            font-size: 100px;
+            background-color: #f5f5f5;
+        }
+
+        #list div {
+            position: absolute;
+            display: block;
+            top: 0px;
+            left: 0px;
+            padding: 10px;
+            line-height: 100px;
+            margin: 10px;
+            background-color: white;
+        }
+
+        #list canvas {
+            
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        function init() {
+
+            var cnv = document.createElement('canvas');
+            var div = document.getElementById('list');
+
+            cnv.width = div.offsetWidth;
+            cnv.height = div.offsetHeight;
+
+            console.log(cnv.width, cnv.height);
+            console.log(window.getComputedStyle(div).width, window.getComputedStyle(div).height);
+
+            return;
+
+            var ctx = cnv.getContext('2d');
+
+            document.getElementById('list').appendChild(cnv);
+
+            ctx.fillStyle = 'rgba(0,0,0,0)'
+            ctx.fillRect(0, 0, cnv.width, cnv.height);
+
+            ctx.font = "100px Monda";
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = 'rgba(0,0,0,1)'
+            ctx.fillText("This is text", 10, 0);
+
+            var idt = ctx.getImageData(0, 0, cnv.width, cnv.height);
+
+            console.log(idt);
+            
+        }
+
+        window.onload = function() {
+            setTimeout(init, 1000);
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div id="list">
+    <div>This is text</div>
+</div>
+
+</body>
+</html>

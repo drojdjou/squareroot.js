@@ -1,6 +1,6 @@
 SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
 
-    if(!_p0 || !_c0 && !_c1 || !_p1) throw("Failed to create cruve: 4 2D or 2D vectors are required.");
+    if(!_p0 || !_c0 && !_c1 || !_p1) throw("Failed to create cruve: 4 2D|3D vectors are required.");
 
     this.p0 = _p0;
     this.c0 = _c0;

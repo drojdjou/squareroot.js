@@ -3,7 +3,8 @@
  *
  * Four points define the first curve, where the last point is considered the endpoint
  *
- * Each additional 2 points define the next curve (the endpoint between 1st and next curve is the midpoint between the two last point of the 1st
+ * Each additional 2 points define the next curve
+ * (the endpoint between 1st and next curve is the midpoint between the two last point of the 1st)
  *
  * Cases:
  *
