@@ -1,7 +1,7 @@
 Squareroot.js
 =============
 
-Squareroot.js is a micro 3d engine for Canvas and CSS.
+Squareroot.js is a math functions library + a micro 3d engine to use with Canvas and CSS 2D/3D. It is written in Javascript.
 
 ## Projects
 
