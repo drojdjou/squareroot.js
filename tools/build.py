@@ -69,7 +69,6 @@ if(__name__ == '__main__'):
 		os.chdir('../')
 
 	build("src", "build/squareroot-min.js")
-	build("src/math", "build/squareroot-math-min.js")
 
 
 

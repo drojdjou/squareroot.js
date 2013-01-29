@@ -1,4 +1,4 @@
-PieSegment = function() {
+PieSlice = function() {
 
     this.startAngle = 0;
     this.angularWidth = 0;
@@ -40,7 +40,7 @@ PieSegment = function() {
 
         ctx.arc(this.center.x, this.center.y, this.startRadius, this.angularWidth, 0, true);
 
-        if(this.stroke) ctx.stroke();
+        if (this.stroke) ctx.stroke();
         else ctx.fill();
 
     }
