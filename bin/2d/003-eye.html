@@ -27,108 +27,108 @@
     <script type="text/javascript">
 
 
-        var cnv, ctx;
-        var numSegment = 70;
-        var segments = [];
-        var mx = 0, my = 0;
-        var mouseAngle = 0, moved = false;
-        var MINR = 70, MAXR = 180;
-        var a = 0;
-        var globalWave = 0;
+var cnv, ctx;
+var numSegment = 70;
+var segments = [];
+var mx = 0, my = 0;
+var mouseAngle = 0, moved = false;
+var MINR = 50, MAXR = 150;
+var a = 0;
+var globalWave = 0;
 
 
-        window.onload = function() {
+window.onload = function() {
 
-            cnv = document.getElementById('cnv');
-            cnv.width = window.innerWidth;
-            cnv.height = window.innerHeight;
+    cnv = document.getElementById('cnv');
+    cnv.width = window.innerWidth;
+    cnv.height = window.innerHeight;
 
-            ctx = cnv.getContext('2d');
+    ctx = cnv.getContext('2d');
 
-            var aw = Math.PI * 2 / numSegment;
+    var aw = Math.PI * 2 / numSegment;
 
-            for (var i = 0; i < numSegment; i++) {
-                var p = new PieSlice();
+    for (var i = 0; i < numSegment; i++) {
+        var p = new PieSlice();
 
-                p.startAngle = aw * i;
-                p.angularWidth = aw;
+        p.startAngle = aw * i;
+        p.angularWidth = aw;
 
-                p.startRadius = MINR;
+        p.startRadius = MINR;
 
-                p.margin = 1;
-                p.maxRadius = MAXR - p.startRadius;
-                p.bump = 0;
-                p.targetBump = 0;
-                p.friction = 0.98;
+        p.margin = 1;
+        p.maxRadius = MAXR - p.startRadius;
+        p.bump = 0;
+        p.targetBump = 0;
+        p.friction = 0.98;
 
-                p.center = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
-                p.color = 'white';
-                p.phase = 0;
-                p.speed = 0.1 + Math.random() * 0.1;
+        p.center = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
+        p.color = 'white';
+        p.phase = 0;
+        p.speed = 0.1 + Math.random() * 0.1;
 
-                segments.push(p);
-            }
+        segments.push(p);
+    }
 
-            document.addEventListener('mousemove', function(e) {
-                mx = e.pageX - window.innerWidth * 0.5;
-                my = e.pageY - window.innerHeight * 0.5;
-                mouseAngle = Math.atan2(my, mx);
-                if (mouseAngle < 0) mouseAngle = Math.PI + (Math.PI + mouseAngle);
-                moved = true;
-            }, false);
+    document.addEventListener('mousemove', function(e) {
+        mx = e.pageX - window.innerWidth * 0.5;
+        my = e.pageY - window.innerHeight * 0.5;
+        mouseAngle = Math.atan2(my, mx);
+        if (mouseAngle < 0) mouseAngle = Math.PI + (Math.PI + mouseAngle);
+        moved = true;
+    }, false);
 
-            document.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-                mx = e.pageX - window.innerWidth * 0.5;
-                my = e.pageY - window.innerHeight * 0.5;
-                mouseAngle = Math.atan2(my, mx);
-                if (mouseAngle < 0) mouseAngle = Math.PI + (Math.PI + mouseAngle);
-                moved = true;
-            }, false);
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        mx = e.pageX - window.innerWidth * 0.5;
+        my = e.pageY - window.innerHeight * 0.5;
+        mouseAngle = Math.atan2(my, mx);
+        if (mouseAngle < 0) mouseAngle = Math.PI + (Math.PI + mouseAngle);
+        moved = true;
+    }, false);
 
-            draw();
+    draw();
+}
+
+
+function draw() {
+    requestAnimFrame(draw);
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, cnv.width, cnv.height);
+
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (var i = 0; i < numSegment; i++) {
+        var p = segments[i];
+
+        if (moved && Math.abs(mouseAngle - (p.startAngle)) < p.angularWidth * 2) {
+            p.targetBump = 1;
         }
 
+        p.bump += (p.targetBump - p.bump) * 0.05;
 
-        function draw() {
-            requestAnimFrame(draw);
+        p.targetBump *= p.friction;
 
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, cnv.width, cnv.height);
+        var dp = p.maxRadius * p.bump;
+        var sp = (p.maxRadius - dp) * (1 - p.bump);
+        var cp = Math.max(0, sp + dp * 0.5 * Math.sin(p.phase));
 
-            ctx.fillStyle = 'white';
-            ctx.beginPath();
-            ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 8, 0, Math.PI * 2);
-            ctx.fill();
+        p.endRadius = p.startRadius + cp;
+        p.phase += p.speed;
+        p.draw(ctx);
+    }
 
-            ctx.fillStyle = 'black';
-            ctx.beginPath();
-            ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            for (var i = 0; i < numSegment; i++) {
-                var p = segments[i];
-
-                if (moved && Math.abs(mouseAngle - (p.startAngle)) < p.angularWidth * 2) {
-                    p.targetBump = 1;
-                }
-
-                p.bump += (p.targetBump - p.bump) * 0.05;
-
-                p.targetBump *= p.friction;
-
-                var dp = p.maxRadius * p.bump;
-                var sp = (p.maxRadius - dp) * (1 - p.bump);
-                var cp = Math.max(0, sp + dp * 0.5 * Math.sin(p.phase));
-
-                p.endRadius = p.startRadius + cp;
-                p.phase += p.speed;
-                p.draw(ctx);
-            }
-
-            globalWave += 0.03;
-            moved = false;
-        }
+    globalWave += 0.03;
+    moved = false;
+}
 
     </script>
 
