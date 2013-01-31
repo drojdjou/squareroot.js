@@ -1,3 +1,11 @@
+/**
+ * @class
+ *
+ * The engine.
+ *
+ * @param canvas
+ * @param divContainer
+ */
 SQR.Squareroot = function(canvas, divContainer) {
 
     this.setBackground = function(c) {
@@ -20,19 +28,29 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
-    this.setPerspectiveOrigin = function(x, y) {
-        if (divContainer) {
-            divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
-            divContainer.style['-webkit-perspective-origin'] = x + 'px ' + y + 'px';
-            divContainer.style['-moz-perspective-origin'] = x + 'px ' + y + 'px';
-            divContainer.style['-o-perspective-origin'] = x + 'px ' + y + 'px';
-        }
-    }
+//    This function doesn't translate to 
+//    this.setPerspectiveOrigin = function(x, y) {
+//        if (divContainer) {
+//            divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
+//            divContainer.style['-webkit-perspective-origin'] = x + 'px ' + y + 'px';
+//            divContainer.style['-moz-perspective-origin'] = x + 'px ' + y + 'px';
+//            divContainer.style['-o-perspective-origin'] = x + 'px ' + y + 'px';
+//        }
+//    }
 
+    /**
+     * Returns a distance. If a CSS object is placed at this distance from the camera it will be
+     * scaled to the same size as it original size.
+     */
     this.cssDistance = function() {
         return uniforms.cssDistance;
     }
 
+    /**
+     * 
+     * @param w
+     * @param h
+     */
     this.setSize = function(w, h) {
         uniforms.width = w;
         uniforms.height = h;

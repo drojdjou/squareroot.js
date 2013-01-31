@@ -1,7 +1,7 @@
 /**
  * @class
  *
- * The SQR.DOMElement2D is essentially a billboard made of a div. It is useful for billboard,
+ * The SQR.DOMElement2D is like a billboard made of a div. It is useful for billboard,
  * but most typically it will be used as replacement for SQR.DOMElement3D for browsers that
  * do not support CSS 3D.
  *
@@ -19,7 +19,10 @@ SQR.DOMElement2D = function(element) {
     var matrix2D = new SQR.Matrix2D();
     var mvp = new SQR.Matrix44();
 
-    // Do not call this functions directly
+    /**
+     *  Adds te underlying div element to dom.
+     *  Do not call this functions directly.
+     */
     this.appendToDom = function(c) {
         if (addedToDom && c == container) return;
         container = c;
@@ -27,6 +30,10 @@ SQR.DOMElement2D = function(element) {
         addedToDom = true;
     }
 
+    /**
+     *  Removes the underlying div element from dom.
+     *  Do not call this functions directly.
+     */
     this.removeFromDom = function() {
         if(!addedToDom) return;
         container.removeChild(this.element);
@@ -34,11 +41,23 @@ SQR.DOMElement2D = function(element) {
     }
 
     /**
-     * This function doesn't do anything, but it's here to match the interface of SQR.DOMElement3D
+     * This function doesn't do anything, but it's here to match the interface of SQR.DOMElement3D.
      */
     this.setBackfaceVisibility = function() {
     }
 
+    /**
+     * Draw function in a renderer will take care of drawing the element on screen.
+     *
+     * This functions role is very similar the shader in WebGL. 
+     * Inside draw all the vertices are tranaformed and projected to screen coordinates.
+     *
+     * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
+     * is will update it's style transfom property.
+     *
+     * @param transform the transform being rendered
+     * @param uniforms a collection of objects necessary for rendering (ref to canvas, matrices, misc coordinates, etc...)
+     */
     this.draw = function(transform, uniforms) {
         uniforms.projection.copyTo(mvp);
         mvp.multiply(transform.viewMatrix);

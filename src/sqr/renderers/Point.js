@@ -1,8 +1,28 @@
+/**
+ * @class
+ *
+ * Draws a collection of particles on the canvas.
+ * The texture of the particle is taken from the geometry.particleTexture[i]
+ *
+ * @param radius
+ */
 SQR.Point = function(radius) {
 
     var p = new SQR.V3();
     var mvp = new SQR.Matrix44();
 
+    /**
+     * Draw function in a renderer will take care of drawing the element on screen.
+     *
+     * This functions role is very similar the shader in WebGL.
+     * Inside draw all the vertices are tranaformed and projected to screen coordinates.
+     *
+     * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
+     * is will update it's style transfom property.
+     *
+     * @param transform the transform being rendered
+     * @param uniforms a collection of objects necessary for rendering (ref to canvas, geometry, matrices, misc coordinates, etc...)
+     */
     this.draw = function(transform, uniforms) {
         var ctx = uniforms.context;
         var geo = transform.geometry;
@@ -15,7 +35,7 @@ SQR.Point = function(radius) {
 
             mvp.transformVector(p);
 
-            if(p.z < 0) continue;
+            if (p.z < 0) continue;
 
             p.x = p.x / p.z * uniforms.centerX + uniforms.centerX - radius;
             p.y = p.y / p.z * uniforms.centerY + uniforms.centerY - radius;

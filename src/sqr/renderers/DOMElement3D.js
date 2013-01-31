@@ -1,3 +1,11 @@
+/**
+ * @class
+ *
+ * The SQR.DOMElement3D represents a div transformed using CSS 3D.
+ * For browsers that do not support CSS 3D, the SQR.DOMElement2D renderer should can used instead.
+ *
+ * @param element
+ */
 SQR.DOMElement3D = function(element) {
 
     // Used to identify the type of the renderer instead of using insfanceof
@@ -16,7 +24,10 @@ SQR.DOMElement3D = function(element) {
         element.style['-o-backface-visibility'] = p;
     }
 
-    // Do not call this functions directly
+    /**
+     *  Adds te underlying div element to dom.
+     *  Do not call this functions directly.
+     */
     this.appendToDom = function(c) {
         if (addedToDom && c == container) return;
         container = c;
@@ -24,12 +35,28 @@ SQR.DOMElement3D = function(element) {
         addedToDom = true;
     }
 
+    /**
+     *  Removes the underlying div element from dom.
+     *  Do not call this functions directly.
+     */
     this.removeFromDom = function() {
         if (!addedToDom) return;
         container.removeChild(this.element);
         addedToDom = false;
     }
 
+    /**
+     * Draw function in a renderer will take care of drawing the element on screen.
+     *
+     * This functions role is very similar the shader in WebGL.
+     * Inside draw all the vertices are tranaformed and projected to screen coordinates.
+     *
+     * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
+     * is will update it's style transfom property.
+     *
+     * @param transform the transform being rendered
+     * @param uniforms a collection of objects necessary for rendering (ref to canvas, matrices, misc coordinates, etc...)
+     */
     this.draw = function(transform, uniforms) {
         var t3d = SQR.DOMUtil.translate3dCss(0, 0, uniforms.cssDistance);
         var ps = 'perspective(' + uniforms.cssDistance + 'px)';

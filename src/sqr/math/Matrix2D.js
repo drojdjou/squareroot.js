@@ -1,4 +1,6 @@
 /**
+ * @class
+ *
  * A matrix that implements 2D affine transformations.
  *
  * TODO: make it column major
@@ -10,6 +12,9 @@ SQR.Matrix2D = function() {
 
     var a, b, d, x, y;
 
+    /**
+     * Resets the matrix to identity
+     */
     this.identity = function() {
         d = this.data;
         d[0] = 1,d[1] = 0,d[2] = 0;
@@ -18,6 +23,11 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     * Multiplies the vector by the matrix
+     * @param v vector to multiply
+     * @returns the same vector as passed in the parameter, multiplied by this matrix
+     */
     this.transformVector = function(v) {
         d = this.data;
         x = v.x,y = v.y;

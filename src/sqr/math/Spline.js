@@ -1,4 +1,8 @@
 /**
+ * @class
+ *
+ * Defines a spline.
+ *
  * How many segments a spline has?
  *
  * Four points define the first curve, where the last point is considered the endpoint
