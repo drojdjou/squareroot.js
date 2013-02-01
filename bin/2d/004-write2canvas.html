@@ -40,12 +40,13 @@
             cnv.width = div.offsetWidth;
             cnv.height = div.offsetHeight;
 
-            console.log(cnv.width, cnv.height);
-            console.log(window.getComputedStyle(div).width, window.getComputedStyle(div).height);
-
-            return;
+//            console.log(cnv.width, cnv.height);
+//            console.log(window.getComputedStyle(div).width, window.getComputedStyle(div).height);
+//            return;
 
             var ctx = cnv.getContext('2d');
+
+            var txt = "This is text";
 
             document.getElementById('list').appendChild(cnv);
 
@@ -54,12 +55,14 @@
 
             ctx.font = "100px Monda";
             ctx.textBaseline = 'top';
-            ctx.fillStyle = 'rgba(0,0,0,1)'
-            ctx.fillText("This is text", 10, 0);
+            ctx.fillStyle = 'rgba(0,0,0,1)';
 
-            var idt = ctx.getImageData(0, 0, cnv.width, cnv.height);
+            console.log("Width of the text", ctx.measureText(txt).width);
 
-            console.log(idt);
+            ctx.fillText(txt, 10, 0);
+
+//            var idt = ctx.getImageData(0, 0, cnv.width, cnv.height);
+//            console.log(idt);
             
         }
 

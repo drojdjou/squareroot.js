@@ -62,7 +62,8 @@ window.onload = function() {
         p.friction = 0.98;
 
         p.center = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
-        p.color = 'white';
+        var h = Math.abs(i / numSegment * 510 - 255)
+        p.color = SQR.Color.hsl(h | 0, 100, 50);
         p.phase = 0;
         p.speed = 0.1 + Math.random() * 0.1;
 
@@ -98,7 +99,7 @@ function draw() {
 
     ctx.fillStyle = 'white';
     ctx.beginPath();
-    ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 8, 0, Math.PI * 2);
+    ctx.arc(cnv.width * 0.5, cnv.height * 0.5, MAXR + 5, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = 'black';
