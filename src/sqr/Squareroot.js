@@ -8,8 +8,7 @@
  */
 SQR.Squareroot = function(canvas, divContainer) {
 	var uniforms = {};
-	var _projection = new SQR.ProjectionMatrix();
-	uniforms.projection = _projection;
+	uniforms.projection = new SQR.ProjectionMatrix();
 	
 	this.lightDirection = new SQR.V3(0, 1, 0).norm();
 
@@ -206,17 +205,13 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
-    uniforms = {};
-
     if (canvas) {
         uniforms.context = canvas.getContext("2d");
         this.setSize(canvas.width, canvas.height);
     }
 
-	uniforms.projection = _projection;
     uniforms.projection.identity();
     uniforms.container = divContainer;
-
 	
     this.lightDirection.set(0, 1, 0).norm();
 
