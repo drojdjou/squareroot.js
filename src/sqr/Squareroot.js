@@ -7,6 +7,10 @@
  * @param divContainer
  */
 SQR.Squareroot = function(canvas, divContainer) {
+	var uniforms = {};
+	uniforms.projection = new SQR.ProjectionMatrix();
+	
+	this.lightDirection = new SQR.V3(0, 1, 0).norm();
 
     this.setBackground = function(c) {
         if (canvas) canvas.style.backgroundColor = c;
@@ -201,16 +205,15 @@ SQR.Squareroot = function(canvas, divContainer) {
         }
     }
 
-    var uniforms = {};
-
     if (canvas) {
         uniforms.context = canvas.getContext("2d");
         this.setSize(canvas.width, canvas.height);
     }
 
-    uniforms.projection = new SQR.ProjectionMatrix();
+    uniforms.projection.identity();
     uniforms.container = divContainer;
-    this.lightDirection = new SQR.V3(0, 1, 0).norm();
+	
+    this.lightDirection.set(0, 1, 0).norm();
 
     var clearColor = null;
 }

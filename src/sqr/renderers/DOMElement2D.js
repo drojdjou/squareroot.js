@@ -18,6 +18,7 @@ SQR.DOMElement2D = function(element) {
 
     var matrix2D = new SQR.Matrix2D();
     var mvp = new SQR.Matrix44();
+	var v3 = new SQR.V3(0, 0, 0);
 
     /**
      *  Adds te underlying div element to dom.
@@ -62,7 +63,7 @@ SQR.DOMElement2D = function(element) {
         uniforms.projection.copyTo(mvp);
         mvp.multiply(transform.viewMatrix);
 
-        var p = new SQR.V3(0, 0, 0);
+        var p = v3.set(0, 0, 0);
 
         mvp.transformVector(p);
 
