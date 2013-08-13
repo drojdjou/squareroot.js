@@ -25,6 +25,9 @@ SQR.Spline = function(s1, s2, s3, s4) {
     this.rawPoints = [];
     this.controlPoints = [];
 
+    this.length = 0;
+    this.samplingFreq = 3000;
+
     var numSegments = 1;
     var numRawPoints = 4;
     var closed = false;
@@ -39,6 +42,10 @@ SQR.Spline = function(s1, s2, s3, s4) {
     }
 
     var interpolate = function(t, v, func) {
+
+        t = Math.max(t, 0);
+        t = Math.min(t, 1);
+            
         var s, st;
         var cs = that.controlPoints;
 
@@ -65,6 +72,45 @@ SQR.Spline = function(s1, s2, s3, s4) {
 
     this.velocityAt = function(t, v) {
         return interpolate(t, v, SQR.Interpolation.bezierVelocity);
+    }
+
+    this.recalculateLength = function(dl) {
+        dl = dl || this.samplingFreq;
+        
+        var l = 0;
+
+        var lv = new SQR.V2();
+
+        for(var i = 0; i <= dl; i++) {
+            var v = this.valueAt(i / dl);
+            if(i > 0) l += lv.sub(v, lv).mag();
+            lv.copyFrom(v);
+        }
+
+        this.length = l;
+    }
+
+    this.findTAtDistance = function(st, distance, freq) {
+        freq = freq || 1/this.samplingFreq;
+
+        var sv = this.valueAt(st).clone();
+        var d = 0;
+        var sm = new SQR.V2();
+
+        var c = 0;
+
+        while(d < distance && c < this.samplingFreq) {
+            st += freq;
+            st = Math.min(st, 1);
+            var v = this.valueAt(st);
+            d += sm.sub(sv, v).mag();
+            sv.copyFrom(v);
+            c++;
+        }
+
+        console.log(d, st);
+
+        return st;
     }
 
     this.add = function(p1, p2) {

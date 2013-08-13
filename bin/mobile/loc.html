@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location v 0.26</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style type="text/css">
+
+        body {
+            font-size: 0.8em;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        #container {
+            position: absolute;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            background-color: #808080;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var ct, cnv, ctx;
+        var data = [];
+        var totalDist = 0;
+        var cx, cy;
+        var scale = 300000;
+
+        function dist(lat1, lon1, lat2, lon2) {
+            var R = 6371; // km
+            var dLat = (lat2 - lat1) / 180 * Math.PI;
+            var dLon = (lon2 - lon1) / 180 * Math.PI;
+            var lat1 = lat1 / 180 * Math.PI;
+            var lat2 = lat2 / 180 * Math.PI;
+
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+
+            return d * 1000;
+        }
+
+        window.onload = function () {
+
+            ct = document.getElementById('container');
+            cnv = document.getElementById('canvas');
+
+            cnv.width = window.innerWidth;
+            cnv.height = window.innerHeight;
+
+            cx = window.innerWidth / 2;
+            cy = window.innerHeight / 2;
+
+            ctx = cnv.getContext('2d');
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + 10, cy + 10);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx - 10, cy + 10);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + 10, cy - 10);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx - 10, cy - 10);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgb(255, 0, 0)';
+
+            var fetch = function (p) {
+                data.push(p.coords);
+
+                if (data.length > 1) {
+                    var lat1 = data[data.length - 2].latitude;
+                    var lon1 = data[data.length - 2].longitude;
+
+                    var lat2 = data[data.length - 1].latitude;
+                    var lon2 = data[data.length - 1].longitude;
+
+                    totalDist += dist(lat1, lon1, lat2, lon2);
+
+                    var dx = (lat2 - lat1) * scale;
+                    var dy = (lon2 - lon1) * scale;
+
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + dx, cy + dy);
+                    ctx.stroke();
+
+                    cx += dx;
+                    cy += dy;
+                }
+
+                ct.innerHTML = "Distance: " + totalDist + "<br>(" + data.length + ")<br>" + dx + " : " + dy;
+            };
+
+            var onError = function (e) {
+                for (var m in e) {
+                    ct.innerHTML += m + ": " + e[m] + "<br>";
+                }
+            };
+
+            var onLocation = function () {
+                navigator.geolocation.getCurrentPosition(fetch, onError);
+            }
+
+//            document.addEventListener('click', onLocation);
+//            document.addEventListener('touchstart', onLocation);
+
+            setInterval(onLocation, 1000);
+        }
+
+    </script>
+
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div id="container">Info</div>
+</body>
+</html>

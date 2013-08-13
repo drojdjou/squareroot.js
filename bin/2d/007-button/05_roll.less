@@ -1,0 +1,46 @@
+.b05_3d_roll {
+
+    .perspective(500px);
+
+    div {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        height: 50px;
+        padding: 10px;
+        border: @borderBlack1;
+		pointer-events: none;
+		.border-box;
+    }
+
+    div:nth-child(1) {
+        color: #000000;
+        background-color: #000000;
+        .transform(rotateX(90deg));
+        .transition(all (@transTimeOut * 2) ease);
+        .transform-origin(50% 50% -25px);
+    }
+
+    div:nth-child(2) {
+        color: #000000;
+        background-color: #ffffff;
+        .transform(rotateX(0deg));
+        .transition(all (@transTimeOut * 2) ease);
+        .transform-origin(50% 50% -25px);
+    }
+
+    &:hover {
+
+        div:nth-child(1) {
+            color: #ffffff;
+            .transition(all (@transTime * 2) ease);
+            .transform(rotateX(0deg));
+        }
+
+        div:nth-child(2) {
+            background-color: #000000;
+            .transition(all (@transTime * 2) ease);
+            .transform(rotateX(-90deg));
+        }
+    }
+}

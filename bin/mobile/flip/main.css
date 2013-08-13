@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  padding: 0; }
+
+h1 {
+  padding: 10px;
+  font: normal normal normal 1.2em/1.3em Arial, sans-serif; }
+
+p {
+  padding: 20px 10px 20px 10px; }
+
+.flipc {
+  -webkit-perspective: 1000px;
+  -webkit-backface-visibility: hidden; }
+
+.flip {
+  position: absolute;
+  -webkit-transform-style: preserve-3d; }
+  .flip img {
+    float: left;
+    max-width: 100%;
+    position: absolute;
+    -webkit-transform-style: preserve-3d; }
+
+@-webkit-keyframes slideLeft {
+  from {
+    -webkit-transform: rotateY(0deg); }
+
+  to {
+    -webkit-transform: rotateY(90deg); } }
+
+@-webkit-keyframes slideRight {
+  from {
+    -webkit-transform: rotateY(0deg); }
+
+  to {
+    -webkit-transform: rotateY(-90deg); } }

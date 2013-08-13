@@ -1,0 +1,125 @@
+/* ### ### ### 10 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### */
+
+@b10_tveffect_opacity: 1.0;
+
+.b10_tveffect {
+     div {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        height: 50px;
+        .border-box;
+    }
+
+    div:nth-child(1) {
+        color: #000000;
+        background-color: #ffffff;
+        -webkit-transition: all 0.1s ease;
+        padding: 10px;
+        border: @borderBlack1;
+    }
+
+    div:nth-child(2) {
+
+        overflow: hidden;
+
+        div {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            height: 50px;
+            .border-box;
+            padding: 10px;
+            border: @borderTransparent;
+        }
+
+        div:nth-child(1) {
+
+            color: rgba(200, 120, 120, 0.8);
+            opacity: 0;
+            background: @stripesPattern;
+        }
+
+        div:nth-child(2) {
+            color: rgba(120, 200, 120, 0.8);
+            opacity: 0;
+            background: @stripesPattern;
+        }
+
+        div:nth-child(3) {
+            color: rgba(120, 120, 200, 0.8);
+            opacity: 0;
+            background: @stripesPattern;
+        }
+
+    }
+
+    &:hover {
+
+        div:nth-child(1) {
+            color: #ffffff;
+            background-color: #000000;
+            .transition(color 0s ease);
+            .transition(background-color 0.3s ease 0.20s);
+        }
+
+        div:nth-child(2) {
+
+            div:nth-child(1) {
+                .animation(b10_tveffect_red 0.25s linear);
+            }
+
+            div:nth-child(2) {
+                .animation(b10_tveffect_green 0.25s linear);
+            }
+
+            div:nth-child(3) {
+                .animation(b10_tveffect_blue 0.25s linear);
+            }
+        }
+    }
+}
+
+@-webkit-keyframes b10_tveffect_red {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.8, 1.6) translate(-10px, 3px) skewX(30deg); }
+     50% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.5, 1.2) translate(20px, 6px) skewX(5deg); }
+     75% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(0.9, 1.8) translate(-16px, -1px) skewX(-20deg); }
+}
+
+@-webkit-keyframes b10_tveffect_green {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.3, 1.5) translate(3px, 6px) skewX(25deg); }
+     50% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.6, 1.1) translate(-16px, -5px) skewX(-15deg); }
+     75% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.0, 1.8) translate(18px, 4px) skewX(15deg); }
+}
+
+@-webkit-keyframes b10_tveffect_blue {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.2, 1.4) translate(-10px, -3px) skewX(-25deg); }
+     50% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.9, 1.1) translate(16px, 3px) skewX(5deg); }
+     75% { opacity: @b10_tveffect_opacity; -webkit-transform: scale(1.3, 2.0) translate(-30px, -3px) skewX(20deg); }
+}
+
+
+
+@-moz-keyframes b10_tveffect_red {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; transform: scale(1.8, 1.6) translate(-10px, 3px) skewX(30deg); }
+     50% { opacity: @b10_tveffect_opacity; transform: scale(1.5, 1.2) translate(20px, 6px) skewX(5deg); }
+     75% { opacity: @b10_tveffect_opacity; transform: scale(0.9, 1.8) translate(-16px, -1px) skewX(-20deg); }
+}
+
+@-moz-keyframes b10_tveffect_green {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; transform: scale(1.3, 1.5) translate(3px, 6px) skewX(25deg); }
+     50% { opacity: @b10_tveffect_opacity; transform: scale(1.6, 1.1) translate(-16px, -5px) skewX(-15deg); }
+     75% { opacity: @b10_tveffect_opacity; transform: scale(1.0, 1.8) translate(18px, 4px) skewX(15deg); }
+}
+
+@-moz-keyframes b10_tveffect_blue {
+     from,to { opacity: 0; }
+     25% { opacity: @b10_tveffect_opacity; transform: scale(1.2, 1.4) translate(-10px, -3px) skewX(-25deg); }
+     50% { opacity: @b10_tveffect_opacity; transform: scale(1.9, 1.1) translate(16px, 3px) skewX(5deg); }
+     75% { opacity: @b10_tveffect_opacity; transform: scale(1.3, 2.0) translate(-30px, -3px) skewX(20deg); }
+}

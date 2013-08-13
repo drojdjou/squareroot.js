@@ -1,0 +1,93 @@
+.b07_3d_double_roll {
+
+    .perspective(500px);
+	.preserve-3d;
+
+    div {
+        position: absolute;
+        text-align: center;
+        padding: 10px;
+        border: @borderBlack1;
+		pointer-events: none;
+		.border-box;
+    }
+
+    div:nth-child(1) {
+        color: #000000;
+        background-color: #ffffff;
+        z-index: 0;
+        width: 100%;
+        height: 50px;
+        clip: rect(0px, 100px, 50px, 0px);
+        position: absolute;
+        .transition(all (@transTimeOut * 2) ease);
+        .transform(rotateX(0deg));
+        .transform-origin(50% 50% -25px);
+    }
+
+    div:nth-child(2) {
+        color: #000000;
+        background-color: #000000;
+        z-index: -1;
+        width: 100%;
+        height: 50px;
+        clip: rect(0px, 100px, 50px, 0px);
+        position: absolute;
+        .transform(rotateX(90deg));
+        .transition(all (@transTimeOut * 2) ease);
+        .transform-origin(50% 50% -25px);
+    }
+
+    div:nth-child(3) {
+        color: #000000;
+        background-color: #ffffff;
+        z-index: 0;
+        width: 100%;
+        height: 50px;
+        clip: rect(0px, 200px, 50px, 100px);
+        position: absolute;
+        .transition(all (@transTimeOut * 2) ease @transTimeOut);
+        .transform(rotateX(0deg));
+        .transform-origin(50% 50% -25px);
+    }
+
+    div:nth-child(4) {
+        color: #000000;
+        background-color: #000000;
+        z-index: -1;
+        width: 100%;
+        height: 50px;
+        clip: rect(0px, 200px, 50px, 100px);
+        position: absolute;
+        .transform(rotateX(-90deg));
+        .transition(all (@transTimeOut * 2) ease @transTimeOut);
+        .transform-origin(50% 50% -25px);
+    }
+
+    &:hover {
+
+        div:nth-child(1) {
+            background-color: #000000;
+            .transition(all (@transTime * 2) ease);
+            .transform(rotateX(-90deg));
+        }
+
+        div:nth-child(2) {
+            color: #ffffff;
+            .transition(all (@transTime * 2) ease);
+            .transform(rotateX(0deg));
+        }
+
+        div:nth-child(3) {
+            background-color: #000000;
+            .transition(all (@transTime * 2) ease @transTime);
+            .transform(rotateX(90deg));
+        }
+
+        div:nth-child(4) {
+            color: #ffffff;
+            .transition(all (@transTime * 2) ease @transTime);
+            .transform(rotateX(0deg));
+        }
+    }
+}

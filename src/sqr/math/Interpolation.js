@@ -13,6 +13,14 @@ SQR.Interpolation = {
             + 3 * (-p0 + 3 * c0 - 3 * c1 + p1) * t * t;
     },
 
+    linear: function(e0, e1, t) {
+        if(t <= e0) return e0;
+        if(t >= e1) return e1;
+
+        t = (t - e0) / (e1 - e0);
+
+        return e0 + (e1 - e0) * t;
+    },
     
     smoothStep: function(e0, e1, t) {
         if(t <= e0) return e0;
@@ -20,7 +28,7 @@ SQR.Interpolation = {
 
         t = (t - e0) / (e1 - e0);
 
-        return e0 + (3 * t * t - 2 * t * t * t) * (e1 - e0);
+        return e0 + (e1 - e0) * (3 * t * t - 2 * t * t * t);
     },
 
     quadIn: function (t) {

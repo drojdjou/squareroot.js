@@ -15,13 +15,13 @@ SQR.Point = function(radius) {
      * Draw function in a renderer will take care of drawing the element on screen.
      *
      * This functions role is very similar the shader in WebGL.
-     * Inside draw all the vertices are tranaformed and projected to screen coordinates.
+     * Inside draw all the vertices are transformed and projected to screen coordinates.
      *
      * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
-     * is will update it's style transfom property.
+     * is will update it's style transform property.
      *
      * @param transform the transform being rendered
-     * @param uniforms a collection of objects necessary for rendering (ref to canvas, geometry, matrices, misc coordinates, etc...)
+     * @param uniforms a collection of objects necessary for rendering (ref to canvas, matrices, misc coordinates, etc...)
      */
     this.draw = function(transform, uniforms) {
         var ctx = uniforms.context;

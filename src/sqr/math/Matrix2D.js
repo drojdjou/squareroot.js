@@ -15,11 +15,12 @@ SQR.Matrix2D = function() {
     /**
      * Resets the matrix to identity
      */
-    this.identity = function() {
-        d = this.data;
+    this.identity = function(d) {
+        d = d || this.data;
         d[0] = 1,d[1] = 0,d[2] = 0;
         d[3] = 0,d[4] = 1,d[5] = 0;
         d[6] = 0,d[7] = 0,d[8] = 1;
+
         return this;
     }
 
@@ -89,21 +90,25 @@ SQR.Matrix2D = function() {
     }
 
     this.translate = function(tx, ty) {
+        this.identity(SQR.Matrix2D.__temp);
         this.setTranslation(tx, ty, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
     this.rotate = function(a) {
+        this.identity(SQR.Matrix2D.__temp);
         this.setRotation(a, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
     this.scale = function(sx, sy) {
+        this.identity(SQR.Matrix2D.__temp);
         this.setScale(sx, sy, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
     this.shear = function(sx, sy) {
+        this.identity(SQR.Matrix2D.__temp);
         this.setRotation(sx, sy, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
