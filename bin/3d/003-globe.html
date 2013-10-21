@@ -27,19 +27,36 @@
 
 var engine, camera, globeContainer, globe, aspect;
 var maptemplate;
+var isFramed;
+
+var kill = function() {
+    console.log("Kill Globe!");
+    parent.Broadcast.removeClient("msgRender", render); 
+}
 
 window.onload = function() {
+
+    console.log("Make Globe!");
+
+    if (parent.frames.length > 0) {
+        parent.Broadcast.addClient("msgRender", render); 
+        isFramed = true;
+    } 
+
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, false);
+    
     maptemplate = new Image();
     maptemplate.onload = function() {
         setup();
     }
+
     maptemplate.src = mapBase64;
 }
 
 setup = function() {
-    document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, false);
+    
 
     engine = new SQR.Squareroot(document.getElementById('canvas'));
 
@@ -50,7 +67,7 @@ setup = function() {
     engine.setBackground("#000000");
 
     camera = new SQR.Transform();
-    camera.position.z = 200;
+    camera.position.z = 125;
     engine.add(camera);
 
     globeContainer = new SQR.Transform();
@@ -148,7 +165,6 @@ setup = function() {
 }
 
 var mx = 0, my = 0, isDown = false, isTracked = false;
-;
 var lastMV, currMV, deltaR;
 
 function onInteractionStart() {
@@ -180,9 +196,8 @@ function onInteractionEnd() {
 }
 
 function render() {
+    if(!isFramed) requestAnimFrame(render);
     globe.rotation.y -= 0.01;
-
-    requestAnimFrame(render);
     engine.render(camera);
 }
 
