@@ -13,10 +13,10 @@ Circle = function() {
 
         if(!this.enabled || this.radius == 0) return;
 
-        ctx.save();
-        ctx.translate(this.center.x, this.center.y);
-        ctx.rotate(this.startAngle);
-        ctx.translate(-this.center.x, -this.center.y);
+        // ctx.save();
+        // ctx.translate(this.center.x, this.center.y);
+        // ctx.rotate(this.startAngle);
+        // ctx.translate(-this.center.x, -this.center.y);
 
         if (this.stroke) ctx.strokeStyle = this.color.toHSLString();
         ctx.fillStyle = this.color.toHSLString();
@@ -28,6 +28,6 @@ Circle = function() {
         if (this.stroke) ctx.stroke();
         ctx.fill();
 
-        ctx.restore();
+        // ctx.restore();
     }
 }
