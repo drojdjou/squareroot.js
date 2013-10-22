@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>A few bouncing balls | v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <style type="text/css">
 
@@ -62,8 +64,8 @@
             document.addEventListener('touchstart', function(e) {
 
                 for (var i = 0; i < balls.length; i++) {
-                    var fx = Math.random() * 16000 - 8000;
-                    var fy = -8000;
+                    var fx = Math.random() * 10000 - 5000;
+                    var fy = -5000;
                     balls[i].addForce(new SQR.V2(fx, fy));
                 }
 
@@ -96,9 +98,9 @@
                 }
 
 
-                ctx.strokeStyle = 'rgb(255,255,255)';
-                ctx.lineWidth = 8;
-                ctx.fillStyle = 'rgb(128,128,128)';
+                ctx.strokeStyle = 'rgba(255,0,0, 0.5)';
+                ctx.lineWidth = 4;
+                ctx.fillStyle = 'rgba(255,0,0, 0.5)';
                 ctx.beginPath();
                 ctx.arc(this.position.x, this.position.y, this.radius, 0, SQR.twoPI);
                 ctx.stroke();
@@ -113,7 +115,7 @@
                 var r = Math.random();
 
                 var b = new SQR.Particle(new SQR.V2(window.innerWidth * Math.random(), 20));
-                b.radius = (1 + r) * 3;
+                b.radius = (1 + r) * 6;
                 b.mass = (1 + r) * 5;
                 b.bounciness = 0.8 - r * 0.7;
                 b.frictionAir = 1;
@@ -133,7 +135,7 @@
 
             var isOdd = (++throttle % 2 == 1);
 
-            if(isOdd) return;
+            //if(isOdd) return;
 
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
             SQR.Time.tick();
@@ -161,9 +163,6 @@
 <div id="container">
     <canvas id="cnv"></canvas>
 </div>
-
-<div id="instr">Click to push the balls, SPACE to toggle gravity</div>
-
 </body>
 </html>
 

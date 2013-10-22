@@ -10,6 +10,10 @@
 <script type="text/javascript" src="../../build/squareroot-min.js"></script>
 <!-- SQRLIB -->
 
+
+<script type="text/javascript" src="../js/PieSlice.js"></script>
+
+
     <style type="text/css">
 
         body {
@@ -67,7 +71,7 @@ window.onload = function() {
 
         p.center = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
         var h = Math.abs(i / numSegment * 510 - 255)
-        p.color = "#fff"; // SQR.Color.hsl(h | 0, 100, 50);
+        p.color = new SQR.Color(0, 0, 100);
         p.phase = 0;
         p.speed = 0.1 + Math.random() * 0.1;
 
@@ -118,7 +122,7 @@ function draw() {
             p.targetBump = 1;
         }
 
-        p.bump += (p.targetBump - p.bump) * 0.05;
+        p.bump += (p.targetBump - p.bump) * 0.5;
 
         p.targetBump *= p.friction;
 
