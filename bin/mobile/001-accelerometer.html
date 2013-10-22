@@ -8,20 +8,29 @@
     <style type="text/css">
 
         body {
-            margin: 10px;
+            margin: 0;
             padding: 0;
             -webkit-perspective: 500px;
+            background-color: #000;
+
+            width: 100%;
+            height: 100%;
+            position: absolute;
         }
 
-        div {
-            margin: 20px;
+        #debug {
+            color: #666;
+            padding: 5px;
+            font-family: Arial;
+
         }
 
         img {
-            position: relative;
-            top: 20px;
+            position: absolute;
+            top: 50%;
             left: 50%;
             margin-left: -40%;
+            margin-top: -40%;
             width: 80%;
             height: auto;
 
@@ -70,9 +79,9 @@
             tx += (gx - tx) / 10;
             ty += (gy - ty) / 10;
 
-            debug.innerHTML = gx + " : " + gy;
+            // debug.innerHTML = Math.floor(gx * 100) + "<br>" + Math.floor(gy * 100);
 
-            var rx = tx / 9.81 * 45;
+            var rx = tx / 9.81 * -45;
             var ry = ty / 9.81 * -45;
 
             img.style['-webkit-transform'] = 'rotateX(' + ry + 'deg) rotateY(' + rx + 'deg)';
@@ -90,7 +99,7 @@
 
 <div id="debug"></div>
 
-<img id="image" src="../assets/fruits-100.jpg">
+<img id="image" src="../assets/fruits-400.jpg">
 
 </body>
 </html>

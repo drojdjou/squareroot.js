@@ -11,8 +11,8 @@
     <style type="text/css">
 
         body {
-            overflow: hidden;
-            color: #ffffff;
+            /*overflow: hidden;*/
+            color: #000000;
         }
 
         #canvas {
@@ -30,13 +30,10 @@ var maptemplate;
 var isFramed;
 
 var kill = function() {
-    console.log("Kill Globe!");
     parent.Broadcast.removeClient("msgRender", render); 
 }
 
 window.onload = function() {
-
-    console.log("Make Globe!");
 
     if (parent.frames.length > 0) {
         parent.Broadcast.addClient("msgRender", render); 
@@ -60,10 +57,8 @@ setup = function() {
 
     engine = new SQR.Squareroot(document.getElementById('canvas'));
 
-    engine.setSize(window.innerWidth, window.innerHeight);
-
+    engine.setSize(window.innerWidth, window.innerHeight * 1.1);
     engine.setProjection(60);
-
     engine.setBackground("#000000");
 
     camera = new SQR.Transform();
@@ -74,7 +69,7 @@ setup = function() {
     globeContainer.useQuaternion = true;
 
     globe = new SQR.Transform();
-    globe.renderer = new SQR.Segment(2);
+    globe.renderer = new SQR.Segment(8);
     globe.renderer.culling = true;
     globe.geometry = new SQR.Geometry();
 
@@ -83,8 +78,8 @@ setup = function() {
     var radiusVariance = 3;
     var minLength = 1;
 
-    var maxSegmentsX = 50;
-    var segmentsY = 25;
+    var maxSegmentsX = 60;
+    var segmentsY = 30;
 
     var phiStart = 0;
     var phiLength = SQR.twoPI;

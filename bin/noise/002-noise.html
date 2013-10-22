@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>001 Random number generators | v0.1</title>
+    <title>Perlin Noise | v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <style type="text/css">
 
         body {
-            font-family: Georgia, sans-serif;
-            font-size: 0.8em;
-            color: #ffffff;
             background-color: #000000;
         }
 
         canvas {
-            width: 500px;
-            height: 500px;
-            background-color: #ffffff;
-            float: left;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
     </style>
@@ -30,18 +30,32 @@
 
         window.onload = function() {
 
-            var sz = 256;
-
             var cnv = document.getElementById('canvas');
+
+            var resolution = 4;
+
+            cnv.width = window.innerWidth / resolution;
+            cnv.height = window.innerHeight / resolution;
+
+            console.log(cnv.width, cnv.height);
+
+            var szx = cnv.width;
+            var szy = cnv.height;
+
             var ctx = cnv.getContext('2d');
-            var dta = ctx.createImageData(sz, sz);
+            // ctx.webkitImageSmoothingEnabled = false; // Does it even do anything?
+
+            var dta = ctx.createImageData(szx, szy);
             var nsz = new ImprovedNoise();
 
-            var n1 = 0, n2 = 0, n3 = 0;
+            var n1 = 0, n2 = 0, n3 = 100000;
 
             function drawNoise() {
-                for (var i = 0; i < sz; i++) {
-                    for (var j = 0; j < sz; j++) {
+                requestAnimFrame(drawNoise);
+
+
+                for (var i = 0; i < szy; i++) {
+                    for (var j = 0; j < szx; j++) {
 
                         var c1 = nsz.noise((i) / 8, (n1 + j) / 8, 0);
                         c1 = (c1 + 1) / 2;
@@ -52,12 +66,16 @@
                         var c3 = nsz.noise((n3 + i) / 64, (j) / 64, 0);
                         c3 = (c3 + 1) / 2;
 
-                        var c = (c1 + c2 + c3) / 4 * 255 | 0;
+                        var cp = (c1 * 1 + c2 * 2 + c3  * 4) / 4;
 
-                        dta.data[i * 4 * sz + j * 4 + 0] = c;
-                        dta.data[i * 4 * sz + j * 4 + 1] = c;
-                        dta.data[i * 4 * sz + j * 4 + 2] = c;
-                        dta.data[i * 4 * sz + j * 4 + 3] = 255;
+                        var cr = cp * 64;
+                        var cg = 0 + cp * 127;
+                        var cb = 0 + cp * 255;
+
+                        dta.data[i * 4 * szx + j * 4 + 0] = cr;
+                        dta.data[i * 4 * szx + j * 4 + 1] = cg;
+                        dta.data[i * 4 * szx + j * 4 + 2] = cb;
+                        dta.data[i * 4 * szx + j * 4 + 3] = 255;
                     }
                 }
 
@@ -65,12 +83,10 @@
 
                 n1 += 0.2;
                 n2 += 0.4;
-                n3 += 0.8;
+                n3 -= 0.8;
             }
 
-            setInterval(drawNoise, 1000/60);
             drawNoise();
-
 
         }
 
@@ -78,8 +94,6 @@
 
 </head>
 <body>
-<div id="container">
-    <canvas id="canvas" width="256" height="256"></canvas>
-</div>
+<canvas id="canvas"></canvas>
 </body>
 </html>
