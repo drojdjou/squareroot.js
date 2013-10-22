@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Terrain | v0.30</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <script type="text/javascript" src="../../lib/Stats.js"></script>
 
@@ -40,12 +42,12 @@
 
         window.onload = function() {
 
-//            stats = new Stats();
-//            stats.setMode(0);
-//            stats.domElement.style.position = 'absolute';
-//            stats.domElement.style.left = '0px';
-//            stats.domElement.style.top = '0px';
-//            document.body.appendChild(stats.domElement);
+           stats = new Stats();
+           stats.setMode(0);
+           stats.domElement.style.position = 'absolute';
+           stats.domElement.style.left = '0px';
+           stats.domElement.style.top = '0px';
+           document.body.appendChild(stats.domElement);
 
             document.addEventListener('touchmove', function(e) {
                 e.preventDefault();
@@ -59,14 +61,14 @@
             engine.setBackground("#000000");
             engine.setSize(window.innerWidth, window.innerHeight);
             engine.setProjection(45);
-            engine.setClearColor("rgba(0,0,0,0.2)");
+            engine.setClearColor("rgba(0,0,0,1)");
 
             terrain = new SQR.Transform();
 
             terrain.renderer = new SQR.Polygon();
             terrain.renderer.useLight = true;
 
-            terrain.geometry = new SQR.Plane(100, 100, 16, 16, 0, 0, true);
+            terrain.geometry = new SQR.Plane(100, 100, 12, 12, 0, 0, true);
 
             camera = new SQR.Transform();
             camera.position.z = 140;
@@ -104,7 +106,7 @@
         var a = 0;
 
         function render() {
-            //stats.begin();
+            stats.begin();
 
             requestAnimFrame(render);
             
@@ -116,11 +118,11 @@
             terrain.rotation.y += 0.002;
 
             terrain.geometry.applyHeightMap(hdata, 40, a, 0.1);
-            a += 0.02 * SQR.Time.deltaTime;
+            a += 0.06 * SQR.Time.deltaTime;
 
             engine.render(camera);
 
-            //stats.end();
+            stats.end();
         }
 
     </script>

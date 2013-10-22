@@ -9,9 +9,7 @@ SQR.Color = function(h, s, l, a) {
 
     this.applyLight = function(dot) {
         // TODO: remove the hardcoded value!
-
-        dot = Math.max(0.2, dot);
-
+        // dot = Math.max(0.2, dot);
         return SQR.Color.hsl(this.hue, this.saturation, this.lightness - 60 + 80 * dot, this.alpha);
     }
 
