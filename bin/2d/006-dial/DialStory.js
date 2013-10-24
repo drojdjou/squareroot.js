@@ -1,11 +1,17 @@
+
+
 DialStory = function(ctx, canvasWidth, canvasHeight) {
 
-    var stats = new Stats();
-    stats.setMode(0);
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
-    document.body.appendChild(stats.domElement);
+    var stats, showStats = false;
+
+    if(showStats) {
+        stats = new Stats();
+        stats.setMode(0);
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+        document.body.appendChild(stats.domElement);
+    }
 
     // Some general settings
     var numSegment = 12;// * 6;
@@ -58,7 +64,7 @@ DialStory = function(ctx, canvasWidth, canvasHeight) {
     }
 
     var _run = function() {
-        stats.begin();
+        if(showStats) stats.begin();
         requestAnimFrame(_run);
 
         var animLenght = animations.length;
@@ -77,15 +83,13 @@ DialStory = function(ctx, canvasWidth, canvasHeight) {
 
         time = time % tDuration;
 
-//        document.getElementById('time').innerHTML = time | 0;
-
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (var i = 0; i < animLenght; i++) animations[i].update(time);
         for (var i = 0; i < segmentsLength; i++) segments[i].draw(ctx);
 
-        stats.end();
+        if(showStats) stats.end();
     }
 
 
@@ -175,7 +179,7 @@ DialStory = function(ctx, canvasWidth, canvasHeight) {
             var p = new PieSlice();
 
             p.resetAngle = aw * i - Math.PI * 0.5;
-            var h = Math.abs(i / numSegment * 510 - 255);
+            var h = Math.abs(i / numSegment * 80);//510 - 255);
             p.resetColor = new SQR.Color(h, 0, 10);
             p.color = new SQR.Color(h, 0, 10);
 
