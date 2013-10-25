@@ -63,7 +63,6 @@ SQR.V2.prototype.appendVec = function(v) {
     return this;
 }
 
-
 SQR.V2.prototype.mul = function(s, v) {
     v = v || this;
     v.x = this.x * s;

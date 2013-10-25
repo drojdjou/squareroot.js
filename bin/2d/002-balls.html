@@ -19,11 +19,11 @@
             background-color: #000000;
         }
 
-        #instr {
+        #debug {
             position: absolute;
             top: 10px;
             left: 10px;
-            font-family: Georgia, sans-serif;
+            font-family: monospace;
             color: #ffffff;
             font-size: 14px;
         }
@@ -39,34 +39,51 @@
 
         var ctx;
 
-        var gravity = new SQR.V2(0, 9.81), gravityScaled = new SQR.V2();
+        var gravityDirection = Math.PI * 0.5;
+        var gravity = new SQR.V2(
+            9.81 * Math.cos(gravityDirection),
+            9.81 * Math.sin(gravityDirection)
+        );
+
+        var gravityScaled = new SQR.V2();
 
         var balls = [];
-        var numBalls = 30;
+        var numBalls = 20;
         var gravityOn = true;
+
+        var throttle = 0;
+        var debugDiv;
+        var gx = 0, gy = 0, gz = 0, acc;
 
         window.onload = function() {
 
             var cnv = document.getElementById('cnv');
+            debugDiv = document.querySelector("#debug");
 
             ctx = cnv.getContext('2d');
 
             document.addEventListener('click', function(e) {
 
                 for (var i = 0; i < balls.length; i++) {
-                    var fx = Math.random() * 16000 - 8000;
-                    var fy = -8000;
-                    balls[i].addForce(new SQR.V2(fx, fy));
+                    var b = balls[i];
+                    var fx = Math.random() * 1600 - 800;
+                    var fy = -800;
+                    balls[i].addForce(new SQR.V2(fx * b.mass, fy * b.mass));
                 }
 
             }, false);
 
             document.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            }, false);
+
+            document.addEventListener('touchstart', function(e) {
 
                 for (var i = 0; i < balls.length; i++) {
-                    var fx = Math.random() * 10000 - 5000;
-                    var fy = -5000;
-                    balls[i].addForce(new SQR.V2(fx, fy));
+                    var b = balls[i];
+                    var fx = Math.random() * 1600 - 800;
+                    var fy = -800;
+                    balls[i].addForce(new SQR.V2(fx * b.mass, fy * b.mass));
                 }
 
             }, false);
@@ -74,6 +91,8 @@
             document.addEventListener('keydown', function(e) {
                 if (e.keyCode == 32) gravityOn = !gravityOn;
             }, false);
+
+            var _tmp = new SQR.V2();
 
             SQR.Particle.prototype.draw = function(ctx) {
 
@@ -97,9 +116,30 @@
                     this.velocity.y *= -this.bounciness;
                 }
 
+                for (var i = 0; i < balls.length; i++) {
+                    var ob = balls[i];
+
+                    if(ob != this) {
+                        _tmp.sub(ob.position, this.position);
+
+                        var coldist = ob.radius + this.radius;
+                        coldist = coldist * coldist;
+
+                        var dist = _tmp.magsq();
+
+                        if(dist <= coldist) {
+                            var vl = this.velocity.mag();
+                            _tmp.copyTo(this.velocity);
+                            this.velocity.norm();
+                            this.velocity.mul(vl);
+                            this.velocity.mul(-this.bounciness);
+                        }
+                    }
+                }
+
 
                 ctx.strokeStyle = 'rgba(255,0,0, 0.5)';
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 10;
                 ctx.fillStyle = 'rgba(255,0,0, 0.5)';
                 ctx.beginPath();
                 ctx.arc(this.position.x, this.position.y, this.radius, 0, SQR.twoPI);
@@ -115,12 +155,22 @@
                 var r = Math.random();
 
                 var b = new SQR.Particle(new SQR.V2(window.innerWidth * Math.random(), 20));
-                b.radius = (1 + r) * 6;
+
+                var rc = Math.min(10, window.innerWidth * 0.02);
+                var rv = Math.min(30, window.innerWidth * 0.06);
+                b.radius = rc + r * rv;
+
                 b.mass = (1 + r) * 5;
-                b.bounciness = 0.8 - r * 0.7;
+                b.bounciness = 1.0 - r * 0.4;
                 b.frictionAir = 1;
                 b.frictionGround = 20;
                 b.addForce(new SQR.V2(Math.random() * 20 - 10, 0));
+
+                b.position.set(
+                    Math.random() * window.innerWidth, 
+                    Math.random() * window.innerHeight
+                );
+
                 balls.push(b);
             }
 
@@ -128,13 +178,21 @@
 
         }
 
-        var throttle = 0;
+        window.ondevicemotion = function (e) {
+            gx = e.accelerationIncludingGravity.x;
+            gy = e.accelerationIncludingGravity.y;
+            gz = e.accelerationIncludingGravity.z;
+
+            acc = !(gx == 0 && gy == 0 && gz == 0);
+        }
 
         function draw() {
             requestAnimFrame(draw);
 
             var isOdd = (++throttle % 2 == 1);
 
+            // debugDiv.innerHTML = gx + "<br>" + gy + "<br>" + gz;
+            // debugDiv.innerHTML = gravity.x + " : " + gravity.y;
             //if(isOdd) return;
 
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -145,6 +203,10 @@
                 var b = balls[i];
 
                 b.friction = (b.position >= window.innerHeight - b.radius - 0.1) ? b.frictionAir : b.frictionGround;
+
+
+
+                if(acc) gravity.set(gx, -gy);
 
                 if (gravityOn) {
                     gravityScaled.copyFrom(gravity).mul(b.mass);
@@ -163,6 +225,8 @@
 <div id="container">
     <canvas id="cnv"></canvas>
 </div>
+
+<div id="debug"></div>
 </body>
 </html>
 
