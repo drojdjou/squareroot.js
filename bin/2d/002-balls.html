@@ -116,28 +116,6 @@
                     this.velocity.y *= -this.bounciness;
                 }
 
-                for (var i = 0; i < balls.length; i++) {
-                    var ob = balls[i];
-
-                    if(ob != this) {
-                        _tmp.sub(ob.position, this.position);
-
-                        var coldist = ob.radius + this.radius;
-                        coldist = coldist * coldist;
-
-                        var dist = _tmp.magsq();
-
-                        if(dist <= coldist) {
-                            var vl = this.velocity.mag();
-                            _tmp.copyTo(this.velocity);
-                            this.velocity.norm();
-                            this.velocity.mul(vl);
-                            this.velocity.mul(-this.bounciness);
-                        }
-                    }
-                }
-
-
                 ctx.strokeStyle = 'rgba(255,0,0, 0.5)';
                 ctx.lineWidth = 10;
                 ctx.fillStyle = 'rgba(255,0,0, 0.5)';
@@ -161,7 +139,7 @@
                 b.radius = rc + r * rv;
 
                 b.mass = (1 + r) * 5;
-                b.bounciness = 1.0 - r * 0.4;
+                b.bounciness = 1.0 - r * 0.1;
                 b.frictionAir = 1;
                 b.frictionGround = 20;
                 b.addForce(new SQR.V2(Math.random() * 20 - 10, 0));
@@ -198,13 +176,9 @@
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
             SQR.Time.tick();
 
-            for (var i = 0; i < balls.length; i++) {
-
+            for (var i = 0; i < numBalls; i++) {
                 var b = balls[i];
-
                 b.friction = (b.position >= window.innerHeight - b.radius - 0.1) ? b.frictionAir : b.frictionGround;
-
-
 
                 if(acc) gravity.set(gx, -gy);
 
@@ -212,9 +186,43 @@
                     gravityScaled.copyFrom(gravity).mul(b.mass);
                     b.addForce(gravityScaled);
                 }
-
-                b.update(SQR.Time.deltaTime);
+                b.update( Math.min(SQR.Time.deltaTime, 1) );
                 b.draw(ctx);
+            }
+
+            var _tmp = new SQR.V2();
+
+            for (var i = 0; i < numBalls; i++) {
+                for (var j = i + 1; j < numBalls; j++) {
+                    var b1 = balls[i];
+                    var b2 = balls[j];
+
+                    _tmp.sub(b1.position, b2.position);
+
+                    var coldist = b1.radius + b2.radius;
+                    coldist = coldist * coldist;
+
+                    var dist = _tmp.magsq();
+                    var vl;
+
+                    if(dist <= coldist) {
+                        _tmp.sub(b2.position, b1.position);
+
+                        vl = b1.velocity.mag();
+                        _tmp.copyTo(b1.velocity);
+                        b1.velocity.norm();
+                        b1.velocity.mul(vl);
+                        b1.velocity.mul(-b1.bounciness);
+
+                        _tmp.sub(b1.position, b2.position);
+
+                        vl = b2.velocity.mag();
+                        _tmp.copyTo(b2.velocity);
+                        b2.velocity.norm();
+                        b2.velocity.mul(vl);
+                        b2.velocity.mul(-b2.bounciness);
+                    }
+                }
             }
         }
 
