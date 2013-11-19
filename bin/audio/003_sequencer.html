@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sequencer | v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <style type="text/css">
+
+	    body {
+	    	background-color: #000;
+	    	margin: 0px;
+	    	font-family: Arial;
+	    	font-size: 1em;
+	    	color: #fff;
+	    }
+
+    	p {
+    		margin: 0;
+    		padding: 20px;
+    	}
+
+    </style>
+</head>
+<body>
+
+<p id="noaudioapi">Your browsers does not support Web Audio API.</p>
+
+<script type="text/javascript" src="../js/audio/Sequencer.js"></script>
+<script type="text/javascript" src="../js/audio/Tone.js"></script>
+
+<script type="text/javascript">
+
+window.requestAnimFrame = (function(){
+	return window.requestAnimationFrame    ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame    ||
+		function(callback) {
+			setTimeout(callback, 1000 / 60);
+		};
+})();
+
+// --- --- --- --- ---
+
+var makeHorribleMusic = function() {
+
+	if(!window.webkitAudioContext) {
+		return;
+	} else {
+		document.querySelector('#noaudioapi').style.display = 'none';
+	}
+
+	var context = new webkitAudioContext();
+
+	var seq = new Sequencer(100);
+	var notes = [], numNotes;
+
+	var compressor = context.createDynamicsCompressor();
+	compressor.connect(context.destination);
+
+	var lowpass = context.createBiquadFilter();
+	lowpass.type = lowpass.LOWPASS;
+	lowpass.frequency.value = 8000;
+	lowpass.connect(compressor);
+
+	var hipass = context.createBiquadFilter();
+	hipass.type = hipass.HIGHPASS;
+	hipass.frequency.value = 100;
+	hipass.connect(lowpass);
+
+	var soundNode = hipass;
+
+	var b1 = new Tone(context, soundNode, "A").duration(2).frequency(120).detune(0).type("sine").volume(0.5);
+	var b2 = new Tone(context, soundNode, "A").duration(2).frequency(160).detune(0).type("sine").volume(0.5);
+
+	var s1 = new Tone(context, soundNode, "A").duration(2).frequency(120).detune(1024).type("sawtooth").volume(0.5);
+	var s2 = new Tone(context, soundNode, "A").duration(6).frequency(100).detune(512).type("square").volume(0.5);
+	var s5 = new Tone(context, soundNode, "A").duration(6).frequency(160).detune(512).type("square").volume(0.5);
+	var s3 = new Tone(context, soundNode, "A").duration(2).frequency(160).detune(1024).type("square").volume(0.5);
+	var s4 = new Tone(context, soundNode, "A").duration(6).frequency(160).detune(1024).type("square").volume(0.5);
+
+	var l1 = new Tone(context, soundNode, "A").duration(2).frequency(160).detune(1024).type("sawtooth").volume(0.5);
+	var l2 = new Tone(context, soundNode, "A").duration(6).frequency(140).detune(512).type("square").volume(0.5);
+	var l5 = new Tone(context, soundNode, "A").duration(6).frequency(100).detune(512).type("square").volume(0.5);
+	var l3 = new Tone(context, soundNode, "A").duration(2).frequency(100).detune(1024).type("square").volume(0.5);
+	var l4 = new Tone(context, soundNode, "A").duration(6).frequency(100).detune(1024).type("square").volume(0.5);
+
+	var br = 96;
+	var hbr = 10;
+
+	seq.addNote(b1, 0, 6);
+	seq.addNote(b1, 2, 12);
+	seq.addNote(b2, 4, 6);
+	seq.addNote(b2, 8, 6);
+
+	seq.addNote(s1, hbr+0, br);
+	seq.addNote(s1, hbr+6, br);
+	seq.addNote(s3, hbr+8, br);
+	seq.addNote(s1, hbr+12, br);
+	seq.addNote(s2, hbr+14, br);
+	seq.addNote(s2, hbr+18, br);
+
+	seq.addNote(s3, hbr+0, br);
+	seq.addNote(s3, hbr+4, br);
+	seq.addNote(s3, hbr+10, br);
+	seq.addNote(s3, hbr+14, br);
+
+	hbr += 24;
+
+	seq.addNote(s1, hbr+0, br);
+	seq.addNote(s1, hbr+6, br);
+	seq.addNote(s1, hbr+8, br);
+	seq.addNote(s1, hbr+12, br);
+	seq.addNote(s5, hbr+14, br);
+
+	seq.addNote(s3, hbr+0, br);
+	seq.addNote(s3, hbr+4, br);
+	seq.addNote(s3, hbr+10, br);
+	seq.addNote(s3, hbr+14, br);
+
+	hbr += 24;
+
+	seq.addNote(l1, hbr+0, br);
+	seq.addNote(l1, hbr+6, br);
+	seq.addNote(l3, hbr+8, br);
+	seq.addNote(l1, hbr+12, br);
+	seq.addNote(l2, hbr+14, br);
+	seq.addNote(l2, hbr+18, br);
+
+	seq.addNote(l3, hbr+0, br);
+	seq.addNote(l3, hbr+4, br);
+	seq.addNote(l3, hbr+10, br);
+	seq.addNote(l3, hbr+14, br);
+
+	hbr += 24;
+
+	seq.addNote(l1, hbr+0, br);
+	seq.addNote(l1, hbr+6, br);
+	seq.addNote(l1, hbr+8, br);
+	seq.addNote(l1, hbr+12, br);
+	seq.addNote(l5, hbr+14, br);
+
+	seq.addNote(l3, hbr+0, br);
+	seq.addNote(l3, hbr+4, br);
+	seq.addNote(l3, hbr+10, br);
+	seq.addNote(l3, hbr+14, br);
+
+	// seq.addNote(s4, 18, 48);
+
+	var run = function() {
+		requestAnimFrame(run);
+		seq.update();
+	}
+
+	run();
+
+}
+
+makeHorribleMusic();
+
+</script>
+<script>
+
+document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+
+</script>
+</body>
+</html>

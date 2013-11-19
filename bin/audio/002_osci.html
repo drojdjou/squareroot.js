@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oscillator | v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <style type="text/css">
+
+	    body {
+	    	background-color: #000;
+	    	margin: 0px;
+	    }
+
+    </style>
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript">
+
+	window.requestAnimFrame = (function(){
+		return window.requestAnimationFrame    ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame    ||
+			function(callback) {
+				setTimeout(callback, 1000 / 60);
+			};
+	})();
+
+	var mouseX, mouseY;
+
+	var context = new webkitAudioContext();
+
+	var lowpass = context.createBiquadFilter();
+	lowpass.type = lowpass.LOWPASS;
+	lowpass.frequency.value = 1000;
+	lowpass.connect(context.destination);
+
+	var hipass = context.createBiquadFilter();
+	hipass.type = hipass.HIGHPASS;
+	hipass.frequency.value = 1000;
+	hipass.connect(lowpass);
+
+	document.addEventListener("mousemove", function(e) {
+		mouseX = e.pageX;
+		mouseY = e.pageY;
+	});
+
+	var co = 0;
+	var sources = [];
+	var notes = [];
+	var step = 30;
+	var frameSize = step/10;
+
+	var play = function(f, d) {
+
+		var volume = context.createGainNode();
+		volume.gain.value = 1;
+		volume.connect(hipass);
+
+		var oscillator = context.createOscillator();
+		oscillator.type = "sine";
+		oscillator.frequency.value = f;
+		oscillator.detune.value = d;
+		oscillator.connect(volume);
+		oscillator.start(0);
+
+		sources.push({
+			running: true,
+			volume: volume,
+			oscillator: oscillator
+		});
+	};
+
+	var frame = 0;
+
+	var run = function() {
+		requestAnimFrame(run);
+
+		for(var i = 0; i < sources.length; i++) {
+			var s = sources[i];
+
+			if(!s.running) continue;
+
+			s.volume.gain.value *= 0.94;
+
+			if(s.volume.gain.value < 0.0001) {
+				s.running = false;
+				s.oscillator.stop(0);
+				s.volume.disconnect(context.destination);
+				sources.splice(i, 1);
+			}
+		}
+
+		
+
+		var w = window.innerWidth, h = window.innerHeight;
+		
+		frame += frameSize;
+		if(frame > w) frame = 0;
+
+		var p = frame;
+
+		ctx.clearRect(0, 0, w, h);
+
+		ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+		ctx.beginPath();
+		ctx.lineWidth = 10;
+	    ctx.moveTo(p, 0);
+	    ctx.lineTo(p, h);
+	    ctx.stroke();
+
+	    var ds = 15;
+
+	    for(var i = 0; i < notes.length; i++) {
+
+	    	var x = notes[i].x, y = notes[i].y;
+
+	    	ctx.fillStyle = (p > x-ds && p < x+ds) ? "rgba(0, 255, 0, 0.5)" : "rgba(255, 0, 0, 0.5)";
+	    	ctx.beginPath();
+	    	ctx.moveTo(x-ds, y);
+	    	ctx.lineTo(x, y-ds);
+	    	ctx.lineTo(x+ds, y);
+	    	ctx.lineTo(x, y+ds);
+	    	ctx.fill();
+
+	    	if(p == x) {
+	    		play(y/h * 2048, 0);
+	    	}
+	    }
+
+	    var x = mouseX - (mouseX % step);
+		var y = mouseY - (mouseY % step);
+
+	    ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+	    ctx.beginPath();
+	    ctx.moveTo(x-ds, y);
+	    ctx.lineTo(x, y-ds);
+	    ctx.lineTo(x+ds, y);
+	    ctx.lineTo(x, y+ds);
+	    ctx.fill();
+	}
+
+	document.addEventListener("touchstart", function(e) {
+		e.preventDefault();
+	});
+
+	document.addEventListener("touchstart", function(e) {
+
+		play(100, 100);
+
+		var x = e.targetTouches[0].pageX;
+		var y = e.targetTouches[0].pageY;
+
+		notes.push({ 
+			x: x - (x % step), 
+			y: y - (y % step)
+		});
+	});
+
+	document.addEventListener("click", function(e) {
+		notes.push({ 
+			x: mouseX - (mouseX % step), 
+			y: mouseY - (mouseY % step)
+		});
+	});
+
+	/// Canvas
+	var cnv = document.querySelector('canvas');
+	cnv.width = window.innerWidth;
+	cnv.height = window.innerHeight;
+
+	var ctx = cnv.getContext('2d');
+
+
+	run();
+
+
+</script>
+<script>
+
+document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+
+</script>
+</body>
