@@ -25,7 +25,7 @@
     	}
 
 
-    	#pos-x, #pos-y {
+    	#pos-x, #pos-y, #debug {
     		display: block;
     	}
 
@@ -100,7 +100,7 @@
 				// _debug.innerHTML += "---<br>";
 				for(var p in e.originalEvent) {
 					console.log(p, e.originalEvent[p]);
-					// _debug.innerHTML += p + ": " + e.originalEvent[p] + "<br>";
+					_debug.innerHTML += p + ": " + e.originalEvent[p] + "<br>";
 				}
 			}
 		});
