@@ -19,6 +19,10 @@
     		margin-top: 10px;
     	}
 
+    	#debug {
+    		line-height: 1.4em;
+    	}
+
     </style>
 
 <!-- SQRLIB -->
@@ -39,6 +43,7 @@
 	<div id="delta-y">0</div>
 	<div id="max-y">0</div>
 	<div id="listener">none</div>
+	<div id="debug"></div>
 
 	<script type="text/javascript">
 
@@ -50,8 +55,11 @@
 		var _deltay = document.querySelector("#delta-y");
 		var _maxy = document.querySelector("#max-y");
 		var _list = document.querySelector("#listener");
+		var _debug = document.querySelector("#debug");
 
 		var maxx = 0, maxy = 0;
+
+		var didLogEvent = false;
 
 		VirtualScroll.addEventListener(function(e) {
 
@@ -70,7 +78,18 @@
 			_maxy.innerHTML = "MY: " + maxy;
 
 			_list.innerHTML = "LS: " + VirtualScroll.whichListener.join(", ");
+
+			if(!didLogEvent) {
+				didLogEvent = true;
+				console.log(e.originalEvent);
+			}
 		});
+
+		_debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
+		_debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
+		_debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
+		_debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
+		_debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
 
 	</script>
 
