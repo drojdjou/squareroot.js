@@ -35,7 +35,7 @@
 </head>
 <body>
 
-	<div id="version">V 1.94 <a href="http://bartekdrozdz.com">link</a></div>
+	<div id="version">V 1.95 <a href="http://bartekdrozdz.com">link</a></div>
 	<div id="rec">false</div>
 	<div id="pos-x">0</div>
 	<div id="delta-x">0</div>
@@ -87,7 +87,9 @@
 
 			_list.innerHTML = "LS: " + VirtualScroll.whichListener.join(", ");
 
-			_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
+			if(document.body.style.msTouchAction) {
+				_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
+			}
 
 			if(!didLogEvent) {
 				didLogEvent = true;
@@ -105,6 +107,8 @@
 		// 	key = !key;
 		// });
 
+		// document.addEventListener('touchmove', function(e) { e.preventDefault(); });
+
 		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
 		// _debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
 		// _debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
@@ -112,6 +116,7 @@
 		// _debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
 		// _debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
 		// _debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
+		_debug.innerHTML += "body.touchaction def: " + document.body.style.msTouchAction + "<br>";
 
 
 	</script>
