@@ -9,18 +9,48 @@
 
     	body {
     		background-color: #000;
-    		margin: 20px;
+    		margin: 0;
+    		padding: 0;
     		color: #fff;
     		font-family: monospace;
     		overflow: hidden;
+    		/*border: 2px solid white;*/
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		-webkit-box-sizing: border-box;
+    		-moz-box-sizing: border-box;
+    		-ms-box-sizing: border-box;
+    		box-sizing: border-box;
     	}
 
-    	div {
+    	section {
+    		position: relative;
+    		z-index: 10;
+    		padding: 10px;
+    	}
+
+    	section div {
     		margin-top: 10px;
     	}
 
-    	#debug {
-    		line-height: 1.4em;
+    	#red1, #red2 {
+    		position: absolute;
+    		width: 200px;
+    		height: 200px;
+    		top: 0;
+    		left: 50%;
+    		margin-left: -100px;
+    	}
+
+    	#red1 {
+    		background-color: rgb(200, 0, 0);
+    		z-index: 1;
+    	}
+
+    	#red2 {
+    		background-color: rgb(100, 0, 0);
+    		z-index: 1;
     	}
 
     </style>
@@ -35,18 +65,22 @@
 </head>
 <body>
 
-	<div id="version">V 1.95 <a href="http://bartekdrozdz.com">link</a></div>
-	<div id="rec">false</div>
-	<div id="pos-x">0</div>
-	<div id="delta-x">0</div>
-	<div id="max-x">0</div>
-	<div id="pos-y">0</div>
-	<div id="delta-y">0</div>
-	<div id="max-y">0</div>
-	<div id="listener">none</div>
-	<div id="keytoggle"></div>
-	<div id="debug"></div>
-	<div id="live"></div>
+	<section>
+		<div id="version">V 1.96 <a href="http://bartekdrozdz.com">link</a></div>
+		<div id="rec">false</div>
+		<div id="pos-x">0</div>
+		<div id="delta-x">0</div>
+		<div id="max-x">0</div>
+		<div id="pos-y">0</div>
+		<div id="delta-y">0</div>
+		<div id="max-y">0</div>
+		<div id="keytoggle"></div>
+		<div id="debug"></div>
+		<div id="live"></div>
+	</section>
+
+	<div id="red1"></div>
+	<div id="red2"></div>
 
 	<script type="text/javascript">
 
@@ -57,10 +91,12 @@
 		var _posy = document.querySelector("#pos-y");
 		var _deltay = document.querySelector("#delta-y");
 		var _maxy = document.querySelector("#max-y");
-		var _list = document.querySelector("#listener");
 		var _keytoggle = document.querySelector("#keytoggle");
 		var _debug = document.querySelector("#debug");
 		var _live = document.querySelector("#live");
+
+		var _red1 = document.querySelector("#red1");
+		var _red2 = document.querySelector("#red2");
 		
 		// window.debug = _debug;
 		// window.live = _live;
@@ -68,6 +104,48 @@
 		var maxx = 0, maxy = 0;
 
 		var didLogEvent = false, key = true;
+
+		// document.addEventListener('keydown', function(e) {
+		// 	_keytoggle.innerHTML = key ? "A" : "B";
+		// 	key = !key;
+		// });
+
+		var r1y = 0, r2y = 200 + (window.innerHeight - 200) * 0.5;
+		var r1x = 0, r2x = 0;
+
+		document.addEventListener('touchmove', function(e) { e.preventDefault(); });
+
+		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
+		// _debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
+		// _debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
+		// _debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
+		// _debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
+		// _debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
+		// _debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
+		_debug.innerHTML += "body.touchaction def: " + document.body.style.msTouchAction + "<br>";
+
+		var setReds = function() {
+			if(r1y < -200) r1y += window.innerHeight + 200;
+			if(r2y < -200) r2y += window.innerHeight + 200;
+
+			if(r1y > window.innerHeight) r1y -= window.innerHeight + 200;
+			if(r2y > window.innerHeight) r2y -= window.innerHeight + 200;
+
+			r1x = Math.min(r1x, 100);
+			r1x = Math.max(r1x, -100);
+
+			r2x = Math.min(r2x, 100);
+			r2x = Math.max(r2x, -100);
+
+			var tx = "translateX(" + r1x + "px) translateY(" + r1y + "px)";
+			var ty = "translateX(" + r2x + "px) translateY(" + r2y + "px)";
+
+			_red1.style.transform = tx;
+			_red2.style.transform = ty;
+
+			_red1.style.webkitTransform = tx;
+			_red2.style.webkitTransform = ty;
+		}
 
 		VirtualScroll.addEventListener(function(e) {
 
@@ -85,11 +163,17 @@
 			_maxx.innerHTML = "MX: " + maxx;
 			_maxy.innerHTML = "MY: " + maxy;
 
-			_list.innerHTML = "LS: " + VirtualScroll.whichListener.join(", ");
-
 			if(document.body.style.msTouchAction) {
 				_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
 			}
+
+			r1y += e.deltaY;
+			r2y += e.deltaY;
+
+			r1x += e.deltaX;
+			r2x += e.deltaX;
+
+			setReds();
 
 			if(!didLogEvent) {
 				didLogEvent = true;
@@ -102,22 +186,7 @@
 			}
 		});
 
-		// document.addEventListener('keydown', function(e) {
-		// 	_keytoggle.innerHTML = key ? "A" : "B";
-		// 	key = !key;
-		// });
-
-		// document.addEventListener('touchmove', function(e) { e.preventDefault(); });
-
-		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
-		// _debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
-		// _debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
-		// _debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
-		// _debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
-		// _debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
-		// _debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
-		_debug.innerHTML += "body.touchaction def: " + document.body.style.msTouchAction + "<br>";
-
+		setReds();
 
 	</script>
 
