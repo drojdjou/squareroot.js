@@ -35,7 +35,7 @@
 </head>
 <body>
 
-	<div>V 1.7</div>
+	<div>V 1.8</div>
 	<div id="rec">false</div>
 	<div id="pos-x">0</div>
 	<div id="delta-x">0</div>
@@ -46,6 +46,7 @@
 	<div id="listener">none</div>
 	<div id="keytoggle">none</div>
 	<div id="debug"></div>
+	<div id="live"></div>
 
 	<script type="text/javascript">
 
@@ -59,8 +60,10 @@
 		var _list = document.querySelector("#listener");
 		var _keytoggle = document.querySelector("#keytoggle");
 		var _debug = document.querySelector("#debug");
+		var _live = document.querySelector("#live");
 		
 		window.debug = _debug;
+		window.live = _live;
 
 
 		var maxx = 0, maxy = 0;
@@ -88,7 +91,7 @@
 			if(!didLogEvent) {
 				didLogEvent = true;
 				console.log(e.originalEvent);
-				_debug.innerHTML += "---<br>";
+				// _debug.innerHTML += "---<br>";
 				for(var p in e.originalEvent) {
 					console.log(p, e.originalEvent[p]);
 					// _debug.innerHTML += p + ": " + e.originalEvent[p] + "<br>";
@@ -102,12 +105,12 @@
 		});
 
 		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
-		_debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
-		_debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
-		_debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
-		_debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
-		_debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
-		_debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
+		// _debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
+		// _debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
+		// _debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
+		// _debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
+		// _debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
+		// _debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
 
 
 	</script>
