@@ -84,6 +84,10 @@
 			if(!didLogEvent) {
 				didLogEvent = true;
 				console.log(e.originalEvent);
+
+				for(var p in e.originalEvent) {
+					console.log(p, e.originalEvent[p]);
+				}
 			}
 		});
 
