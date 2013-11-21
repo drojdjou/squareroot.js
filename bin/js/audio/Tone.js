@@ -48,12 +48,7 @@ var Tone = function(context, parentNode, name) {
 		var now = context.currentTime;
 		var d = duration * timescale;
 		gain.gain.cancelScheduledValues(now);
-
 		gain.gain.setValueAtTime(maxvol, now);
 		gain.gain.linearRampToValueAtTime(0, now + d/1000);
-
-		// gain.gain.setValueAtTime(gain.gain.value, now);
-		// gain.gain.linearRampToValueAtTime(maxvol, now + upRampDuration);
-		// gain.gain.linearRampToValueAtTime(0, now + d/1000);
 	}
 }
