@@ -12,7 +12,7 @@
     		margin: 20px;
     		color: #fff;
     		font-family: monospace;
-    		overflow: hidden;
+    		/*overflow: hidden;*/
     	}
 
     	div {
@@ -35,7 +35,7 @@
 </head>
 <body>
 
-	<div>V 1.2</div>
+	<div>V 1.</div>
 	<div id="rec">false</div>
 	<div id="pos-x">0</div>
 	<div id="delta-x">0</div>
@@ -85,8 +85,10 @@
 			if(!didLogEvent) {
 				didLogEvent = true;
 				console.log(e.originalEvent);
+				_debug.innerHTML += "---<br>";
 				for(var p in e.originalEvent) {
 					console.log(p, e.originalEvent[p]);
+					_debug.innerHTML += p + ": " + e.originalEvent[p] + "<br>";
 				}
 			}
 		});
@@ -96,12 +98,13 @@
 			key = !key;
 		});
 
-		_debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
+		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
 		_debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
 		_debug.innerHTML += "mousewheel: " + ('onmousewheel' in document) + "<br>";
 		_debug.innerHTML += "touchstart: " + ('ontouchstart' in document) + "<br>";
 		_debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
 		_debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
+		_debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
 
 
 	</script>
