@@ -35,6 +35,7 @@
 </head>
 <body>
 
+	<div>V 1.1</div>
 	<div id="rec">false</div>
 	<div id="pos-x">0</div>
 	<div id="delta-x">0</div>
@@ -84,7 +85,6 @@
 			if(!didLogEvent) {
 				didLogEvent = true;
 				console.log(e.originalEvent);
-
 				for(var p in e.originalEvent) {
 					console.log(p, e.originalEvent[p]);
 				}
