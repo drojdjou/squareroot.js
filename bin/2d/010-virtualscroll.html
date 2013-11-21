@@ -15,22 +15,12 @@
     		overflow: hidden;
     	}
 
-    	body {
-    		-ms-touch-action: none;
-    	}
-
     	div {
     		margin-top: 10px;
-    		display: none;
     	}
 
     	#debug {
     		line-height: 1.4em;
-    	}
-
-
-    	#version, #pos-x, #pos-y, #debug {
-    		display: block;
     	}
 
     </style>
@@ -45,7 +35,7 @@
 </head>
 <body>
 
-	<div id="version">V 1.93 <a href="http://bartekdrozdz.com">link</a></div>
+	<div id="version">V 1.94 <a href="http://bartekdrozdz.com">link</a></div>
 	<div id="rec">false</div>
 	<div id="pos-x">0</div>
 	<div id="delta-x">0</div>
@@ -54,7 +44,7 @@
 	<div id="delta-y">0</div>
 	<div id="max-y">0</div>
 	<div id="listener">none</div>
-	<div id="keytoggle">none</div>
+	<div id="keytoggle"></div>
 	<div id="debug"></div>
 	<div id="live"></div>
 
@@ -72,9 +62,8 @@
 		var _debug = document.querySelector("#debug");
 		var _live = document.querySelector("#live");
 		
-		window.debug = _debug;
-		window.live = _live;
-
+		// window.debug = _debug;
+		// window.live = _live;
 
 		var maxx = 0, maxy = 0;
 
@@ -98,6 +87,8 @@
 
 			_list.innerHTML = "LS: " + VirtualScroll.whichListener.join(", ");
 
+			_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
+
 			if(!didLogEvent) {
 				didLogEvent = true;
 				console.log(e.originalEvent);
@@ -109,10 +100,10 @@
 			}
 		});
 
-		document.addEventListener('keydown', function(e) {
-			_keytoggle.innerHTML = key ? "A" : "B";
-			key = !key;
-		});
+		// document.addEventListener('keydown', function(e) {
+		// 	_keytoggle.innerHTML = key ? "A" : "B";
+		// 	key = !key;
+		// });
 
 		// _debug.innerHTML += "User-agent: " + navigator.userAgent + "<br>";
 		// _debug.innerHTML += "wheel: " + ('onwheel' in document) + "<br>";
