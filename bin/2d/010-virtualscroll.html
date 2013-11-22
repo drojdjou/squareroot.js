@@ -14,14 +14,9 @@
     		color: #fff;
     		font-family: monospace;
     		overflow: hidden;
-    		/*border: 2px solid white;*/
     		width: 100%;
     		height: 100%;
     		position: absolute;
-    		-webkit-box-sizing: border-box;
-    		-moz-box-sizing: border-box;
-    		-ms-box-sizing: border-box;
-    		box-sizing: border-box;
     	}
 
     	section {
@@ -66,7 +61,7 @@
 <body>
 
 	<section>
-		<div id="version">V 1.96 <a href="http://bartekdrozdz.com">link</a></div>
+		<div id="version">V 1.97 <a href="http://bartekdrozdz.com">link</a></div>
 		<div id="rec">false</div>
 		<div id="pos-x">0</div>
 		<div id="delta-x">0</div>
@@ -110,8 +105,11 @@
 		// 	key = !key;
 		// });
 
-		var r1y = 0, r2y = 200 + (window.innerHeight - 200) * 0.5;
-		var r1x = 0, r2x = 0;
+		var t1y = 0, t2y = 0;
+		var t1x = 0, t2x = 0;
+
+		var c1y = 0, c2y = 0;
+		var c1x = 0, c2x = 0;
 
 		document.addEventListener('touchmove', function(e) { e.preventDefault(); });
 
@@ -122,14 +120,31 @@
 		// _debug.innerHTML += "touchmove: " + ('ontouchmove' in document) + "<br>";
 		// _debug.innerHTML += "keydown: " + ('onkeydown' in document) + "<br>";
 		// _debug.innerHTML += "mspointer: " + !!window.navigator.msPointerEnabled + "<br>";
-		_debug.innerHTML += "body.touchaction def: " + document.body.style.msTouchAction + "<br>";
+		// _debug.innerHTML += "body.touchaction def: " + document.body.style.msTouchAction + "<br>";
 
 		var setReds = function() {
-			if(r1y < -200) r1y += window.innerHeight + 200;
-			if(r2y < -200) r2y += window.innerHeight + 200;
+			requestAnimFrame(setReds);
 
-			if(r1y > window.innerHeight) r1y -= window.innerHeight + 200;
-			if(r2y > window.innerHeight) r2y -= window.innerHeight + 200;
+			var ease = 0.1;
+
+			c1y += (t1y - c1y) * ease;
+			c2y += (t2y - c2y) * ease;
+			c1x += (t1x - c1x) * ease;
+			c2x += (t2x - c2x) * ease;
+
+			var r1y = c1y;
+			var r2y = c2y;
+
+			var r1x = c1x;
+			var r2x = c2x;
+
+			r2y += 200 + (window.innerHeight - 200) * 0.5;
+
+			while(r1y < -200) r1y += window.innerHeight + 200;
+			while(r2y < -200) r2y += window.innerHeight + 200;
+
+			while(r1y > window.innerHeight) r1y -= window.innerHeight + 200;
+			while(r2y > window.innerHeight) r2y -= window.innerHeight + 200;
 
 			r1x = Math.min(r1x, 100);
 			r1x = Math.max(r1x, -100);
@@ -137,8 +152,8 @@
 			r2x = Math.min(r2x, 100);
 			r2x = Math.max(r2x, -100);
 
-			var tx = "translateX(" + r1x + "px) translateY(" + r1y + "px)";
-			var ty = "translateX(" + r2x + "px) translateY(" + r2y + "px)";
+			var tx = "translateX(" + r1x + "px) translateY(" + r1y + "px) translateZ(0)";
+			var ty = "translateX(" + r2x + "px) translateY(" + r2y + "px) translateZ(0)";
 
 			_red1.style.transform = tx;
 			_red2.style.transform = ty;
@@ -166,26 +181,24 @@
 			_maxx.innerHTML = "MX: " + maxx;
 			_maxy.innerHTML = "MY: " + maxy;
 
-			if(document.body.style.msTouchAction) {
-				_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
-			}
+			// if(document.body.style.msTouchAction) {
+			// 	_live.innerHTML = "body.touchaction: " + document.body.style.msTouchAction + "<br>";
+			// }
 
-			r1y += e.deltaY;
-			r2y += e.deltaY;
+			t1y += e.deltaY;
+			t2y += e.deltaY;
 
-			r1x += e.deltaX;
-			r2x += e.deltaX;
-
-			setReds();
+			t1x += e.deltaX;
+			t2x += e.deltaX;
 
 			if(!didLogEvent) {
 				didLogEvent = true;
-				console.log(e.originalEvent);
+				// console.log(e.originalEvent);
 				// _debug.innerHTML += "---<br>";
-				for(var p in e.originalEvent) {
-					console.log(p, e.originalEvent[p]);
+				// for(var p in e.originalEvent) {
+					// console.log(p, e.originalEvent[p]);
 					// _debug.innerHTML += p + ": " + e.originalEvent[p] + "<br>";
-				}
+				// }
 			}
 		});
 
