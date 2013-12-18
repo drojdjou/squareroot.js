@@ -99,8 +99,8 @@ function render() {
     requestAnimFrame(render);
 
     if(!hasLeap) {
-        px += pointerX / window.innerWidth;
-        py += pointerY / window.innerHeight;
+        px = (pointerX / window.innerWidth) - 0.5;
+        py = (pointerY / window.innerHeight) - 0.5;
     }
 
 
@@ -193,7 +193,7 @@ if(window.Leap) {
 
 render();
 
-document.title = "Polygons | v0.26";
+document.title = "Polygons | v0.27";
 
 
 
