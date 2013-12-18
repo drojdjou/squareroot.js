@@ -87,6 +87,9 @@ var readMouseTouchValues = function() {
 
 document.addEventListener('touchmove', function(e) {
     e.preventDefault();
+
+    mx = e.targetTouches[0].pageX;
+    my = e.targetTouches[0].pageY;
 }, false);
 
 document.addEventListener('mousemove', function(e) {
