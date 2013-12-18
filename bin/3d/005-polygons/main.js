@@ -1,5 +1,5 @@
 var px = 0, py = 0, pz = 0, cpz = 0;
-var mx = 0, my = 0;
+var pointerX = 0, pointerY = 0;
 
 var engine, camera, geometry, renderer;
 
@@ -44,18 +44,21 @@ function addRing() {
     mesh.add(addPointer(-10, 10, 0));
     mesh.add(addPointer(-10, -10, 0));
 
-    mesh.add(addPointer(0, 0, 10));
-    mesh.add(addPointer(0, 0, -10));
+    // if(!touch) {
+        mesh.add(addPointer(0, 0, 10));
+        mesh.add(addPointer(0, 0, -10));
 
-    mesh.add(addPointer(0, 10, 10));
-    mesh.add(addPointer(0, 10, -10));
-    mesh.add(addPointer(0, -10, 10));
-    mesh.add(addPointer(0, -10, -10));
+        mesh.add(addPointer(0, 10, 10));
+        mesh.add(addPointer(0, 10, -10));
+        mesh.add(addPointer(0, -10, 10));
+        mesh.add(addPointer(0, -10, -10));
 
-    mesh.add(addPointer(10, 0, 10));
-    mesh.add(addPointer(10, 0, -10));
-    mesh.add(addPointer(-10, 0, 10));
-    mesh.add(addPointer(-10, 0, -10));
+        mesh.add(addPointer(10, 0, 10));
+        mesh.add(addPointer(10, 0, -10));
+        mesh.add(addPointer(-10, 0, 10));
+        mesh.add(addPointer(-10, 0, -10));
+    // }
+
     engine.add(mesh);
 
     return mesh;
@@ -80,31 +83,26 @@ var readLeapValues = function(frame) {
     }
 };
 
-var readMouseTouchValues = function() {
-    px = mx / window.innerWidth;
-    py = my / window.innerHeight;
-}
-
 document.addEventListener('touchmove', function(e) {
     e.preventDefault();
-
-    mx = e.targetTouches[0].pageX;
-    my = e.targetTouches[0].pageY;
-}, false);
+    pointerX = e.targetTouches[0].pageX;
+    pointerY = e.targetTouches[0].pageY;
+});
 
 document.addEventListener('mousemove', function(e) {
     e.preventDefault();
-
-    mx = e.pageX;
-    my = e.pageY;
-}, false);
+    pointerX = e.pageX;
+    pointerY = e.pageY;
+});
 
 function render() {
     requestAnimFrame(render);
 
     if(!hasLeap) {
-        readMouseTouchValues();
+        px += pointerX / window.innerWidth;
+        py += pointerY / window.innerHeight;
     }
+
 
     cpz += (pz - cpz) / 10;
 
@@ -189,8 +187,13 @@ geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), red);
 radius = window.innerWidth / 33;
 m2 = addRing();
 
-Leap.loop(readLeapValues);
+if(window.Leap) {
+    Leap.loop(readLeapValues);
+}
+
 render();
+
+document.title = "Polygons | v0.26";
 
 
 
