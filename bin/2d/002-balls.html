@@ -48,7 +48,7 @@
         var gravityScaled = new SQR.V2();
 
         var balls = [];
-        var numBalls = (window.innerWidth > 320) ? 100 : 20;
+        var numBalls = (window.innerWidth > 320) ? 40 : 20;
         var gravityOn = true;
 
         var throttle = 0;
@@ -138,8 +138,8 @@
 
                 var b = new SQR.Particle(new SQR.V2(window.innerWidth * Math.random(), 20));
 
-                var rc = Math.min(40, window.innerWidth * 0.02);
-                var rv = Math.min(60, window.innerWidth * 0.06);
+                var rc = Math.min(25, window.innerWidth * 0.02);
+                var rv = Math.min(40, window.innerWidth * 0.06);
                 b.radius = rc + r * rv;
 
                 b.mass = (1 + r) * 5;
