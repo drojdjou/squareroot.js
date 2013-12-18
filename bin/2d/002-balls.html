@@ -48,7 +48,7 @@
         var gravityScaled = new SQR.V2();
 
         var balls = [];
-        var numBalls = 20;
+        var numBalls = (window.innerWidth > 320) ? 100 : 20;
         var gravityOn = true;
 
         var throttle = 0;
@@ -116,11 +116,15 @@
                     this.velocity.y *= -this.bounciness;
                 }
 
-                ctx.strokeStyle = 'rgba(255,0,0, 0.5)';
-                ctx.lineWidth = 10;
                 ctx.fillStyle = 'rgba(255,0,0, 0.5)';
                 ctx.beginPath();
                 ctx.arc(this.position.x, this.position.y, this.radius, 0, SQR.twoPI);
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(255,0,0, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.position.x, this.position.y, this.radius - 10, 0, SQR.twoPI);
                 ctx.stroke();
                 ctx.fill();
             }
@@ -134,8 +138,8 @@
 
                 var b = new SQR.Particle(new SQR.V2(window.innerWidth * Math.random(), 20));
 
-                var rc = Math.min(20, window.innerWidth * 0.02);
-                var rv = Math.min(30, window.innerWidth * 0.06);
+                var rc = Math.min(40, window.innerWidth * 0.02);
+                var rv = Math.min(60, window.innerWidth * 0.06);
                 b.radius = rc + r * rv;
 
                 b.mass = (1 + r) * 5;
