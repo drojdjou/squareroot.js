@@ -1,7 +1,7 @@
 #!/bin/bash
 
-tools/build.py
-ls -l build/squareroot-min.js
+# tools/build.py
+# ls -l build/squareroot-min.js
 git add -u .
 git add .
 git status
