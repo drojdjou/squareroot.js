@@ -145,7 +145,7 @@ engine.setSize(window.innerWidth, window.innerHeight);
 engine.setProjection(45);
 
 camera = new SQR.Transform();
-camera.position.z = 120;
+camera.position.z = 100;
 engine.add(camera);
 
 geometry = new SQR.Geometry();
