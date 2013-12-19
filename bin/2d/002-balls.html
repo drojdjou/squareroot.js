@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>A few bouncing balls | v0.1</title>
+    <title>A few bouncing balls | v0.12</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
@@ -49,6 +49,7 @@
 
         var balls = [];
         var numBalls = (window.innerWidth > 320) ? 40 : 20;
+        console.log(numBalls);
         var gravityOn = true;
 
         var throttle = 0;
@@ -124,7 +125,7 @@
 
                 ctx.fillStyle = 'rgba(255,0,0, 0.5)';
                 ctx.beginPath();
-                ctx.arc(this.position.x, this.position.y, this.radius - 10, 0, SQR.twoPI);
+                ctx.arc(this.position.x, this.position.y, Math.max(2, this.radius - 10), 0, SQR.twoPI);
                 ctx.stroke();
                 ctx.fill();
             }
@@ -138,12 +139,12 @@
 
                 var b = new SQR.Particle(new SQR.V2(window.innerWidth * Math.random(), 20));
 
-                var rc = Math.min(15, window.innerWidth * 0.02);
+                var rc = Math.min(20, window.innerWidth * 0.02);
                 var rv = Math.min(30, window.innerWidth * 0.06);
                 b.radius = rc + r * rv;
 
-                b.mass = (1 + r) * 5;
-                b.bounciness = 1.0 - r * 0.1;
+                b.mass = Math.pow((1 + r) * 5, 4);
+                b.bounciness = Math.max(0, 0.75 + r * 0.1);
                 b.frictionAir = 1;
                 b.frictionGround = 20;
                 b.addForce(new SQR.V2(Math.random() * 20 - 10, 0));
