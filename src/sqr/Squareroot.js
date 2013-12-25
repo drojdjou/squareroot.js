@@ -12,8 +12,15 @@ SQR.Squareroot = function(canvas, divContainer) {
 	
 	this.lightDirection = new SQR.V3(0, 1, 0).norm();
 
+    var sortingOn = true;
+
+    this.setSorting = function(on) {
+        sortingOn = on;
+    }
+
     this.setBackground = function(c) {
-        if (canvas) canvas.style.backgroundColor = c;
+        if(canvas) canvas.style.backgroundColor = c;
+        if(divContainer) divContainer.style.backgroundColor = c;
     }
 
     this.setClearColor = function(c) {
@@ -31,16 +38,6 @@ SQR.Squareroot = function(canvas, divContainer) {
             divContainer.style['-o-perspective'] = uniforms.cssDistance + 'px';
         }
     }
-
-//    This function doesn't translate to 
-//    this.setPerspectiveOrigin = function(x, y) {
-//        if (divContainer) {
-//            divContainer.style['perspective-origin'] = x + 'px ' + y + 'px';
-//            divContainer.style['-webkit-perspective-origin'] = x + 'px ' + y + 'px';
-//            divContainer.style['-moz-perspective-origin'] = x + 'px ' + y + 'px';
-//            divContainer.style['-o-perspective-origin'] = x + 'px ' + y + 'px';
-//        }
-//    }
 
     /**
      * Returns a distance. If a CSS object is placed at this distance from the camera it will be
@@ -148,6 +145,7 @@ SQR.Squareroot = function(canvas, divContainer) {
     this.render = function(camera) {
 
         SQR.Time.tick();
+        var i, ad, bd;
 
         renderObjects.length = 0;
 
@@ -162,9 +160,8 @@ SQR.Squareroot = function(canvas, divContainer) {
             }
         }
 
-        for (var i = 0; i < this.numChildren; i++) {
-            var t = this.children[i];
-            updateTransform(t);
+        for (i = 0; i < this.numChildren; i++) {
+            updateTransform(this.children[i]);
         }
 
         var l = renderObjects.length, c;
@@ -173,23 +170,25 @@ SQR.Squareroot = function(canvas, divContainer) {
         uniforms.viewMatrix = camera.computeInverseMatrix();
         uniforms.lightDirection = this.lightDirection;
 
-        for (var i = 0; i < l; i++) {
+        for (i = 0; i < l; i++) {
             c = renderObjects[i];
             c.transformView(uniforms.viewMatrix);
         }
 
-        renderObjects.sort(function(a, b) {
+        if(sortingOn) {
+            renderObjects.sort(function(a, b) {
 
-            var ad = a.depth();
-            var bd = b.depth();
+                var ad = a.depth();
+                var bd = b.depth();
 
-            if (ad < bd) return -1;
-            if (ad > bd) return 1;
-            
-            return 0;
-        });
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                
+                return 0;
+            });
+        }
 
-        for (var i = 0; i < l; i++) {
+        for (i = 0; i < l; i++) {
             c = renderObjects[i]
 
             if(!c.enabled) continue;
@@ -208,6 +207,11 @@ SQR.Squareroot = function(canvas, divContainer) {
     if (canvas) {
         uniforms.context = canvas.getContext("2d");
         this.setSize(canvas.width, canvas.height);
+    }
+
+    if(divContainer) {
+        divContainer.style.webkitTransformStyle = "preserve-3d";
+        divContainer.style.transformStyle = "preserve-3d";
     }
 
     uniforms.projection.identity();

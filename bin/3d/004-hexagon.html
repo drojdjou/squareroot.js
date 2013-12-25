@@ -12,12 +12,7 @@
 
     body {
         overflow: hidden;
-    }
-
-    #canvas {
-        position: absolute;
-        top: 0px;
-        left: 0px;
+        background-color: #000;
     }
 
     #div-container {
@@ -30,119 +25,55 @@
         position: absolute;
         top: 0px;
         left: 0px;
-    }
 
-    #div-container div canvas {
-        position: absolute;
-
-    }
-
-    #div-container div span {
-        position: absolute;
-        width: 100%;
         text-align: center;
-        display: block;
-        font-family: Georgia;
-        color: #ffffff;
+        font-family: Arial;
+        color: white;
+        font-size: 6em;
+        line-height: 6em;
     }
 
 </style>
 
 <script type="text/javascript">
 
-    var s = 60;
+    var container, engine, camera, root;
 
-    function drawHexagon(ctx, saturation, light, radius) {
-        ctx.fillStyle = SQR.Color.hsl(0, saturation, light);
-        ctx.strokeStyle = 'rgb(255,255,255)';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
+    var numHex = 0
 
-        var v = new SQR.V2();
+    function createHexagon(light, radius) {
+        var hex = document.createElement('div');
 
-        for (var i = 0; i <= 6; i++) {
-            v.set(radius, radius).addAngleRadius(i / 3 * Math.PI, radius);
-            if (i == 0) ctx.moveTo(v.x, v.y);
-            else ctx.lineTo(v.x, v.y);
-        }
+        var c = radius | 0;
 
-        ctx.fill();
-        ctx.stroke();
+        radius = radius - 10;
+
+        hex.style.backgroundColor = "rgba("+c+","+c+","+c+",1)";
+        hex.style.zIndex = "1";
+        hex.style.width = (radius * 2) + "px";
+        hex.style.height = (radius * 2) + "px";
+        hex.style.marginTop = (radius * -1) + "px";
+        hex.style.marginLeft = (radius * -1) + "px";
+        hex.style.borderRadius = (radius) + "px";
+        numHex++;
+        return hex;
     }
 
-    function createHexagonTexture(light, radius, title) {
-        var hexagonCanvas = document.createElement('canvas');
-        hexagonCanvas.width = hexagonCanvas.height = radius * 2;
-
-        light = 10 + 40 * light;
-
-        var ctx = hexagonCanvas.getContext('2d');
-        drawHexagon(ctx, 0, light, radius);
-
-        var hexagon = document.createElement('div');
-        hexagon.style.width = radius * 2 + 'px';
-        hexagon.style.height = radius * 2 + 'px';
-        hexagon.style.marginTop = -radius + 'px';
-        hexagon.style.marginLeft = -radius + 'px';
-        hexagon.appendChild(hexagonCanvas);
-
-        hexagon.addEventListener('mouseover', function() {
-            drawHexagon(ctx, 100, 50, radius);
-        }, false);
-
-        hexagon.addEventListener('mouseout', function() {
-            drawHexagon(ctx, 0, light, radius);
-        }, false);
-
-        if (title) {
-            var titleNode = document.createElement('span');
-            titleNode.style.marginTop = (radius-10) + 'px';
-            titleNode.innerHTML = title;
-            hexagon.appendChild(titleNode);
-        }
-
-        return hexagon;
-    }
-
-    var container, engine, camera, hairyBall, root;
-
-    function addHexagon(root, x, y, z, r, title) {
-        var v = new SQR.V3(x, y, z).norm().mul(r)
-        var ht = createHexagonTexture(Math.random(), s, title);
+    var addHexagon = function(root, x, y, z, r) {
+        var v = new SQR.V3(x, y, z).norm().mul(r * 16 / SQR.twoPI)
+        var ht = createHexagon(Math.random(), r);
 
         var t = new SQR.Transform();
         t.position.set(v.x, v.y, v.z);
-        //t.lookAt(root);
         t.lookInDirection(v.neg());
         t.renderer = new SQR.DOMElement3D(ht);
-        t.renderer.setBackfaceVisibility();
+        // t.renderer.setBackfaceVisibility();
         root.add(t);
 
         return t;
     }
 
-    window.onload = function() {
-
-        document.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-        }, false);
-
-        container = document.getElementById("div-container");
-
-        engine = new SQR.Squareroot(document.getElementById('canvas'), container);
-        engine.setBackground("#ffffff");
-        engine.setSize(window.innerWidth, window.innerHeight);
-        engine.setProjection(60);
-
-        camera = new SQR.Transform();
-        camera.position.z = 700;
-        engine.add(camera);
-
-        root = new SQR.Transform();
-        engine.add(root);
-
-        var r = (s * 16) / SQR.twoPI;
-
+    var createBall = function(r) {
         var segmentsY = 4;
 
         var phiStart = 0;
@@ -158,14 +89,14 @@
 
             switch(y) {
                 case 0:
-                case 4:
+                case segmentsY:
                     segmentsX = 1;
                 break;
                 case 1:
-                case 3:
+                case segmentsY-1:
                     segmentsX = 4;
                 break;
-                case 2:
+                default:
                     segmentsX = 8;
                 break;
             }
@@ -179,26 +110,47 @@
                 var yp = Math.cos(thetaStart + v * thetaLength);
                 var zp = Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
 
-                addHexagon(root, xp, yp, zp, r, '');
+                addHexagon(root, xp, yp, zp, r);
             }
         }
+    }
+
+    window.onload = function() {
+
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, false);
+
+        container = document.getElementById("div-container");
+
+        engine = new SQR.Squareroot(null, container);
+        engine.setSize(window.innerWidth, window.innerHeight);
+        engine.setProjection(50);
+        
+        camera = new SQR.Transform();
+        camera.position.z = 1200;
+        engine.add(camera);
+
+        root = new SQR.Transform();
+        engine.add(root);
+
+        createBall(110);
+        createBall(120);
+        createBall(130);
+        createBall(140);
+        // createBall(150);
+        // createBall(160);
+
+        console.log(numHex);
 
         render();
     }
 
-    var a = 1;
-    var throttle = 0;
-
     function render() {
         requestAnimFrame(render);
 
-        if(throttle++ % 2 == 0) return;
-
         root.rotation.y += 0.01;
         root.rotation.x += 0.005;
-
-//        camera.rotation.y = Math.sin(a) * 0.4;
-        a += 0.03;
 
         engine.render(camera);
     }
@@ -207,9 +159,6 @@
 
 </head>
 <body>
-<div id="canvas-container">
-    <canvas id="canvas"></canvas>
-</div>
 <div id="div-container"></div>
 </body>
 </html>

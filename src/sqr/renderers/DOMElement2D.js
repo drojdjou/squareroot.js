@@ -1,7 +1,7 @@
 /**
  * @class
  *
- * The SQR.DOMElement2D is like a billboard made of a div. It is useful for billboard,
+ * The SQR.DOMElement2D is like a billboard made of a div. It is useful for billboards of course,
  * but most typically it will be used as replacement for SQR.DOMElement3D for browsers that
  * do not support CSS 3D.
  *

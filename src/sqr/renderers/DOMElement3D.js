@@ -52,7 +52,7 @@ SQR.DOMElement3D = function(element) {
      * Inside draw all the vertices are tranaformed and projected to screen coordinates.
      *
      * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
-     * is will update it's style transfom property.
+     * is will update it's style transform property.
      *
      * @param transform the transform being rendered
      * @param uniforms a collection of objects necessary for rendering (ref to canvas, matrices, misc coordinates, etc...)
@@ -67,8 +67,5 @@ SQR.DOMElement3D = function(element) {
         element.style['-moz-transform'] = p;
         element.style['-ms-transform'] = ps + p;
         element.style['-o-transform'] = ps + p; // TODO: to ps or not ps in Opera?
-
-        element.style.zIndex = uniforms.depth;
-
     }
 }
