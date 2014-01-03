@@ -4,6 +4,8 @@
 <title>Really basic WebGL Square</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <style type="text/css">
 
     body {
@@ -27,10 +29,8 @@
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
-<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
-<script type="text/javascript" src="../../src/sqr/geometry/GLRect.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Sprite.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/math/Interpolation.js"></script>
 <script type="text/javascript" src="../../src/sqr/math/Mathx.js"></script>
@@ -51,14 +51,14 @@
 <script type="text/javascript" src="../../src/sqr/physics/Particle.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/DOMElement3D.js"></script>
-<script type="text/javascript" src="../../src/sqr/renderers/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Point.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Polygon.js"></script>
 <script type="text/javascript" src="../../src/sqr/renderers/Segment.js"></script>
+<script type="text/javascript" src="../../src/sqr/renderers/WebGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
-<script type="text/javascript" src="../../src/sqr/util/GLState.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Interactor.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Loader.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Shader.js"></script>
@@ -83,27 +83,33 @@
     engine.setClearColor(0, 0, 0, 1);
 
     var projection = new SQR.ProjectionMatrix();
-    projection.screenPixels2d();
+    projection.perspective(45, window.innerWidth/window.innerHeight, 1, 1000);
     engine.setProjection(projection);
 
     var squares = [];
-    var numSquares = 4500;
+    var numSquares = 500; // Runs at 30fps in Chrome on MBp 15" Retina
 
     var shader = engine.createShader();
     shader.load("001-square-matrix.glsl");
     var renderer = engine.createRenderer(shader);
-    var geometry = new SQR.GLRect(2, 10);
+    var geometry = new SQR.Sprite(50, 50);
+
+    var root = new SQR.Transform();
+    root.position.z = -800;
+    engine.add(root);
 
     for(var i = 0 ; i < numSquares; i++) {
         var t = new SQR.Transform();
         t.speed = 2 + Math.random() * 8;
-        t.position.x = window.innerWidth * Math.random();
-        t.position.y = window.innerHeight * Math.random();
+
+
+        t.position.x = window.innerWidth * (Math.random() - 0.5);
+        t.position.y = window.innerHeight * (Math.random() - 0.5);
         t.geometry = geometry;
         t.renderer = renderer;
         // t.positioningMode = 1;
         squares.push(t);
-        engine.add(t);
+        root.add(t);
     }
 
     var lt = 0;
@@ -117,16 +123,16 @@
         if(!dt || isNaN(dt)) dt = 0;
         var dts = dt * 0.001;
 
+        var ww = window.innerWidth;
+        var wh = window.innerHeight;
+
         for(var i = 0 ; i < numSquares; i++) {
             var s = squares[i];
-            s.rotation.z += s.speed * dts;
 
-            s.position.x += s.speed * 0.2;
-            s.position.x = s.position.x % window.innerWidth;
-
-            s.position.y += s.speed * 0.05;
-            s.position.y = s.position.y % window.innerHeight;
+            s.rotation.y += s.speed * dts;
         }
+
+        // root.rotation.z += dts * 0.5;
 
         engine.render();
 

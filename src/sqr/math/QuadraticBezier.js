@@ -38,7 +38,7 @@ SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
     }
 
     this.createSegment = function(numVertices, geometry) {
-        var g = geometry || new SQR.Geometry();
+        var g = geometry || {};
         g.continous = true;
 
         g.vertices = g.vertices || [];
@@ -61,7 +61,9 @@ SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
      * @param up The vector up
      */
     this.createRibbon = function(numVertices, width, color, geometry) {
-        var g = geometry || new SQR.Geometry();
+        var g = geometry || {};
+
+        g.polygons = g.polygons || [];
         
         for(var i = 0; i < numVertices; i++) {
 
@@ -100,14 +102,17 @@ SQR.QuadraticBezier = function(_p0, _c0, _c1, _p1) {
 
             g.color = color;
 
-//            g.addQuad(a, b, d, c, color);
-//            g.addQuad(d, b, a, c, color);
+            var addTriangle = function(g, a, b, c, color) {
+                var t = new SQR.Triangle(a, b, c);
+                t.color = color;
+                g.polygons.push(t);
+            }
 
-            g.addTriangle(a, c, b, color);
-            g.addTriangle(c, b, d, color);
+            addTriangle(g, a, c, b, color);
+            addTriangle(g, c, b, d, color);
 
-            g.addTriangle(a, b, c, color);
-            g.addTriangle(c, d, b, color);
+            addTriangle(g, a, b, c, color);
+            addTriangle(g, c, d, b, color);
         }
 
         return g;

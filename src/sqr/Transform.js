@@ -174,7 +174,6 @@ SQR.Transform = function(n) {
 
     /**
      * Sets up the local matrix and multiplies is by the parents globalMatrix.
-     *
      * This function is called in the rendering process, do not call directly.
      */
     this.transformWorld = function() {

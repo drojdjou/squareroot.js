@@ -6,6 +6,30 @@ SQR.Polygon = function() {
     this.culling = false;
     this.useLight = false;
 
+    var update = function(tri, mvp, centerX, centerY) {
+        tri.a.copyTo(tri.sa);
+        tri.b.copyTo(tri.sb);
+        tri.c.copyTo(tri.sc);
+
+        mvp.transformVector(tri.sa);
+        mvp.transformVector(tri.sb);
+        mvp.transformVector(tri.sc);
+
+        tri.center.set(0,0,0).add(tri.sa, tri.sb).add(tri.center, tri.sc).mul(1/3);
+        tri.depth = tri.center.z;
+
+        tri.sa.x = tri.sa.x / tri.sa.z * centerX + centerX;
+        tri.sa.y = tri.sa.y / tri.sa.z * centerY + centerY;
+
+        tri.sb.x = tri.sb.x / tri.sb.z * centerX + centerX;
+        tri.sb.y = tri.sb.y / tri.sb.z * centerY + centerY;
+
+        tri.sc.x = tri.sc.x / tri.sc.z * centerX + centerX;
+        tri.sc.y = tri.sc.y / tri.sc.z * centerY + centerY;
+
+        tri.calculateNormal();
+    }
+
     this.draw = function(transform, uniforms) {
         var ctx = uniforms.context;
         var geo = transform.geometry;
@@ -17,7 +41,7 @@ SQR.Polygon = function() {
 
         for (i = 0; i < tris; i++) {
             t = geo.polygons[i];
-            t.update(mvp, uniforms.centerX, uniforms.centerY);
+            update(t, mvp, uniforms.centerX, uniforms.centerY);
         }
 
         geo.polygons.sort(function(a, b) {

@@ -12,6 +12,8 @@ SQR.SquarerootGL = function(canvas) {
     var gl = canvas.getContext("experimental-webgl");
     var aspect = 1;
 
+    SQR.GL.init(gl);
+
     this.setClearColor = function(r, g, b, a) {
         gl.clearColor(r, g, b, a);
     }
@@ -32,7 +34,7 @@ SQR.SquarerootGL = function(canvas) {
     }
 
     this.createRenderer = function(shader) {
-        return new SQR.GL(gl, shader);
+        return new SQR.WebGL(gl, shader);
     }
 
     this.children = [];
@@ -95,7 +97,7 @@ SQR.SquarerootGL = function(canvas) {
     }
 
     this.render = function(camera) {
-        var i, ad, bd;
+        var i;
 
         gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -113,7 +115,7 @@ SQR.SquarerootGL = function(canvas) {
         }
 
         for (i = 0; i < l; i++) {
-            c = renderObjects[i]
+            c = renderObjects[i];
 
             if(!c.enabled) continue;
 

@@ -12,6 +12,17 @@ var up = new SQR.V3();
 var th = 0;
 var tempQ = new SQR.Quaternion();
 
+Geometry = function() {
+    this.polygons = [];
+}
+
+Geometry.prototype.addTriangle = function(a, b, c, color) {
+    var t = new SQR.Triangle(a, b, c);
+    t.color = color;
+    this.polygons.push(t);
+}
+
+
 function v(x, y, z) {
     return new SQR.V3(x, y, z);
 }
@@ -148,7 +159,7 @@ camera = new SQR.Transform();
 camera.position.z = 100;
 engine.add(camera);
 
-geometry = new SQR.Geometry();
+geometry = new Geometry();
 
 var blue = new SQR.Color(186, 100, 70);
 var red = new SQR.Color(0, 100, 70);
@@ -170,7 +181,7 @@ renderer.useLight = true;
 radius = window.innerWidth / 100;
 m1 = addRing();
 
-geometry = new SQR.Geometry();
+geometry = new Geometry();
 
 geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), red);
 geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), red);

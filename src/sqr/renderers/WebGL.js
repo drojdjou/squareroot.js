@@ -1,7 +1,9 @@
-SQR.GL = function(gl, shader) {
+SQR.WebGL = function(gl, shader) {
 
 	var vbuffer = gl.createBuffer();
 	var initialized = false;
+
+	this.renderMode = gl.TRIANGLES;
 
 	var initAttributes = function() {
 		shader.program.aVertexPosition = gl.getAttribLocation(shader.program, "aVertexPosition");
@@ -17,10 +19,7 @@ SQR.GL = function(gl, shader) {
 	this.draw = function(transform, uniforms) {
 		if(!shader.isReady()) return;
 
-		if(SQR.GLState.currentProgram != shader.program) {
-			gl.useProgram(shader.program);
-			SQR.GLState.currentProgram = shader.program;
-		}
+		SQR.GL.useProgram(shader.program);
 
 		if(!initialized) {
 			initAttributes();
@@ -28,19 +27,18 @@ SQR.GL = function(gl, shader) {
 			initialized = true;
 		}
 
+		gl.uniformMatrix4fv(shader.program.uMatrix, false, transform.globalMatrix.data);
+
 		var geo = transform.geometry;
 
-	    gl.uniformMatrix4fv(shader.program.uMatrix, false, transform.globalMatrix.data);
-
-        if(SQR.GLState.currentVBuffer != vbuffer) {
+        if(SQR.GL.currentVBuffer != vbuffer) {
 			gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
-	        gl.bufferData(gl.ARRAY_BUFFER, geo.getVertices(), gl.STATIC_DRAW);
+	        gl.bufferData(gl.ARRAY_BUFFER, geo.vertices, gl.STATIC_DRAW);
 	        gl.vertexAttribPointer(shader.program.aVertexPosition, geo.vertexSize, gl.FLOAT, false, 0, 0);
-	        SQR.GLState.currentVBuffer = vbuffer;
+	        SQR.GL.currentVBuffer = vbuffer;
 	    }
 
-        
-        gl.drawArrays(gl.TRIANGLES, 0, geo.numVertices);
+        gl.drawArrays(this.renderMode, 0, geo.numVertices);
 	}
 
 }

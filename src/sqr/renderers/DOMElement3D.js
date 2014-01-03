@@ -49,7 +49,7 @@ SQR.DOMElement3D = function(element) {
      * Draw function in a renderer will take care of drawing the element on screen.
      *
      * This functions role is very similar the shader in WebGL.
-     * Inside draw all the vertices are tranaformed and projected to screen coordinates.
+     * Inside draw all the vertices are transformed and projected to screen coordinates.
      *
      * For canvas rendering it will invoke the necessary drawing functions, for CSS elements
      * is will update it's style transform property.

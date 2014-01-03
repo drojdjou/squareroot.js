@@ -1,4 +1,4 @@
-SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
+SQR.Plane = function(w, h, wd, hd, wo, ho, yup, color) {
     this.polygons = [];
 
     wo = wo || 0;
@@ -6,6 +6,9 @@ SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
 
     wd = wd || 1;
     hd = hd || 1;
+
+    this.width = w;
+    this.height = h;
 
     w = w * 0.5;
     h = h * 0.5;
@@ -41,33 +44,14 @@ SQR.Plane = function(w, h, wd, hd, wo, ho, yup) {
 
             }
 
-            var color = new SQR.Color(0, 100, 70);
-            this.polygons.push(new SQR.Triangle(va, vb, vc, color));
-            this.polygons.push(new SQR.Triangle(va, vc, vd, color));
-        }
-    }
+            var t1 = new SQR.Triangle(va, vb, vc);
+            t1.color = color;
 
-    this.applyHeightMap = function(heightMap, maxHeight, offset, range) {
+            var t2 = new SQR.Triangle(va, vc, vd);
+            t2.color = color;
 
-        var numTriangles = this.polygons.length;
- 
-        var processVertex = function(t) {
-            var row = (t.z / h + 1) / 2;
-            var col = (t.x / w + 1) / 2;
-
-            row = (offset + row * range) % 1;
-
-            var hl = SQR.CanvasUtil.getPixelNormRed(heightMap, col, row) / 255 * maxHeight;
-            t.y = maxHeight - hl;
-
-
-        }
-
-        for (var i = 0; i < numTriangles; i++) {
-            var t = this.polygons[i];
-            processVertex(t.a);
-            processVertex(t.b);
-            processVertex(t.c);
+            this.polygons.push(t1);
+            this.polygons.push(t2);
         }
     }
 }
