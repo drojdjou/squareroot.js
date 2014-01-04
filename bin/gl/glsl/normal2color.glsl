@@ -10,6 +10,7 @@ varying vec3 vNormal;
 void main() {
 	vNormal = aVertexNormal;
 	gl_Position = uProjection * uMatrix * vec4(aVertexPosition, 1.0);
+	gl_PointSize = 3.0;
 }
 
 //#fragment

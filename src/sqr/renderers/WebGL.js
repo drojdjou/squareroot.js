@@ -6,10 +6,13 @@ SQR.WebGL = function(gl, shader) {
 	var initialized = false;
 
 	this.renderMode = gl.TRIANGLES;
-	this.usage = gl.STATIC_DRAW;
-
 	// this.renderMode = gl.LINES;
+	// this.renderMode = gl.POINTS;
+
+	this.usage = gl.STATIC_DRAW;
 	// this.usage = gl.DYNAMIC_DRAW;
+
+	
 
 	this.u = {};
 

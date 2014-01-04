@@ -142,6 +142,10 @@ SQR.V3.prototype.toUniform = function(type) {
     return a;
 }
 
+SQR.V3.prototype.toArray = function(array) {
+    array.push(this.x, this.y, this.z);
+}
+
 
 SQR.V3.up = new SQR.V3(0,1,0);
 SQR.V3.forward = new SQR.V3(0,0,-1);
