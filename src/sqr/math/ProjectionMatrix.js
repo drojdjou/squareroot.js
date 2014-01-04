@@ -72,13 +72,6 @@ SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
     m[7] = 0;
     m[11] = -1;
     m[15] = 0;
-
-//	this.n11 = near / (t * aspect);
-//	this.n22 = near / t;
-//	this.n33 = -(far + near) / n;
-//	this.n34 = -(2 * far * near) / n;
-//	this.n43 = -1;
-//	this.n44 = 0;
 }
 
 SQR.ProjectionMatrix.prototype.transformVector = function(v, pv) {

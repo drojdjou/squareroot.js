@@ -96,10 +96,17 @@ SQR.SquarerootGL = function(canvas) {
         }
     }
 
+    this.clear = function() {
+        gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.CULL_FACE);
+        gl.frontFace(gl.CW);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+
     this.render = function(camera) {
         var i;
 
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        this.clear();
 
         renderObjects.length = 0;
 

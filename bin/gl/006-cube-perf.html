@@ -29,8 +29,10 @@
 <script type="text/javascript" src="../../src/sqr/Squareroot.js"></script>
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
-<script type="text/javascript" src="../../src/sqr/geometry/Sprite.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Sprite3D.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Triangle.js"></script>
 <script type="text/javascript" src="../../src/sqr/math/Interpolation.js"></script>
 <script type="text/javascript" src="../../src/sqr/math/Mathx.js"></script>
@@ -83,63 +85,80 @@
     engine.setClearColor(0, 0, 0, 1);
 
     var projection = new SQR.ProjectionMatrix();
-    projection.perspective(45, window.innerWidth/window.innerHeight, 1, 1000);
+    projection.perspective(45, window.innerWidth/window.innerHeight, 1, 10000);
     engine.setProjection(projection);
 
-    var squares = [];
-    var numSquares = 500; // Runs at 30fps in Chrome on MBp 15" Retina
-
     var shader = engine.createShader();
-    shader.load("001-square-matrix.glsl");
-    var renderer = engine.createRenderer(shader);
-    var geometry = new SQR.Sprite(50, 50);
-
-    var root = new SQR.Transform();
-    root.position.z = -800;
+    
+    var root = new SQR.Transform();    
     engine.add(root);
 
-    for(var i = 0 ; i < numSquares; i++) {
-        var t = new SQR.Transform();
-        t.speed = 2 + Math.random() * 8;
+    var numCubes = 8000; // 8K runs @ 20 fps in Chrome
+    var cubeGeo = new SQR.Cube().setSize(50, 50, 50);
+    var v = new SQR.V3();
+    var cubeRen = engine.createRenderer(shader);
 
+    for(var i = 0; i < numCubes; i++) {
+        var cube = new SQR.Transform();
+        cube.geometry = cubeGeo;
+        cube.renderer = cubeRen;
+        cube.renderer.u.uColor = [Math.random(), Math.random(), Math.random(), 1];
+        cube.renderer.u.uLightDir = new SQR.V3(1, -0.75, -0.5).norm();
+        cube.renderer.u.uAmbientLight = 0.2;
+        cube.positioningMode = 1;
 
-        t.position.x = window.innerWidth * (Math.random() - 0.5);
-        t.position.y = window.innerHeight * (Math.random() - 0.5);
-        t.geometry = geometry;
-        t.renderer = renderer;
-        // t.positioningMode = 1;
-        squares.push(t);
-        root.add(t);
+        cube.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+        v.random().norm().mul(500 + Math.random() * 6000);
+
+        cube.position.copyFrom(v);
+
+        root.add(cube);
     }
 
+
+
+    var camera = new SQR.Transform();
+    camera.position.z = 2000;
+    root.add(camera);
+    
+
     var lt = 0;
+    var cx = Math.PI / 2;
+
+    var tx = 0, ty = 0;
+
+    document.addEventListener('mousemove', function(e) {
+        tx = (e.pageX - window.innerWidth * 0.5) * 5;
+        ty = (e.pageY - window.innerHeight * 0.5) * 5;
+    });
+
+    var c = 2;
 
     function render(t) {
         var dt = (t - lt);
         lt = t;
         stats.begin();
+
+        // if(--c >= 0) 
         requestAnimFrame(render);
 
         if(!dt || isNaN(dt)) dt = 0;
         var dts = dt * 0.001;
 
-        var ww = window.innerWidth;
-        var wh = window.innerHeight;
+        camera.position.x += (tx - camera.position.x) * 0.1;
+        camera.position.y += (ty - camera.position.y) * 0.1;
 
-        for(var i = 0 ; i < numSquares; i++) {
-            var s = squares[i];
+        camera.lookAt(root);
+        cx += 0.02;
 
-            s.rotation.y += s.speed * dts;
-        }
-
-        // root.rotation.z += dts * 0.5;
-
-        engine.render();
+        engine.render(camera);
 
         stats.end();
     }
 
-    render();
+    shader.load("glsl/basicPerf.glsl", render);
+    // render();
 
 </script>
 

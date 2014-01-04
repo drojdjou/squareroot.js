@@ -1,9 +1,12 @@
-// 001-square.glsl
+// 001-square-matrix.glsl
 //#vertex
-attribute vec2 aVertexPosition;
+attribute vec3 aVertexPosition;
+
+uniform mat4 uMatrix;
+uniform mat4 uProjection;
      
 void main() {
-	gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+	gl_Position = uProjection * uMatrix * vec4(aVertexPosition, 1.0);
 }
 
 //#fragment

@@ -1,44 +1,120 @@
 SQR.WebGL = function(gl, shader) {
 
-	var vbuffer = gl.createBuffer();
+	var that = this;
+
+	
 	var initialized = false;
 
 	this.renderMode = gl.TRIANGLES;
+	this.usage = gl.STATIC_DRAW;
 
-	var initAttributes = function() {
-		shader.program.aVertexPosition = gl.getAttribLocation(shader.program, "aVertexPosition");
-    	gl.enableVertexAttribArray(shader.program.aVertexPosition);
+	// this.renderMode = gl.LINES;
+	// this.usage = gl.DYNAMIC_DRAW;
+
+	this.u = {};
+
+	var setAttributeData = function(geo) {
+	    var attr, val;
+	    
+		for(var i = 0; i < shader.numAttributes; i++) {
+			attr = shader.attributes[i];
+			if(!attr.buffer) attr.buffer = gl.createBuffer();
+			val = geo[attr.name] || builtInAttribute(attr.name, geo);
+			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, val, that.usage);
+		}
+
+		geo.dirty = false;
 	}
 
-	var initUniforms = function(uniforms) {
-		gl.uniform4fv(shader.program.uColor, [1.0, 0.0, 0.0, 1.0]);
-		gl.uniformMatrix4fv(shader.program.uProjection, false, uniforms.projection.data);
+	var setupAttributes = function(geo) {
+		var attr;
+
+		for(var i = 0; i < shader.numAttributes; i++) {
+			attr = shader.attributes[i];
+			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
+	        gl.vertexAttribPointer(attr.location, geo.vertexSize, gl.FLOAT, false, 0, 0);
+		}
 	}
+
+	var builtInAttribute = function(name, geo) {
+		switch(name) {
+			case 'aVertexPosition':
+				return geo.vertices;
+				break;
+			case 'aVertexNormal':
+				return geo.normals;
+				break;
+			default:
+				return false;
+		}
+	}
+
+	var setUniforms = function(transform, uniforms) {
+		var uni, val;
+
+		for(var i = 0; i < shader.numUniforms; i++) {
+			uni = shader.uniforms[i];
+			val = that.u[uni.name] || builtInUniform(uni.name, transform, uniforms);
+			if(val) shader.setUniform(uni, val);
+		}
+	}
+
+	var builtInUniform = function(name, transform, uniforms) {
+		switch(name) {
+			case 'uMatrix':
+				return transform.globalMatrix.data;
+			case 'uProjection':
+				return uniforms.projection.data;
+			case 'uViewMatrix':
+				return uniforms.viewMatrix.data;
+			case 'uNormalMatrix':
+				return transform.normalMatrix.data;
+			case 'uConcatMatrix':
+				return concatMatrix.data;
+			default:
+				return false;
+		}
+	}
+
+	var concatMatrix = new SQR.Matrix44();
 	
-
 	this.draw = function(transform, uniforms) {
 		if(!shader.isReady()) return;
 
-		SQR.GL.useProgram(shader.program);
+		if(uniforms.projection) uniforms.projection.copyTo(concatMatrix);
+		else concatMatrix.identity();
 
-		if(!initialized) {
-			initAttributes();
-			initUniforms(uniforms);
-			initialized = true;
-		}
+        if(uniforms.viewMatrix) concatMatrix.multiply(uniforms.viewMatrix);
+        if(transform.globalMatrix) concatMatrix.multiply(transform.globalMatrix);
 
-		gl.uniformMatrix4fv(shader.program.uMatrix, false, transform.globalMatrix.data);
+        // Don't bother rendering if object out of the screen 
+        // (TODO: check if this works ok for any option)
+        if(concatMatrix.data[14] < -1) {
+        	return;
+        }
 
 		var geo = transform.geometry;
 
-        if(SQR.GL.currentVBuffer != vbuffer) {
-			gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
-	        gl.bufferData(gl.ARRAY_BUFFER, geo.vertices, gl.STATIC_DRAW);
-	        gl.vertexAttribPointer(shader.program.aVertexPosition, geo.vertexSize, gl.FLOAT, false, 0, 0);
-	        SQR.GL.currentVBuffer = vbuffer;
-	    }
+		SQR.GL.useProgram(shader.program);
 
-        gl.drawArrays(this.renderMode, 0, geo.numVertices);
+		if(SQR.GL.isNewGeometry(geo) || geo.dirty) {
+			setAttributeData(geo);
+			setupAttributes(geo);
+		}
+
+		setUniforms(transform, uniforms);
+
+		gl.drawArrays(this.renderMode, 0, geo.numVertices);
 	}
 
 }
+
+
+
+
+
+
+
+
+

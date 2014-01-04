@@ -3,6 +3,7 @@ SQR.V3 = function(x, y, z, w) {
     this.y = y || 0;
     this.z = z || 0;
     this.w = w || 1;
+    this.array = new Float32Array(3);
 }
 
 SQR.V3.prototype.set = function(x, y, z, w) {
@@ -110,6 +111,13 @@ SQR.V3.prototype.sub = function(a, b) {
     return this;
 }
 
+SQR.V3.prototype.random = function() {
+    this.x = Math.random() * 2 - 1;
+    this.y = Math.random() * 2 - 1;
+    this.z = Math.random() * 2 - 1;
+    return this;
+}
+
 SQR.V3.dot = function(a, b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -125,6 +133,15 @@ SQR.V3.prototype.cross = function(a, b) {
     this.set(x, y, z, this.w);
     return this;
 }
+
+SQR.V3.prototype.toUniform = function(type) {
+    var a = this.array;
+    a[0] = this.x;
+    a[1] = this.y;
+    a[2] = this.z;
+    return a;
+}
+
 
 SQR.V3.up = new SQR.V3(0,1,0);
 SQR.V3.forward = new SQR.V3(0,0,-1);

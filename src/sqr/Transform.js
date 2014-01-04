@@ -76,6 +76,7 @@ SQR.Transform = function(n) {
     this.matrix = new SQR.Matrix44();
     this.globalMatrix = new SQR.Matrix44();
     this.viewMatrix = new SQR.Matrix44();
+    this.normalMatrix = new SQR.Matrix33();
     this.inverseWorldMatrix = new SQR.Matrix44();
 
     // 0 - dynamic object
@@ -207,6 +208,10 @@ SQR.Transform = function(n) {
         if (this.lookTarget) {
             this.globalMatrix.lookAt(this.lookTarget.globalPosition(), SQR.V3.up);
         }
+
+        this.globalMatrix.inverseMat3(this.normalMatrix);
+        // See Matrix44.inverseMat3 to check whether this needs to be commented out
+        // this.normalMatrix.transpose();
 
         if (this.positioningMode == 1) this.positioningMode = 2;
     }

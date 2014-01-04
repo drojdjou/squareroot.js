@@ -23,6 +23,34 @@ SQR.Shader = function(gl) {
         if(!gl.getProgramParameter(this.program, gl.LINK_STATUS)) console.error("SHADER LINKING ERROR", gl.getProgramInfoLog(this.program));
 	}
 
+	this.inspect = function() {
+		// var tid = 0;
+		var p = that.program;
+
+	    that.uniforms = [];
+	    that.attributes = [];
+
+	    var numUni = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+	    var numAttr = gl.getProgramParameter(p, gl.ACTIVE_ATTRIBUTES);
+
+	    for (var i = 0; i < numUni; i++) {
+	        var u = gl.getActiveUniform(p, i);
+	        u.location = gl.getUniformLocation(p, u.name);
+	        that.uniforms.push(u);
+	    }
+
+	    
+	    for (var i = 0; i < numAttr; i++) {
+	        var a = gl.getActiveAttrib(p, i);
+	        a.location = gl.getAttribLocation(p, a.name);
+	        gl.enableVertexAttribArray(a.location);
+	        that.attributes.push(a);
+	    }
+
+	    that.numUniforms = numUni;
+	    that.numAttributes = numAttr;
+	}
+
 	this.isReady = function() {
 		return this.program !== null;
 	}
@@ -30,10 +58,87 @@ SQR.Shader = function(gl) {
 	this.load = function(src, callback) {
 		SQR.Loader.loadShader(src, function(vertex, fragment) {
 	        that.compile(vertex, fragment);
-	        that.program.uColor = gl.getUniformLocation(that.program, "uColor");
-	        that.program.uMatrix = gl.getUniformLocation(that.program, "uMatrix");
-	        that.program.uProjection = gl.getUniformLocation(that.program, "uProjection");
+	        that.inspect();
 	        if(callback) callback();
 		});
 	}
+
+	this.setUniform = function(uniform, value) {
+		var n = uniform;
+		var v = value;
+
+		if(v.toUniform) v = v.toUniform(n.type);
+
+		switch (n.type) {
+			case gl.BYTE:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.UNSIGNED_BYTE:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.SHORT:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.UNSIGNED_SHORT:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.INT:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.INT_VEC2:
+				gl.uniform2iv(n.location, v);
+				break;
+			case gl.INT_VEC3:
+				gl.uniform3iv(n.location, v);
+				break;
+			case gl.INT_VEC4:
+				gl.uniform4iv(n.location, v);
+				break;
+			case gl.UNSIGNED_INT:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.FLOAT:
+				gl.uniform1f(n.location, v);
+				break;
+			case gl.FLOAT_VEC2:
+				gl.uniform2fv(n.location, v);
+				break;
+			case gl.FLOAT_VEC3:
+				gl.uniform3fv(n.location, v);
+				break;
+			case gl.FLOAT_VEC4:
+				gl.uniform4fv(n.location, v);
+				break;
+			case gl.BOOL:
+				gl.uniform1i(n.location, v);
+				break;
+			case gl.BOOL_VEC2:
+				gl.uniform2iv(n.location, v);
+				break;
+			case gl.BOOL_VEC3:
+				gl.uniform3iv(n.location, v);
+				break;
+			case gl.BOOL_VEC4:
+				gl.uniform4iv(n.location, v);
+				break;
+			// TODO: Test matrices
+			case gl.FLOAT_MAT2:
+				gl.uniformMatrix2fv(n.location, false, v);
+				break;
+			case gl.FLOAT_MAT3:
+				gl.uniformMatrix3fv(n.location, false, v);
+				break;
+			case gl.FLOAT_MAT4:
+				gl.uniformMatrix4fv(n.location, false, v);
+				break;
+			case gl.SAMPLER_2D:
+				J3D.ShaderUtil.setTexture(dst, n.texid, name, v);
+				break;
+			case gl.SAMPLER_CUBE:
+				J3D.ShaderUtil.setTextureCube(dst, n.texid, name, v);
+				break;
+			default:
+				return "WARNING! Unknown uniform type ( 0x" + n.type.toString(16) + " )";
+	}
+}
 }

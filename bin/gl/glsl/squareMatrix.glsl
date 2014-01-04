@@ -2,11 +2,10 @@
 //#vertex
 attribute vec2 aVertexPosition;
 
-uniform mat4 uMatrix;
-uniform mat4 uProjection;
+uniform mat4 uConcatMatrix;
      
 void main() {
-	gl_Position = uProjection * uMatrix * vec4(aVertexPosition, 0.0, 1.0);
+	gl_Position = uConcatMatrix * vec4(aVertexPosition, 0.0, 1.0);
 }
 
 //#fragment
@@ -17,5 +16,5 @@ precision highp float;
 uniform vec4 uColor;
                
 void main() {
-	gl_FragColor = uColor;
+	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // uColor;
 }

@@ -46,7 +46,7 @@ SQR.Matrix33 = function() {
             id;
 
         if (!d) {
-            console.warn("Attempt to inverse a singular matrix44. ", this.data);
+            console.warn("Attempt to inverse a singular matrix33. ", this.data);
             return m;
         }
         
