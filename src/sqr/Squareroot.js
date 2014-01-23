@@ -8,9 +8,10 @@
  */
 SQR.Squareroot = function(canvas, divContainer) {
 	var uniforms = {};
+    var clearColor;
 	uniforms.projection = new SQR.ProjectionMatrix();
 	
-	this.lightDirection = new SQR.V3(0, 1, 0).norm();
+	this.lightDirection = new SQR.V3(1, -1, 0).norm();
 
     var sortingOn = true;
 
@@ -19,12 +20,12 @@ SQR.Squareroot = function(canvas, divContainer) {
     }
 
     this.setBackground = function(c) {
-        if(canvas) canvas.style.backgroundColor = c;
-        if(divContainer) divContainer.style.backgroundColor = c;
-    }
+        if(canvas) {
+            canvas.style.backgroundColor = c;
+            clearColor = c;
+        }
 
-    this.setClearColor = function(c) {
-        clearColor = c;
+        if(divContainer) divContainer.style.backgroundColor = c;
     }
 
     this.setProjection = function(fov) {
@@ -149,14 +150,13 @@ SQR.Squareroot = function(canvas, divContainer) {
 
         renderObjects.length = 0;
 
-        if (!!uniforms.context) {
+        if (uniforms.context) {
             uniforms.context.setTransform(1, 0, 0, 1, 0, 0);
+            uniforms.context.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (clearColor != null) {
+            if (clearColor) {
                 uniforms.context.fillStyle = clearColor;
                 uniforms.context.fillRect(0, 0, canvas.width, canvas.height);
-            } else {
-                uniforms.context.clearRect(0, 0, canvas.width, canvas.height);
             }
         }
 
@@ -216,8 +216,4 @@ SQR.Squareroot = function(canvas, divContainer) {
 
     uniforms.projection.identity();
     uniforms.container = divContainer;
-	
-    this.lightDirection.set(0, 1, 0).norm();
-
-    var clearColor = null;
 }

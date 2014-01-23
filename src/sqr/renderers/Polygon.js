@@ -1,15 +1,21 @@
-SQR.Polygon = function() {
+SQR.Polygon = function(color) {
 
     var mvp = new SQR.Matrix44();
-    var p = new SQR.V3();
+    var viewForward = new SQR.V3();
 
-    this.culling = false;
+    this.culling = true;
     this.useLight = false;
 
     var update = function(tri, mvp, centerX, centerY) {
-        tri.a.copyTo(tri.sa);
-        tri.b.copyTo(tri.sb);
-        tri.c.copyTo(tri.sc);
+
+        if(!tri.sa) tri.sa = tri.a.clone();
+        else tri.a.copyTo(tri.sa);
+
+        if(!tri.sb) tri.sb = tri.b.clone();
+        else tri.b.copyTo(tri.sb);
+
+        if(!tri.sc) tri.sc = tri.c.clone();
+        else tri.c.copyTo(tri.sc);
 
         mvp.transformVector(tri.sa);
         mvp.transformVector(tri.sb);
@@ -26,8 +32,6 @@ SQR.Polygon = function() {
 
         tri.sc.x = tri.sc.x / tri.sc.z * centerX + centerX;
         tri.sc.y = tri.sc.y / tri.sc.z * centerY + centerY;
-
-        tri.calculateNormal();
     }
 
     this.draw = function(transform, uniforms) {
@@ -52,28 +56,36 @@ SQR.Polygon = function() {
             return 0;
         });
 
+        viewForward.copyFrom(uniforms.camera.forward);
+
         for (i = 0; i < tris; i++) {
             t = geo.polygons[i];
+            t.calculateNormal();
+            transform.normalMatrix.transformVector(t.normal);
 
-            var f = Math.max(0, SQR.V3.dot(t.normal, SQR.V3.forward));
+            var f = Math.max(0, SQR.V3.dot(t.normal, viewForward));
 
-            if(f > 0 && this.culling) continue;
+            if(f < 0 && this.culling) {
+                // console.log(SQR.Stringify.v3(viewForward), SQR.Stringify.v3(t.normal), f);
+                // continue;
+            }
 
             var l = Math.max(0, SQR.V3.dot(t.normal, uniforms.lightDirection));
+            var c = color;
+            var lc = SQR.Color.hsl(c.hue, c.saturation, c.lightness - 60 + 50 * l, c.alpha);
 
-            var c = t.color || geo.color;
+            if(this.useLight) {
+                ctx.fillStyle = lc;
+                ctx.strokeStyle = (f < 0) ? "#00f" : lc;
+            } else {
+                ctx.fillStyle = c.toHSLString();
+                ctx.strokeStyle = (f < 0) ? "#00f" : c.toHSLString();
+            }
 
-            if(this.useLight) ctx.fillStyle = c.applyLight(l);
-            else ctx.fillStyle = c.toHSLString();
-
-            if(this.useLight) ctx.strokeStyle = c.applyLight(l);
-            else ctx.strokeStyle = c.toHSLString();
-            
             ctx.beginPath();
             ctx.moveTo(t.sa.x, t.sa.y);
             ctx.lineTo(t.sb.x, t.sb.y);
             ctx.lineTo(t.sc.x, t.sc.y);
-            if(t.sd) ctx.lineTo(t.sd.x, t.sd.y);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();

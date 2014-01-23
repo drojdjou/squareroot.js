@@ -134,19 +134,21 @@ SQR.Matrix44 = function() {
     this.setRotation = function(rx, ry, rz, m) {
         var d = m || this.data;
         this.identity(m);
-        var sx = Math.sin(rx), cx = Math.cos(rx), sy = Math.sin(ry), cy = Math.cos(ry), sz = Math.sin(rz), cz = Math.cos(rz);
+        var six = Math.sin(rx), cox = Math.cos(rx), 
+            siy = Math.sin(ry), coy = Math.cos(ry), 
+            siz = Math.sin(rz), coz = Math.cos(rz);
 
-        d[0] = cy * cz + sy * sx * sz;
-        d[1] = -cy * sz + sy * sx * cz;
-        d[2] = sy * cx;
+        d[0] = coy * coz + siy * six * siz;
+        d[1] = -coy * siz + siy * six * coz;
+        d[2] = siy * cox;
 
-        d[4] = sz * cx;
-        d[5] = cz * cx;
-        d[6] = -sx;
+        d[4] = siz * cox;
+        d[5] = coz * cox;
+        d[6] = -six;
 
-        d[8] = -sy * cz + cy * sx * sz;
-        d[9] = sz * sy + cy * sx * cz;
-        d[10] = cy * cx;
+        d[8] = -siy * coz + coy * six * siz;
+        d[9] = siz * siy + coy * six * coz;
+        d[10] = coy * cox;
 
         return m || this;
     }
@@ -287,7 +289,7 @@ SQR.Matrix44 = function() {
 
         det = 1 / det;
 
-        // To make a NormalMatrix - no need to transpose
+        // To make a NormalMatrix - needs to be transposed
         a[0] = (d5 * d10 - d9 * d6) * det;
         a[1] = (d8 * d6 - d4 * d10) * det;
         a[2] = (d4 * d9 - d8 * d5) * det;
@@ -299,8 +301,9 @@ SQR.Matrix44 = function() {
         a[6] = (d1 * d6 - d5 * d2) * det;
         a[7] = (d4 * d2 - d0 * d6) * det;
         a[8] = (d0 * d5 - d4 * d1) * det;
+        // m.transpose();
 
-        // To make a NormalMatrix - needs to be transposed
+        // To make a NormalMatrix - doesn't need to be transposed
         // a[0] = (d5 * d10 - d9 * d6) * det;
         // a[3] = (d8 * d6 - d4 * d10) * det;
         // a[6] = (d4 * d9 - d8 * d5) * det;
@@ -312,6 +315,8 @@ SQR.Matrix44 = function() {
         // a[2] = (d1 * d6 - d5 * d2) * det;
         // a[5] = (d4 * d2 - d0 * d6) * det;
         // a[8] = (d0 * d5 - d4 * d1) * det;
+
+        
 
         return m;
     }

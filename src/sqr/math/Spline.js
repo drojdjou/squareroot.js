@@ -35,10 +35,10 @@ SQR.Spline = function(s1, s2, s3, s4) {
     this.rawPoints.push(s1, s2, s3, s4);
     this.controlPoints.push(s1, s2, s3, s4);
 
-    var interpolatedValue = new SQR.V2();
+    var interpolatedValue = s1.clone().set();
 
     var findMidpoint = function(a, b) {
-        return new SQR.V2().sub(b, a).mul(0.5).appendVec(a);
+        return s1.clone().set().sub(b, a).mul(0.5).appendVec(a);
     }
 
     var interpolate = function(t, v, func) {
@@ -63,6 +63,7 @@ SQR.Spline = function(s1, s2, s3, s4) {
         v = v || interpolatedValue;
         v.x = func(st, cs[s + 0].x, cs[s + 1].x, cs[s + 2].x, cs[s + 3].x);
         v.y = func(st, cs[s + 0].y, cs[s + 1].y, cs[s + 2].y, cs[s + 3].y);
+        v.z = func(st, cs[s + 0].z, cs[s + 1].z, cs[s + 2].z, cs[s + 3].z);
         return v;
     }
 
@@ -79,7 +80,7 @@ SQR.Spline = function(s1, s2, s3, s4) {
         
         var l = 0;
 
-        var lv = new SQR.V2();
+        var lv = s1.clone().set();
 
         for(var i = 0; i <= dl; i++) {
             var v = this.valueAt(i / dl);
@@ -95,7 +96,7 @@ SQR.Spline = function(s1, s2, s3, s4) {
 
         var sv = this.valueAt(st).clone();
         var d = 0;
-        var sm = new SQR.V2();
+        var sm = s1.clone().set();
 
         var c = 0;
 
@@ -108,8 +109,6 @@ SQR.Spline = function(s1, s2, s3, s4) {
             c++;
         }
 
-        console.log(d, st);
-
         return st;
     }
 
@@ -117,11 +116,13 @@ SQR.Spline = function(s1, s2, s3, s4) {
         this.rawPoints.push(p1, p2);
         numRawPoints = this.rawPoints.length;
         this.calculateControlPoints();
+        return this;
     }
 
     this.closePath = function() {
         closed = true;
         this.calculateControlPoints();
+        return this;
     }
 
     this.calculateControlPoints = function() {

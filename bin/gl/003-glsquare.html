@@ -30,6 +30,7 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
@@ -62,11 +63,16 @@
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Interactor.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Loader.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/OBJParser.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/RenderRegion.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Shader.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Texture.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Time.js"></script>
 <!-- SQRLIB -->
 </head>
@@ -103,7 +109,6 @@
     var root = new SQR.Transform();
     root.position.x = window.innerWidth * 0.5;
     root.position.y = window.innerHeight * 0.5;
-    engine.add(root);
 
     for(var i = 0 ; i < numSquares; i++) {
         var t = new SQR.Transform();
@@ -146,7 +151,7 @@
 
         // root.rotation.z += dts * 0.5;
 
-        engine.render();
+        engine.render(root);
 
         stats.end();
     }

@@ -39,18 +39,22 @@ SQR.V3.prototype.copyTo = function(p) {
     return p;
 }
 
-SQR.V3.prototype.copy = function(v) {
-    v = v || new SQR.V3();
-    v.set(this.x, this.y, this.z, this.w);
-    return v;
-}
-
 SQR.V3.prototype.copyFrom = function(p) {
     this.x = p.x;
     this.y = p.y;
     this.z = p.z;
     this.w = p.w;
     return this;
+}
+
+// SQR.V3.prototype.copy = function(v) {
+//     v = v || new SQR.V3();
+//     v.set(this.x, this.y, this.z, this.w);
+//     return v;
+// }
+
+SQR.V3.prototype.clone = function() {
+    return new SQR.V3(this.x, this.y, this.z);
 }
 
 SQR.V3.prototype.magsq = function() {
@@ -122,10 +126,6 @@ SQR.V3.dot = function(a, b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-SQR.V3.prototype.clone = function() {
-    return new SQR.V3(this.x, this.y, this.z);
-}
-
 SQR.V3.prototype.cross = function(a, b) {
     var x = a.y * b.z - a.z * b.y;
     var y = a.z * b.x - a.x * b.z;
@@ -148,4 +148,4 @@ SQR.V3.prototype.toArray = function(array) {
 
 
 SQR.V3.up = new SQR.V3(0,1,0);
-SQR.V3.forward = new SQR.V3(0,0,-1);
+SQR.V3.forward = new SQR.V3(0,0,1);

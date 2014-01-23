@@ -12,7 +12,7 @@ SQR.Matrix33 = function() {
 
     this.transformVector = function (v, pv) {
         var d = this.data;
-        var x = v.x, y = v.y, z = v.z, w = v.w;
+        var x = v.x, y = v.y, z = v.z;
         pv = pv || v;
 
         pv.x = d[0] * x + d[3] * y + d[6] * z;

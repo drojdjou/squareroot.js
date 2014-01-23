@@ -27,10 +27,10 @@ function v(x, y, z) {
     return new SQR.V3(x, y, z);
 }
 
-function addPointer(x, y, z) {
+function addPointer(x, y, z, r) {
     var p1 = new SQR.Transform();
     p1.geometry = geometry;
-    p1.renderer = renderer;
+    p1.renderer = r;
     p1.position.set(x, y, z).norm().mul(radius);
 
     p1.position.copyTo(temp);
@@ -41,33 +41,33 @@ function addPointer(x, y, z) {
     return p1;
 }
 
-function addRing() {
+function addRing(r) {
     var mesh = new SQR.Transform();
 
-    mesh.add(addPointer(0, 10, 0));
-    mesh.add(addPointer(0, -10, 0));
+    mesh.add(addPointer(0, 10, 0, r));
+    mesh.add(addPointer(0, -10, 0, r));
 
-    mesh.add(addPointer(10, 0, 0));
-    mesh.add(addPointer(-10, 0, 0));
+    mesh.add(addPointer(10, 0, 0, r));
+    mesh.add(addPointer(-10, 0, 0, r));
 
-    mesh.add(addPointer(10, 10, 0));
-    mesh.add(addPointer(10, -10, 0));
-    mesh.add(addPointer(-10, 10, 0));
-    mesh.add(addPointer(-10, -10, 0));
+    mesh.add(addPointer(10, 10, 0, r));
+    mesh.add(addPointer(10, -10, 0, r));
+    mesh.add(addPointer(-10, 10, 0, r));
+    mesh.add(addPointer(-10, -10, 0, r));
 
     // if(!touch) {
-        mesh.add(addPointer(0, 0, 10));
-        mesh.add(addPointer(0, 0, -10));
+        mesh.add(addPointer(0, 0, 10, r));
+        mesh.add(addPointer(0, 0, -10, r));
 
-        mesh.add(addPointer(0, 10, 10));
-        mesh.add(addPointer(0, 10, -10));
-        mesh.add(addPointer(0, -10, 10));
-        mesh.add(addPointer(0, -10, -10));
+        mesh.add(addPointer(0, 10, 10, r));
+        mesh.add(addPointer(0, 10, -10, r));
+        mesh.add(addPointer(0, -10, 10, r));
+        mesh.add(addPointer(0, -10, -10, r));
 
-        mesh.add(addPointer(10, 0, 10));
-        mesh.add(addPointer(10, 0, -10));
-        mesh.add(addPointer(-10, 0, 10));
-        mesh.add(addPointer(-10, 0, -10));
+        mesh.add(addPointer(10, 0, 10, r));
+        mesh.add(addPointer(10, 0, -10, r));
+        mesh.add(addPointer(-10, 0, 10, r));
+        mesh.add(addPointer(-10, 0, -10, r));
     // }
 
     engine.add(mesh);
@@ -155,48 +155,50 @@ engine.setBackground('#000000');
 engine.setSize(window.innerWidth, window.innerHeight);
 engine.setProjection(45);
 
-camera = new SQR.Transform();
-camera.position.z = 100;
-engine.add(camera);
-
-geometry = new Geometry();
-
 var blue = new SQR.Color(186, 100, 70);
 var red = new SQR.Color(0, 100, 70);
 
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), blue);
-geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), blue);
-
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0), blue);
-geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0), blue);
-
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0), blue);
-geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0), blue);
-
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0), blue);
-geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), blue);
-
-renderer = new SQR.Polygon();
-renderer.useLight = true;
-radius = window.innerWidth / 100;
-m1 = addRing();
-
+camera = new SQR.Transform();
+camera.position.z = 100;
+engine.add(camera);
 geometry = new Geometry();
 
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0), red);
-geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0), red);
+geometry.addTriangle(v(-2, -2, 0), v(-2, 2, 0), v(0, 0, -1));
+geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0));
 
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0), red);
-geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0), red);
+geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0));
+geometry.addTriangle(v(-2, 2, 0), v(2, 2, 0), v(0, 0, -1));
 
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0), red);
-geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0), red);
+geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0));
+geometry.addTriangle(v(2, -2, 0), v(2, 2, 0), v(0, 0, 6));
 
-geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0), red);
-geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0), red);
+geometry.addTriangle(v(-2, -2, 0), v(2, -2, 0), v(0, 0, 6));
+geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0));
+
+rendererBlue = new SQR.Polygon(red);
+rendererBlue.useLight = true;
+
+rendererRed = new SQR.Polygon(blue);
+rendererRed.useLight = true;
+
+radius = window.innerWidth / 100;
+m1 = addRing(rendererRed);
+// geometry = new Geometry();
+
+// geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(-2, 2, 0));
+// geometry.addTriangle(v(2, -2, 0), v(0, 0, -1), v(2, 2, 0));
+
+// geometry.addTriangle(v(-2, -2, 0), v(0, 0, -1), v(2, -2, 0));
+// geometry.addTriangle(v(-2, 2, 0), v(0, 0, -1), v(2, 2, 0));
+
+// geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(-2, 2, 0));
+// geometry.addTriangle(v(2, -2, 0), v(0, 0, 6), v(2, 2, 0));
+
+// geometry.addTriangle(v(-2, -2, 0), v(0, 0, 6), v(2, -2, 0));
+// geometry.addTriangle(v(-2, 2, 0), v(0, 0, 6), v(2, 2, 0));
 
 radius = window.innerWidth / 33;
-m2 = addRing();
+m2 = addRing(rendererBlue);
 
 if(window.Leap) {
     Leap.loop(readLeapValues);

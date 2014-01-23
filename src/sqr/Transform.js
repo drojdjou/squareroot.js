@@ -79,6 +79,10 @@ SQR.Transform = function(n) {
     this.normalMatrix = new SQR.Matrix33();
     this.inverseWorldMatrix = new SQR.Matrix44();
 
+    this.forward = new SQR.V3();
+    this.left = new SQR.V3();
+    this.top = new SQR.V3();
+
     // 0 - dynamic object
     // 1 - static object
     // 2 - static object after matrices were calculated
@@ -209,9 +213,18 @@ SQR.Transform = function(n) {
             this.globalMatrix.lookAt(this.lookTarget.globalPosition(), SQR.V3.up);
         }
 
+        this.globalMatrix.extractPosition(_globalPosition);
+
         this.globalMatrix.inverseMat3(this.normalMatrix);
-        // See Matrix44.inverseMat3 to check whether this needs to be commented out
-        // this.normalMatrix.transpose();
+
+        var d = this.normalMatrix.data;
+        // this.left.set(d[0], d[1], d[2]);
+        // this.top.set(d[3], d[4], d[5]);
+        // this.forward.set(d[6], d[7], d[8]);
+
+        this.left.set(      d[0],   d[3],   d[6]);
+        this.top.set(       d[1],   d[4],   d[7]);
+        this.forward.set(   d[2],   d[5],   d[8]);
 
         if (this.positioningMode == 1) this.positioningMode = 2;
     }
@@ -220,7 +233,6 @@ SQR.Transform = function(n) {
      * Position of this transform in global coordinates.
      */
     this.globalPosition = function() {
-        this.globalMatrix.extractPosition(_globalPosition);
         return _globalPosition;
     }
 

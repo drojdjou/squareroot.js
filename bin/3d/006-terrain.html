@@ -15,6 +15,7 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
@@ -47,11 +48,16 @@
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Interactor.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Loader.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/OBJParser.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/RenderRegion.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Shader.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Texture.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Time.js"></script>
 <!-- SQRLIB -->
 
@@ -65,6 +71,7 @@
             position: absolute;
             top: 0px;
             left: 0px;
+            background-color: #000;
         }
 
         #hm-container {
@@ -126,25 +133,21 @@
             }, false);
 
             engine = new SQR.Squareroot(document.getElementById('canvas'), document.getElementById("div-container"));
-            engine.setBackground("#000000");
             engine.setSize(window.innerWidth, window.innerHeight);
             engine.setProjection(45);
-            engine.setClearColor("rgba(0,0,0,1)");
+            engine.setBackground("rgba(0,0,0,1)");
+            engine.lightDirection.set(1, -0.5, 0).norm();
 
             terrain = new SQR.Transform();
 
-            terrain.renderer = new SQR.Polygon();
+            terrain.renderer = new SQR.Polygon(new SQR.Color(0, 100, 70));
             terrain.renderer.useLight = true;
-
-            var c = new SQR.Color(0, 100, 70);
-            terrain.geometry = new SQR.Plane(100, 100, 12, 12, 0, 0, true, c);
+            terrain.geometry = new SQR.Plane(100, 100, 12, 12, 0, 0, true);
 
             camera = new SQR.Transform();
             camera.position.z = 140;
             camera.position.y = -140;
-
             camera.rotation.x = 0.9;
-//            camera.lookInDirection(terrain.position);
 
             engine.add(camera, terrain);
 
@@ -173,11 +176,13 @@
 
         var th = 0;
         var a = 0;
+        var fc = 0;
 
         function render() {
             stats.begin();
 
-            requestAnimFrame(render);
+            // if(fc++ < 100) 
+                requestAnimFrame(render);
             
             if(th++ % 2 == 1) {
                 //stats.end();
@@ -187,7 +192,7 @@
             terrain.rotation.y += 0.002;
 
             terrain.geometry.applyHeightMap(hdata, 40, a, 0.1);
-            a += 0.06 * SQR.Time.deltaTime;
+            a += 0.03 * SQR.Time.deltaTime;
 
             engine.render(camera);
 
@@ -204,5 +209,8 @@
 <div id="div-container"></div>
 
 <div id="hm-container"></div>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
 </body>
 </html>

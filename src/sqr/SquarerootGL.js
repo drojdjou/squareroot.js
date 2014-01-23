@@ -10,7 +10,7 @@ SQR.SquarerootGL = function(canvas) {
 	var uniforms = {};
 
     var gl = canvas.getContext("experimental-webgl");
-    var aspect = 1;
+    var currentFrameBuffer;
 
     SQR.GL.init(gl);
 
@@ -25,8 +25,10 @@ SQR.SquarerootGL = function(canvas) {
     this.setSize = function(w, h) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        aspect = canvas.height / canvas.width;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+
+    this.createTexture = function(source, params) {
+        return new SQR.Texture(gl, source, params);
     }
 
     this.createShader = function() {
@@ -37,57 +39,20 @@ SQR.SquarerootGL = function(canvas) {
         return new SQR.WebGL(gl, shader);
     }
 
-    this.children = [];
-    this.numChildren = 0;
-    var renderObjects = [];
-
-    this.add = function() {
-        for (var i = 0; i < arguments.length; i++) {
-            var t = arguments[i];
-            t.parent = null;
-            if (this.children.indexOf(t) == -1) this.children.push(t);
-        }
-        this.numChildren = this.children.length;
+    this.createFrameBuffer = function(w, h) {
+        return new SQR.FrameBuffer(gl, w || window.innerWidth, h || window.innerHeight);
     }
 
-    this.remove = function() {
-        for (var i = 0; i < arguments.length; i++) {
-            var t = arguments[i];
-            var j = this.children.indexOf(t);
-
-            if (j == -1) return false;
-
-            t.parent = null;
-
-            this.children.splice(j, 1);
-        }
-
-        this.numChildren = this.children.length;
-    }
-
-    this.contains = function(t) {
-        return this.children.indexOf(t) > -1;
-    }
-
-    this.recurse = function(f) {
-        for (var i = 0; i < this.numChildren; i++) {
-            this.children[i].recurse(f);
-        }
-    }
-
-    this.removeAll = function() {
-        for (var i = 0; i < this.numChildren; i++) {
-            var t = this.children[i];
-            t.parent = null;
-        }
-
-        this.children = [];
-        this.numChildren = this.children.length;
-    }
+    var opaqueObjects = [], transparentObjects = [];
 
     var updateTransform = function(t) {
         t.transformWorld();
-        renderObjects.push(t);
+
+        if(t.renderer && t.enabled) {
+            if(t.renderer.transparent) transparentObjects.push(t);
+            else opaqueObjects.push(t);
+        }
+        
 
         if (t.numChildren > 0) {
             for (var i = 0; i < t.numChildren; i++) {
@@ -96,39 +61,85 @@ SQR.SquarerootGL = function(canvas) {
         }
     }
 
-    this.clear = function() {
-        gl.enable(gl.DEPTH_TEST);
-        gl.enable(gl.CULL_FACE);
-        gl.frontFace(gl.CW);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+    var defaultOptions = {
+        region: null,
+        dontClear: false,
+        culling: false,
+        reverseFace: true
     }
 
-    this.render = function(camera) {
-        var i;
-
-        this.clear();
-
-        renderObjects.length = 0;
-
-        for (i = 0; i < this.numChildren; i++) {
-            updateTransform(this.children[i]);
+    this.clear = function(options) {
+        if(options.region) {
+            var r = options.region;
+            gl.viewport(r.x, r.y, r.w, r.h);
+            gl.scissor(r.x, r.y, r.w, r.h);
+            gl.enable(gl.SCISSOR_TEST);
+        } else {
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.disable(gl.SCISSOR_TEST);
         }
 
-        var l = renderObjects.length, c;
+        if(!options.target || (currentFrameBuffer && currentFrameBuffer != options.target)) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            currentFrameBuffer = null;
+        }
+
+        if(options.target) {
+            currentFrameBuffer = options.target;
+            gl.bindFramebuffer(gl.FRAMEBUFFER, options.target.fbo);
+        }
+
+        (options.dontClear) ? '' : gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        (options.culling) ? gl.enable(gl.CULL_FACE) : gl.disable(gl.CULL_FACE);
+        (options.reverseFace) ? gl.frontFace(gl.CCW) : gl.frontFace(gl.CW);
+    }
+
+    this.render = function(scene, camera, options) {
+        var i, l, c;
+
+        options = options || defaultOptions;
+
+        this.clear(options);
+
+        opaqueObjects.length = 0, transparentObjects.length = 0;
+
+        updateTransform(scene);
 
         if(camera) {
             uniforms.camera = camera;
             uniforms.viewMatrix = camera.computeInverseMatrix();
         }
 
+        uniforms.replacementShader = options.replacementShader || null;
+
+        l = opaqueObjects.length;
+
+        gl.enable(gl.DEPTH_TEST);
+        gl.disable(gl.BLEND);
+        
         for (i = 0; i < l; i++) {
-            c = renderObjects[i];
+            c = opaqueObjects[i];
+            c.renderer.draw(c, uniforms);
+        }
 
-            if(!c.enabled) continue;
+        l = transparentObjects.length;
 
-            if (c.renderer) {
-                c.renderer.draw(c, uniforms);
-            }
+        if(l == 0) return;
+
+        gl.enable(gl.BLEND);
+
+        for (i = 0; i < l; i++) {
+            c = transparentObjects[i];
+
+            var srcFactor = (c.renderer.srcFactor != null) ? c.renderer.srcFactor : gl.SRC_ALPHA;
+            var dstFactor = (c.renderer.dstFactor != null) ? c.renderer.dstFactor : gl.ONE;
+
+            if (c.renderer.depthTest) gl.enable(gl.DEPTH_TEST);
+            else gl.disable(gl.DEPTH_TEST);
+
+            gl.blendFunc(srcFactor, dstFactor);
+
+            c.renderer.draw(c, uniforms);
         }
     }
 

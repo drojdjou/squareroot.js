@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
@@ -45,11 +46,16 @@
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Interactor.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Loader.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/OBJParser.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/RenderRegion.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Shader.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Texture.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Time.js"></script>
 <!-- SQRLIB -->
 
@@ -130,19 +136,35 @@
         window.onload = function() {
             ctx = document.getElementById('cnv').getContext('2d');
 
-            var k1 = new SQR.V2(300, 60);
-            var k2 = new SQR.V2(500, 230);
-            var k3 = new SQR.V2(800,  50);
-            var k4 = new SQR.V2(700, 450);
+            // var k1 = new SQR.V2(300, 60);
+            // var k2 = new SQR.V2(500, 230);
+            // var k3 = new SQR.V2(800,  50);
+            // var k4 = new SQR.V2(700, 450);
 
+            // sp = new SQR.Spline(k1, k2, k3, k4);
+
+            // k1 = new SQR.V2(550, 280);
+            // k2 = new SQR.V2(350, 300);
+            // sp.add(k1, k2);
+
+            // k1 = new SQR.V2(200, 450);
+            // k2 = new SQR.V2(100, 200);
+            // sp.add(k1, k2);
+
+            var ct = new SQR.V2(300, 250);
+
+            var k1 = new SQR.V2(200, 100).appendVec(ct);
+            var k2 = new SQR.V2(200, -100).appendVec(ct);
+            var k3 = new SQR.V2(100, -200).appendVec(ct);
+            var k4 = new SQR.V2(-100, -200).appendVec(ct);
             sp = new SQR.Spline(k1, k2, k3, k4);
 
-            k1 = new SQR.V2(550, 280);
-            k2 = new SQR.V2(350, 300);
+            k1 = new SQR.V2(-200, -100).appendVec(ct);
+            k2 = new SQR.V2(-200, 100).appendVec(ct);
             sp.add(k1, k2);
 
-            k1 = new SQR.V2(200, 450);
-            k2 = new SQR.V2(100, 200);
+            k1 = new SQR.V2(-100, 200).appendVec(ct);
+            k2 = new SQR.V2(100, 200).appendVec(ct);
             sp.add(k1, k2);
 
             sp.closePath();
@@ -184,5 +206,8 @@
 <div id="container">
     <canvas id="cnv" width="1000" height="500"></canvas>
 </div>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
 </body>
 </html>

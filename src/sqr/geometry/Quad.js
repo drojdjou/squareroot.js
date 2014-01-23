@@ -2,7 +2,7 @@ SQR.Quad = function(t1, t2) {
 
     var that = this;
 
-    this.normal = new SQR.V3();
+    this.normal = t1.a.clone();
 
     var perVertex = false;
 
@@ -20,20 +20,24 @@ SQR.Quad = function(t1, t2) {
         } else {
             t1.toArray(vertexArray);
             t2.toArray(vertexArray);
-            
+
             if(normalArray) {
                 var n = that.normal;
-                normalArray.push(n.x, n.y, n.z);
-                normalArray.push(n.x, n.y, n.z);
-                normalArray.push(n.x, n.y, n.z);
-                normalArray.push(n.x, n.y, n.z);
-                normalArray.push(n.x, n.y, n.z);
-                normalArray.push(n.x, n.y, n.z);
+                var c = 6;
+                while(c-- > 0) normalArray.push(n.x, n.y, n.z);
             }
         }
     }
 }
 
+SQR.Quad.fullscreen = function() {
+    var c = {}
+    c.vertexSize = 2;
+    c.numVertices = 6;
+    c.vertices = new Float32Array([-1, 1,     1, 1,     1, -1,     -1, 1,     1, -1,     -1, -1]);
+    c.textureCoord = new Float32Array([0, 1,     1, 1,     1, 0,     0, 1,     1, 0,    0, 0]);
+    return c;
+}
 
 
 

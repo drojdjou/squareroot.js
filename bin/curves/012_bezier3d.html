@@ -28,6 +28,7 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
@@ -60,11 +61,16 @@
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Interactor.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Loader.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/OBJParser.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/RenderRegion.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Shader.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Stringify.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Texture.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Time.js"></script>
 <!-- SQRLIB -->
 
@@ -72,10 +78,28 @@
 
         var engine, camera, curves;
 
-        function makeCurve(p0, c0, c1, p1, color) {
-            var c = new SQR.QuadraticBezier(p0, c0, c1, p1);
+        var createSegment = function(path, numVertices, geometry) {
+            var g = geometry || {};
+            g.continous = true;
+
+            g.vertices = g.vertices || [];
+            g.tangents = g.tangents || [];
+
+            for(var i = 0; i <= numVertices; i++) {
+                var t = i / numVertices;
+                g.vertices.push(path.valueAt(t, new SQR.V3()));
+                g.tangents.push(path.velocityAt(t, new SQR.V3()));
+            } 
+
+            g.vertices.push(g.vertices[0]);
+            g.tangents.push(g.tangents[0]);  
+
+            return g;
+        }
+
+        function makeCurve(c, color, segments) {
             var curve = new SQR.Transform();
-            curve.geometry = c.createSegment(30);
+            curve.geometry = createSegment(c, segments || 30);
             curve.geometry.color = color;
             curve.renderer = new SQR.Segment(1);
             return curve;
@@ -90,35 +114,54 @@
             engine.setBackground("#000");
             engine.setClearColor("rgba(0, 0, 0,1)");
 
-            var curve1 = makeCurve(
+            var curve1 = makeCurve(new SQR.QuadraticBezier(
                     new SQR.V3(-40,  15, -40),
                     new SQR.V3(-10, -20, -10),
                     new SQR.V3( 10,  20,  10),
-                    new SQR.V3( 40,   5, -20),
+                    new SQR.V3( 40,   5, -20)),
                     new SQR.Color(0, 100, 50)
             );
 
-            var curve2 = makeCurve(
+            var curve2 = makeCurve(new SQR.QuadraticBezier(
                     new SQR.V3( 10, -40,  -40),
                     new SQR.V3( 20, -20,  10),
                     new SQR.V3(-30,   0, -10),
-                    new SQR.V3( -5,   40, 20),
+                    new SQR.V3( -5,   40, 20)),
                     new SQR.Color(100, 50, 50)
             );
 
-            var curve3 = makeCurve(
+            var curve3 = makeCurve(new SQR.QuadraticBezier(
                     new SQR.V3(-10, -25, -20),
                     new SQR.V3( -5,  30, -60),
                     new SQR.V3(  8,  35,  10),
-                    new SQR.V3( 12, -15,  20),
+                    new SQR.V3( 12, -15,  20)),
                     new SQR.Color(200, 100, 50)
             );
 
+            var k1 = new SQR.V3(200, 100, 300);
+            var k2 = new SQR.V3(200, -100, 0);
+            var k3 = new SQR.V3(100, -200, 300);
+            var k4 = new SQR.V3(-100, -200, 0);
+            var spline1path = new SQR.Spline(k1, k2, k3, k4);
+
+            k1 = new SQR.V3(-200, -100, 00);
+            k2 = new SQR.V3(-200, 100, 0);
+            spline1path.add(k1, k2);
+
+            k1 = new SQR.V3(-100, 200, 0);
+            k2 = new SQR.V3(100, 300, 0);
+            spline1path.add(k1, k2);
+
+            spline1path.closePath();
+
+            var spline1 = makeCurve(spline1path, new SQR.Color(0, 50, 100), 120);
+
             curves = new SQR.Transform();
             curves.add(curve1, curve2, curve3);
+            curves.add(spline1);
 
             camera = new SQR.Transform();
-            camera.position.z = 120;
+            camera.position.z = 700;
 
             engine.add(camera, curves);
 
@@ -127,8 +170,8 @@
 
         function render() {
             requestAnimFrame(render);
-            curves.rotation.y += 0.01;
-            curves.rotation.x += 0.008;
+            curves.rotation.y += 0.008;
+            // curves.rotation.x += 0.008;
             engine.render(camera);
         }
 
@@ -139,5 +182,7 @@
 <div id="container">
     <canvas id="cnv" width="1000" height="500"></canvas>
 </div>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </body>
 </html>

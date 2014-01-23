@@ -3,6 +3,7 @@ SQR.Shader = function(gl) {
 	var that = this;
 
 	this.program = null;
+	this.u = {};
 
 	this.compile = function(vertex, fragment) {
 		var vs = gl.createShader(gl.VERTEX_SHADER);
@@ -33,9 +34,16 @@ SQR.Shader = function(gl) {
 	    var numUni = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
 	    var numAttr = gl.getProgramParameter(p, gl.ACTIVE_ATTRIBUTES);
 
+	    var id = 1;
+
 	    for (var i = 0; i < numUni; i++) {
 	        var u = gl.getActiveUniform(p, i);
 	        u.location = gl.getUniformLocation(p, u.name);
+
+	        if(u.type == gl.SAMPLER_2D) {
+	        	u.texId = id++;
+	        }
+
 	        that.uniforms.push(u);
 	    }
 
@@ -59,7 +67,7 @@ SQR.Shader = function(gl) {
 		SQR.Loader.loadShader(src, function(vertex, fragment) {
 	        that.compile(vertex, fragment);
 	        that.inspect();
-	        if(callback) callback();
+	        if(callback) callback(that.program);
 		});
 	}
 
@@ -132,13 +140,37 @@ SQR.Shader = function(gl) {
 				gl.uniformMatrix4fv(n.location, false, v);
 				break;
 			case gl.SAMPLER_2D:
-				J3D.ShaderUtil.setTexture(dst, n.texid, name, v);
+				setTexture(n.location, v, n.texId);
 				break;
 			case gl.SAMPLER_CUBE:
-				J3D.ShaderUtil.setTextureCube(dst, n.texid, name, v);
+				setTextureCube(n.location, v, n.texId);
 				break;
 			default:
 				return "WARNING! Unknown uniform type ( 0x" + n.type.toString(16) + " )";
+		}
+	}
+
+	var setTexture = function(location, texture, id) {
+		id = id || 1;
+	    gl.activeTexture(33984 + id);
+	    if(texture.update) texture.update();
+	    if(texture.tex) texture = texture.tex;
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.uniform1i(location, id);
+	}
+
+	var setTextureCube = function(location, texture, id) {
+		id = id || 1;
+	    gl.activeTexture(33984 + id);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture.tex);
+		gl.uniform1i(location, id);
 	}
 }
-}
+
+
+
+
+
+
+
+

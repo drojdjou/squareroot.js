@@ -1,7 +1,7 @@
+// Code from:
 // http://mrl.nyu.edu/~perlin/noise/
 // https://raw.github.com/mrdoob/three.js/master/examples/js/ImprovedNoise.js
-
-var ImprovedNoise = function () {
+SQR.ImprovedNoise = function () {
 
 	var p = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,
 		 23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,
@@ -15,45 +15,27 @@ var ImprovedNoise = function () {
 		 93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
 
 	for (var i=0; i < 256 ; i++) {
-
 		p[256+i] = p[i];
-
 	}
 
-//    var p = [];
-//
-//    for (var i = 0; i < 512; i++) {
-//
-//        p[i] = Math.random() * 255 | 0;
-//
-//    }
-
     function fade(t) {
-
         return t * t * t * (t * (t * 6 - 15) + 10);
-
     }
 
     function lerp(t, a, b) {
-
         return a + t * (b - a);
-
     }
 
     function grad(hash, x, y, z) {
-
         var h = hash & 15;
         var u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
         return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-
     }
 
     return {
 
         noise: function (x, y, z) {
-
             var floorX = ~~x, floorY = ~~y, floorZ = ~~z;
-
             var X = floorX & 255, Y = floorY & 255, Z = floorZ & 255;
 
             x -= floorX;
@@ -61,9 +43,7 @@ var ImprovedNoise = function () {
             z -= floorZ;
 
             var xMinus1 = x - 1, yMinus1 = y - 1, zMinus1 = z - 1;
-
             var u = fade(x), v = fade(y), w = fade(z);
-
             var A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z, B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
 
             return lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z),

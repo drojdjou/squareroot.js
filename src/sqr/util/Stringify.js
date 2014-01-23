@@ -1,35 +1,51 @@
-SQR.Stringify = {
+SQR.Stringify = (function() {
 
-    v2: function(v) {
-        return v.x + " | " + v.y;
-    },
+    var s = {}, d;
 
-    v3: function(v) {
-        return v.x + " | " + v.y + " | " + v.z;
-    },
+    var noe = function (n) {
+        return Math.abs(n) < 0.000001 ? 0 : n;
+    }
 
-    q: function(q) {
-        return q.w + " || " + q.x + " | " + q.y + " | " + q.z;
-    },
+    var vf = function(r) {
+        r = r.toPrecision(3);
+        r = noe(r);
+        if(r == 0) return " 0.000";
+        if(r > 0) return " " + r;
+        else return r;
+    } 
 
-    m33: function(m) {
-        var d = m.data || m;
+    var f = function(i) {
+        var r = ((Math.abs(d[i]) > 0.0001) ? d[i] : 0);
+        r = r.toPrecision(3);
+        r = noe(r)
 
-        return d[0] + "\t|\t" + d[1] + "\t|\t" + d[2] + "\n" +
-               d[3] + "\t|\t" + d[4] + "\t|\t" + d[5] + "\n" +
-               d[6] + "\t|\t" + d[7] + "\t|\t" + d[8] + "\n";
-    },
+        if(r == 0) return i + "/0.000";
+        if(r > 0) return i + "/" + r;
+        else return i + "/" + r;
+    }
 
-    m44: function(m) {
-        var d = m.data || m;
+    s.v2 = function(v) {
+        return vf(v.x) + " | " + vf(v.y);
+    }
 
-        var f = function(i) {
-            var r = ((Math.abs(d[i]) > 0.0001) ? d[i] : 0);
+    s.v3 = function(v) {
+        return vf(v.x) + " | " + vf(v.y) + " | " + vf(v.z);
+    }
 
-            r = r.toPrecision(3);
+    s.q = function(q) {
+        return f(q.w) + " || " + f(q.x) + " | " + f(q.y) + " | " + f(q.z);
+    }
 
-            return r;
-        }
+    s.m33 = function(m) {
+        d = m.data || m;
+
+        return f(0) + "\t|\t" + f(3) + "\t|\t" + f(6) + "\n" +
+               f(1) + "\t|\t" + f(4) + "\t|\t" + f(7) + "\n" +
+               f(2) + "\t|\t" + f(5) + "\t|\t" + f(8) + "\n";
+    }
+
+    s.m44 = function(m) {
+        d = m.data || m;
 
         return f(0) + "\t|\t" + f(4) + "\t|\t" + f(8)  + "\t|\t" + f(12) + "\n" +
                f(1) + "\t|\t" + f(5) + "\t|\t" + f(9)  + "\t|\t" + f(13) + "\n" +
@@ -37,4 +53,6 @@ SQR.Stringify = {
                f(3) + "\t|\t" + f(7) + "\t|\t" + f(11) + "\t|\t" + f(15) + "\n";
     }
 
-}
+    return s;
+
+})();

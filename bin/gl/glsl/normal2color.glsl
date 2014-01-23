@@ -2,14 +2,14 @@
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexNormal;
 
-uniform mat4 uMatrix;
-uniform mat4 uProjection;
+uniform mat4 uConcatMatrix;
+uniform mat3 uNormalMatrix;
 
 varying vec3 vNormal;
      
 void main() {
-	vNormal = aVertexNormal;
-	gl_Position = uProjection * uMatrix * vec4(aVertexPosition, 1.0);
+	vNormal = uNormalMatrix * aVertexNormal;
+	gl_Position = uConcatMatrix * vec4(aVertexPosition, 1.0);
 	gl_PointSize = 3.0;
 }
 
