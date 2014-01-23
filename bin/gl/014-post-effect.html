@@ -135,7 +135,7 @@
     var blur = new SQR.PostEffect("glsl/blur.glsl");
     var preview = new SQR.PostEffect("glsl/passThru.glsl");
 
-    var depthField = new SQR.PostEffect("glsl/depthField.glsl");
+    var depthField = new SQR.PostEffect("glsl/depthOfField.glsl");
     depthField.renderer.u.uBlurTexture = blurTargetA2.texture;
     depthField.renderer.u.uDepthTexture = depthTarget.texture;
 
