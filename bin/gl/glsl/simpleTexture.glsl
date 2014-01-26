@@ -37,10 +37,14 @@ void main() {
 
 	vec3 lt = vec3(200.0, 0, 0) - vp;
 	lt = normalize(lt);
-	vec3 c = uColor.rgb + texture2D(uTexture, vt).rgb;
+	vec3 tex = texture2D(uTexture, vt).rgb;
+	vec3 c = uColor.rgb + tex;
 	float dif = dot(vn, -lt) * 0.5 + 0.5;
 	dif = max(dif, 0.0);
     dif = 0.7 * (ambient + (1.0 - ambient) * smoothstep(0.4, 1.0, dif));
     c = c * dif;
-	gl_FragColor = vec4(c, 1.0);
+
+	// gl_FragColor = vec4(c, 1.0);
+	gl_FragColor = vec4(tex, 1.0);
+	// gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

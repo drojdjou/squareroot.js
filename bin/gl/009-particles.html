@@ -249,8 +249,7 @@
     var appendRotation = function(camera, axis, angle) {
         mover.axis.copyFrom(axis);
         mover.rotation.fromAngleAxis(angle, mover.axis.x, mover.axis.y, mover.axis.z);
-        mover.rotation.mul(camera.rotationQ);
-        camera.rotationQ.copyFrom(mover.rotation);
+        camera.rotationQ.mul(mover.rotation);
     }
 
     function render(t) {
@@ -266,9 +265,9 @@
 
         cluster.renderer.u.uTime = t / 100;
 
-        appendRotation(camera, camera.top, mover.rotX * -0.02);
-        appendRotation(camera, camera.left, mover.rotY * -0.02);
-        appendRotation(camera, camera.forward, mover.rotX * -0.02);
+        appendRotation(camera, camera.top, mover.rotX * 0.02);
+        appendRotation(camera, camera.left, mover.rotY * 0.02);
+        appendRotation(camera, camera.forward, mover.rotX * 0.02);
 
         mover.axis.copyFrom(camera.forward);
         camera.position.appendVec(mover.axis.norm().mul(dts * mover.speed));

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Really basic WebGL Square</title>
+<title>GL Terrain | v0.10</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -79,43 +79,190 @@
 <body>
 
 <canvas id="gl-canvas"></canvas>
-<canvas id="noise-canvas"></canvas>
 
 <script type="text/javascript">
+
+    SQR.Plane.prototype.applyHeightMap = function(heightMap, maxHeight, offsetX, offsetY, rangeX, rangeY) {
+
+        var numTriangles = this.faces.length;
+
+        var w = this.width;
+        var h = this.height;
+
+        var processVertex = function(t, ut) {
+
+            var x = Math.round(t.x/w * 128 + 64);
+            var z = Math.round(t.z/h * 128 + 64);
+
+            if(x ==  128) x = 0;
+            if(z == 128) z = 0;
+
+            var th = SQR.CanvasUtil.getPixelRed(heightMap, x, z) / 255;
+            th = Math.max(0.2 , th);
+            t.y = th * maxHeight;
+        }
+
+        for (var i = 0; i < numTriangles; i++) {
+            var t = this.faces[i];
+            var vs = t.vertices;
+            processVertex(vs[0], t.uva);
+            processVertex(vs[1], t.uvc);
+            processVertex(vs[2], t.uvb);
+            if(vs[3]) processVertex(vs[3], t.uvd);
+        }
+
+        this.refresh();
+    }
 
     var stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.left = '0px';
     stats.domElement.style.top = '0px';
-    document.body.appendChild( stats.domElement );
+    // document.body.appendChild( stats.domElement );
 
-    var engine = new SQR.SquarerootGL(document.getElementById('gl-canvas'));
+    var engine, root, camera, birdview, terrain, terrainRenderer;
+    var size = 400;
+    var density = 127;
+
+    engine = new SQR.SquarerootGL(document.getElementById('gl-canvas'));
     engine.setSize(window.innerWidth, window.innerHeight);
-    engine.setClearColor(0, 0, 0, 1);
+    // engine.setClearColor(117/255, 183/255, 240/255, 1);
+    engine.setClearColor(20/255, 96/255, 132/255, 1);
+    // engine.setClearColor(0,0,0, 1);
 
     var projection = new SQR.ProjectionMatrix();
     projection.perspective(45, window.innerWidth/window.innerHeight, 1, 10000);
     engine.setProjection(projection);
 
-    var shader = engine.createShader();
-    shader.load("glsl/normal2color.glsl");
+    var setup = function(dta) {
+        console.log("Setup");
 
-    var cube = new SQR.Transform();
-    cube.geometry = new SQR.Cube().setSize(50, 50, 50);
-    cube.renderer = engine.createRenderer(shader);
-    cube.renderer.u.uColor = [0, 0.5, 0, 1];
+        var shader = engine.createShader();
+        shader.load("glsl/terrain.glsl");
 
-    var root = new SQR.Transform();
-    root.add(cube);
+        terrain = new SQR.Transform(); 
 
-    var camera = new SQR.Transform();
-    camera.position.z = 200;
-    root.add(camera);
+        var geo = new SQR.Plane({ quads:true, vertexNormals:false }).setSize(size, size, density, density);
+        geo.applyHeightMap(dta, 15);
+      
+        terrainRenderer = engine.createRenderer(shader);
+        terrainRenderer.u.uColor = [217/255, 167/255, 108/255, 1];
+        terrainRenderer.u.near = 1;
+        terrainRenderer.u.far = 50;
+        // terrainRenderer.u.uFogColor = [117/255, 183/255, 240/255];
+        terrainRenderer.u.uFogColor = [20/255, 96/255, 132/255];
+        // terrainRenderer.u.uFogColor = [0,0,0];
+
+        var addPlane = function(x, z) {
+            var p = new SQR.Transform();
+            p.geometry = geo;
+            p.renderer = terrainRenderer;
+            p.position.set(x, 0, z);
+            terrain.add(p);
+        } 
+
+
+        addPlane(0, 0);
+        addPlane(0, -size);
+
+        addPlane(size, 0);
+        addPlane(size, -size);
+
+        root = new SQR.Transform();
+        root.add(terrain);
+        
+        camera = new SQR.Transform();
+        camera.position.y = 15;
+
+        // var cameraShader = engine.createShader();
+        // cameraShader.load("glsl/normal2color.glsl");
+        // camera.geometry = new SQR.Cube().setSize (3, 3, 10, 0);
+        // camera.geometry.corners.btl.x  = 0;
+        // camera.geometry.corners.btr.x = 0;
+        // camera.geometry.corners.bbl.x = 0;
+        // camera.geometry.corners.bbr.x = 0;
+        // camera.geometry.refresh();
+        // camera.renderer = engine.createRenderer(cameraShader);
+
+        camera.useQuaternion = true;
+
+        root.add(camera);
+
+        birdview = new SQR.Transform();
+        birdview.position.z = 200;
+        // birdview.position.x = -200;
+        birdview.position.y = 500;
+        // birdview.rotation.x = Math.PI * 0.5;
+        birdview.lookAt(camera);
+        camera.add(birdview);
+    }
 
     var lt = 0;
-    var phase = 0
+    var phase = 0;
 
-    function render(t) {
+    var bridViewActive = false;
+
+    var speed = 0, targetSpeed = 0, targetRotation = 0, targetBank = 0, rotationAcc = 0;
+
+    document.addEventListener('keydown', function(e) {
+        if(e.keyCode == 32) bridViewActive = !bridViewActive;
+
+        if(e.keyCode == 40) targetSpeed += 0.1;
+        if(e.keyCode == 38) targetSpeed -= 0.1;
+
+        var q = new SQR.Quaternion();
+
+        if(e.keyCode == 37) {
+            rotationAcc = -0.02;
+            targetBank = -0.5;
+            // q.fromAngleAxis(-0.1, 0, 1, 0);
+            // q.mul(camera.rotationQ);
+            // camera.rotationQ.copyFrom(q);
+        }
+
+        if(e.keyCode == 39) {
+            rotationAcc = 0.02;
+            targetBank = 0.5;
+            // q.fromAngleAxis(0.1, 0, 1, 0);
+            // q.mul(camera.rotationQ);
+            // camera.rotationQ.copyFrom(q);
+        }
+    });
+
+    document.addEventListener('keyup', function(e) {
+        rotationAcc = 0;
+        targetBank = 0;
+    });
+
+    var q = new SQR.Quaternion();
+
+
+    ////
+    var depth = engine.createShader();
+    depth.load("glsl/depth.glsl", render);
+    depth.u.far = 100;
+    depth.u.near = 40;
+
+    var target = engine.createFrameBuffer();
+
+    var blurTargetA1 = engine.createFrameBuffer();
+    var blurTargetA2 = engine.createFrameBuffer();
+
+    var depthTarget = engine.createFrameBuffer();
+    var depthBlurTarget = engine.createFrameBuffer();
+
+    var invert = new SQR.PostEffect("glsl/simpleFx.glsl");
+    var blur = new SQR.PostEffect("glsl/blur.glsl");
+    var preview = new SQR.PostEffect("glsl/passThru.glsl");
+
+    var depthField = new SQR.PostEffect("glsl/depthOfField.glsl");
+    depthField.renderer.u.uBlurTexture = blurTargetA2.texture;
+    depthField.renderer.u.uDepthTexture = depthTarget.texture;
+
+    var previewRegionSmall = new SQR.RenderRegion(50, 50, window.innerWidth/5, window.innerHeight/5);
+
+
+    var render = function(t) {
         var dt = (t - lt);
         lt = t;
         stats.begin();
@@ -124,65 +271,95 @@
         if(!dt || isNaN(dt)) dt = 0;
         var dts = dt * 0.001;
 
-        cube.rotation.y += 0.5 * dts;
+        targetRotation += rotationAcc;
+        speed += (targetSpeed - speed) * 0.2;
 
-        engine.render(root, camera);
+        camera.rotation.z += (targetBank - camera.rotation.z) * 0.1;
+        camera.rotation.y += (targetRotation - camera.rotation.y) * 0.1;
+
+        camera.rotationQ.set();
+
+        q.fromAngleAxis(camera.rotation.z, 0, 0, 1);
+        camera.rotationQ.mul(q);
+
+        q.fromAngleAxis(camera.rotation.y, 0, 1, 0);
+        camera.rotationQ.mul(q);
+
+        camera.forward.mul(speed);
+        camera.position.appendVec(camera.forward);
+
+
+        for(var i = 0; i < terrain.numChildren; i++) {
+            var t = terrain.children[i];
+            var dx = camera.position.x - t.globalPosition().x;
+            var dz = camera.position.z - t.globalPosition().z;
+
+            if(dx < -size) t.position.x -= size * 2;
+            if(dx > size) t.position.x += size * 2;
+
+            if(dz < -size) t.position.z -= size * 2;
+            if(dz > size) t.position.z += size * 2;
+        }
+
+        terrainRenderer.u.far = (bridViewActive) ? 1000 : 200;
+
+        // engine.render(root, (bridViewActive) ? birdview : camera);
+
+        engine.render(root, camera, { target: target });
+
+        preview.setSource(target);
+        // engine.render(preview, null, { region: previewRegionTL });
+        
+        blur.renderer.u.delta = [0, 0.05];
+        blur.setSource(target);
+        engine.render(blur, null, { target: blurTargetA1 });
+
+        blur.setSource(blurTargetA1);
+        blur.renderer.u.delta = [0.05, 0];
+        engine.render(blur, null, { target: blurTargetA2 });
+
+        // engine.render(blur, null, { region: previewRegionTR });
+
+        engine.render(root, camera, { target:depthTarget, replacementShader: depth, clearColor:[0,0,0,1] });
+
+        preview.setSource(depthTarget);
+        // engine.render(preview, null, { region: previewRegionBL });
+        
+        depthField.setSource(target);
+        engine.render(depthField, null);
+
+        // engine.render(preview, null, { region: previewRegionSmall });
+
         stats.end();
     }
 
-    render();
+    var loadMap = function(callback) {
+            var hmc = document.createElement('canvas');
+            hctx = hmc.getContext('2d');
 
+            var hmimage = new Image();
+            hmimage.onload = function() {
 
-    var cnv = document.getElementById('noise-canvas');
+                hmc.width = hmimage.width;
+                hmc.height = hmimage.height;
 
-    var resolution = 4;
+                hctx.drawImage(hmimage, 0, 0);
+                hdata = hctx.getImageData(0, 0, hmc.width, hmc.height);
 
-    cnv.width = 512;
-    cnv.height = 512;
-
-    var szx = cnv.width;
-    var szy = cnv.height;
-
-    var ctx = cnv.getContext('2d');
-
-    var dta = ctx.createImageData(szx, szy);
-    var nsz = new SQR.ImprovedNoise();
-
-    var n1 = 0, n2 = 0, n3 = 100000;
-
-    function drawNoise() {
-
-        for (var i = 0; i < szy; i++) {
-            for (var j = 0; j < szx; j++) {
-
-                var c1 = nsz.noise((i) / 8, (n1 + j) / 8, 0);
-                c1 = (c1 + 1) / 2;
-
-                var c2 = nsz.noise((n2 + i) / 24, (n2 + j) / 24, 0);
-                c2 = (c2 + 1) / 2;
-
-                var c3 = nsz.noise((n3 + i) / 64, (j) / 64, 0);
-                c3 = (c3 + 1) / 2;
-
-                var cp = (c1 * 1 + c2 * 2 + c3  * 3) / 4;
-
-                var c = 0 + cp * 200;
-
-                dta.data[i * 4 * szx + j * 4 + 0] = c;
-                dta.data[i * 4 * szx + j * 4 + 1] = c;
-                dta.data[i * 4 * szx + j * 4 + 2] = c;
-                dta.data[i * 4 * szx + j * 4 + 3] = 255;
+                if(callback) callback(hdata);
             }
-        }
 
-        ctx.putImageData(dta, 0, 0);
-
-        n1 += 0.2;
-        n2 += 0.4;
-        n3 -= 0.8;
+            hmimage.src = 'assets/heightmap2.jpg';
     }
 
-    drawNoise();
+    loadMap(function(dta) {
+        setup(dta);
+        // console.log(camera);
+        setTimeout(render, 1000);
+    });
+
+
+    
 
 
 </script>

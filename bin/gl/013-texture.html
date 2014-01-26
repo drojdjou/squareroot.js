@@ -99,7 +99,10 @@
     var shader = engine.createShader();
 
     var cube = new SQR.Transform();
-    cube.geometry = new SQR.Cube().perVertexNormals(true).setSize(50, 50, 50);
+
+    // cube.geometry = new SQR.Cube().perVertexNormals(true).setSize(50, 50, 50);
+    cube.geometry = new SQR.Plane({ quads:false, vertexNormals:false }).setSize(100, 100, 2, 2);
+
     cube.renderer = engine.createRenderer(shader);
     cube.renderer.u.uColor = [0, 0, 0, 1];
     cube.renderer.u.uTexture = engine.createTexture("assets/basic-texture-512.jpg");
@@ -126,11 +129,11 @@
         var dts = dt * 0.001;
 
         cube.renderer.u.uTime = t/1000;
-        
-        cube.rotation.x += dts * 0.3;
-        cube.rotation.y += dts * 0.6;
+        cube.rotation.x += dts * 1.2;
+        // cube.rotation.y += dts * 0.6;
 
-        engine.render(root, camera);
+        // engine.render(root, camera);
+        engine.render(root, camera, { culling: false });
         stats.end();
     }
 
