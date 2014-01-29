@@ -1,7 +1,12 @@
 var DEBUG = true;
 
-// var sound = new SoundAnalyser().connectMic();
-var sound = new SoundAnalyser().load('../assets/audio/atari.mp3');
+var sound = new SoundAnalyser();
+
+if(location.search == '?mic') {
+    sound.connectMic();
+} else {
+    sound.load('../assets/audio/atari.mp3');
+}
 
 var debugViz = new SoundVisualizer(document.querySelector('#viz-canvas'), 128, 64);
 
