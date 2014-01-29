@@ -10,11 +10,12 @@ SQR.SquarerootGL = function(canvas) {
 	var uniforms = {};
 
     var gl = canvas.getContext("experimental-webgl");
-    var currentFrameBuffer;
+    var currentFrameBuffer, currentClearColor;
 
     SQR.GL.init(gl);
 
     this.setClearColor = function(r, g, b, a) {
+        currentClearColor = [r, g, b, a];
         gl.clearColor(r, g, b, a);
     }
 
@@ -64,8 +65,8 @@ SQR.SquarerootGL = function(canvas) {
     var defaultOptions = {
         region: null,
         dontClear: false,
-        culling: false,
-        reverseFace: true
+        culling: true,
+        reverseFace: false
     }
 
     this.clear = function(options) {
@@ -89,9 +90,19 @@ SQR.SquarerootGL = function(canvas) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, options.target.fbo);
         }
 
+        if (options.clearColor) {
+            var c = options.clearColor;
+            gl.clearColor(c[0], c[1], c[2], c[3]);
+        }
+
         (options.dontClear) ? '' : gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         (options.culling) ? gl.enable(gl.CULL_FACE) : gl.disable(gl.CULL_FACE);
         (options.reverseFace) ? gl.frontFace(gl.CCW) : gl.frontFace(gl.CW);
+
+        if (options.clearColor) {
+            var c = currentClearColor;
+            this.setClearColor(c[0], c[1], c[2], c[3]);
+        }
     }
 
     this.render = function(scene, camera, options) {

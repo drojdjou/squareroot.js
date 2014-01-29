@@ -236,42 +236,56 @@ SQR.Matrix44 = function() {
     }
 
     this.inverse = function(m) {
-        var d = this.data;
-        var a = (m) ? m.data || m : this.data;
-        var det = this.determinant();
+        var a = this.data;
+        var d = (m) ? m.data || m : this.data;
 
-        if (Math.abs(det) < 0.0001) {
-            console.warn("Attempt to inverse a singular matrix44. ", this.data);
-            console.trace();
-            return m;
+        var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+            a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+            a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+            a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+
+            b00 = a00 * a11 - a01 * a10,
+            b01 = a00 * a12 - a02 * a10,
+            b02 = a00 * a13 - a03 * a10,
+            b03 = a01 * a12 - a02 * a11,
+            b04 = a01 * a13 - a03 * a11,
+            b05 = a02 * a13 - a03 * a12,
+            b06 = a20 * a31 - a21 * a30,
+            b07 = a20 * a32 - a22 * a30,
+            b08 = a20 * a33 - a23 * a30,
+            b09 = a21 * a32 - a22 * a31,
+            b10 = a21 * a33 - a23 * a31,
+            b11 = a22 * a33 - a23 * a32,
+
+            // Calculate the determinant
+            det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+        if (!det) { 
+            return null; 
         }
+        det = 1.0 / det;
 
-        var d0 = d[0], d4 = d[4], d8 = d[8],   d12 = d[12],
-            d1 = d[1], d5 = d[5], d9 = d[9],   d13 = d[13],
-            d2 = d[2], d6 = d[6], d10 = d[10], d14 = d[14];
-
-        det = 1 / det;
-
-        a[0] = (d5 * d10 - d9 * d6) * det;
-        a[1] = (d8 * d6 - d4 * d10) * det;
-        a[2] = (d4 * d9 - d8 * d5) * det;
-
-        a[4] = (d9 * d2 - d1 * d10) * det;
-        a[5] = (d0 * d10 - d8 * d2) * det;
-        a[6] = (d8 * d1 - d0 * d9) * det;
-
-        a[8] = (d1 * d6 - d5 * d2) * det;
-        a[9] = (d4 * d2 - d0 * d6) * det;
-        a[10] = (d0 * d5 - d4 * d1) * det;
-
-        a[12] = - (d12 * a[0] + d13 * a[4] + d14 * a[8]);
-        a[13] = - (d12 * a[1] + d13 * a[5] + d14 * a[9]);
-        a[14] = - (d12 * a[2] + d13 * a[6] + d14 * a[10]);
+        d[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+        d[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+        d[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+        d[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+        d[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+        d[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+        d[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+        d[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+        d[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+        d[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+        d[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+        d[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+        d[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+        d[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+        d[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+        d[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
 
         return m;
+    };
 
-    }
-
+    // gl-Matrix.js
     this.inverseMat3 = function(m) {
         var d = this.data;
         var a = m.data;
@@ -301,7 +315,7 @@ SQR.Matrix44 = function() {
         a[6] = (d1 * d6 - d5 * d2) * det;
         a[7] = (d4 * d2 - d0 * d6) * det;
         a[8] = (d0 * d5 - d4 * d1) * det;
-        // m.transpose();
+        m.transpose();
 
         // To make a NormalMatrix - doesn't need to be transposed
         // a[0] = (d5 * d10 - d9 * d6) * det;
@@ -362,9 +376,9 @@ SQR.Matrix44 = function() {
 
         y.cross(z, x);
 
-        d[0] = x.x,d[1] = y.x,d[2] = z.x;
-        d[4] = x.y,d[5] = y.y,d[6] = z.y;
-        d[8] = x.z,d[9] = y.z,d[10] = z.z;
+        d[0] = x.x, d[4] = y.x, d[8] = z.x;
+        d[1] = x.y, d[5] = y.y, d[9] = z.y;
+        d[2] = x.z, d[6] = y.z, d[10] = z.z;
 
         return this;
     }

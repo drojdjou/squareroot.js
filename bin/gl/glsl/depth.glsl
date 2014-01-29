@@ -1,6 +1,5 @@
 //#vertex
 attribute vec3 aVertexPosition;
-attribute vec3 aVertexNormal;
 
 uniform mat4 uConcatMatrix;
 uniform mat3 uNormalMatrix;
@@ -8,7 +7,6 @@ uniform mat3 uNormalMatrix;
 varying vec4 vPosition;
      
 void main() {
-	vec3 vNormal = uNormalMatrix * aVertexNormal;
 	vPosition = uConcatMatrix * vec4(aVertexPosition, 1.0);
 	gl_Position = vPosition;
 }

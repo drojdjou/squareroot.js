@@ -5,33 +5,48 @@ SQR.Polygon = function(color) {
 
     this.culling = true;
     this.useLight = false;
+    this.wireframe = false;
+    this.lightIntensity = function(l) { return l; }
 
-    var update = function(tri, mvp, centerX, centerY) {
+    this.calculateDepth = function(face) {
+        var c = SQR.Quaternion.__tv1;
+        var v = face.vertices.length;
+        c.set(0,0,0).add(this.sa, this.sb).add(c, this.sc).mul(1/3);
+        this.depth = c.z;
+    }
 
-        if(!tri.sa) tri.sa = tri.a.clone();
-        else tri.a.copyTo(tri.sa);
+    var updateVertex = function(face, index, mvp, centerX, centerY) {
+        var v = face.vertices[index];
+        var sv = face.screenVertices[index] || v.clone();
+        var c = SQR.Quaternion.__tv1;
 
-        if(!tri.sb) tri.sb = tri.b.clone();
-        else tri.b.copyTo(tri.sb);
+        if(!sv) sv = v.clone();
+        else sv.copyFrom(v);
 
-        if(!tri.sc) tri.sc = tri.c.clone();
-        else tri.c.copyTo(tri.sc);
+        mvp.transformVector(sv);
 
-        mvp.transformVector(tri.sa);
-        mvp.transformVector(tri.sb);
-        mvp.transformVector(tri.sc);
+        sv.x = sv.x / sv.z * centerX + centerX;
+        sv.y = (centerY * 2) - (sv.y / sv.z * centerY + centerY);
 
-        tri.center.set(0,0,0).add(tri.sa, tri.sb).add(tri.center, tri.sc).mul(1/3);
-        tri.depth = tri.center.z;
+        face.screenVertices[index] = sv;
+    }
 
-        tri.sa.x = tri.sa.x / tri.sa.z * centerX + centerX;
-        tri.sa.y = tri.sa.y / tri.sa.z * centerY + centerY;
+    var update = function(face, mvp, centerX, centerY) {
 
-        tri.sb.x = tri.sb.x / tri.sb.z * centerX + centerX;
-        tri.sb.y = tri.sb.y / tri.sb.z * centerY + centerY;
+        if(!face.screenVertices) face.screenVertices = [];
+        var fvl = face.vertices.length;
 
-        tri.sc.x = tri.sc.x / tri.sc.z * centerX + centerX;
-        tri.sc.y = tri.sc.y / tri.sc.z * centerY + centerY;
+        updateVertex(face, 0, mvp, centerX, centerY);
+        updateVertex(face, 1, mvp, centerX, centerY);
+        updateVertex(face, 2, mvp, centerX, centerY);
+        if(fvl > 3) updateVertex(face, 3, mvp, centerX, centerY);
+
+        var z = face.screenVertices[0].z;
+        z += face.screenVertices[1].z;
+        z += face.screenVertices[2].z;
+        if(fvl > 3) z += face.screenVertices[3].z;
+
+        face.depth = z / fvl;
     }
 
     this.draw = function(transform, uniforms) {
@@ -41,14 +56,14 @@ SQR.Polygon = function(color) {
         uniforms.projection.copyTo(mvp);
         mvp.multiply(transform.viewMatrix);
 
-        var i, t, tris = geo.polygons.length;
+        var i, t, tris = geo.faces.length;
 
         for (i = 0; i < tris; i++) {
-            t = geo.polygons[i];
+            t = geo.faces[i];
             update(t, mvp, uniforms.centerX, uniforms.centerY);
         }
 
-        geo.polygons.sort(function(a, b) {
+        geo.faces.sort(function(a, b) {
             var ad = a.depth;
             var bd = b.depth;
             if (ad < bd) return 1;
@@ -59,7 +74,7 @@ SQR.Polygon = function(color) {
         viewForward.copyFrom(uniforms.camera.forward);
 
         for (i = 0; i < tris; i++) {
-            t = geo.polygons[i];
+            t = geo.faces[i];
             t.calculateNormal();
             transform.normalMatrix.transformVector(t.normal);
 
@@ -67,12 +82,12 @@ SQR.Polygon = function(color) {
 
             if(f < 0 && this.culling) {
                 // console.log(SQR.Stringify.v3(viewForward), SQR.Stringify.v3(t.normal), f);
-                // continue;
+                continue;
             }
 
             var l = Math.max(0, SQR.V3.dot(t.normal, uniforms.lightDirection));
             var c = color;
-            var lc = SQR.Color.hsl(c.hue, c.saturation, c.lightness - 60 + 50 * l, c.alpha);
+            var lc = SQR.Color.hsl(c.hue, c.saturation, c.lightness * this.lightIntensity(l), c.alpha);
 
             if(this.useLight) {
                 ctx.fillStyle = lc;
@@ -82,12 +97,15 @@ SQR.Polygon = function(color) {
                 ctx.strokeStyle = (f < 0) ? "#00f" : c.toHSLString();
             }
 
+            var sv = t.screenVertices;
+
             ctx.beginPath();
-            ctx.moveTo(t.sa.x, t.sa.y);
-            ctx.lineTo(t.sb.x, t.sb.y);
-            ctx.lineTo(t.sc.x, t.sc.y);
+            ctx.moveTo(sv[0].x, sv[0].y);
+            ctx.lineTo(sv[1].x, sv[1].y);
+            ctx.lineTo(sv[2].x, sv[2].y);
+            if(sv.length > 3) ctx.lineTo(sv[3].x, sv[3].y);
             ctx.closePath();
-            ctx.fill();
+            if(!this.wireframe) ctx.fill();
             ctx.stroke();
         }
     }

@@ -5,17 +5,14 @@ SQR.Triangle = function(a, b, c) {
     var perVertex = false;
     var indices, elements = false;
     this.normal = new SQR.V3();
-
-    //
-    this.center = new SQR.V3();
     this.depth = 0;
-    //
 
     this.setVertices = function(a, b, c) {
         elements = false;
         this.a = a;
         this.b = b;
         this.c = c;
+        this.vertices = [a, b, c];
         return this;
     }
 

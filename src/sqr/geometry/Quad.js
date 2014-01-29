@@ -1,10 +1,35 @@
-SQR.Quad = function(t1, t2) {
+SQR.Quad = function() {
 
     var that = this;
+
+    var t1, t2, ag = arguments;
+
+    if(arguments.length == 2) {
+        t1 = ag[0];
+        t2 = ag[1];
+        this.vertices = [t1.a, t1.b, t1.c, t2.a, t2.b, t2.c];
+        console.warn("Creating quads out of 2 triangles is deprecated! Pass 4 vertices instead");
+    } else {
+        t1 = new SQR.Triangle(ag[0], ag[1], ag[2]);
+        t2 = new SQR.Triangle(ag[0], ag[2], ag[3]);
+        this.vertices = [ag[0], ag[1], ag[2], ag[3]];
+    }
 
     this.normal = t1.a.clone();
 
     var perVertex = false;
+
+    this.setUV = function(uva, uvb, uvc, uvd) {
+        that.uva = uva;
+        that.uvb = uvb;
+        that.uvc = uvc;
+        that.uvd = uvd;
+
+        t1.setUV(uva, uvb, uvc);
+        t2.setUV(uva, uvc, uvd);
+
+        return this;
+    }
 
     this.calculateNormal = function(_perVertex) {
         perVertex = _perVertex;
@@ -13,13 +38,13 @@ SQR.Quad = function(t1, t2) {
         that.normal.add(t1.normal, t2.normal).norm();
     }
 
-    this.toArray = function(vertexArray, normalArray) {
+    this.toArray = function(vertexArray, normalArray, textureArray) {
         if(perVertex) {
-            t1.toArray(vertexArray, normalArray);
-            t2.toArray(vertexArray, normalArray);
+            t1.toArray(vertexArray, normalArray, textureArray);
+            t2.toArray(vertexArray, normalArray, textureArray);
         } else {
-            t1.toArray(vertexArray);
-            t2.toArray(vertexArray);
+            t1.toArray(vertexArray, null, textureArray);
+            t2.toArray(vertexArray, null, textureArray);
 
             if(normalArray) {
                 var n = that.normal;

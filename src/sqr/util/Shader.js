@@ -51,7 +51,6 @@ SQR.Shader = function(gl) {
 	    for (var i = 0; i < numAttr; i++) {
 	        var a = gl.getActiveAttrib(p, i);
 	        a.location = gl.getAttribLocation(p, a.name);
-	        gl.enableVertexAttribArray(a.location);
 	        that.attributes.push(a);
 	    }
 
@@ -64,9 +63,10 @@ SQR.Shader = function(gl) {
 	}
 
 	this.load = function(src, callback) {
+		that.src = src;
 		SQR.Loader.loadShader(src, function(vertex, fragment) {
 	        that.compile(vertex, fragment);
-	        that.inspect();
+	   		that.inspect();
 	        if(callback) callback(that.program);
 		});
 	}
@@ -166,6 +166,9 @@ SQR.Shader = function(gl) {
 		gl.uniform1i(location, id);
 	}
 }
+
+SQR.Shader.busy = false;
+SQR.Shader.queue = [];
 
 
 

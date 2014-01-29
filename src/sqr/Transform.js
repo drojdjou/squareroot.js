@@ -218,6 +218,7 @@ SQR.Transform = function(n) {
         this.globalMatrix.inverseMat3(this.normalMatrix);
 
         var d = this.normalMatrix.data;
+
         // this.left.set(d[0], d[1], d[2]);
         // this.top.set(d[3], d[4], d[5]);
         // this.forward.set(d[6], d[7], d[8]);
@@ -275,7 +276,6 @@ SQR.Transform = function(n) {
      */
     this.computeInverseMatrix = function() {
         this.globalMatrix.inverse(this.inverseWorldMatrix);
-//        this.inverseWorldMatrix.transpose();
         return this.inverseWorldMatrix;
     }
 }

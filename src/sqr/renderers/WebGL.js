@@ -14,6 +14,8 @@ SQR.WebGL = function(gl, defaultShader) {
 
 	this.u = {};
 
+	var __tmp_buf;
+
 	var setAttributeData = function(geo, shader) {
 	    var attr, val;
 	    
@@ -23,6 +25,11 @@ SQR.WebGL = function(gl, defaultShader) {
 			val = geo[attr.name] || builtInAttribute(attr.name, geo);
 			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, val, that.usage);
+
+			if(!val) {
+				console.log(shader);
+				console.log(attr.name);
+			}
 		}
 
 		if(geo.elements) {
@@ -40,6 +47,7 @@ SQR.WebGL = function(gl, defaultShader) {
 		for(var i = 0; i < shader.numAttributes; i++) {
 			attr = shader.attributes[i];
 			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
+			gl.enableVertexAttribArray(attr.location);
 	        gl.vertexAttribPointer(attr.location, builtInAttributeSize(attr.name, geo), gl.FLOAT, false, 0, 0);
 		}
 	}
@@ -48,13 +56,10 @@ SQR.WebGL = function(gl, defaultShader) {
 		switch(name) {
 			case 'aVertexPosition':
 				return geo.vertexSize;
-				break;
 			case 'aVertexNormal':
 				return geo.vertexSize;
-				break;
 			case 'aTextureCoord':
 				return 2;
-				break;
 			default:
 				return 3;
 		}
@@ -64,13 +69,10 @@ SQR.WebGL = function(gl, defaultShader) {
 		switch(name) {
 			case 'aVertexPosition':
 				return geo.vertices;
-				break;
 			case 'aVertexNormal':
 				return geo.normals;
-				break;
 			case 'aTextureCoord':
 				return geo.textureCoord;
-				break;
 			default:
 				return false;
 		}
@@ -81,7 +83,7 @@ SQR.WebGL = function(gl, defaultShader) {
 
 		for(var i = 0; i < shader.numUniforms; i++) {
 			uni = shader.uniforms[i];
-			val = that.u[uni.name] || shader.u[uni.name] || builtInUniform(uni.name, transform, uniforms);
+			val = shader.u[uni.name] || that.u[uni.name] || builtInUniform(uni.name, transform, uniforms);
 			if(val) shader.setUniform(uni, val);
 		}
 	}
@@ -125,6 +127,8 @@ SQR.WebGL = function(gl, defaultShader) {
 		}
 
 		setUniforms(transform, uniforms, shader);
+
+		if(this.renderMode == gl.LINES) gl.lineWidth(this.lineWidth || 1);
 
 		if(geo.elements) {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shader.elementBuffer);

@@ -59,6 +59,7 @@ if(__name__ == '__main__'):
 	parseDemos(debug, "bin/sandbox")
 	parseDemos(debug, "bin/anim")
 	parseDemos(debug, "bin/gl")
+	parseDemos(debug, "bin/demo")
 
 
 
