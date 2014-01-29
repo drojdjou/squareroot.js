@@ -1,6 +1,7 @@
 var DEBUG = true;
 
 var sound = new SoundAnalyser();
+sound.setGainLevels(2, 1);
 
 if(location.search == '?mic') {
     sound.connectMic();

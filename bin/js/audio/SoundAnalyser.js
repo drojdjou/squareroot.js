@@ -49,6 +49,11 @@ var SoundAnalyser = function() {
 		timeByteData = new Uint8Array(sa.binCount);
 	}
 
+	sa.setGainLevels = function(pre, post) {
+		volumeNode.gain.value = post;
+		volumeGainNode.gain.value = pre;
+	}
+
 	sa.connectMic = function() {
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
