@@ -16,7 +16,13 @@ var LineSphere = function(engine) {
 
 	this.onBeat = function() {
 		beatBumpTarget = -0.3;
-		beatRotation = 0.1;
+		beatRotation = 0.05;
+    }
+
+    this.use = function() {
+    }
+
+    this.dispose = function() {
     }
 
 

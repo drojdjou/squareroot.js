@@ -19,6 +19,7 @@ SQR.Plane = function(options) {
     
     this.faces = [];
     this.vertexSize = 3;
+    this.vectors = [];
 
     this.setSize = function(_w, _h, _wd, _hd, _wo, _ho) {
         this.width = _w;
@@ -60,6 +61,8 @@ SQR.Plane = function(options) {
                 } else {
                     vCols[i][j] = new SQR.V3(bvStart, bhStart, 0);
                 }
+
+                that.vectors.push(vCols[i][j]);
             }
         }
 
@@ -109,8 +112,6 @@ SQR.Plane = function(options) {
         for(var i = 0; i < numFaces; i++) {
             this.faces[i].toArray(vs, ns, tcs);
         }
-
-        console.log(vs.length, ns.length, tcs.length);
 
         that.vertices = new Float32Array(vs);
         that.normals = new Float32Array(ns);

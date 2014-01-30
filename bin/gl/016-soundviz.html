@@ -25,6 +25,13 @@
 
     }
 
+    #instr {
+        position: absolute;
+        color: white;
+        width: 100%;
+        text-align: center;
+    }
+
 </style>
 
 <!-- SQRLIB -->
@@ -91,18 +98,22 @@
 
 <canvas id="gl-canvas"></canvas>
 <canvas id="viz-canvas"></canvas>
+<div id="instr">Press space to toggle between effects.</div>
 
 <script type="text/javascript" src="016-soundviz/VisualizerCollection.js"></script>
 <script type="text/javascript" src="016-soundviz/EffectCollection.js"></script>
 
 <script type="text/javascript" src="016-soundviz/effects/DepthOfField.js"></script>
+<script type="text/javascript" src="016-soundviz/effects/GlowChromaticDist.js"></script>
 <script type="text/javascript" src="016-soundviz/effects/ScanLines.js"></script>
 <script type="text/javascript" src="016-soundviz/effects/NoEffect.js"></script>
 
 <script type="text/javascript" src="016-soundviz/objects/StrechingCube.js"></script>
 <script type="text/javascript" src="016-soundviz/objects/LineSphere.js"></script>
+<script type="text/javascript" src="016-soundviz/objects/SkyscraperLane.js"></script>
 
 <script type="text/javascript" src="016-soundviz/geometry/LineSphereGeometry.js"></script>
+<script type="text/javascript" src="016-soundviz/geometry/Skyscraper.js"></script>
 
 <script type="text/javascript" src="016-soundviz/main.js"></script>
 

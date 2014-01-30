@@ -7,17 +7,21 @@ var VisualizerCollection = function(root) {
 		return this;
 	}
 
-	this.update = function(sound) {
-		current.update(sound);
+	this.update = function(sound, camera) {
+		current.update(sound, camera);
 	}
 
-	this.onBeat = function() {
-		current.onBeat();
+	this.onBeat = function(camera) {
+		current.onBeat(camera);
 	}
 
 	this.use = function(name) {
-		if(current) root.remove(current.object);
+		if(current) {
+			root.remove(current.object);
+			current.dispose();
+		}
 		root.add(visualizers[name].object);
 		current = visualizers[name];
+		current.use();
 	}
 }

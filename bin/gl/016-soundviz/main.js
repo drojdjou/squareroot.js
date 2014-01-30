@@ -1,11 +1,16 @@
-var DEBUG = true;
+var DEBUG = false;//true;
 
 var sound = new SoundAnalyser();
-sound.setGainLevels(2, 1);
+
+if(!DEBUG) {
+    document.querySelector('#instr').style.display = 'none';
+}
 
 if(location.search == '?mic') {
+    sound.setGainLevels(1, 1);
     sound.connectMic();
 } else {
+    sound.setGainLevels(1, 1);
     sound.load('../assets/audio/atari.mp3');
 }
 
@@ -29,45 +34,56 @@ projection.perspective(45, window.innerWidth/window.innerHeight, 1, 10000);
 engine.setProjection(projection);
 
 var camera = new SQR.Transform();
-camera.position.z = 100;
 root.add(camera);
+
+var resetCamera = function() {
+    camera.position.set(0, 0, 100);
+    camera.rotation.set(0, 0, 0);
+}
+
+resetCamera();
 
 //
 var visualizer = new VisualizerCollection(root);
 visualizer.add('linesphere', new LineSphere(engine));
 visualizer.add('strechcube', new StrechingCube(engine));
+visualizer.add('skyscraper', new SkyscraperLane(engine));
 
 //
 var effect = new EffectCollection();
 effect.add('dof', new DepthOfField(engine));
+effect.add('glow', new GlowChromaticDist(engine));
 effect.add('scanlines', new ScanLines(engine));
 effect.add('none', new NoEffect(engine));
 
+var compositions = [
+    ['skyscraper', 'glow'],
+    ['linesphere', 'dof'],
+    ['strechcube', 'scanlines']
+];
 
-// // // // //
-visualizer.use('strechcube');
-effect.use('scanlines');
-// // // // //
+var compositionIndex = -1;
 
-var isCube = true;
+var next = function() {
+    compositionIndex += 1;
+    if(compositionIndex >= compositions.length) compositionIndex = 0;
+
+    resetCamera();
+
+    visualizer.use(compositions[compositionIndex][0]);
+    effect.use(compositions[compositionIndex][1]);
+}
 
 Key.down(Key.SPACE, function() {
-
-    if(isCube) {
-        visualizer.use('linesphere');
-        effect.use('dof');
-    } else {
-        visualizer.use('strechcube');
-        effect.use('scanlines');
-    }
-
-    isCube = !isCube;
+    next();
 });
+
+next();
 
 sound.onBeat = function() {
     if(DEBUG) debugViz.onBeat();
 
-    visualizer.onBeat();
+    visualizer.onBeat(camera);
     effect.onBeat();
 }
 
@@ -80,7 +96,7 @@ var loop = function() {
 
     sound.update();
     if(DEBUG) debugViz.draw(sound);
-    visualizer.update(sound);
+    visualizer.update(sound, camera);
 
     // engine.render(root, camera);
     engine.render(root, camera, { target: target });

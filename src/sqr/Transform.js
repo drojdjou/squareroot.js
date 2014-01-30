@@ -200,6 +200,7 @@ SQR.Transform = function(n) {
 
         if (this.lookDirection) {
             this.matrix.lookAt(this.lookDirection, SQR.V3.up);
+            this.matrix.scale(s.x, s.y, s.z);
         }
 
         if (this.parent) {

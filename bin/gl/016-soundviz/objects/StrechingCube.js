@@ -6,7 +6,7 @@ var StrechingCube = function(engine) {
     var crx = 0, cry = 0, beat = 0;
 
 	var cube = new SQR.Transform();
-    cube.geometry = new SQR.Cube().setSize(25, 25, 25);
+    cube.geometry = new SQR.Cube().setSize(35, 35, 35);
     cube.renderer = engine.createRenderer(shader);
     cube.renderer.u.uColor = [0, 0.5, 0, 1];
 
@@ -18,8 +18,14 @@ var StrechingCube = function(engine) {
     for(var c in cube.geometry.corners) {
         cube.geometry.cornersOrig[c] = cube.geometry.corners[c].clone();
         cube.geometry.corners[c].value = 0;
-        cube.geometry.corners[c].speed = 0.005 + Math.random() * 0.005;
+        cube.geometry.corners[c].speed = 0.001 + Math.random() * 0.001;
         cube.geometry.corners[c].phase = Math.PI * Math.random();
+    }
+
+    this.use = function() {
+    }
+
+    this.dispose = function() {
     }
 
     this.onBeat = function() {
@@ -45,12 +51,12 @@ var StrechingCube = function(engine) {
 
         for(var c in cube.geometry.corners) {
             var p = cube.geometry.corners[c];
-            var l = sound.waveData[b];
+            var l = sound.levelsData[b % sound.levelsCount];
             p.value = Math.max(l, p.value);
             p.copyFrom(cube.geometry.cornersOrig[c]);
             p.mul(1.4 + Math.sin(p.phase) * 0.6);
-            p.phase += p.speed + p.value / 10;
-            p.value *= 0.99;
+            p.phase += p.speed + p.value / 3;
+            p.value *= 0.92;
             b++;
         }
 

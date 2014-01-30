@@ -1,6 +1,6 @@
 var DepthOfField = function(engine) {
 
-	
+	var dofPhase = 0;
 
     var blurTargetA1 = engine.createFrameBuffer();
     var blurTargetA2 = engine.createFrameBuffer();
@@ -14,8 +14,8 @@ var DepthOfField = function(engine) {
 
     var depth = engine.createShader();
     depth.load("glsl/depth.glsl");
-    depth.u.near = 70;
-    depth.u.far =  110;
+    depth.u.near = 10;//70;
+    depth.u.far =  80;//110;
 
     var depthField = new SQR.PostEffect("glsl/depthOfField.glsl");
     depthField.renderer.u.uBlurTexture = blurTargetA2.texture;
@@ -25,12 +25,18 @@ var DepthOfField = function(engine) {
         engine.setClearColor(0.0, 0.0, 0.0, 1);
     }
 
+
     var blurForce = 0.075;
 
     this.onBeat = function() {
+        dofPhase = 1;
     }
 
 	this.render = function(target, root, camera) {
+
+        depth.u.near = 40 + (1.0 - dofPhase) * 30;
+        depth.u.far =  60 + (1.0 - dofPhase) * 50;
+        dofPhase *= 0.9;
 
         blur.renderer.u.delta = [0, blurForce];
         blur.setSource(target);

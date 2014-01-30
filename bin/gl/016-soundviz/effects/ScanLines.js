@@ -1,6 +1,6 @@
 var ScanLines = function(engine) {
 
-	var beat = 0;
+	var beat = 0, beatTarget = 0;
 
     this.use = function() {
         engine.setClearColor(0.1, 0.2, 0.3, 1);
@@ -23,7 +23,7 @@ var ScanLines = function(engine) {
 	var previewRegionSmall = new SQR.RenderRegion(50, 50, window.innerWidth/5, window.innerHeight/5);
 
 	this.onBeat = function() {
-		beat = 1;
+		beatTarget = 1;
 	}
 
 	this.render = function(target, root, camera) {
@@ -31,7 +31,8 @@ var ScanLines = function(engine) {
 		scanLines.renderer.u.uTime = SQR.Time.time;
 		scanLines.renderer.u.uWidth = beat;//SQR.Time.time;
 
-		beat *= 0.9 ;
+		beatTarget *= 0.9;
+        beat += (beatTarget - beat) * 0.2;
 
         engine.render(root, camera, { target:depthTarget, replacementShader: depth });
 

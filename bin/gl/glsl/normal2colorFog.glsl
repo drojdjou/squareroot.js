@@ -13,7 +13,7 @@ varying float vFog;
 void main() {
 	vNormal = uNormalMatrix * aVertexNormal;
 	vec3 p = (uViewMatrix * uMatrix * vec4(aVertexPosition, 1.0)).xyz;
-	float d = 1.0 - length(p) / 3000.0;
+	float d = 1.0 - length(p) / 300.0;
 	vFog = clamp(d, 0.0, 1.0);
 	gl_Position = uConcatMatrix * vec4(aVertexPosition, 1.0);
 }
