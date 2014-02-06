@@ -6,7 +6,7 @@ var StrechingCube = function(engine) {
     var crx = 0, cry = 0, beat = 0;
 
 	var cube = new SQR.Transform();
-    cube.geometry = new SQR.Cube().setSize(35, 35, 35);
+    cube.geometry = new SQR.Cube().create(35, 35, 35);
     cube.renderer = engine.createRenderer(shader);
     cube.renderer.u.uColor = [0, 0.5, 0, 1];
 

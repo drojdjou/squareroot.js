@@ -17,20 +17,7 @@ SQR.WebGL = function(gl, defaultShader) {
 	var __tmp_buf;
 
 	var setAttributeData = function(geo, shader) {
-	    var attr, val;
-	    
-		for(var i = 0; i < shader.numAttributes; i++) {
-			attr = shader.attributes[i];
-			if(!attr.buffer) attr.buffer = gl.createBuffer();
-			val = geo[attr.name] || builtInAttribute(attr.name, geo);
-			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
-			gl.bufferData(gl.ARRAY_BUFFER, val, that.usage);
-
-			if(!val) {
-				console.log(shader);
-				console.log(attr.name);
-			}
-		}
+		geo.setupBuffers(gl, shader, that.usage);
 
 		if(geo.elements) {
 			shader.elementBuffer = gl.createBuffer();
@@ -39,43 +26,6 @@ SQR.WebGL = function(gl, defaultShader) {
 		}
 
 		geo.dirty = false;
-	}
-
-	var setupAttributes = function(geo, shader) {
-		var attr;
-
-		for(var i = 0; i < shader.numAttributes; i++) {
-			attr = shader.attributes[i];
-			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
-			gl.enableVertexAttribArray(attr.location);
-	        gl.vertexAttribPointer(attr.location, builtInAttributeSize(attr.name, geo), gl.FLOAT, false, 0, 0);
-		}
-	}
-
-	var builtInAttributeSize = function(name, geo) {
-		switch(name) {
-			case 'aVertexPosition':
-				return geo.vertexSize;
-			case 'aVertexNormal':
-				return geo.vertexSize;
-			case 'aTextureCoord':
-				return 2;
-			default:
-				return 3;
-		}
-	}
-
-	var builtInAttribute = function(name, geo) {
-		switch(name) {
-			case 'aVertexPosition':
-				return geo.vertices;
-			case 'aVertexNormal':
-				return geo.normals;
-			case 'aTextureCoord':
-				return geo.textureCoord;
-			default:
-				return false;
-		}
 	}
 
 	var setUniforms = function(transform, uniforms, shader) {
@@ -111,7 +61,7 @@ SQR.WebGL = function(gl, defaultShader) {
 		var geo = transform.geometry;
 		var shader = uniforms.replacementShader || defaultShader;
 
-		if(!shader.isReady() || !geo.vertices) return;
+		if(!shader.isReady() || !geo.count) return;
 
 		if(uniforms.projection) uniforms.projection.copyTo(concatMatrix);
 		else concatMatrix.identity();
@@ -123,7 +73,6 @@ SQR.WebGL = function(gl, defaultShader) {
 
 		if(np || SQR.GL.isNewGeometry(geo) || geo.dirty) {
 			setAttributeData(geo, shader);
-			setupAttributes(geo, shader);
 		}
 
 		setUniforms(transform, uniforms, shader);
@@ -131,10 +80,10 @@ SQR.WebGL = function(gl, defaultShader) {
 		if(this.renderMode == gl.LINES) gl.lineWidth(this.lineWidth || 1);
 
 		if(geo.elements) {
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shader.elementBuffer);
+			// gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shader.elementBuffer); // Prob not needed
         	gl.drawElements(this.renderMode, geo.elements.length, gl.UNSIGNED_SHORT, 0);
 		} else {
-			gl.drawArrays(this.renderMode, 0, geo.numVertices);
+			gl.drawArrays(this.renderMode, 0, geo.count);
 		}
 	}
 

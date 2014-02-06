@@ -49,6 +49,10 @@ SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom,
 
 SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
 
+    // Save values for reference (they are read-only at this point of course)
+    this.near = near;
+    this.far = far;
+
     var m = this.data;
     var t = near * Math.tan(fov * Math.PI / 360);
     var n = far - near;

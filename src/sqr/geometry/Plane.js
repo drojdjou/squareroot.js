@@ -10,37 +10,34 @@ yup = if true object is on xz plane, if flase - on xy, defaults to false
 
 */
 SQR.Plane = function(options) {
+
+    var vectors = [];
+    var faces = [], vertices = [], normals = [], texcoords = [];
+
+    var geo = new SQR.Geometry().quickSetup('v3n3t2');
+    var options = options || {};
     
-    var that = this;
-    var w, h, wd, hd, wo, ho;
-    var ts = [], vs = [], ns = [], tcs = [];
-
-    options = options || {};
     
-    this.faces = [];
-    this.vertexSize = 3;
-    this.vectors = [];
+    geo.create = function(w, h, wd, hd, wo, ho) {
+        geo.width = w;
+        geo.height = h;
 
-    this.setSize = function(_w, _h, _wd, _hd, _wo, _ho) {
-        this.width = _w;
-        this.height = _h;
+        var w = w * 0.5;
+        var h = h * 0.5;
 
-        w = _w * 0.5;
-        h = _h * 0.5;
+        var wo = wo || 0;
+        var ho = ho || 0;
 
-        wo = _wo || 0;
-        ho = _ho || 0;
+        var wd = wd || 1;
+        var hd = hd || 1;
 
-        wd = _wd || 1;
-        hd = _hd || 1;
-
-        that.faces.length = [];
+        faces.length = [];
 
         var wStart = -w + wo;
         var hStart = -h + ho;
 
-        var wb = _w / wd;
-        var hb = _h / hd;
+        var wb = geo.width / wd;
+        var hb = geo.height / hd;
 
         var i, j;
 
@@ -62,7 +59,7 @@ SQR.Plane = function(options) {
                     vCols[i][j] = new SQR.V3(bvStart, bhStart, 0);
                 }
 
-                that.vectors.push(vCols[i][j]);
+                vectors.push(vCols[i][j]);
             }
         }
 
@@ -79,47 +76,60 @@ SQR.Plane = function(options) {
 
                 if(options.quads) {
                     var q = new SQR.Quad(va, vb, vc, vd).setUV(uva, uvb, uvc, uvd);
-                    this.faces.push(q);
+                    faces.push(q);
                 } else {
-                    var t1 = new SQR.Triangle(va, vb, vc).setUV(uva, uvb, uvc);
-                    var t2 = new SQR.Triangle(va, vc, vd).setUV(uva, uvc, uvd);
-                    this.faces.push(t1, t2);
+
+                    var t1 = new SQR.Triangle();
+                    t1.setVertices(va, vb, vc);
+                    t1.setAttribute(SQR.Geometry.TEXCOORD, uva, uvb, uvc);
+
+                    var t2 = new SQR.Triangle();
+                    t2.setVertices(va, vc, vd);
+                    t2.setAttribute(SQR.Geometry.TEXCOORD, uva, uvc, uvd);
+
+                    faces.push(t1, t2);
                 }
             }
         }
 
-        numFaces = this.faces.length;
+        return geo.refresh();
+    }
 
-        this.numVertices = numFaces * this.vertexSize;
-        if(options.quads) this.numVertices *= 2;
+    geo.displaceVertices = function(f) {
+        var vl = vectors.length;
+        for(var i = 0; i < vl; i++) {
+            f(vectors[i]);
+        }
 
-        that.refresh();
-
-        return that;
+        return geo.refresh();
     }
 
 
-    this.refresh = function() {
+    geo.refresh = function() {
+        var numTris = faces.length;
 
-        vs.length = 0;
-        ns.length = 0;
-        tcs.length = 0;
+        vertices.length = 0;
+        normals.length = 0;
+        texcoords.length = 0;
 
-        for(var i = 0; i < numFaces; i++) {
-            this.faces[i].calculateNormal(options.vertexNormals);
+        for(var i = 0; i < numTris; i++) {
+            faces[i].calculateNormal(options.perVertextNormals);
         }
 
-        for(var i = 0; i < numFaces; i++) {
-            this.faces[i].toArray(vs, ns, tcs);
+        for(var i = 0; i < numTris; i++) {
+            faces[i].toArray(SQR.Geometry.VERTEX, vertices);
+            faces[i].toArray(SQR.Geometry.NORMAL, normals);
+            faces[i].toArray(SQR.Geometry.TEXCOORD, texcoords);
         }
 
-        that.vertices = new Float32Array(vs);
-        that.normals = new Float32Array(ns);
-        that.textureCoord = new Float32Array(tcs);
+        geo.data(SQR.Geometry.VERTEX, vertices);
+        geo.data(SQR.Geometry.NORMAL, normals);
+        geo.data(SQR.Geometry.TEXCOORD, texcoords);
+        
+        return geo;
+    }  
 
-        that.dirty = true;
-        return that;   
-    }
+    return geo;
 }
 
 

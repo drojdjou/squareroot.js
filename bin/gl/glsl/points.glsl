@@ -7,7 +7,7 @@ varying vec3 vNormal;
      
 void main() {
 	gl_Position = uConcatMatrix * vec4(aVertexPosition, 1.0);
-	gl_PointSize = 2.0;
+	gl_PointSize = 4.0;
 }
 
 //#fragment

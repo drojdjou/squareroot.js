@@ -30,8 +30,12 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Cylinder.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Icosphere.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Pyramid.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite3D.js"></script>
@@ -62,6 +66,7 @@
 <script type="text/javascript" src="../../src/sqr/renderers/WebGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Cubemap.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
@@ -82,36 +87,9 @@
 
 <script type="text/javascript">
 
-    SQR.Plane.prototype.applyHeightMap = function(heightMap, maxHeight, offsetX, offsetY, rangeX, rangeY) {
+    var applyHeightMap = function(geo, heightMap, maxHeight, offsetX, offsetY, rangeX, rangeY) {
 
-        var numTriangles = this.faces.length;
-
-        var w = this.width;
-        var h = this.height;
-
-        var processVertex = function(t, ut) {
-
-            var x = Math.round(t.x/w * 128 + 64);
-            var z = Math.round(t.z/h * 128 + 64);
-
-            if(x ==  128) x = 0;
-            if(z == 128) z = 0;
-
-            var th = SQR.CanvasUtil.getPixelRed(heightMap, x, z) / 255;
-            th = Math.max(0.2 , th);
-            t.y = th * maxHeight;
-        }
-
-        for (var i = 0; i < numTriangles; i++) {
-            var t = this.faces[i];
-            var vs = t.vertices;
-            processVertex(vs[0], t.uva);
-            processVertex(vs[1], t.uvc);
-            processVertex(vs[2], t.uvb);
-            if(vs[3]) processVertex(vs[3], t.uvd);
-        }
-
-        this.refresh();
+        
     }
 
     var stats = new Stats();
@@ -126,32 +104,38 @@
 
     engine = new SQR.SquarerootGL(document.getElementById('gl-canvas'));
     engine.setSize(window.innerWidth, window.innerHeight);
-    // engine.setClearColor(117/255, 183/255, 240/255, 1);
     engine.setClearColor(20/255, 96/255, 132/255, 1);
-    // engine.setClearColor(0,0,0, 1);
 
     var projection = new SQR.ProjectionMatrix();
     projection.perspective(45, window.innerWidth/window.innerHeight, 1, 10000);
     engine.setProjection(projection);
 
     var setup = function(dta) {
-        console.log("Setup");
-
         var shader = engine.createShader();
         shader.load("glsl/terrain.glsl");
 
         terrain = new SQR.Transform(); 
 
-        var geo = new SQR.Plane({ quads:true, vertexNormals:false }).setSize(size, size, density, density);
-        geo.applyHeightMap(dta, 15);
+        var geo = new SQR.Plane({ quads:true, vertexNormals:false }).create(size, size, density, density);
+
+        geo.displaceVertices(function(v) {
+            var x = Math.round(v.x/geo.width * 128 + 64);
+            var z = Math.round(v.z/geo.height * 128 + 64);
+
+            if(x ==  128) x = 0;
+            if(z == 128) z = 0;
+
+            var th = SQR.CanvasUtil.getPixelRed(dta, x, z) / 255;
+            th = Math.max(0.2 , th);
+            v.y = th * 15;
+        });
+
       
         terrainRenderer = engine.createRenderer(shader);
         terrainRenderer.u.uColor = [217/255, 167/255, 108/255, 1];
         terrainRenderer.u.near = 1;
         terrainRenderer.u.far = 50;
-        // terrainRenderer.u.uFogColor = [117/255, 183/255, 240/255];
         terrainRenderer.u.uFogColor = [20/255, 96/255, 132/255];
-        // terrainRenderer.u.uFogColor = [0,0,0];
 
         var addPlane = function(x, z) {
             var p = new SQR.Transform();
@@ -173,27 +157,15 @@
         
         camera = new SQR.Transform();
         camera.position.y = 15;
-
-        // var cameraShader = engine.createShader();
-        // cameraShader.load("glsl/normal2color.glsl");
-        // camera.geometry = new SQR.Cube().setSize (3, 3, 10, 0);
-        // camera.geometry.corners.btl.x  = 0;
-        // camera.geometry.corners.btr.x = 0;
-        // camera.geometry.corners.bbl.x = 0;
-        // camera.geometry.corners.bbr.x = 0;
-        // camera.geometry.refresh();
-        // camera.renderer = engine.createRenderer(cameraShader);
-
         camera.useQuaternion = true;
 
         root.add(camera);
 
         birdview = new SQR.Transform();
         birdview.position.z = 200;
-        // birdview.position.x = -200;
         birdview.position.y = 500;
-        // birdview.rotation.x = Math.PI * 0.5;
         birdview.lookAt(camera);
+
         camera.add(birdview);
     }
 
@@ -215,17 +187,11 @@
         if(e.keyCode == 37) {
             rotationAcc = -0.02;
             targetBank = -0.5;
-            // q.fromAngleAxis(-0.1, 0, 1, 0);
-            // q.mul(camera.rotationQ);
-            // camera.rotationQ.copyFrom(q);
         }
 
         if(e.keyCode == 39) {
             rotationAcc = 0.02;
             targetBank = 0.5;
-            // q.fromAngleAxis(0.1, 0, 1, 0);
-            // q.mul(camera.rotationQ);
-            // camera.rotationQ.copyFrom(q);
         }
     });
 
@@ -237,7 +203,7 @@
     var q = new SQR.Quaternion();
 
 
-    ////
+    // //
     var depth = engine.createShader();
     depth.load("glsl/depth.glsl", render);
     depth.u.far = 100;
@@ -260,6 +226,7 @@
     depthField.renderer.u.uDepthTexture = depthTarget.texture;
 
     var previewRegionSmall = new SQR.RenderRegion(50, 50, window.innerWidth/5, window.innerHeight/5);
+    // //
 
 
     var render = function(t) {
@@ -303,32 +270,20 @@
 
         terrainRenderer.u.far = (bridViewActive) ? 1000 : 200;
 
-        // engine.render(root, (bridViewActive) ? birdview : camera);
+        // engine.render(root, camera);
 
         engine.render(root, camera, { target: target });
-
         preview.setSource(target);
-        // engine.render(preview, null, { region: previewRegionTL });
-        
         blur.renderer.u.delta = [0, 0.05];
         blur.setSource(target);
         engine.render(blur, null, { target: blurTargetA1 });
-
         blur.setSource(blurTargetA1);
         blur.renderer.u.delta = [0.05, 0];
         engine.render(blur, null, { target: blurTargetA2 });
-
-        // engine.render(blur, null, { region: previewRegionTR });
-
         engine.render(root, camera, { target:depthTarget, replacementShader: depth, clearColor:[0,0,0,1] });
-
         preview.setSource(depthTarget);
-        // engine.render(preview, null, { region: previewRegionBL });
-        
         depthField.setSource(target);
-        engine.render(depthField, null);
-
-        // engine.render(preview, null, { region: previewRegionSmall });
+        engine.render(depthField);
 
         stats.end();
     }
@@ -354,8 +309,8 @@
 
     loadMap(function(dta) {
         setup(dta);
-        // console.log(camera);
-        setTimeout(render, 1000);
+        render();
+        // setTimeout(render, 1000);
     });
 
 

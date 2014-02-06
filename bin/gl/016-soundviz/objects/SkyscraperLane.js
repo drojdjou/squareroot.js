@@ -1,12 +1,18 @@
 var SkyscraperLane= function(engine) {
 
-    var dayTime = 0, timeSpeed = 0.005;
+    var dayTime = 0, timeSpeed = 0.003;
 
 	var buildingShader = engine.createShader();
     buildingShader.load("016-soundviz/glsl/Skyscraper.glsl");
 
     var horizonShader = engine.createShader();
     horizonShader.load("016-soundviz/glsl/Horizon.glsl");
+
+    var trafficShader = engine.createShader();
+    trafficShader.load("016-soundviz/glsl/Traffic.glsl");
+
+    var baseShader =  engine.createShader();
+    baseShader.load("016-soundviz/glsl/CityStreet.glsl");
 
     var radius = 300;
     var bank = 0, shake = 0;
@@ -20,26 +26,34 @@ var SkyscraperLane= function(engine) {
     var buildings = [];
 
 	var base = new SQR.Transform();
-    base.position.set(0, -(radius + 10), 220);
+    base.renderer = engine.createRenderer(baseShader);
+    base.renderer.u.uColor = [0, 0, 0];
+    base.geometry = new SQR.Cylinder({ vertical: false, perVertextNormals:false, noCaps:true }).create(200, radius, 200);
+    base.position.set(0, -(radius + 30), 0);
+
+    var lanes = [], numLanes = 6;
+    for(var i = 1; i <= numLanes; i++) {
+        var traffic = new SQR.Transform();
+        traffic.renderer = engine.createRenderer(trafficShader);
+
+        traffic.renderer.u.uNightColor = (i <= 3) ? [1, 0.75, 0.25] : [1, 0.25, 0];
+        traffic.renderer.u.uDayColor = (i <= 3) ? [0.2, 0.2, 0.2] : [0.2, 0.05, 0];
+
+        traffic.renderer.renderMode = SQR.GL.POINTS;
+        traffic.geometry = new Freeway().create(500, radius + 0.1, 0.3);
+        traffic.speed = (i <= 3) ? -0.0002 * (i * 2) : 0.002 + 0.001 * (3 - Math.floor(i - 3));
+        traffic.position.x = (i - 3) * 4;
+        base.add(traffic);
+        lanes.push(traffic);
+    }
 
     var scene = new SQR.Transform();
     scene.add(base);
 
     var horizon = new SQR.Transform();
     horizon.renderer = engine.createRenderer(horizonShader);
-    horizon.geometry = new SQR.Plane({ zUp:true, quads:true }).setSize(2000, 700);
-    horizon.position.z = -600;
-
-    var displaceVectors = function(g) {
-        var vl = g.vectors.length;
-        for(var i = 0; i < vl; i++) {
-            g.vectors[i].z = Math.random() * -20;
-        }
-        g.refresh();
-    }
-
-    displaceVectors(horizon.geometry);
-
+    horizon.geometry = new SQR.Plane({ zUp:true, quads:false }).create(6000, 2100);
+    horizon.position.z = -1800;
     horizon.rotation.x = Math.PI;
     
     var makeRow = function(center, numBld) {
@@ -49,15 +63,15 @@ var SkyscraperLane= function(engine) {
         for(var i = 0; i < numBld; i++) {
 
             var bld = new SQR.Transform();
-            bld.geometry = new SQR.Skyscraper().setSize(10 + Math.random() * 20, 10 + Math.random() * 20, 1, 0, 0, 0.5);
+            bld.geometry = new SQR.Cube().create(10 + Math.random() * 20, 10 + Math.random() * 20, 1, 0, 0, 0.5);
             bld.renderer = engine.createRenderer(buildingShader);
             bld.buildingHeight = 0;
             bld.buildingBaseHeight = 24 + Math.random() * 10;
             bld.buildingHeightTarget = 0;
-            bld.maxHeight = 1 + Math.random() * 20;
+            bld.maxHeight = 5 + Math.random() * 5;
             bld.rotation.z = Math.random();
             var c = 0.3 + Math.random() * 0.7;
-            bld.renderer.u.uWindowColor = [c, 0.2, 1 - c];
+            bld.renderer.u.uWindowColor = [0.5 + 0.5 * c, 0.5, 0.1];
             var angle = i / numBld * SQR.twoPI;
 
             buildings.push(bld);
@@ -78,14 +92,12 @@ var SkyscraperLane= function(engine) {
     makeRow(new SQR.V3(-65, 0, 0), 30);
     makeRow(new SQR.V3(65, 0, 0), 30);
 
-    // makeRow(new SQR.V3(-105, 0, 0), 29);
-    // makeRow(new SQR.V3(105, 0, 0), 29);
-
-    this.use = function() {
+    this.use = function(camera, leap) {
+        leap.ease = 0.1;
         camera.add(horizon);
     }
 
-    this.dispose = function() {
+    this.dispose = function(camera, leap) {
         camera.remove(horizon);
     }
 
@@ -116,14 +128,16 @@ var SkyscraperLane= function(engine) {
         
     });
 
-    this.update = function(sound, camera) {
+    this.update = function(sound, camera, leap) {
 
         dayTime += timeSpeed;
         var dayTimeCycle = Math.sin(dayTime) * 0.5 + 0.5; // [0-1]
-        dayTimeCycle = dayTimeCycle * 5 - 2;
+        // dayTimeCycle = dayTimeCycle * 7 - 3;
         dayTimeCycle = Math.max(0, dayTimeCycle);
         dayTimeCycle = Math.min(1, dayTimeCycle);
+
         horizon.renderer.u.uDayTime = dayTimeCycle;
+        base.renderer.u.uDayTime = dayTimeCycle;
 
 
         for(var i = 0; i < buildings.length; i++) {
@@ -145,15 +159,45 @@ var SkyscraperLane= function(engine) {
 
         beatLightTarget *= 0.9;
 
-        beatLight += (beatLightTarget - beatLight) * 0.1;
-        beatSpeed *= 0.96;
+        beatLight += (beatLightTarget - beatLight) * 0.3;
+        beatSpeed *= 0.975;
 
-        base.rotation.x -= 0.0008 + beatSpeed * 0.006;
+        
 
-        camera.rotation.x = 0.41 + Math.sin(shake) * 0.005;
-        camera.rotation.z = Math.cos(shake) * 0.005;
-        // camera.rotation.z = Math.cos(bank) * Math.PI * 0.02 + (1.0 - Math.cos(shake)) * 0.003;
-        camera.rotation.y = dx * 0.5;
+        var crxb = 0.0;
+        var maxr = Math.PI / 8;
+        var sh = Math.sin(shake) * 0.002;
+
+        if(leap.isActive) {
+            var cpx = SQR.Mathx.clamp((leap.position.x/4), -15, 15);
+            camera.position.x += (cpx - camera.position.x) * 0.2;
+
+            // typicaly: 230mm - 60mm (0-170 35+80=85)
+            var cpy = SQR.Mathx.clamp( (leap.position.y-95)/3 , -10, 50);
+            camera.position.y += (cpy - camera.position.y) * 0.2;
+
+            var crx = SQR.Mathx.clamp(-leap.rotation.z, -maxr, maxr);
+            // camera.rotation.z += (crx - camera.rotation.z) * 0.2 + sh;
+
+            var crx = SQR.Mathx.clamp(-leap.rotation.x, -maxr, maxr);
+            // camera.rotation.x += (crx - camera.rotation.x) * 0.2;
+        } else {
+            camera.position.x *= 0.97;
+            camera.position.y *= 0.97;
+            camera.rotation.z *= 0.97;
+            camera.rotation.x *= 0.97 + sh;
+        }
+
+        base.rotation.x -= 0.0016;
+
+        
+        for(var i = 0; i < numLanes; i++) {
+                lanes[i].rotation.x +=  lanes[i].speed;
+                lanes[i].renderer.u.uDayTime = dayTimeCycle;
+                lanes[i].renderer.u.uBeat = beatSpeed;
+            }
+
+
 
         dx += (dxt - dx) * 0.2;
         dy += (dyt - dy) * 0.2;

@@ -1,6 +1,6 @@
 var GlowChromaticDist = function(engine) {
 
-    var dayTime = 0, timeSpeed = 0.005;
+    var dayTime = 0, timeSpeed = 0.003;
 
 	var blurForce = 0.015;
     var glowForce = 1.5;
@@ -27,7 +27,7 @@ var GlowChromaticDist = function(engine) {
 
         dayTime += timeSpeed;
         var dayTimeCycle = Math.sin(dayTime) * 0.5 + 0.5; // [0-1]
-        dayTimeCycle = dayTimeCycle * 5 - 2;
+        // dayTimeCycle = dayTimeCycle * 7 - 3;
         dayTimeCycle = Math.max(0, dayTimeCycle);
         dayTimeCycle = Math.min(1, dayTimeCycle);
 

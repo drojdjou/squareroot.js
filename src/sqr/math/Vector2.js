@@ -130,6 +130,10 @@ SQR.V2.prototype.clone = function() {
     return new SQR.V2(this.x, this.y);
 }
 
+SQR.V2.prototype.appendToArray = function(array) {
+    array.push(this.x, this.y);
+}
+
 SQR.V2.dot = function(a, b) {
     return (a.x * b.x + a.y * b.y)
 }

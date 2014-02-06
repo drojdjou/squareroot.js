@@ -315,7 +315,7 @@ SQR.Matrix44 = function() {
         a[6] = (d1 * d6 - d5 * d2) * det;
         a[7] = (d4 * d2 - d0 * d6) * det;
         a[8] = (d0 * d5 - d4 * d1) * det;
-        m.transpose();
+        // m.transpose();
 
         // To make a NormalMatrix - doesn't need to be transposed
         // a[0] = (d5 * d10 - d9 * d6) * det;

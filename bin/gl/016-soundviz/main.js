@@ -1,4 +1,6 @@
-var DEBUG = false;//true;
+var DEBUG = true;
+var USEMIC = location.search == '?mic';
+
 
 var sound = new SoundAnalyser();
 
@@ -6,12 +8,12 @@ if(!DEBUG) {
     document.querySelector('#instr').style.display = 'none';
 }
 
-if(location.search == '?mic') {
-    sound.setGainLevels(1, 1);
+if(USEMIC) {
+    sound.setGainLevels(1, 0);
     sound.connectMic();
 } else {
     sound.setGainLevels(1, 1);
-    sound.load('../assets/audio/atari.mp3');
+    sound.load('../assets/audio/hideseek.mp3');
 }
 
 var debugViz = new SoundVisualizer(document.querySelector('#viz-canvas'), 128, 64);
@@ -39,26 +41,34 @@ root.add(camera);
 var resetCamera = function() {
     camera.position.set(0, 0, 100);
     camera.rotation.set(0, 0, 0);
+    camera.lookAt(null);
 }
 
 resetCamera();
 
+var leap = new LeapWrapper();
+
 //
 var visualizer = new VisualizerCollection(root);
+visualizer.add('gems', new Gems(engine));
 visualizer.add('linesphere', new LineSphere(engine));
 visualizer.add('strechcube', new StrechingCube(engine));
 visualizer.add('skyscraper', new SkyscraperLane(engine));
+visualizer.add('pyramids', new Pyramids(engine));
 
 //
 var effect = new EffectCollection();
 effect.add('dof', new DepthOfField(engine));
 effect.add('glow', new GlowChromaticDist(engine));
 effect.add('scanlines', new ScanLines(engine));
+effect.add('blur', new Blur(engine));
 effect.add('none', new NoEffect(engine));
 
 var compositions = [
+    ['pyramids', 'none'],
+    ['gems', 'dof'],
+    ['linesphere', 'blur'],
     ['skyscraper', 'glow'],
-    ['linesphere', 'dof'],
     ['strechcube', 'scanlines']
 ];
 
@@ -70,7 +80,7 @@ var next = function() {
 
     resetCamera();
 
-    visualizer.use(compositions[compositionIndex][0]);
+    visualizer.use(compositions[compositionIndex][0], camera, leap);
     effect.use(compositions[compositionIndex][1]);
 }
 
@@ -93,14 +103,15 @@ var loop = function() {
     requestAnimFrame(loop);
 
     SQR.Time.tick();
+    leap.tick();
 
     sound.update();
     if(DEBUG) debugViz.draw(sound);
-    visualizer.update(sound, camera);
+    visualizer.update(sound, camera, leap);
 
     // engine.render(root, camera);
     engine.render(root, camera, { target: target });
-    effect.render(target, root, camera);
+    effect.render(target, root, camera, leap);
     
 
     stats.end();

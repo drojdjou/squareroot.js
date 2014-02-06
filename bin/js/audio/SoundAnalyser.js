@@ -17,9 +17,10 @@ var SoundAnalyser = function() {
 	var timeByteData; // waveform - waveform data is from 0-256 for 512 bins. no sound is 128.
 
 	var beatCutOff = 0, beatTime, beatLevel = 0;
-	var beatHoldTime = 30; // num of frames to hold a beat
+	var beatHoldTime = 5; // num of frames to hold a beat
 	var beatDecayRate = 0.99;
 	var beatMinVol = 0.15; // a volume less than this is no beat
+	var beatLevelUp = 1.05;
 
 	var initContext = function() {
 		audioContext = new window.webkitAudioContext();
@@ -132,7 +133,7 @@ var SoundAnalyser = function() {
 
 		if (beatLevel > beatCutOff){
 			if(sa.onBeat) sa.onBeat();
-			beatCutOff = beatLevel * 1.1;
+			beatCutOff = beatLevel * beatLevelUp;
 			beatTime = 0;
 		} else {
 			if (beatTime <= beatHoldTime){

@@ -11,8 +11,8 @@ var EffectCollection = function() {
 		current.onBeat();
 	}
 
-	this.render = function(target, root, camera) {
-		current.render(target, root, camera);
+	this.render = function(target, root, camera, leap) {
+		current.render(target, root, camera, leap);
 	}
 
 	this.use = function(name) {

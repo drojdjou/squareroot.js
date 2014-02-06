@@ -19,6 +19,11 @@ var SQR = (function() {
         twoPI: Math.PI * 2,
 
         /**
+         * Shorthand for Math.PI * 0.5
+         */
+        halfPI: Math.PI * 0.5,
+
+        /**
          * Shorthand for Math.PI / 180
          */
         deg2rad: Math.PI / 180,

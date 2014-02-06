@@ -19,18 +19,6 @@ SQR.Quad = function() {
 
     var perVertex = false;
 
-    this.setUV = function(uva, uvb, uvc, uvd) {
-        that.uva = uva;
-        that.uvb = uvb;
-        that.uvc = uvc;
-        that.uvd = uvd;
-
-        t1.setUV(uva, uvb, uvc);
-        t2.setUV(uva, uvc, uvd);
-
-        return this;
-    }
-
     this.calculateNormal = function(_perVertex) {
         perVertex = _perVertex;
         t1.calculateNormal(_perVertex);
@@ -54,17 +42,3 @@ SQR.Quad = function() {
         }
     }
 }
-
-SQR.Quad.fullscreen = function() {
-    var c = {}
-    c.vertexSize = 2;
-    c.numVertices = 6;
-    c.vertices = new Float32Array([-1, 1,     1, 1,     1, -1,     -1, 1,     1, -1,     -1, -1]);
-    c.textureCoord = new Float32Array([0, 1,     1, 1,     1, 0,     0, 1,     1, 0,    0, 0]);
-    return c;
-}
-
-
-
-
-

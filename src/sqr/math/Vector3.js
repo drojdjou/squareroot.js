@@ -142,7 +142,7 @@ SQR.V3.prototype.toUniform = function(type) {
     return a;
 }
 
-SQR.V3.prototype.toArray = function(array) {
+SQR.V3.prototype.appendToArray = function(array) {
     array.push(this.x, this.y, this.z);
 }
 

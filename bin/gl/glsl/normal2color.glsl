@@ -8,7 +8,7 @@ uniform mat3 uNormalMatrix;
 varying vec3 vNormal;
      
 void main() {
-	vNormal = uNormalMatrix * aVertexNormal;
+	vNormal = aVertexNormal;
 	gl_Position = uConcatMatrix * vec4(aVertexPosition, 1.0);
 	gl_PointSize = 3.0;
 }

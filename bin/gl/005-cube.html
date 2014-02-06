@@ -30,8 +30,12 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Cylinder.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Icosphere.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Pyramid.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite3D.js"></script>
@@ -62,6 +66,7 @@
 <script type="text/javascript" src="../../src/sqr/renderers/WebGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Cubemap.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
@@ -100,7 +105,7 @@
     shader.load("glsl/normal2color.glsl");
 
     var cube1 = new SQR.Transform();
-    cube1.geometry = new SQR.Cube().setSize(50, 50, 50);
+    cube1.geometry = new SQR.Cube().create(50, 50, 50);
     cube1.renderer = engine.createRenderer(shader);
     cube1.renderer.u.uColor = [0, 0.5, 0, 1];
     cube1.position.x = 100;
@@ -108,7 +113,7 @@
     cube1.geometry.aVertexColor = new Float32Array([1.0]);
 
     var cube2 = new SQR.Transform();
-    cube2.geometry = new SQR.Cube().setSize(50, 50, 50);
+    cube2.geometry = new SQR.Cube().create(50, 50, 50);
     cube2.renderer = engine.createRenderer(shader);
     cube2.renderer.u.uColor = [1, 0, 0, 1];
     cube2.position.x = -100;

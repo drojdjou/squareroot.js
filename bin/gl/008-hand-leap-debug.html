@@ -13,8 +13,12 @@
 <script type="text/javascript" src="../../src/sqr/SquarerootGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/Transform.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Cube.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Cylinder.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Geometry.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Icosphere.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Mesh.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Plane.js"></script>
+<script type="text/javascript" src="../../src/sqr/geometry/Pyramid.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Quad.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite2D.js"></script>
 <script type="text/javascript" src="../../src/sqr/geometry/Sprite3D.js"></script>
@@ -45,6 +49,7 @@
 <script type="text/javascript" src="../../src/sqr/renderers/WebGL.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/CanvasUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/Color.js"></script>
+<script type="text/javascript" src="../../src/sqr/util/Cubemap.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/DOMUtil.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/FrameBuffer.js"></script>
 <script type="text/javascript" src="../../src/sqr/util/GL.js"></script>
@@ -59,48 +64,48 @@
 <script type="text/javascript" src="../../src/sqr/util/Time.js"></script>
 <!-- SQRLIB -->
 
+<script type="text/javascript" src="../js/LeapWrapper.js"></script>
+
 <style type="text/css">
 
     body {
         background-color: #000;
         font-family: monospace;
         color: #ffffff;
+        margin: 0;
     }
 
     ul {
+        position: absolute;
         list-style-type: none;
         padding: 0;
+        margin: 20px;
     }
 
     li {
         margin-bottom: 0.6em;
     }
 
+    canvas {
+        position: absolute;
+        background-color: #222;
+    }
+
 </style>
 </head>
 <body>
 
-<ul>
-    <li>Num of hands: <span id="numHands">0</span></li>
-    <li>Num of fingers: <span id="numFingers">0</span></li>
-    <li>Num of pointables: <span id="numPointables">0</span></li>
-    <li>Num of gestures: <span id="numGestures">0</span></li>
-    <li>Global scale: <span id="globalScale">0</span></li>
-    <li>Global translate: <span id="globalTranslate">0</span></li>
-    <li>Hand 0 position: <span id="hand0pos">0</span></li>
-</ul>
+<canvas></canvas>
+
 
 <script type="text/javascript" src="../../lib/leap.js"></script>
 
 <script type="text/javascript">
 
-var numHands = document.querySelector("#numHands");
-var numFingers = document.querySelector("#numFingers");
-var numGestures = document.querySelector("#numGestures");
-var numPointables = document.querySelector("#numPointables");
-var globalScale = document.querySelector("#globalScale");
-var globalTranslate = document.querySelector("#globalTranslate");
-var hand0pos = document.querySelector("#hand0pos");
+var canvas = document.querySelector("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var ctx = canvas.getContext("2d");
 
 var dumpData = false;
 
@@ -108,39 +113,28 @@ document.addEventListener('click', function() {
     dumpData = true;
 });
 
-var leapLoop = function(frame) {
+
+var leap = new LeapWrapper();
+
+var draw = function() {
+    requestAnimFrame(draw);
+
+    leap.tick();
+
     if(dumpData) {
-        console.log(frame);
+        console.log(leap.frame);
         dumpData = false;
     }
 
-    numHands.innerHTML = frame.hands.length;
-    numFingers.innerHTML = frame.fingers.length;
-    numPointables.innerHTML = frame.pointables.length;
-    numGestures.innerHTML = frame.gestures.length;
-    globalScale.innerHTML = frame._scaleFactor;
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    ctx.fillStyle = "#800";
+    ctx.beginPath();
+    var r =  20 + 200 * leap.handOpen;
+    ctx.arc(canvas.width * 0.5, canvas.height * 0.5, r, Math.PI * -0.25, Math.PI * 1.25);
+    ctx.fill();
+}
 
-    var gt = frame._translation;
-    globalTranslate.innerHTML = "<br>" + gt.join("<br>");
-
-    if(frame.hands.length > 0) {
-        var hand = frame.hands[0];
-        var p = hand.palmPosition;
-        hand0pos.innerHTML = "<br>" + p.join("<br>");
-
-        // var rotX = (hand._rotation[2]);
-        // var rotY = (hand._rotation[1]);
-        // var rotZ = (hand._rotation[0]);
-        // var posX = (hand.palmPosition[0]);
-        // var posY = (hand.palmPosition[2]);
-        // var posZ = (hand.palmPosition[1]);
-        // px = posX / 100;
-        // py = posZ / 100;
-        // pz = Math.max(0, posY / 8);
-    }
-};
-
-Leap.loop(leapLoop);
+draw();
 
 </script>
 

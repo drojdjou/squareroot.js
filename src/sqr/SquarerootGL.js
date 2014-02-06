@@ -32,6 +32,10 @@ SQR.SquarerootGL = function(canvas) {
         return new SQR.Texture(gl, source, params);
     }
 
+    this.createCubemap = function(source, params) {
+        return new SQR.Cubemap(gl, source, params);
+    }
+
     this.createShader = function() {
         return new SQR.Shader(gl);
     }
