@@ -3,7 +3,7 @@ var Pyramids = function(engine) {
     var base = new SQR.Transform();
 
     var shader = engine.createShader();
-    shader.load("glsl/pyramidAO.glsl");
+    shader.load("016-soundviz/glsl/PyramidAO.glsl");
 
     var pyramids = [];
     var density = 4, size = 20;
@@ -51,7 +51,7 @@ var Pyramids = function(engine) {
 
             var cr = 1 - mag;
             // var cl = [cr, (1-cr)*0.5, (cr == 1) ? 1 : 0, 1];
-            var cl = [cr, 0, 0, 1];
+            var cl = [cr, 0, 0];
 
             var p = createPyramid(cl);
 
@@ -101,8 +101,9 @@ var Pyramids = function(engine) {
             p.geometry.refresh();
             p.renderer.u.uHeight = h;
 
-            if(data.centerDistance > 0.01) p.renderer.u.uColor[2] = imp;
-            else p.renderer.u.uColor = [imp, imp, imp];
+            // if(data.centerDistance > 0.01) 
+                p.renderer.u.uColor[2] = imp;
+            // else p.renderer.u.uColor = [imp, imp, imp];
         }
 
         wave += sound.level * 0.2;

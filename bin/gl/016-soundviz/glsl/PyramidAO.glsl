@@ -31,7 +31,7 @@ void main() {
 precision highp float;
 #endif
 
-uniform vec4 uColor;
+uniform vec3 uColor;
 
 uniform float uHeight;
                

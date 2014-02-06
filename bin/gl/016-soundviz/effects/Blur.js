@@ -23,7 +23,7 @@ var Blur = function(engine) {
         engine.setClearColor(0.0, 0.0, 0.0, 1);
     }
 
-    var blurForce = 0.075;
+    var blurForce = 0.05;
 
     this.onBeat = function() {
         dofPhase = 1;

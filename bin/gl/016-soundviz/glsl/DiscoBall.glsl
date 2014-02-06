@@ -18,8 +18,8 @@ varying float fac;
 const vec3 chromaticDispertion = vec3(0.9, 1.0, 1.1);
 // const vec3 chromaticDispertion = vec3(0, 0, 0);
 const float bias = 0.9;
-const float scale = 0.7;
-const float power = 1.1;
+const float scale = 2.0;
+const float power = 2.1;
      
 void main() {
 	vec3 vNormal = -normalize(uNormalMatrix * aVertexNormal);
@@ -43,8 +43,6 @@ precision highp float;
 #endif
 
 uniform samplerCube uCubemap;
-uniform float uBeat;
-uniform float uTime;
               
 varying vec3 t;
 varying vec3 tr;
@@ -52,23 +50,18 @@ varying vec3 tg;
 varying vec3 tb;
 varying float fac;
 
-vec3 getcolor(vec3 p) {
-	float m = (p.r + p.g + p.b) * 0.33 + uTime / -20.0;
-	float c = 1.0 - step(uBeat, fract(m * 20.0));
-	return vec3(c);
-}
-
 void main() {
 	// vec4 ref = vec4(0, 0, 0, 1.0);
-	vec4 ref = vec4(getcolor(t), 1.0);
+	vec4 ref = textureCube(uCubemap, t);
 
 	vec4 ret = vec4(0, 0, 0, 1.0);
-	ret.r = getcolor(tr).r;
-	ret.g = getcolor(tg).g;
-	ret.b = getcolor(tb).b;
+	ret.r = textureCube(uCubemap, tr).r;
+	ret.g = textureCube(uCubemap, tg).g;
+	ret.b = textureCube(uCubemap, tb).b;
 
 	vec3 c = (ret * fac + ref * (1.0 - fac)).rgb;
-	// c *= 0.75;
+	// vec3 c = (ref * (1.0 - fac)).rgb;
+	// vec3 c = (ret * fac).rgb;
 	
 	gl_FragColor = vec4(c, 1.0);
 }

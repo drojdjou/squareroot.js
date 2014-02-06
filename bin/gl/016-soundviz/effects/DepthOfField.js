@@ -29,19 +29,13 @@ var DepthOfField = function(engine) {
     }
 
 
-    var blurForce = 0.075;
-    // var blurForce = 0.2;
+    var blurForce = 0.0;
+
 
     this.onBeat = function() {
-        dofPhase = 1;
     }
 
 	this.render = function(target, root, camera) {
-
-        // depth.u.near = 40 + (1.0 - dofPhase) * 30;
-        // depth.u.far =  60 + (1.0 - dofPhase) * 50;
-        // dofPhase *= 0.9;
-
         blur.renderer.u.delta = [0, blurForce];
         blur.setSource(target);
         engine.render(blur, null, { target: blurTargetA1 });

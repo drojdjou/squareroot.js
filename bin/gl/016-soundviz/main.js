@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;//true;
 var USEMIC = location.search == '?mic';
 
 
@@ -13,7 +13,7 @@ if(USEMIC) {
     sound.connectMic();
 } else {
     sound.setGainLevels(1, 1);
-    sound.load('../assets/audio/hideseek.mp3');
+    sound.load('../assets/audio/keepstill.mp3');
 }
 
 var debugViz = new SoundVisualizer(document.querySelector('#viz-canvas'), 128, 64);
@@ -58,16 +58,17 @@ visualizer.add('pyramids', new Pyramids(engine));
 
 //
 var effect = new EffectCollection();
-effect.add('dof', new DepthOfField(engine));
+// effect.add('dof', new DepthOfField(engine));
+effect.add('vignette', new Vignette(engine));
 effect.add('glow', new GlowChromaticDist(engine));
 effect.add('scanlines', new ScanLines(engine));
 effect.add('blur', new Blur(engine));
 effect.add('none', new NoEffect(engine));
 
 var compositions = [
-    ['pyramids', 'none'],
-    ['gems', 'dof'],
+    ['gems', 'vignette'],
     ['linesphere', 'blur'],
+    ['pyramids', 'none'],   
     ['skyscraper', 'glow'],
     ['strechcube', 'scanlines']
 ];

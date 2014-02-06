@@ -21,8 +21,8 @@ var Gems = function(engine) {
     var icoShader = engine.createShader();
     // icoShader.load("glsl/points.glsl");
     // icoShader.load("glsl/reflection.glsl");
-    icoShader.load("glsl/glass.glsl");
-    // icoShader.load("016-soundviz/glsl/DiscoBall.glsl");
+    // icoShader.load("glsl/glass.glsl");
+    icoShader.load("016-soundviz/glsl/DiscoBall.glsl");
 
     
 
@@ -38,7 +38,7 @@ var Gems = function(engine) {
     // base.add(skybox);
 
     var ico = new SQR.Transform();
-    ico.geometry = new SQR.Icosphere({ perVertextNormals:false }).create(90);
+    ico.geometry = new SQR.Icosphere({ perVertextNormals:false }).create(100);
 
     ico.geometry.subdivide();
     ico.geometry.subdivide();
