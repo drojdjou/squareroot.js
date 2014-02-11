@@ -18,8 +18,8 @@ var SoundAnalyser = function() {
 	var timeByteData; // waveform - waveform data is from 0-256 for 512 bins. no sound is 128.
 
 	var beatCutOff = 0, beatTime, beatLevel = 0;
-	var beatHoldTime = 10 ; // num of frames to hold a beat
-	var beatDecayRate = 0.99;
+	var beatHoldTime = 10; // num of frames to hold a beat
+	var beatDecayRate = 0.98;
 	var beatMinVol = 0.15; // a volume less than this is no beat
 	var beatLevelUp = 1.05;
 
