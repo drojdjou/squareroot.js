@@ -17,6 +17,10 @@ SQR.GL = (function() {
     s.STATIC_DRAW                    = 0x88E4;
     s.DYNAMIC_DRAW                   = 0x88E8;
 
+    s.FLOAT_VEC2                     = 0x8B50;
+    s.FLOAT_VEC3                     = 0x8B51;
+    s.FLOAT_VEC4                     = 0x8B52;
+
 	s.init = function(_gl) {
 		gl = _gl;
 

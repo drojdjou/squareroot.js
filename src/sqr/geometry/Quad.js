@@ -1,5 +1,7 @@
 SQR.Quad = function() {
 
+    this.size = 4;
+
     var that = this;
 
     var t1, t2, ag = arguments;

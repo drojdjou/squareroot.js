@@ -30,10 +30,7 @@ var SoundAnalyser = function() {
 		analyser.fftSize = 1024;
 		
 		volumeNode = audioContext.createGainNode();
-		volumeNode.gain.value = 1;
-
 		volumeGainNode = audioContext.createGainNode();
-		volumeGainNode.gain.value = 1;
 
 		source = audioContext.createBufferSource();
 
@@ -50,9 +47,12 @@ var SoundAnalyser = function() {
 		timeByteData = new Uint8Array(sa.binCount);
 	}
 
-	sa.setGainLevels = function(pre, post) {
-		volumeNode.gain.value = post;
-		volumeGainNode.gain.value = pre;
+	sa.setVolume = function(value) {
+		volumeNode.gain.value = value;
+	}
+
+	sa.setSesitivity = function(value) {
+		volumeGainNode.gain.value = value;
 	}
 
 	sa.connectMic = function() {

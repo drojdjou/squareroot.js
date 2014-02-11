@@ -72,7 +72,7 @@ SQR.Segment = function(thickness) {
 
             var c = (geo.colors) ? geo.colors[ i / 2 | 0 ] : geo.color;
 
-            ctx.strokeStyle = c.toHSLString();
+            ctx.strokeStyle = c.toCss();
             ctx.lineWidth = thickness;
 
             var canDraw = project(ps, pe, uniforms.centerX, uniforms.centerY);

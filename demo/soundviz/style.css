@@ -1,0 +1,97 @@
+body {
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#gl-canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#viz-canvas {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.menu-button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  text-transform: lowercase;
+  font-size: 0.8em;
+  color: #c8c8c8;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 8px 18px 13px 13px;
+  -webkit-transition: opacity 0.2s ease;
+}
+.menu-button span {
+  font-size: 1.2em;
+}
+.menu-button:hover {
+  cursor: pointer;
+  color: #fff;
+}
+.menu {
+  position: absolute;
+  color: #c8c8c8;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 200px;
+  height: 100%;
+  -webkit-transition: all 0.2s ease;
+}
+.menu .close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  font-size: 0.8em;
+}
+.menu .close:hover {
+  cursor: pointer;
+  color: #fff;
+}
+.menu p {
+  padding: 7px 0px 0px 10px;
+  margin: 0;
+  letter-spacing: 0.02em;
+  font-size: 0.8em;
+  text-transform: lowercase;
+}
+.menu p:first-of-type {
+  margin-top: 40px;
+}
+.menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 6px 0 20px 0;
+}
+.menu li {
+  text-transform: lowercase;
+  padding: 7px 0px 7px 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+  letter-spacing: -0.01em;
+  text-indent: 1em;
+}
+.menu li.selected {
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+}
+.menu li:not(.selected):hover {
+  background-color: #aaa;
+  color: #000;
+  cursor: pointer;
+}
+.stats {
+  position: absolute;
+  bottom: 60px;
+  right: 0px;
+}

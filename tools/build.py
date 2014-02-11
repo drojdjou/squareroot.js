@@ -70,6 +70,9 @@ if(__name__ == '__main__'):
 
 	build("src", "build/squareroot-min.js")
 
+	os.system("ls -lh build/squareroot-min.js");
+	os.system("ls -l build/squareroot-min.js");
+
 
 
 

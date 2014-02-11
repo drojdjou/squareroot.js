@@ -1,5 +1,7 @@
 SQR.Triangle = function(options) {
 
+    this.size = 3;
+
     var makeABC = function(a, b, c) {
         return {
             a: a, b: b, c: c
@@ -55,7 +57,7 @@ SQR.Triangle = function(options) {
         if(value.appendToArray) value.appendToArray(array);
         else if(value instanceof Array) array.push.apply(array, value);
         else if(!isNaN(value * 2)) array.push(value);
-        else throw "Vertex attribute " + name + " has some invalid values.";
+        else throw "Vertex attribute " + name + " has some invalid values: " + value;
     }
 
     this.toArray = function(name, array) {

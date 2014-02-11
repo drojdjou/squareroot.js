@@ -6,4 +6,4 @@ git add -u .
 git add .
 git status
 git commit -m "$1"
-git push origin dev
+git push origin gl

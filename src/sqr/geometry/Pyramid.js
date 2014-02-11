@@ -62,12 +62,12 @@ SQR.Pyramid = function(options) {
     geo.refresh = function() {
         var numTris = faces.length;
 
-        vertices.length = 0;
-        normals.length = 0;
-
         for(var i = 0; i < numTris; i++) {
             faces[i].calculateNormal();
         }
+
+        vertices.length = 0;
+        normals.length = 0;
 
         for(var i = 0; i < numTris; i++) {
             faces[i].toArray(SQR.Geometry.VERTEX, vertices);

@@ -1,10 +1,10 @@
 /*
 
 Squareroot.js
-A micro 3d engine for Canvas and CSS
+A micro 3d engine for HTML5
 
-Version 1.1
-Build 60 | Tue Dec 24 22:10:51 2013
+Version 1.2
+Build 68 | Mon Feb 10 16:15:42 2014
 
 Contains requestAnimFrame.js by Paul Irish
 http://paulirish.com/2011/requestanimationframe-for-smart-animating/
