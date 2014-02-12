@@ -137,3 +137,13 @@ SQR.V2.prototype.appendToArray = function(array) {
 SQR.V2.dot = function(a, b) {
     return (a.x * b.x + a.y * b.y)
 }
+
+SQR.V2.distance = function(a, b) {
+    return Math.sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+}
+
+SQR.V2.distanceSqrt = function(a, b) {
+    return (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y);
+}
+
+

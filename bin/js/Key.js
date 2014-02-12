@@ -21,7 +21,9 @@ var Key = (function() {
 	}
 
 	k.up = function(key, callback) {
-
+		document.addEventListener('keyup', function(e) {
+			if(e.keyCode == key.charCodeAt(0)) callback();
+		});
 	}
 
 	k.isDown = function(key) {

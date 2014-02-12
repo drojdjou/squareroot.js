@@ -54,6 +54,7 @@ SQR.Triangle = function(options) {
     }
 
     var valueToArray = function(value, array) {
+        if(!value) return;
         if(value.appendToArray) value.appendToArray(array);
         else if(value instanceof Array) array.push.apply(array, value);
         else if(!isNaN(value * 2)) array.push(value);

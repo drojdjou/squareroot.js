@@ -8,7 +8,7 @@
  * Four points define the first curve, where the last point is considered the endpoint
  *
  * Each additional 2 points define the next curve
- * (the endpoint between 1st and next curve is the midpoint between the two last point of the 1st)
+ * (the endpoint between 1st and next curve is obtained from calculating the midpoint between the two last point of the 1st curve)
  *
  * Cases:
  *

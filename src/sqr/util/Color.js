@@ -3,14 +3,19 @@ SQR.Color = function() {
     var rgb =  new Float32Array([1.0, 1.0, 1.0]);
     var rgba = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
-    var r = 1.0, g = 1.0, b = 1.0;
-    var h = 0.0, s = 1.0, l = 0.5;
+    var r = 0.0, g = 0.0, b = 0.0;
+    var h = 0.0, s = 1.0, l = 0.0;
     var a = 1.0;
 
     this.rgb = function(red, green, blue) {
         if(red != null && red >= 0) this.red(red);
         if(green != null && green >= 0) this.green(green);
         if(blue != null && blue >= 0) this.blue(blue);
+        return this;
+    }
+
+    this.grey = function(greylevel) {
+        this.rgb(greylevel, greylevel, greylevel);
         return this;
     }
 

@@ -2,11 +2,11 @@ SQR.Icosphere = function(options) {
 
     var faces = [], vectors = [];
 
-    var vertices = [], normals = [], colors = [];
+    var vertices = [], normals = [], colors = [], texcoords = [];
 
     var cache = [], cacheIndex = 0;
 
-    var geo = new SQR.Geometry().quickSetup('v3n3c4');
+    var geo = new SQR.Geometry().quickSetup('v3n3c4t2');
     
     var radius;
 
@@ -24,10 +24,91 @@ SQR.Icosphere = function(options) {
         vectors.push(v);
     }
 
+    var texTmp = new SQR.V3();
+    var up = new SQR.V3(0, 1, 0);
+    var forward = new SQR.V3(0, 0, 1);
+
+    var getTexCoord = function(v) {
+
+        var tx, ty;
+        texTmp.copyFrom(v);
+        texTmp.norm();
+
+        // texTmp.norm();
+        // var r = texTmp;
+        // var m = 2.0 * Math.sqrt(r.x * r.x + r.y * r.y + (r.z + 1.0) * (r.z + 1.0));
+        // tx = r.x / m + 0.5;
+        // ty = r.y / m + 0.5;
+
+        // tx = Math.atan2(v.z, v.x) / Math.PI/2;
+        // ty = Math.acos(v.y/radius) / Math.PI;
+        // tx += 0.5;
+
+        tx = 1.0 - (0.5 + Math.atan2(texTmp.z, texTmp.x) / SQR.twoPI);
+        ty = 1.0 - (0.5 - Math.asin(texTmp.y) / Math.PI);
+        // tx = tx * 2 - 1;
+        // tx = Math.abs(tx);
+
+        // console.log(tx);
+
+        // tx = Math.abs(tx);
+
+       // float m;
+       // vec3 r, u;
+       // u = normalize(ecPosition3);
+       // r = reflect(u, normal);
+       // m = 2.0 * sqrt(r.x * r.x + r.y * r.y + (r.z + 1.0) * (r.z + 1.0));
+       // return vec2(r.x / m + 0.5, r.y / m + 0.5);
+
+        // var y = texTmp.y / radius;
+        // texTmp.y = 0;
+        // texTmp.norm();
+        // tx = SQR.V3.dot(texTmp, forward) * 0.5 + 0.5;
+        // if(tx < 0.5) tx *= 0.5;
+        // ty = y * 0.5 + 0.5;
+
+        return new SQR.V2(tx, ty);
+    }
+
     var addFace = function(a, b, c, ca, cb, cc) {
         var f = new SQR.Triangle(options);
         f.setVertices(a, b, c);
         f.setAttribute(SQR.Geometry.COLOR, ca, cb, cc);
+
+        var ta = getTexCoord(a);
+        var tb = getTexCoord(b);
+        var tc = getTexCoord(c);
+
+        var ab = Math.abs(ta.x - tb.x);
+        var bc = Math.abs(tb.x - tc.x);
+        var ca = Math.abs(tc.x - ta.x);
+
+        if(ab + bc + ca > 0.8) {
+
+            // console.log("<o bef: ", ta.x, tb.x, tc.x);
+
+            if(ta.x >= 0.8) ta.x -= 1;
+            if(tb.x >= 0.8) tb.x -= 1;
+            if(tc.x >= 0.8) tc.x -= 1;
+            // console.log(" >o aft: ", ta.x, tb.x, tc.x);
+
+            var ab = Math.abs(ta.x - tb.x);
+            var bc = Math.abs(tb.x - tc.x);
+            var ca = Math.abs(tc.x - ta.x);
+
+            if(ab + bc + ca > 0.5) {
+
+                // console.log(" >>> rec: ", ta.x, tb.x, tc.x);
+
+                if(ta.x >= 0.5) ta.x = 0;
+                if(tb.x >= 0.5) tb.x = 0;
+                if(tc.x >= 0.5) tc.x = 0;
+
+                // console.log(" >>>>>> pos: ", ta.x, tb.x, tc.x)
+            }
+        }
+
+        f.setAttribute(SQR.Geometry.TEXCOORD, ta, tb, tc);
         faces.push(f);
     }
 
@@ -117,6 +198,9 @@ SQR.Icosphere = function(options) {
     }
 
     geo.subdivide = function() {
+
+        // console.log("--- subdivide");
+
         cache[cacheIndex] = {};
         var c = cache[cacheIndex];
 
@@ -155,11 +239,12 @@ SQR.Icosphere = function(options) {
         vertices.length = 0;
         normals.length = 0;
         colors.length = 0;
+        texcoords.length = 0;
 
         var i, f
 
         for(i = 0; i < numTris; i++) {
-            faces[i].calculateNormal();
+            faces[i].calculateNormal(options.perVertexNormals);
         }
 
         for(i = 0; i < numTris; i++) {
@@ -167,11 +252,13 @@ SQR.Icosphere = function(options) {
             f.toArray(SQR.Geometry.VERTEX, vertices);
             f.toArray(SQR.Geometry.NORMAL, normals);
             f.toArray(SQR.Geometry.COLOR, colors);
+            f.toArray(SQR.Geometry.TEXCOORD, texcoords);
         }
 
         geo.data(SQR.Geometry.VERTEX, vertices);
         geo.data(SQR.Geometry.NORMAL, normals);
         geo.data(SQR.Geometry.COLOR, colors);
+        geo.data(SQR.Geometry.TEXCOORD, texcoords);
         
         return geo;
     }  

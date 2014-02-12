@@ -21,7 +21,7 @@ var useTrack = function() {
     sensitivity = 1;
     sound.setVolume(volume);
     sound.setSesitivity(sensitivity);
-    sound.connectTrack('assets/hideseek.mp3');
+    sound.connectTrack('assets/spy.mp3');
 }
 
 if(USEMIC) {
