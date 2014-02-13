@@ -71,6 +71,10 @@ body {
 .menu p:first-of-type {
   margin-top: 30px;
 }
+.menu p.small {
+  color: #808080;
+  font-size: 0.7em;
+}
 .menu ul {
   list-style-type: none;
   padding: 0;

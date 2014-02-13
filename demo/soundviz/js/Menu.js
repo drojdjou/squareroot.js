@@ -87,6 +87,7 @@ var Menu = (function() {
 	track.setAttribute('class', 'selected');
 	effects[0].setAttribute('class', 'selected');
 	btn.style.opacity = 0;
+	btn.style.display = 'none';
 
 	return m;
 
