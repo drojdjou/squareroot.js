@@ -134,16 +134,6 @@ var compositions = [
     ['strechcube', 'scanlines']
 ];
 
-var compositionIndex = -1;
-
-// var next = function() {
-//     compositionIndex += 1;
-//     if(compositionIndex >= compositions.length) compositionIndex = 0;
-//     resetCamera();
-//     visualizer.use(compositions[compositionIndex][0], camera, leap);
-//     effect.use(compositions[compositionIndex][1]);
-// }
-
 var setEffect = function(index) {
     resetCamera();
     visualizer.use(compositions[index][0], camera, leap);

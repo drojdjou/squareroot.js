@@ -12,7 +12,7 @@ var SoundAnalyser = function() {
 
 
 	var isPlaying = false, isUsingMic = false, isTrackLoaded = false, isMicCreated = false;
-	var audioContext, audioBuffer, analyser, microphone, volumeNode;
+	var audioContext, audioElement, analyser, microphone, volumeNode;
 
 	var freqByteData; // bars - bar data is from 0 - 256 in 512 bins. no sound is 0;
 	var timeByteData; // waveform - waveform data is from 0-256 for 512 bins. no sound is 128.
@@ -24,6 +24,7 @@ var SoundAnalyser = function() {
 	var beatLevelUp = 1.05;
 
 	var initContext = function() {
+
 		audioContext = new window.webkitAudioContext();
 
 		analyser = audioContext.createAnalyser();
@@ -59,7 +60,7 @@ var SoundAnalyser = function() {
 
 		if(isPlaying) {
 			source.disconnect(volumeGainNode);
-			source.stop();
+			audioElement.pause();
 		}
 
 		if(!isMicCreated) {
@@ -87,8 +88,6 @@ var SoundAnalyser = function() {
 
 	sa.connectTrack = function(path) {
 
-		console.log("connectTrack", isPlaying, isUsingMic);
-
 		if(isPlaying) return;
 
 		if(isUsingMic) {
@@ -97,41 +96,21 @@ var SoundAnalyser = function() {
 
 		isUsingMic = false;
 		
-		if(isTrackLoaded) {
-			source = audioContext.createBufferSource();
-			source.buffer = audioBuffer;
-			source.loop = true;
-			source.start();
-			source.connect(volumeGainNode);
-			isPlaying = true;
-			isTrackLoaded = true;
-			beatStart = new Date().getTime();
-		} else {
-			sa.load(path);
+		if(!isTrackLoaded) {
+			audioElement = document.createElement('audio');
+			audioElement.src = path;
+			audioElement.loop = true;
+			audioElement.play();
+			source = audioContext.createMediaElementSource(audioElement);
 		}
-	}
 
-	sa.load = function(path) {
+		source.connect(volumeGainNode);
 
-		var request = new XMLHttpRequest();
-		request.open("GET", path, true);
-		request.responseType = "arraybuffer";
+		if(isTrackLoaded) {
+			audioElement.play();
+		}
 
-		request.onload = function() {
-			audioBuffer = audioContext.createBuffer(request.response, false);
-			source = audioContext.createBufferSource();
-			source.buffer = audioBuffer;
-			source.loop = true;
-			source.start();
-			source.connect(volumeGainNode);
-			isPlaying = true;
-			isTrackLoaded = true;
-			beatStart = new Date().getTime();
-		};
-
-		request.send();
-
-		return sa;
+		isTrackLoaded = true;
 	}
 
 	sa.update = function() {
