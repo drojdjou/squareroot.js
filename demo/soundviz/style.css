@@ -8,6 +8,10 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 #gl-canvas {
   position: absolute;
@@ -43,14 +47,13 @@ body {
   top: 0px;
   left: 0px;
   background-color: rgba(0, 0, 0, 0.3);
-  width: 200px;
-  height: 100%;
+  width: 160px;
   -webkit-transition: all 0.2s ease;
 }
 .menu .close {
   position: absolute;
-  right: 14px;
-  top: 14px;
+  right: 10px;
+  top: 10px;
   font-size: 0.8em;
 }
 .menu .close:hover {
@@ -63,31 +66,36 @@ body {
   letter-spacing: 0.02em;
   font-size: 0.8em;
   text-transform: lowercase;
+  cursor: default;
 }
 .menu p:first-of-type {
-  margin-top: 40px;
+  margin-top: 30px;
 }
 .menu ul {
   list-style-type: none;
   padding: 0;
-  margin: 6px 0 20px 0;
+  margin: 6px 0 6px 0;
 }
 .menu li {
+  position: relative;
   text-transform: lowercase;
-  padding: 7px 0px 7px 10px;
-  font-size: 0.9em;
-  font-weight: bold;
+  padding: 4px 0px 4px 10px;
+  font-size: 0.8em;
   letter-spacing: -0.01em;
-  text-indent: 1em;
+  text-indent: 0.7em;
+  cursor: default;
 }
-.menu li.selected {
-  background-color: #fff;
-  color: #000;
-  cursor: pointer;
+.menu li.selected:before {
+  content: ' ';
+  position: absolute;
+  width: 8px;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: #ffffff;
 }
 .menu li:not(.selected):hover {
-  background-color: #aaa;
-  color: #000;
+  background-color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
 }
 .stats {
