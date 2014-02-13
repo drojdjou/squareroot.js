@@ -39,10 +39,19 @@ var Menu = (function() {
 		btn.style.opacity = 0;
 		menu.style.opacity = 1;
 		translateX(menu, 0);
+
+		setTimeout(function() {
+			btn.style.display = 'none';
+		}, 200);
 	});
 
 	close.addEventListener('click', function() {
-		btn.style.opacity = 1;
+		btn.style.display = 'block';
+
+		setTimeout(function() {
+			btn.style.opacity = 1;
+		}, 1);
+
 		menu.style.opacity = 0;
 		translateX(menu, -30);
 	});

@@ -32,7 +32,7 @@ body {
   color: #c8c8c8;
   background-color: rgba(0, 0, 0, 0.3);
   padding: 8px 18px 13px 13px;
-  -webkit-transition: opacity 0.2s ease;
+  -webkit-transition: all 0.2s ease;
 }
 .menu-button span {
   font-size: 1.2em;
