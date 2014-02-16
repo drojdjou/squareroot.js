@@ -1,6 +1,6 @@
 // Show stats and the mini visualizer?
-var DEBUG = true;
-// var DEBUG = false; 
+// var DEBUG = true;
+var DEBUG = false; 
 
 // Start with mic by default? 
 var USEMIC = false;
