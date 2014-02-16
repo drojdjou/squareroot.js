@@ -11,7 +11,7 @@ var SoundAnalyser = function() {
 	sa.level = 0;
 
 
-	var isPlaying = false, isUsingMic = false, isTrackLoaded = false, isMicCreated = false;
+	var isPlaying = false, isUsingMic = false, isMicCreated = false;
 	var audioContext, audioElement, analyser, microphone, volumeNode;
 
 	var freqByteData; // bars - bar data is from 0 - 256 in 512 bins. no sound is 0;
@@ -96,21 +96,17 @@ var SoundAnalyser = function() {
 
 		isUsingMic = false;
 		
-		if(!isTrackLoaded) {
+		if(!isPlaying) {
 			audioElement = document.createElement('audio');
 			audioElement.src = path;
 			audioElement.loop = true;
-			audioElement.play();
 			source = audioContext.createMediaElementSource(audioElement);
 		}
 
 		source.connect(volumeGainNode);
+		audioElement.play();
 
-		if(isTrackLoaded) {
-			audioElement.play();
-		}
-
-		isTrackLoaded = true;
+		isPlaying = true;
 	}
 
 	sa.update = function() {
