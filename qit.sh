@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# tools/build.py
-# ls -l build/squareroot-min.js
+echo $#
+
+if [[ $# > 1 && $2 = "b" ]] ; then
+	tools/build.py 
+	ls -l build/squareroot-min.js
+fi
+
 git add -u .
 git add .
 git status
