@@ -1,18 +1,31 @@
 "use strict";
 
 /**
- * @class
- *
- * Defines the namespace for all classes and a few useful variables
- */
+* @class
+*
+* Defines the namespace for all classes and a few useful variables.
+* <br><br>
+* Built on Tue Feb 18 08:57:55 2014
+*
+* @version 78
+*/
 var SQR = (function() {
 
     if(typeof window.Float32Array == "undefined") window.Float32Array = window.Array;
 
-    return {
-        DYNAMIC_TRANSFORM: 0,
-        STATIC_TRANSFORM: 1,
+    // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+    window.requestAnimFrame = (function() {
+        return  window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+    })();
 
+    return {
         /**
          * Shorthand for Math.PI * 2
          */
@@ -31,13 +44,9 @@ var SQR = (function() {
         /**
          * Shorthand for 180 / Math.PI
          */
-        rad2deg: 180 / Math.PI,
-
-        supportsCss3d: false,
-        usePreserve3d: false
+        rad2deg: 180 / Math.PI
     }
 
 })();
 
-// Built on Mon Feb 17 13:28:01 2014
-SQR.BUILD = 72;
+SQR.BUILD = 78;

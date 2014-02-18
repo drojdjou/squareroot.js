@@ -33,11 +33,13 @@ def incrementVersion():
 
 	for line in fileinput.input('src/SQR.js', inplace=1):	
 		if 'SQR.BUILD = ' in line:
-			buildVersion = int(line[-4:-2])
-			buildVersion += 1
+			buildVersion = int(line[-4:-2]) + 1
 			print 'SQR.BUILD = %i;' % buildVersion
-		elif '// Built on' in line:
-			print '// Built on %s' % now
+		elif '* Built on' in line:
+			print '* Built on %s' % now
+		elif '* @version' in line:
+			buildVersion = int(line[-3:-1]) + 1
+			print '* @version %i' % buildVersion
 		else:
 			print line,
 

@@ -52,14 +52,8 @@ if(__name__ == '__main__'):
 	if cwd == "tools":
 		os.chdir('../')
 	debug = len(sys.argv) > 1 and sys.argv[1] == "debug"
-	parseDemos(debug, "bin/2d")
-	parseDemos(debug, "bin/3d")
-	parseDemos(debug, "bin/curves")
-	parseDemos(debug, "bin/noise")
-	parseDemos(debug, "bin/sandbox")
-	parseDemos(debug, "bin/anim")
-	parseDemos(debug, "bin/gl")
 	
+	parseDemos(debug, "bin/gl")
 	parseDemos(debug, "demo/soundviz")
 
 

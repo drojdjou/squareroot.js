@@ -3,6 +3,7 @@
 echo $#
 
 if [[ $# > 1 && $2 = "b" ]] ; then
+	./tools/demotags.py
 	tools/build.py 
 	ls -l build/squareroot-min.js
 fi
