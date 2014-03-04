@@ -18,6 +18,12 @@
         left: 0px;
     }
 
+    #stats {
+        position: absolute; 
+        top: 0px;
+        left: 0px;
+    }
+
 </style>
 
 <script type="text/javascript" src="../../lib/Stats.js"></script>
@@ -88,12 +94,9 @@
 <script type="text/javascript">
 
     var stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
     document.body.appendChild( stats.domElement );
 
-	var engine = new SQR.SquarerootGL(document.getElementById('gl-canvas'));
+    var engine = new SQR.SquarerootGL(document.getElementById('gl-canvas'));
     engine.setSize(window.innerWidth, window.innerHeight);
     engine.setClearColor(0, 0, 0, 1);
 
@@ -101,65 +104,58 @@
     projection.perspective(45, window.innerWidth/window.innerHeight, 1, 10000);
     engine.setProjection(projection);
 
-    var shader = engine.createShader();
-    
-    var root = new SQR.Transform();    
-
-    var numCubes = 7700; // 7700 runs @ 22-23 fps in Chrome
-    var cubeGeo = new SQR.Cube(50, 50, 50);
-    var v = new SQR.V3();
-    var cubeRen = engine.createRenderer(shader);
-
-    for(var i = 0; i < numCubes; i++) {
-        var cube = new SQR.Transform();
-        cube.geometry = cubeGeo;
-        cube.renderer = cubeRen;
-        cube.positioningMode = 1;
-
-        cube.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-
-        v.random().norm().mul(500 + Math.random() * 6000);
-
-        cube.position.copyFrom(v);
-
-        root.add(cube);
-    }
-
-
+    var root = new SQR.Transform();
 
     var camera = new SQR.Transform();
-    camera.position.z = 2000;
+    camera.position.z = 600;
     root.add(camera);
-    
 
-    var lt = 0;
-    var cx = Math.PI / 2;
+    var shader = engine.createShader();
 
-    var tx = 0, ty = 0;
+    var curve = new SQR.QuadraticBezier(
+        new SQR.V3(-100, 0, 100),
+        new SQR.V3(-100, 100, -100),
+        new SQR.V3( 100,-100, -100),
+        new SQR.V3( 100, 0, 100)
+    );
 
-    document.addEventListener('mousemove', function(e) {
-        tx = (e.pageX - window.innerWidth * 0.5) * 5;
-        ty = (e.pageY - window.innerHeight * 0.5) * 5;
-    });
+    var p1
 
-    var c = 3;
+    var spline = new SQR.Spline(
+    ).add(
+    );
+
+    var ribbon = new SQR.Transform();
+    ribbon.renderer = engine.createRenderer(shader);
+    ribbon.renderer.renderMode = SQR.GL.LINE_STRIP;
+    ribbon.renderer.u.uColor = new SQR.Color().rgb(0.0, 1.0, 0.0);
+    ribbon.geometry = new SQR.Ribbon(curve).fromPos();
+
+    var ribbonVelocity = new SQR.Transform();
+    ribbonVelocity.renderer = engine.createRenderer(shader);
+    ribbonVelocity.renderer.renderMode = SQR.GL.LINES;
+    ribbonVelocity.renderer.u.uColor = new SQR.Color().rgb(1.0, 0.0, 0.0);
+    ribbonVelocity.geometry = new SQR.Ribbon(curve).fromNormal();
+    root.add(ribbonVelocity);
+    root.add(ribbon);
 
     function render() {
         stats.begin();
-
-        // if(--c >= 0) 
         requestAnimFrame(render);
 
-        camera.position.x += (tx - camera.position.x) * 0.1;
-        camera.position.y += (ty - camera.position.y) * 0.1;
-        camera.lookAt(root);
+        SQR.Time.tick();
+
+        ribbon.rotation.y += 0.1 * SQR.Time.deltaTime;
+        ribbonVelocity.rotation.y += 0.1 * SQR.Time.deltaTime;
+
+        // ribbon.rotation.x += 0.8 * SQR.Time.deltaTime;
+        // ribbonVelocity.rotation.x += 0.8 * SQR.Time.deltaTime;
 
         engine.render(root, camera);
-
         stats.end();
     }
 
-    shader.load("glsl/002-cube-perf.glsl", render);
+    shader.load("glsl/003-ribbon-line.glsl", render);
     // render();
 
 </script>

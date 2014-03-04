@@ -13,9 +13,13 @@ SQR.GeometryNew = function() {
 		if(that.faces.length > 0) refreshFaces();
 		else refreshVertices();
 		layout = that.vertices[0].layout;
+
+		console.log("geo.refresh()");
 	}
 
 	this.setupBuffers = function(gl, shader, usage) {
+
+		if(!data) that.refresh();
 
 		buffer = buffer || gl.createBuffer();
 

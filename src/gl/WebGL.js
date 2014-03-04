@@ -14,10 +14,7 @@ SQR.WebGL = function(gl, defaultShader) {
 
 	this.u = {};
 
-	var __tmp_buf;
-
 	var setAttributeData = function(geo, shader) {
-		geo.refresh();
 		geo.setupBuffers(gl, shader, that.usage);
 		geo.dirty = false;
 	}
@@ -76,7 +73,7 @@ SQR.WebGL = function(gl, defaultShader) {
 
 		setUniforms(transform, uniforms, shader);
 
-		if(this.renderMode == gl.LINES) gl.lineWidth(this.lineWidth || 1);
+		gl.lineWidth(this.lineWidth || 1);
 
 		if(geo.elements) {
 			// gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shader.elementBuffer); // Prob not needed

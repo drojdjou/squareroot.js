@@ -3,8 +3,8 @@
  *  @returns geometry {SQR.Geometry}
  */
 SQR.Cube = function(w, h, d) {
-
     var that = this;
+    SQR.GeometryNew.call(this);
 
     var of = new SQR.V3();
     this.corners = {};
