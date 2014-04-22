@@ -25,14 +25,20 @@ var SoundAnalyser = function() {
 
 	var initContext = function() {
 
-		audioContext = new window.webkitAudioContext();
+		if(!!window.webkitAudioContext) audioContext = new webkitAudioContext();
+		else if(!!window.AudioContext) audioContext = new AudioContext();
+		else console.error("No Web Audio!");
+
+		// console.log(audioContext);
 
 		analyser = audioContext.createAnalyser();
 		analyser.smoothingTimeConstant = 0;//0.8; // 0<->1 // 0 is no time smoothing
 		analyser.fftSize = 1024;
+
+		// console.log(analyser);
 		
-		volumeNode = audioContext.createGainNode();
-		volumeGainNode = audioContext.createGainNode();
+		volumeNode = audioContext.createGain();
+		volumeGainNode = audioContext.createGain();
 
 		volumeNode.connect(audioContext.destination);
 		analyser.connect(volumeNode);
