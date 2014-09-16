@@ -3,6 +3,7 @@
    "description": "Web Playground by Bartek Drozdz",
    "version": "0.0.1",
    "dependencies": {
-      "jsdoc": "<=3.3.0"
+      "jsdoc": "<=3.3.0",
+      "uglify-js":"*"
    }
 }
