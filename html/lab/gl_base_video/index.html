@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/namespace.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+
+<style type="text/css">
+
+    body {
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+    }
+
+    video {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 10;
+        width: 200px;
+        height: 200px;
+        border: 1px dashed white;
+    }
+
+    #fs {
+        position: absolute;
+        z-index: 20;
+        top: 0;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 5px;
+        margin: 5px;
+        background-color: transparent;
+        background-image: url(../../assets/expand.png);
+        background-size: 16px 16px;
+        padding: 2px;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+<div id="fs"></div>
+
+<script type="text/javascript">
+
+    var Interactor = function () {
+
+        var that = this;
+        // Raw mouse coordinates
+        this.pageX = 0;
+        this.pageY = 0;
+
+        // Normalized mouse coordinates [ 0 to 1 ]
+        this.normX = 0;
+        this.normY = 0;
+
+        // Normalized and centered mouse coodinates [ -1 to 1 ]
+        this.centerX = 0;
+        this.centerY = 0;
+
+        var mousemove = function(e) {
+
+            that.pageX = (e.targetTouches) ? e.targetTouches[0].pageX : e.pageX;
+            that.pageY = (e.targetTouches) ? e.targetTouches[0].pageY : e.pageY;
+
+            that.normX = that.pageX / window.innerWidth;
+            that.normY = that.pageY / window.innerHeight;
+
+            that.centerX = that.normX * 2 - 1;
+            that.centerY = that.normY * 2 - 1;
+        }
+
+        this.destroy = function() {
+            document.removeEventListener('mousemove', mousemove, null);
+        }
+
+        document.addEventListener('mousemove', mousemove, null);
+        document.addEventListener('touchmove', mousemove, null);
+    }
+
+    var interactor = new Interactor();
+
+    navigator.getUserMedia  = navigator.getUserMedia ||
+                                navigator.webkitGetUserMedia ||
+                                navigator.mozGetUserMedia ||
+                                navigator.msGetUserMedia;
+
+	var cnv = document.querySelector('#gl-canvas');
+    cnv.width = window.innerWidth;
+    cnv.height = window.innerHeight;
+
+    var gl = cnv.getContext("experimental-webgl");
+
+    var fs = document.querySelector('#fs');
+
+    var isFullScreen = false;
+
+    fs.addEventListener('click', function() {
+        console.log('isFullScreen', isFullScreen);
+
+        if(!isFullScreen) {
+            document.body.webkitRequestFullscreen();
+            isFullScreen = true;
+        } else {
+            document.webkitExitFullscreen();
+            isFullScreen = false;
+        }
+        
+    });
+
+    window.addEventListener('resize', function() {
+        cnv.width = window.innerWidth;
+        cnv.height = window.innerHeight;
+        gl.viewport(0, 0, cnv.width, cnv.height);
+    });
+
+	
+	gl.viewport(0, 0, cnv.width, cnv.height);
+	gl.clearColor(0, 0, 0, 1);
+	gl.clear(gl.COLOR_BUFFER_BIT);
+
+    var texture = gl.createTexture();
+    var program = gl.createProgram();
+    var startTime = new Date().getTime() / 1000;
+
+    var onShader = function(vertex, fragment) {
+        var vs = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vs, vertex);
+        gl.compileShader(vs);
+         
+        var fs = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fs, fragment);
+        gl.compileShader(fs);
+         
+        
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+
+        if(!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(vs));
+        if(!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(fs));
+        if(!gl.getProgramParameter(program, gl.LINK_STATUS)) console.error("SHADER LINKING ERROR", gl.getProgramInfoLog(program));
+
+        gl.useProgram(program);
+
+        program.aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");
+        program.aTextureCoord = gl.getAttribLocation(program, "aTextureCoord");
+        gl.enableVertexAttribArray(program.aVertexPosition);
+        gl.enableVertexAttribArray(program.aTextureCoord);
+
+
+        // uniform vec3 colorOffset;
+        // uniform vec2 mousePos;
+        // uniform float uTime;
+        program.uTexture = gl.getUniformLocation(program, "uTexture");
+        program.colorOffset = gl.getUniformLocation(program, "colorOffset");
+        program.uTime = gl.getUniformLocation(program, "uTime");
+        program.mousePos = gl.getUniformLocation(program, "mousePos");
+
+        var aspect = 1;//cnv.width / cnv.height;
+
+        var vertices = new Float32Array([
+
+        //  position           uv     
+            -1.0, 1.0*aspect,  0.1, 1,
+             1.0, 1.0*aspect,  0.9, 1,
+             1.0,-1.0*aspect,  0.9, 0,
+
+            -1.0, 1.0*aspect,  0.1, 1,
+             1.0,-1.0*aspect,  0.9, 0, 
+            -1.0,-1.0*aspect,  0.1, 0
+
+        ]);
+
+        buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        
+
+        // size of the position attribute (x,y)
+        posSize = 2;
+        // size of the color attribute (r,g,b)
+        uvSize = 2;
+        // total size of the stride (*4 because stride and offset below need to be expressed in bytes)
+        stride = (posSize + uvSize) * 4;
+        // offset of the position attribute (0, but the variable is here for clarity)
+        posOffset = 0;
+        // offset of the color
+        uvOffset = posSize * 4;
+        // pffset of the unused part
+
+        gl.vertexAttribPointer(program.aVertexPosition, posSize, gl.FLOAT, false, stride, posOffset);
+        gl.vertexAttribPointer(program.aTextureCoord, uvSize, gl.FLOAT, false, stride, uvOffset);
+
+        render();
+    }
+
+    var render = function() {
+
+        requestAnimationFrame(render);
+
+        // number of items in the array (6 vertices in this case)
+        numItems = 6;
+        
+
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+     
+
+        gl.activeTexture(33984 + 1);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(program.uTexture, 1);
+
+        var t = (new Date().getTime() / 1000) - startTime;
+
+        // uniform vec3 colorOffset;
+        // uniform vec2 mousePos;
+        // uniform float uTime;
+        gl.uniform3fv(program.colorOffset, [-0.02, 0.00, 0.02]);        
+        gl.uniform2fv(program.mousePos, [interactor.centerX * 2, interactor.centerY * 2]);             
+        gl.uniform1f(program.uTime, [t]);        
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        
+
+        gl.drawArrays(gl.TRIANGLES, 0, numItems);
+    };
+
+    var video = document.createElement('video');
+    video.autoplay = true;
+    // document.body.appendChild(video);
+
+    var onMedia = function(stream) {
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
+        video.addEventListener('canplaythrough', setupTexture, false);
+    }
+
+    var setupTexture = function() {
+
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+
+        SQR.Loader.loadGLSL('badreception.glsl', onShader);
+    };
+
+    var options = {
+        audio: false,
+        video: {
+        }
+    };
+
+    navigator.getUserMedia(options, onMedia, function() { console.log('getUserMedia error') });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

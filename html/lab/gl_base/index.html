@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Geometry.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    var onShader = function(vertex, fragment) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0, 0, 1);
+
+        var geo = SQR.Geometry().setGL(ctx.gl);
+
+        var aspect = w / h;
+
+        geo.attribute('aPosition', 2)
+            .add( -100,  100 )
+            .add(  100,  100 )
+            .add(  100, -100 )
+            .add( -100,  100 )
+            .add(  100, -100 )
+            .add( -100, -100 );
+
+         geo.attribute('aColor', 3)
+            .add( 1, 0, 0 )
+            .add( 0, 1, 0 )
+            .add( 1, 0, 0 )
+            .add( 0, 0, 1 )
+            .add( 0, 1, 1 )
+            .add( 1, 0, 1 );
+
+        geo.createBuffer();
+        
+        var shader = SQR.Shader(vertex, fragment)
+            .setGL(ctx.gl)
+            .compile()
+            .inspect()
+            .enableAttributes()
+            .attribPointers(geo)
+            .use();
+
+        var mat2 = new SQR.Matrix2D();
+        var mat4 = new SQR.Matrix44();
+        var proj = new SQR.ProjectionMatrix().screenPixels2d();
+
+        shader.setUniform('uColor', new Float32Array([1.0, 0.0, 0.0, 1.0]));
+        // shader.setUniform('uProjection', proj.data);
+        
+        var r = 0, s = 0;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            // mat2.setTRS(w/2, h/2, r, Math.sin(s), Math.sin(s));
+            // mat2.identity().translate(w/2, h/2).rotate(r);
+            // shader.setUniform('uMatrix', mat2.data);
+
+            mat4.identity().multiply(proj).translate(w/2, h/2, 0).rotate(0, 0, r);
+            shader.setUniform('uConcatMatrix', mat4.data);
+
+            ctx.clear();
+            geo.draw();
+            r += 0.01;
+        }
+
+        render();
+    }
+
+
+    SQR.Loader.loadGLSL("shader.glsl", onShader);
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

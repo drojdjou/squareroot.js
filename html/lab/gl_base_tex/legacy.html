@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+
+<style type="text/css">
+
+    body {
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    var w = window.innerWidth, h = window.innerHeight;
+    var ctx = SQR.Context('#gl-canvas').create().size(w, h).clearColor(0, 0, 0, 1);
+	var gl = ctx.gl;
+	
+    var texture = gl.createTexture();
+
+    var onShader = function(vertex, fragment) {
+        var vs = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vs, vertex);
+        gl.compileShader(vs);
+         
+        var fs = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fs, fragment);
+        gl.compileShader(fs);
+         
+        var program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+
+        if(!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(vs));
+        if(!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(fs));
+        if(!gl.getProgramParameter(program, gl.LINK_STATUS)) console.error("SHADER LINKING ERROR", gl.getProgramInfoLog(program));
+
+        program.aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");
+        program.aTextureCoord = gl.getAttribLocation(program, "aTextureCoord");
+        gl.enableVertexAttribArray(program.aVertexPosition);
+        gl.enableVertexAttribArray(program.aTextureCoord);
+
+        var aspect = w / h;
+
+        var vertices = new Float32Array([
+
+        //  position           uv     
+            -0.5, 0.5*aspect,  0.0, 1.0,
+             0.5, 0.5*aspect,  1.0, 1.0,
+             0.5,-0.5*aspect,  1.0, 0.0,
+
+            -0.5, 0.5*aspect,  0.0, 1.0,
+             0.5,-0.5*aspect,  1.0, 0.0, 
+            -0.5,-0.5*aspect,  0.0, 0.0
+
+        ]);
+
+        buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        // size of the position attribute (x,y)
+        posSize = 2;
+        // size of the color attribute (r,g,b)
+        uvSize = 2;
+        // number of items in the array (6 vertices in this case)
+        numItems = 6;
+        // total size of the stride (*4 because stride and offset below need to be expressed in bytes)
+        stride = (posSize + uvSize) * 4;
+        // offset of the position attribute (0, but the variable is here for clarity)
+        posOffset = 0;
+        // offset of the color
+        uvOffset = posSize * 4;
+        // pffset of the unused part
+
+        gl.useProgram(program);
+     
+        program.uTexture = gl.getUniformLocation(program, "uTexture");
+        gl.activeTexture(33984 + 1);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(program.uTexture, 1);
+        
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        gl.vertexAttribPointer(program.aVertexPosition, posSize, gl.FLOAT, false, stride, posOffset);
+        gl.vertexAttribPointer(program.aTextureCoord, uvSize, gl.FLOAT, false, stride, uvOffset);
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, numItems);
+    };
+
+    var image = new Image();
+
+    image.addEventListener('load', function() {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+
+        SQR.Loader.loadGLSL('shader.glsl', onShader);
+    });
+
+    image.src = '../../assets/monument.jpg';
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

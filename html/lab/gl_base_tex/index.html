@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl texture boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Geometry.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<style type="text/css">
+
+    body {
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    var w = window.innerWidth, h = window.innerHeight;
+
+    var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0, 0, 1);
+
+    var onShader = function(vertex, fragment) {
+
+        
+
+        
+
+        var geo = SQR.Geometry().setGL(ctx.gl);
+
+        var aspect = w / h;
+
+        geo.attribute('aPosition', 2)
+            .add( -100,  100 )
+            .add(  100,  100 )
+            .add(  100, -100 )
+            .add( -100,  100 )
+            .add(  100, -100 )
+            .add( -100, -100 );
+
+         geo.attribute('aUV', 2)
+            .add( 0, 1 )
+            .add( 1, 1 )
+            .add( 1, 0 )
+            .add( 0, 1 )
+            .add( 1, 0 )
+            .add( 0, 0 );
+
+        geo.createBuffer();
+        
+        var shader = SQR.Shader(vertex, fragment)
+            .setGL(ctx.gl)
+            .compile()
+            .inspect()
+            .enableAttributes()
+            .attribPointers(geo)
+            .use();
+
+        var mat = new SQR.Matrix2D();
+        var proj = new SQR.ProjectionMatrix().screenPixels2d();
+
+        var texture;
+        SQR.Loader.loadImage('../../assets/monument.jpg', function(img) {
+            texture = SQR.Texture().setGL(ctx.gl).source(img);
+            shader.setUniform('uTexture', texture);
+        })
+
+        shader.setUniform('uProjection', proj.data);
+        
+
+        var r = 0, s = 0;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            mat.setTRS(w/2, h/2, r, Math.sin(s), Math.sin(s));
+            // mat.identity().translate(w/2, h/2).rotate(r);
+
+            shader.setUniform('uMatrix', mat.data);
+            ctx.clear();
+            geo.draw();
+            r += 0.05;
+            s += 0.02;
+        }
+
+        render();
+    }
+
+    SQR.Loader.loadGLSL('shader.glsl', onShader);
+
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

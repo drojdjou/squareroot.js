@@ -1,0 +1,28 @@
+body {
+    overflow: hidden;
+    background-color: #000;
+    color: #fff;
+    font-family: monospace;
+    margin: 15px;
+}
+
+canvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

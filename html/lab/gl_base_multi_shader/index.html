@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>basic multiple shader</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Geometry.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    var init = function(shaders) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0, 0, 1);
+
+        var mat2 = new SQR.Matrix2D();
+        var mat4 = new SQR.Matrix44();
+        var proj = new SQR.ProjectionMatrix().screenPixels2d();
+
+        var square = SQR.Geometry().setGL(ctx.gl);
+
+        square.attribute('aPosition', 2)
+            .add( -100,  100 )
+            .add(  100,  100 )
+            .add(  100, -100 )
+            .add( -100,  100 )
+            .add(  100, -100 )
+            .add( -100, -100 );
+
+         square.attribute('aColor', 3)
+            .add( 1, 0, 0 )
+            .add( 0, 1, 0 )
+            .add( 0, 0, 1 )
+            .add( 0, 0, 1 )
+            .add( 0, 1, 0 )
+            .add( 1, 0, 0 );
+
+        square.createBuffer();
+
+        var triangle = SQR.Geometry().setGL(ctx.gl);
+
+        triangle.attribute('aColor2', 4)
+            .add( 1, 0, 0, 1 )
+            .add( 0, 1, 0, 1 )
+            .add( 1, 0, 1, 1 );
+
+        triangle.attribute('aPosition2', 2)
+            .add(    0,    0 )
+            .add(  100,  100 )
+            .add(  100, -100 );
+
+        triangle.createBuffer();
+
+        triangle.bind();
+        var blueShader = SQR.Shader(shaders['blue.glsl'].vertex, shaders['blue.glsl'].fragment)
+            .setGL(ctx.gl)
+            .compile()
+            .inspect()
+            .enableAttributes();
+        
+        square.bind();
+        var redShader = SQR.Shader(shaders['red.glsl'].vertex, shaders['red.glsl'].fragment)
+            .setGL(ctx.gl)
+            .compile()
+            .inspect()
+            .enableAttributes();
+
+
+        redShader.use().setUniform('uColor', new Float32Array([1, 0, 0, 1]));
+        blueShader.use().setUniform('uColor', new Float32Array([0, 0, 1, 1]));
+
+        var r = 0;
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+
+
+
+            triangle.bind();
+            mat4.identity().multiply(proj).translate(w/4*3, h/2, 0).rotate(0, 0, r);
+            blueShader.use().setUniform('uConcatMatrix', mat4.data).attribPointers(triangle);
+            triangle.draw();
+            
+            square.bind();
+            mat4.identity().multiply(proj).translate(w/4*1, h/2, 0).rotate(0, 0, r);
+            redShader.use().setUniform('uConcatMatrix', mat4.data).attribPointers(square);
+            square.draw();
+
+            
+
+            r += 0.01;
+        }
+
+        render();
+    }
+
+
+    SQR.Loader.loadShaders(['red.glsl', 'blue.glsl'], init);
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,8 +1,0 @@
-{
-   "name": "soundviz",
-   "description": "soundviz",
-   "version": "0.0.1",
-   "dependencies": {
-      "uglify-js":"*"
-   }
-}

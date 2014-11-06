@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl multiple draw calls brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/namespace.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+
+<style type="text/css">
+
+    body {
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	var cnv = document.getElementById('gl-canvas');
+    cnv.width = window.innerWidth;
+    cnv.height = window.innerHeight;
+
+	var gl = cnv.getContext("experimental-webgl", { antialias: true });
+	gl.viewport(0, 0, cnv.width, cnv.height);
+	
+    SQR.Loader.loadGLSL("shader.glsl", function(vertex, fragment) {
+        var vs = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vs, vertex);
+        gl.compileShader(vs);
+         
+        var fs = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fs, fragment);
+        gl.compileShader(fs);
+         
+        var program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+
+        if(!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(vs));
+        if(!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) console.error("SHADER COMPILE ERROR", gl.getShaderInfoLog(fs));
+        if(!gl.getProgramParameter(program, gl.LINK_STATUS)) console.error("SHADER LINKING ERROR", gl.getProgramInfoLog(program));
+
+        program.aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");
+        program.aVertexColor = gl.getAttribLocation(program, "aVertexColor");
+        gl.enableVertexAttribArray(program.aVertexPosition);
+        gl.enableVertexAttribArray(program.aVertexColor);
+
+        var aspect = cnv.width / cnv.height;
+
+        var size = 0.005;
+
+        var vertices = new Float32Array(30), offset = 0;
+
+        var addVertex = function(x, y) {
+            vertices.set([x, y, Math.random(), Math.random(), Math.random()], offset);
+            offset += 5;
+        }
+
+        var changeColor = function(pos) {
+            vertices.set([Math.random() * 0.1, Math.random() * 0.1, Math.random() * 0.1], pos * 5 + 2);
+        }
+      
+        addVertex(-size, size*aspect);
+        addVertex(size, size*aspect);
+        addVertex(size,-size*aspect);
+
+        addVertex(-size, size*aspect);
+        addVertex(size,-size*aspect);
+        addVertex(-size,-size*aspect);
+
+        buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
+
+        // size of the position attribute (x,y)
+        posSize = 2;
+        // size of the color attribute (r,g,b)
+        colorSize = 3;
+        // number of items in the array (6 vertices in this case)
+        numItems = 6;
+        // total size of the stride (*4 because stride and offset below need to be expressed in bytes)
+        stride = (posSize + colorSize) * 4;
+        // offset of the position attribute (0, but the variable is here for clarity)
+        posOffset = 0;
+        // offset of the color
+        colorOffset = posSize * 4;
+        // pffset of the unused part
+        unusedOffset = (posSize + colorSize) * 4;
+
+        gl.useProgram(program);
+     
+        program.uColor = gl.getUniformLocation(program, "uColor");
+        program.uTranslate = gl.getUniformLocation(program, "uTranslate");
+
+        var positions = [];
+
+        // 12000 = 60FPS on Chrome
+        var numDrawCalls = 12000;
+
+        for(var i = 0; i < numDrawCalls; i++) {
+            var p = new Float32Array([Math.random() * 2 - 1, Math.random() * 2 - 1, 0.001 + Math.random() * 0.002]);
+            positions.push(p);
+        }
+
+        gl.uniform4fv(program.uColor, [1.0, 0.0, 0.0, 1.0]);
+        // gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.vertexAttribPointer(program.aVertexPosition, posSize, gl.FLOAT, false, stride, posOffset);
+        gl.vertexAttribPointer(program.aVertexColor, colorSize, gl.FLOAT, false, stride, colorOffset);
+
+        var xy = [], c = 0;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            changeColor(0);
+            changeColor(1);
+            changeColor(2);
+            changeColor(3);
+            changeColor(4);
+            changeColor(5);
+
+            // gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
+
+            
+            for(var i = 0; i < numDrawCalls; i++) {
+                positions[i][0] += positions[i][2];
+                if(positions[i][0] > 1) positions[i][0] = -1;
+                gl.uniform3fv(program.uTranslate, positions[i]);
+                gl.drawArrays(gl.TRIANGLES, 0, numItems);
+            }
+        }
+
+        render();
+
+
+        
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
