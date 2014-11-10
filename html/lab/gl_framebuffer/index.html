@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Triangle.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        'normal2color.glsl',
+        'shader.glsl',
+        '../../assets/sanfran.jpg'
+    ], function(assets) {
+
+        // var w = window.innerWidth, h = window.innerHeight;
+        var w = 512, h = 512;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h)
+            .clearColor(0, 0, 0, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+
+        var framebuffer1 = new SQR.FrameBuffer(w, h);
+        var framebuffer2 = new SQR.FrameBuffer(w, h);
+
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        camera.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+        camera.position.z = 30;
+        root.add(camera);
+
+        var buffer = SQR.Primitives.createCube(20, 20, 20).update();
+        var shader = SQR.Shader(assets['shader.glsl']).use().attribPointers(buffer);
+        var texture = SQR.Texture(assets['../../assets/sanfran.jpg']);
+
+        var cube = new SQR.Transform();
+        cube.buffer = buffer;
+        cube.shader = shader;
+        root.add(cube);
+
+        var my = 0, mx = 0, tx = 0, ty = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+
+
+            cube.shader.setUniform('uImage', texture);
+
+            var fa, fb;
+
+            var numPasses = 200;
+
+            for(var i = 0; i < numPasses; i++) {
+                fa = (i % 2 == 0) ? framebuffer1 : framebuffer2;
+                fb = (i % 2 == 0) ? framebuffer2 : framebuffer1;
+                fb.bind();
+                
+                cube.shader.setUniform('uTexture', fa.texture);
+                renderer.render(root, camera);
+            }
+
+            renderer.renderToScreen();
+            cube.shader.setUniform('uTexture', fb.texture);
+            renderer.render(root, camera);
+
+            // cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

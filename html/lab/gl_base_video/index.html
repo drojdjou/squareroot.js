@@ -5,7 +5,7 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-<script type="text/javascript" src="../../src/namespace.js"></script>
+<script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
 
 <style type="text/css">
@@ -139,13 +139,14 @@
     var program = gl.createProgram();
     var startTime = new Date().getTime() / 1000;
 
-    var onShader = function(vertex, fragment) {
+    var onShader = function(shaderSource) {
+
         var vs = gl.createShader(gl.VERTEX_SHADER);
-        gl.shaderSource(vs, vertex);
+        gl.shaderSource(vs, shaderSource.vertex);
         gl.compileShader(vs);
          
         var fs = gl.createShader(gl.FRAGMENT_SHADER);
-        gl.shaderSource(fs, fragment);
+        gl.shaderSource(fs, shaderSource.fragment);
         gl.compileShader(fs);
          
         

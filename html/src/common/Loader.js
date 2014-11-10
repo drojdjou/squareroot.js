@@ -1,82 +1,70 @@
 SQR.Loader = {
 
-	loadText: function(path, onLoadedFunc){
+	loadText: function(path, callback){
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
 
 		request.onreadystatechange = function(){
 			if (request.readyState == 4) {
-				onLoadedFunc.call(null, request.responseText);
+				callback(request.responseText, path);
 			}
 		};
 
 		request.send();
 	},
 
-	loadJSON: function(path, onLoadedFunc){
+	loadJSON: function(path, callback){
 		SQR.Loader.loadText(path, function(text) {
-			onLoadedFunc(JSON.parse(text));
+			callback(JSON.parse(text), path);
 		});
 	},
 
-	loadImage: function(src, callback){
+	loadImage: function(path, callback){
 		var img = new Image();
 		if(callback) {
 			var onload = function() {
 				img.removeEventListener('load', onload);
-				callback(img);
+				callback(img, path);
 			}
 			img.addEventListener('load', onload);
 		}
-		img.src = src;
+		img.src = path;
 		return img;
 	},
 
-	loadGLSL: function(src, callback) {
-		SQR.Loader.loadText(src, function(text) {
-			var vertex = "", fragment = "";
-			var isVertex = true;
-			var ls = text.split("\n");
+	loadAssets: function(paths, init) {
+		var toLoad = paths.length;
+		SQR.Loader.assets = {};
 
-			for(var i = 0; i < ls.length; i++) {
-				if(ls[i].indexOf("//#") > -1) {
-					if (ls[i].indexOf("//#fragment") > -1) {
-						isVertex = false;
-					} else if (ls[i].indexOf("//#vertex") > -1) {
-						isVertex = true;
-					}
-				} else {
-					var l = ls[i];
-					if(l.indexOf("//") > -1) l = l.substring(0, l.indexOf("//"));
-
-					if(l.match(/^([\s\t]*)$/)) continue;
-
-					if(isVertex) {
-						vertex += l + "\n";
-					} else {
-						fragment += l + "\n";
-					}
-				}
+		var onAsset = function(asset, p) {
+			SQR.Loader.assets[p] = asset;
+			toLoad--;
+			if(toLoad == 0) {
+				init(SQR.Loader.assets);
 			}
-
-			if(callback) callback(vertex, fragment, src);
-		});
-	},
-
-	loadShaders: function(paths, callback) {
-		var shadersToLoad = paths.length;
-		var shaders = {};
-
-		var onShader = function(vertex, fragment, path) {
-			shadersToLoad--;
-			shaders[path] = { vertex:vertex, fragment:fragment };
-
-			if(shadersToLoad <= 0) callback(shaders);
 		}
+		
+		for(var i = 0; i < toLoad; i++) {
+			var p = paths[i];
+			var e = p.substring(p.lastIndexOf('.') + 1);
 
-		paths.forEach(function(p) {
-			SQR.Loader.loadGLSL(p, onShader);
-		});
+			p = p.replace('~', SQR.shaderPath);
+			
+			switch(e) {
+				case 'glsl':
+					SQR.Loader.loadText(p, onAsset);
+					break;
+				case 'png':
+				case 'jpg':
+				case 'gif':
+					SQR.Loader.loadImage(p, onAsset);
+					break;
+				case 'json':
+				case 'js':
+					SQR.Loader.loadJSON(p, onAsset);
+					break;
+			}
+		}
 	}
 };
 

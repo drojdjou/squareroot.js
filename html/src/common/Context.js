@@ -7,8 +7,14 @@ SQR.Context = function(canvas) {
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
 
 	c.create = function(params) {
-		gl = canvas.getContext("experimental-webgl");
+		gl = canvas.getContext("experimental-webgl", { antialias: true });
 		c.gl = gl;
+
+		gl.enable(gl.CULL_FACE);
+        gl.frontFace(gl.CW);
+
+        SQR.gl = gl;
+
 		return c;
 	}
 

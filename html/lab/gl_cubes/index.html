@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>webgl boilerplate brick</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Triangle.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        'shader.glsl',
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(1, 1, 1, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+
+        var camera = new SQR.Transform();
+        camera.projection = new SQR.ProjectionMatrix().perspective(70, window.innerWidth/window.innerHeight, 1, 1000);
+        camera.position.z = 100;
+
+        var numSquares = 12000;
+        document.querySelector('.num').innerHTML = numSquares;
+
+        var buffer = SQR.Primitives.createCube(2, 2, 2).update();
+        var shader = SQR.Shader(assets['shader.glsl']).use().attribPointers(buffer);
+
+        var root = new SQR.Transform();
+        var camRoot = new SQR.Transform();
+        root.add(camRoot);
+        camRoot.add(camera);
+
+        for(var i = 0; i < numSquares; i++) {
+            var t = new SQR.Transform();
+            t.position.random().norm().mul(40 + 40 * Math.random());
+            t.rotation.random().mul(SQR.TWOPI);
+            t.buffer = buffer;
+            t.shader = shader;
+            t.isStatic = true;
+            root.add(t);
+        }
+
+        var my = 0, mx = 0, tx = 0, ty = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+            camRoot.rotation.y += 0.002;
+            camera.position.z = my * 200;
+            renderer.render(root, camera);
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

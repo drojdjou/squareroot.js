@@ -8,7 +8,7 @@
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
-<script type="text/javascript" src="../../src/common/Geometry.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
@@ -23,7 +23,9 @@
 
 <script type="text/javascript">
 
-    var init = function(shaders) {
+    SQR.Loader.loadAssets([
+        'red.glsl', 'blue.glsl'
+    ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
 
@@ -36,54 +38,20 @@
         var mat4 = new SQR.Matrix44();
         var proj = new SQR.ProjectionMatrix().screenPixels2d();
 
-        var square = SQR.Geometry().setGL(ctx.gl);
+        var square = SQR.Buffer();
+        square.layout({ 'aPosition': 2, 'aColor': 3 }, 6);
+        square.data('aPosition', -6, 6, 6, -6, 6, 6, -6, 6, -6, -6, 6, -6);
+        square.data('aColor', 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0);
+        square.update();
 
-        square.attribute('aPosition', 2)
-            .add( -100,  100 )
-            .add(  100,  100 )
-            .add(  100, -100 )
-            .add( -100,  100 )
-            .add(  100, -100 )
-            .add( -100, -100 );
+        var triangle = SQR.Buffer();
+        triangle.layout({ 'aPosition2': 2, 'aColor2': 3 }, 6);
+        triangle.data('aColor2', 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1);
+        triangle.data('aPosition2', 0, 0, 6, -6, 6, 6);
+        triangle.update();
 
-         square.attribute('aColor', 3)
-            .add( 1, 0, 0 )
-            .add( 0, 1, 0 )
-            .add( 0, 0, 1 )
-            .add( 0, 0, 1 )
-            .add( 0, 1, 0 )
-            .add( 1, 0, 0 );
-
-        square.createBuffer();
-
-        var triangle = SQR.Geometry().setGL(ctx.gl);
-
-        triangle.attribute('aColor2', 4)
-            .add( 1, 0, 0, 1 )
-            .add( 0, 1, 0, 1 )
-            .add( 1, 0, 1, 1 );
-
-        triangle.attribute('aPosition2', 2)
-            .add(    0,    0 )
-            .add(  100,  100 )
-            .add(  100, -100 );
-
-        triangle.createBuffer();
-
-        triangle.bind();
-        var blueShader = SQR.Shader(shaders['blue.glsl'].vertex, shaders['blue.glsl'].fragment)
-            .setGL(ctx.gl)
-            .compile()
-            .inspect()
-            .enableAttributes();
-        
-        square.bind();
-        var redShader = SQR.Shader(shaders['red.glsl'].vertex, shaders['red.glsl'].fragment)
-            .setGL(ctx.gl)
-            .compile()
-            .inspect()
-            .enableAttributes();
-
+        var blueShader = SQR.Shader(assets['blue.glsl']);
+        var redShader = SQR.Shader(assets['red.glsl']);
 
         redShader.use().setUniform('uColor', new Float32Array([1, 0, 0, 1]));
         blueShader.use().setUniform('uColor', new Float32Array([0, 0, 1, 1]));
@@ -94,28 +62,36 @@
             requestAnimationFrame(render);
             ctx.clear();
 
-
+            var num = 50, s = 20;
 
             triangle.bind();
-            mat4.identity().multiply(proj).translate(w/4*3, h/2, 0).rotate(0, 0, r);
-            blueShader.use().setUniform('uConcatMatrix', mat4.data).attribPointers(triangle);
-            triangle.draw();
-            
-            square.bind();
-            mat4.identity().multiply(proj).translate(w/4*1, h/2, 0).rotate(0, 0, r);
-            redShader.use().setUniform('uConcatMatrix', mat4.data).attribPointers(square);
-            square.draw();
+            blueShader.use().attribPointers(triangle);
+            for(var i = 0; i < num; i++) {
+                for(var j = 0; j < num; j++) {
+                    
+                    mat4.identity().multiply(proj).translate(i * s, j * s, 0).rotate(0, 0, r);
+                    blueShader.setUniform('uConcatMatrix', mat4.data);
+                    triangle.draw();
+                }
+            }
 
-            
+            square.bind();
+            redShader.use().attribPointers(square);
+            for(var i = 0; i < num; i++) {
+                for(var j = 0; j < num; j++) {                    
+                    
+                    mat4.identity().multiply(proj).translate(i * s + s/2, j * s + s/2, 0).rotate(0, 0, r);
+                    redShader.setUniform('uConcatMatrix', mat4.data);
+                    square.draw();
+                }
+            }
 
             r += 0.01;
         }
 
         render();
-    }
 
-
-    SQR.Loader.loadShaders(['red.glsl', 'blue.glsl'], init);
+    });
 
 </script>
 

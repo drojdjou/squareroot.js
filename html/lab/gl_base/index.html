@@ -8,7 +8,7 @@
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
-<script type="text/javascript" src="../../src/common/Geometry.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
@@ -23,7 +23,7 @@
 
 <script type="text/javascript">
 
-    var onShader = function(vertex, fragment) {
+    SQR.Loader.loadAssets(['shader.glsl'], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
 
@@ -32,34 +32,16 @@
             .size(w, h).
             clearColor(0, 0, 0, 1);
 
-        var geo = SQR.Geometry().setGL(ctx.gl);
+        var r = function() { return Math.random() };
 
-        var aspect = w / h;
+        var geo = SQR.Buffer()
+            .layout(SQR.v2c3(), 4)
+            .data('aPosition',      -100, -100,        100, -100,      100, 100,      -100, 100)
+            .data('aColor',          r(), r(), r(),    r(), r(), r(),  r(), r(), r(),  r(), r(), r())
+            .index(0, 1, 2, 0, 2, 3)
+            .update();
 
-        geo.attribute('aPosition', 2)
-            .add( -100,  100 )
-            .add(  100,  100 )
-            .add(  100, -100 )
-            .add( -100,  100 )
-            .add(  100, -100 )
-            .add( -100, -100 );
-
-         geo.attribute('aColor', 3)
-            .add( 1, 0, 0 )
-            .add( 0, 1, 0 )
-            .add( 1, 0, 0 )
-            .add( 0, 0, 1 )
-            .add( 0, 1, 1 )
-            .add( 1, 0, 1 );
-
-        geo.createBuffer();
-        
-        var shader = SQR.Shader(vertex, fragment)
-            .setGL(ctx.gl)
-            .compile()
-            .inspect()
-            .enableAttributes()
-            .attribPointers(geo)
+        var shader = SQR.Shader(assets['shader.glsl'])
             .use();
 
         var mat2 = new SQR.Matrix2D();
@@ -68,29 +50,40 @@
 
         shader.setUniform('uColor', new Float32Array([1.0, 0.0, 0.0, 1.0]));
         // shader.setUniform('uProjection', proj.data);
-        
+        var concatMatrixUniform = shader.getUniform('uConcatMatrix');
+
         var r = 0, s = 0;
+
+        var updateColor = function(i, data) {
+            var r =  data[i+0], g =  data[i+1], b =  data[i+2];
+
+            r += 0.01, g += 0.01, b += 0.01;
+
+            if(r > 1) r -= 1;
+            if(g > 1) g -= 1;
+            if(b > 1) b -= 1;
+
+            data[i+0] = r, data[i+1] = g, data[i+2] = b;
+        };
+
+        
 
         var render = function() {
             requestAnimationFrame(render);
+            ctx.clear();
 
-            // mat2.setTRS(w/2, h/2, r, Math.sin(s), Math.sin(s));
-            // mat2.identity().translate(w/2, h/2).rotate(r);
-            // shader.setUniform('uMatrix', mat2.data);
+            geo.iterate('aColor', updateColor);
+            geo.update();
 
             mat4.identity().multiply(proj).translate(w/2, h/2, 0).rotate(0, 0, r);
-            shader.setUniform('uConcatMatrix', mat4.data);
+            shader.setUniform(concatMatrixUniform, mat4.data).attribPointers(geo);
 
-            ctx.clear();
             geo.draw();
             r += 0.01;
         }
 
         render();
-    }
-
-
-    SQR.Loader.loadGLSL("shader.glsl", onShader);
+    });
 
 </script>
 

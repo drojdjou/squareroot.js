@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>eledophants</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.shaderPath = '../../src/glsl/'
+
+    SQR.Loader.loadAssets([
+        '~light/sphar.glsl',
+        '~light/sphar-cathedral.glsl',
+        '~light/sphar-eucalyptus.glsl',
+        '~light/sphar-oldtown.glsl',
+        '~light/sphar-st-peter.glsl',
+        '~light/sphar-sunset.glsl',
+        'shader.glsl',
+        'depth.glsl',
+        'bokeh.glsl',
+        'depthOfField.glsl',
+        'blur.glsl',
+        '../../assets/model/elephant.json',
+        '../../assets/model/monkey.json',
+        '../../assets/monument.jpg'
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0.5, 0.5, 0.5, 1);
+
+        var renderer = SQR.Renderer(ctx);
+
+        var camera = SQR.Transform();
+        camera.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+        camera.position.set(0, 0, 50);
+
+        var camroot = SQR.Transform();
+        camroot.add(camera);
+        
+        var hero = SQR.Transform();
+
+        var root = SQR.Transform().add(camroot, hero);
+
+        var model = assets['../../assets/model/elephant.json'];
+
+        var buffer = SQR.Buffer()
+                .layout(SQR.v3n3u2(), model.vertices.length / 3)
+                .data('aPosition', model.vertices)
+                .data('aNormal',  model.normals)
+                // .data('aUV',  model.uv1)
+                .index(model.tris)
+                .update();
+
+        var shader = SQR.Shader(assets['shader.glsl'])
+                .use()
+                .setUniform('uTexture', SQR.Texture(assets['../../assets/monument.jpg']))
+                .attribPointers(buffer);
+
+        var num = 500;
+
+        document.querySelector('.num').innerHTML = num;
+
+        for (var i = 0; i < num; i++) {
+            var t = SQR.Transform();
+            t.buffer = buffer;
+            t.shader = shader;
+            t.position.random().norm().mul(20 + Math.random() * 80);
+            t.rotation.random().mul(SQR.TWOPI);
+            // t.isStatic = true;
+            hero.add(t);
+        }
+
+        var depthShader = SQR.Shader(assets['depth.glsl'])
+            .use()
+            .setUniform('uProjection', camera.projection)
+            .setUniform('uNear', 0)
+            .setUniform('uFar',  40);  
+
+        var depthFBO = SQR.FrameBuffer(w, h);    
+        var rawFBO = SQR.FrameBuffer(w, h);    
+        var bokeh = SQR.PostEffect(assets['bokeh.glsl']);
+
+        var my = 0.4, mx = 0.4, tx = mx, ty = my;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+
+            ctx.clear();
+            camroot.rotation.y += 0.002;
+            // camroot.rotation.y = mx * SQR.TWOPI;
+            camera.position.z = -50 + my * 200;
+
+            for(var i = 0; i < hero.numChildren; i++) {
+                hero.children[i].rotation.x += 0.005;
+                hero.children[i].rotation.y += 0.007;
+            }
+
+            depthFBO.bind();
+            ctx.clearColor(0, 0, 0, 1).clear();
+            renderer.render(root, camera, { replacementShader: depthShader });
+
+            rawFBO.bind();
+            ctx.clearColor(0, 0, 0, 1);
+            renderer.render(root, camera);
+
+            renderer.renderToScreen();
+            ctx.gl.viewport(0, 0, w, h);
+            bokeh.shader.use();
+            bokeh.shader.setUniform('uAspect', w/h);
+            bokeh.shader.setUniform('uTexture', rawFBO.texture);
+            bokeh.shader.setUniform('uDepthTexture', depthFBO.texture);
+            renderer.render(bokeh);
+        }
+
+        render();
+
+        document.addEventListener('mousemove', function(e) {
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
