@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WebGL Audio Viz</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+<canvas id="viz-canvas"></canvas>
+
+<div class="menu">
+    <div class="close">- hide options</div>
+    <p>Effects</p>
+    <ul class="effects">
+        <li data-index="0">Liquid gem</li>
+        <li data-index="1">Cityscape</li>
+        <li data-index="2">Spherical lines</li>
+        <li data-index="3">Waves</li>
+        <li data-index="4">Elastic cube</li>
+    </ul>
+    <p>Source</p>
+    <ul>
+        <li class="mic">Microphone</li>
+        <li class="track">Track</li>
+    </ul>
+    <p class="small">tip: Scroll for more info</p>
+</div>
+
+<div class="menu-button"><span>+</span> show options</div>
+
+<script type="text/javascript" src="js/leap2.js"></script>
+<script type="text/javascript" src="js/Stats.js"></script>
+<script type="text/javascript" src="squareroot-min-76.js"></script>
+
+<script type="text/javascript" src="soundviz-min.js"></script>
+
+<!-- 
+<script type="text/javascript" src="js/Key.js"></script>
+<script type="text/javascript" src="js/Menu.js"></script>
+<script type="text/javascript" src="js/LeapWrapper.js"></script>
+<script type="text/javascript" src="js/audio/SoundAnalyser.js"></script>
+<script type="text/javascript" src="js/audio/SoundVisualizer.js"></script>
+
+<script type="text/javascript" src="js/VisualizerCollection.js"></script>
+<script type="text/javascript" src="js/EffectCollection.js"></script>
+
+<script type="text/javascript" src="js/effects/Vignette.js"></script>
+<script type="text/javascript" src="js/effects/Blur.js"></script>
+<script type="text/javascript" src="js/effects/GlowChromaticDist.js"></script>
+<script type="text/javascript" src="js/effects/ScanLines.js"></script>
+<script type="text/javascript" src="js/effects/NoEffect.js"></script>
+
+<script type="text/javascript" src="js/objects/StrechingCube.js"></script>
+<script type="text/javascript" src="js/objects/LineSphere.js"></script>
+<script type="text/javascript" src="js/objects/SkyscraperLane.js"></script>
+<script type="text/javascript" src="js/objects/Gems.js"></script>
+<script type="text/javascript" src="js/objects/Pyramids.js"></script>
+
+<script type="text/javascript" src="js/geometry/LineSphereGeometry.js"></script>
+<script type="text/javascript" src="js/geometry/Skyscraper.js"></script>
+<script type="text/javascript" src="js/geometry/Freeway.js"></script>
+
+<script type="text/javascript" src="js/main.js"></script>
+ -->
+
+<script>
+    if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+        document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+    }
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
