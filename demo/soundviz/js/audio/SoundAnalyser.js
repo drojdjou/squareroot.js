@@ -31,8 +31,8 @@ var SoundAnalyser = function() {
 		analyser.smoothingTimeConstant = 0;//0.8; // 0<->1 // 0 is no time smoothing
 		analyser.fftSize = 1024;
 		
-		volumeNode = audioContext.createGainNode();
-		volumeGainNode = audioContext.createGainNode();
+		volumeNode = audioContext.createGain();
+		volumeGainNode = audioContext.createGain();
 
 		volumeNode.connect(audioContext.destination);
 		analyser.connect(volumeNode);
