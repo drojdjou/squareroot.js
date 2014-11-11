@@ -78,9 +78,11 @@
 
         var my = 0, mx = 0, tx = 0, ty = 0;
 
-        var mousemove = ('ontouchstart' in document) ? 'touchmove' : 'mousemove';
+        var isTouch = 'ontouchstart' in document;
+        var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
         document.addEventListener(mousemove, function(e) {
+            e = isTouch ? e.targetTouches[0] : e;
             tx = e.pageX / window.innerWidth;
             ty = e.pageY / window.innerHeight;
         });

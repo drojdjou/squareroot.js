@@ -151,7 +151,11 @@
 
         render();
 
-        document.addEventListener('mousemove', function(e) {
+        var isTouch = 'ontouchstart' in document;
+        var mousemove = isTouch ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
+            e = isTouch ? e.targetTouches[0] : e;
             tx = e.pageX / window.innerWidth;
             ty = e.pageY / window.innerHeight;
         });
