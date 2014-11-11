@@ -1,11 +1,11 @@
-SQR.Texture = function(s) {
+SQR.Texture = function(s, options) {
 
 	var t = {};
 	var gl = SQR.gl;
 	var source = s;
 	var texture = gl.createTexture();
 
-	t.isAnimated = false;
+	t.isAnimated = (options && options.isAnimated) || (s instanceof HTMLVideoElement);
 
 	var isPowerOfTwo = function() {
         var x = source.width, y = source.height;

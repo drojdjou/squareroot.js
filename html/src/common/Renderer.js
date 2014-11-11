@@ -1,6 +1,6 @@
 SQR.Renderer = function(context) {
 
-	var r = {}, gl;
+	var r = {};
 	var uniforms = {}, renderObjects = [];
 
 	var updateTransform = function(t) {
@@ -17,7 +17,7 @@ SQR.Renderer = function(context) {
 	}
 
 	r.render = function(root, camera, options) {
-		gl = SQR.gl;
+		var gl = SQR.gl;
 		context.clear();
 
 		gl.enable(gl.DEPTH_TEST);
@@ -26,11 +26,10 @@ SQR.Renderer = function(context) {
 		updateTransform(root);
 
 		if(camera) {
-			uniforms.inverseCameraMatrix = camera.computeInverseMatrix();
-			uniforms.projection = camera.projection;
+			camera.computeInverseMatrix();
 		}
 
-		var objectsToRender = renderObjects.length, r;
+		var objectsToRender = renderObjects.length, ro;
 		var lastBuffer, lastShader;
 
 		var hasReplacementShader = options && options.replacementShader;
@@ -39,30 +38,30 @@ SQR.Renderer = function(context) {
 			lastShader = options.replacementShader.use();
 		}
 
-		
 		for(var i = 0; i < objectsToRender; i++) {
 
-			r = renderObjects[i];
+			var ro = renderObjects[i];
 
-			if((!lastShader || lastShader != r.shader) && !hasReplacementShader) {
-				lastShader = r.shader.use().updateTextures();
-				if(camera) lastShader.setUniform('uProjection', camera.projection);
+			if((!lastShader || lastShader != ro.shader) && !hasReplacementShader) {
+				lastShader = ro.shader.use().updateTextures();
+				lastShader.setUniform('uProjection', r.projection);
 				if(lastBuffer) lastShader.attribPointers(lastBuffer);
 			}
 
-			if(!lastBuffer || lastBuffer != r.buffer) {
-				lastBuffer = r.buffer;
+			if(!lastBuffer || lastBuffer != ro.buffer) {
+				lastBuffer = ro.buffer;
 				lastBuffer.bind();
 				if(lastShader) lastShader.attribPointers(lastBuffer);
 			}
 
-			r.transformView(uniforms.inverseCameraMatrix);
-			renderObjects[i].draw(uniforms, options);
+			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+			ro.draw(options);
 		}
 
 	}
 
 	r.renderToScreen = function() {
+		var gl = SQR.gl;
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	}
 

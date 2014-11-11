@@ -18,6 +18,7 @@ SQR.Transform = function() {
 	t.normalMatrix = new SQR.Matrix33();
 	t.globalMatrix = new SQR.Matrix44();
     t.viewMatrix = new SQR.Matrix44();
+    t.inverseWorldMatrix;
 
 	t.children = [], t.numChildren = 0;
 
@@ -71,10 +72,11 @@ SQR.Transform = function() {
         }
     }
 
-    t.draw = function(uniforms, options) {
+    t.draw = function(options) {
         var shader = (options && options.replacementShader) ? options.replacementShader : t.shader;
 
         shader.setUniform('uMatrix', t.viewMatrix);
+        shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
     	t.buffer.draw();
     }
@@ -89,14 +91,18 @@ SQR.Transform = function() {
 
         if(transformState == 1) return;
 
-    	var p = this.position;
-        var r = this.rotation;
-        var s = this.scale;
+    	var p = t.position;
+        
+        var s = t.scale;
+        
 
-        if (this.useQuaternion)
-        	this.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
-       	else
-			this.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+        if (t.useQuaternion) {
+            var q = t.quaternion;
+        	t.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
+       	} else {
+            var r = t.rotation;
+			t.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+        }
 
         if (t.parent) {
             t.parent.globalMatrix.copyTo(t.globalMatrix);
@@ -118,8 +124,13 @@ SQR.Transform = function() {
      * @param inverseCamMatrix {SQR.Matrix44} the inverse matrix of the camera
      */
     t.transformView = function(inverseCamMatrix) {
-        inverseCamMatrix.copyTo(t.viewMatrix);
-        t.viewMatrix.multiply(t.globalMatrix);
+        if(inverseCamMatrix) {
+            inverseCamMatrix.copyTo(t.viewMatrix);
+            t.viewMatrix.multiply(t.globalMatrix);
+        } else {
+            t.globalMatrix.copyTo(t.viewMatrix);
+        }
+        
     }
 
 	/**
@@ -130,9 +141,11 @@ SQR.Transform = function() {
      * This function is called in the rendering process, do not call directly.
      */
     t.computeInverseMatrix = function() {
-    	if(!inverseWorldMatrix) inverseWorldMatrix = new SQR.Matrix44();
-        t.globalMatrix.inverse(inverseWorldMatrix);
-        return inverseWorldMatrix;
+    	if(!t.inverseWorldMatrix) {
+            t.inverseWorldMatrix = new SQR.Matrix44();
+        }
+        t.globalMatrix.inverse(t.inverseWorldMatrix);
+        return t.inverseWorldMatrix;
     }
 
 	return t;

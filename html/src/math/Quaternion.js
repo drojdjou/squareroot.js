@@ -5,14 +5,14 @@
  *
  *  Just as a reminder, this is what the values represent:
  */
-SQR.Quaternion = function(w, x, y, z) {
+SQR.Quaternion = function(x, y, z, w) {
     this.set(w, x, y, z);
 }
 
 /**
  *  Set value of the Quaternion directly.
  */
-SQR.Quaternion.prototype.set = function(w, x, y, z) {
+SQR.Quaternion.prototype.set = function(x, y, z, w) {
     this.w = w || 1;
     this.x = x || 0;
     this.y = y || 0;
@@ -61,7 +61,7 @@ SQR.Quaternion.prototype.mul = function(q, rq) {
     var y = (rq.w * q.y - rq.x * q.z + rq.y * q.w + rq.z * q.x);
     var z = (rq.w * q.z + rq.x * q.y - rq.y * q.x + rq.z * q.w);
 
-    rq.set(w, x, y, z);
+    rq.set(x, y, z, w);
 
     rq.normalize();
 

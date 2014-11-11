@@ -32,6 +32,43 @@ SQR.Loader = {
 		return img;
 	},
 
+	loadWebcam: function(callback) {
+		navigator.getUserMedia  = navigator.getUserMedia ||
+                                navigator.webkitGetUserMedia ||
+                                navigator.mozGetUserMedia ||
+                                navigator.msGetUserMedia;
+
+        if(!navigator.getUserMedia) {
+        	console.warn('getUserMedia not supported');
+        	callback();
+        }
+
+        var options = {
+        	audio: false,
+	        video: {
+	        	// mandatory: { minWidth: 1920, minHeight: 1080 }
+	        }
+	    };
+
+	    var onVideo = function(stream) {
+			video.src = window.URL.createObjectURL(stream);
+	        video.play();
+	        video.addEventListener('canplaythrough', videoReady, false);
+	    }
+
+	    var videoReady = function() {
+	    	callback(video, 'webcam');
+	    }
+
+        var video = document.createElement('video');
+    	video.autoplay = true;
+
+		navigator.getUserMedia(options, onVideo, function(e) { 
+			console.warn('getUserMedia error ', e);
+		});
+    },
+
+
 	loadAssets: function(paths, init) {
 		var toLoad = paths.length;
 		SQR.Loader.assets = {};
@@ -62,6 +99,9 @@ SQR.Loader = {
 				case 'json':
 				case 'js':
 					SQR.Loader.loadJSON(p, onAsset);
+					break;
+				case 'webcam':
+					SQR.Loader.loadWebcam(onAsset);
 					break;
 			}
 		}

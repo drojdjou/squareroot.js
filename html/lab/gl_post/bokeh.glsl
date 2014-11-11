@@ -19,9 +19,9 @@ precision highp float;
 uniform sampler2D uTexture;
 uniform sampler2D uDepthTexture;
 
-uniform float uAspect;
+uniform vec3 uScreenSize;
 
-const float bias = 0.02;//0.01;  // aperture - bigger values for shallower depth of field
+const float bias = 30.0;//0.01;  // aperture - bigger values for shallower depth of field
 
 varying vec2 vUV;
 
@@ -31,8 +31,8 @@ void main()
 	
 	vec4 depth = texture2D(uDepthTexture, vUV);
 	float factor = depth.r;//1.0 - depth.r;
-	vec2 aspectcorrect = vec2(1.0, uAspect);
-	float dofblur = factor * bias;
+	vec2 aspectcorrect = vec2(1.0, uScreenSize.z);
+	float dofblur = factor * bias / uScreenSize.x;
 	vec4 col = vec4(0.0);
 	
 	col += texture2D(uTexture, vUV);

@@ -50,6 +50,7 @@
             .clearColor(0, 0, 0, 1);
 
         var renderer = new SQR.Renderer(ctx);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
 
         var framebuffer1 = new SQR.FrameBuffer(w, h);
         var framebuffer2 = new SQR.FrameBuffer(w, h);
@@ -57,7 +58,6 @@
         var root = new SQR.Transform();
 
         var camera = new SQR.Transform();
-        camera.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
         camera.position.z = 30;
         root.add(camera);
 

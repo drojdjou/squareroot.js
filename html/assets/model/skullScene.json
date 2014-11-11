@@ -1,0 +1,81 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.2, "g":0.2, "b":0.2, "a":1 },
+"background": { "r":0, "g":0, "b":0, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"craneo_difuso": { 
+		"type": "Phong",
+		"color": { "r":0.8, "g":0.7177596, "b":0.5866667, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+	
+	"sun": { 
+		"type": 1,
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"intensity": 0.5
+	}
+
+},
+
+"cameras": {
+	
+	"camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t--1220",
+        "name": "camera",
+		"position": [ 0,0,1 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "camera"
+	},
+	
+	{
+		"uid": "t--50842",
+        "name": "sun",
+		"position": [ -0.05606771,1.624667,-0.09772325 ],
+		"rotation": [ -0.408218,0.2345698,0.1093817,0.875426 ],
+		"light": "sun"
+	},
+	
+	{
+		"uid": "t--75486",
+        "name": "skull",
+		"position": [ 0,0,0 ],
+		"rotation": [ -0.0000001152,-0.7071067,0.7071068,-0.0000002821 ],
+		"renderer": "craneo_difuso",
+		"mesh": "craneo",
+		"meshId": "m-6338"
+	}
+
+]
+}
+
+
+
+

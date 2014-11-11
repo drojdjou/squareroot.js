@@ -207,6 +207,7 @@ SQR.Shader = function(source, options) {
 	var setTexture = function(uniform, texture) {
 		var gl = SQR.gl, id = uniform.texId;
 		uniform.texref = texture;
+		if(texture.isAnimated) texture.update();
 	    gl.activeTexture(gl.TEXTURE0 + id); // 33984
 		gl.bindTexture(gl.TEXTURE_2D, texture.tex || texture);
 		gl.uniform1i(uniform.location, id);
@@ -224,7 +225,7 @@ SQR.Shader = function(source, options) {
 		var gl = SQR.gl;
 		for(var i = 0, tl = uniformTextures.length; i < tl; i++) {
 			var t = uniformTextures[i];
-			s.setUniform(t, t.texref);
+			if(t.texref) s.setUniform(t, t.texref);
 		}
 		return s;
 	}

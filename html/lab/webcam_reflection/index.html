@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>webgl boilerplate brick</title>
+<title>unity matching postion/direction/rotation</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -24,6 +25,10 @@
 <script type="text/javascript" src="../../src/primitives/Triangle.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/extras/Trackball.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 </head>
@@ -31,47 +36,72 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
-        'shader.glsl',
+        'reflection.glsl',
+        '../gl_cubes/shader.glsl',
+        '../../assets/model/skull.json',
+        'webcam'
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
 
+        var trackball = SQR.Trackball();
+
         var ctx = SQR.Context('#gl-canvas')
             .create()
             .size(w, h).
-            clearColor(1, 1, 1, 1);
+            clearColor(0, 0, 0, 1);
 
         var renderer = new SQR.Renderer(ctx);
-        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
 
         var camera = new SQR.Transform();
-        camera.position.z = 100;
+        camera.position.z = 0.8;
 
-        var numSquares = parseInt(document.location.search.substring(1)) || 12000;
-        document.querySelector('.num').innerHTML = numSquares;
+        var model = assets['../../assets/model/skull.json']['m-6338'];
 
-        var buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        var shader = SQR.Shader(assets['shader.glsl']).use().attribPointers(buffer);
+        var buffer = SQR.Buffer()
+            .layout(SQR.v3n3(), model.vertices.length / 3)
+            .data('aPosition', model.vertices)
+            .data('aNormal',  model.normals)
+            .index(model.indices)
+            .update();
+
+        var webcamTex = SQR.Texture(assets['webcam']);
+
+        var shader = SQR.Shader(assets['reflection.glsl'])
+            .use()
+            .setUniform('uTexture', webcamTex)
+            .attribPointers(buffer);
 
         var root = new SQR.Transform();
         var camRoot = new SQR.Transform();
-        root.add(camRoot);
+        var skullRoot = new SQR.Transform();
+        var skullBg = new SQR.Transform();
+        skullRoot.useQuaternion = true;
+
+        root.add(camRoot, skullRoot, skullBg);
         camRoot.add(camera);
 
-        for(var i = 0; i < numSquares; i++) {
+
+        for(var i = 0; i < 1; i++) {
             var t = new SQR.Transform();
-            var sp = (0.5 + 0.5 * Math.random()) * 80;
-            t.position.random().norm().mul(sp);
-            t.rotation.random().mul(SQR.TWOPI);
+
             t.buffer = buffer;
             t.shader = shader;
-            t.isStatic = true;
-            root.add(t);
+            
+            if(i > 0) {
+                t.position.random().norm().mul(8 + 6 * Math.random());
+                t.rotation.random();
+                skullBg.add(t);
+            } else {
+                t.rotation.set(SQR.HALFPI - 0.2, Math.PI, 0);
+                skullRoot.add(t);
+            }
+            
+           
         }
 
         var my = 0, mx = 0, tx = 0, ty = 0;
@@ -88,8 +118,11 @@
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
-            camRoot.rotation.y += 0.002;
-            camera.position.z = my * 200;
+            
+            skullBg.rotation.y += 0.002;
+            // camera.position.z = my * 20;
+
+            skullRoot.quaternion.copyFrom(trackball.rotation);
             renderer.render(root, camera);
 
             mx += (tx - mx) * 0.1;
