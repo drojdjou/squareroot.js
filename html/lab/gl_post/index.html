@@ -90,7 +90,7 @@
                 .setUniform('uTexture', SQR.Texture(assets['../../assets/monument.jpg']))
                 .attribPointers(buffer);
 
-        var num = 500;
+        var num = parseInt(document.location.search.substring(1)) || 500;
 
         document.querySelector('.num').innerHTML = num;
 

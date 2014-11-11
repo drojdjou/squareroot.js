@@ -103,9 +103,9 @@ SQR.Buffer = function(_gl) {
 	b.draw = function(mode) {
 		var gl = SQR.gl;
 		if(hasIndex)
-			gl.drawElements(mode || SQR.TRIANGLES, b.indexSize, gl.UNSIGNED_SHORT, 0);
+			gl.drawElements(mode || SQR.gl.TRIANGLES, b.indexSize, gl.UNSIGNED_SHORT, 0);
 		else 
-			gl.drawArrays(mode || SQR.TRIANGLES, 0, b.size);
+			gl.drawArrays(mode || SQR.gl.TRIANGLES, 0, b.size);
 	}
 
 	b.getDataArray = function() {

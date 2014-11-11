@@ -52,7 +52,9 @@
         camera.projection = new SQR.ProjectionMatrix().perspective(70, window.innerWidth/window.innerHeight, 1, 1000);
         camera.position.z = 100;
 
-        var numSquares = 12000;
+        console.log(document.location)
+
+        var numSquares = parseInt(document.location.search.substring(1)) || 12000;
         document.querySelector('.num').innerHTML = numSquares;
 
         var buffer = SQR.Primitives.createCube(2, 2, 2).update();
@@ -65,7 +67,8 @@
 
         for(var i = 0; i < numSquares; i++) {
             var t = new SQR.Transform();
-            t.position.random().norm().mul(40 + 40 * Math.random());
+            var sp = (0.5 + 0.5 * Math.random()) * 80;
+            t.position.random().norm().mul(sp);
             t.rotation.random().mul(SQR.TWOPI);
             t.buffer = buffer;
             t.shader = shader;
@@ -75,7 +78,9 @@
 
         var my = 0, mx = 0, tx = 0, ty = 0;
 
-        document.addEventListener('mousemove', function(e) {
+        var mousemove = ('ontouchstart' in document) ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
             tx = e.pageX / window.innerWidth;
             ty = e.pageY / window.innerHeight;
         });

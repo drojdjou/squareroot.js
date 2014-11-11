@@ -22,7 +22,6 @@ void main() {
 precision mediump float;
 #endif
 
-// #include ~light/diffuse.glsl
 //#include ~light/sphar-eucalyptus.glsl
 //#include ~light/sphar.glsl
 
@@ -34,7 +33,7 @@ uniform sampler2D uTexture;
            
 void main() {
     vec4 col = texture2D(uTexture, vUV);
-	gl_FragColor = vec4(sphericalHarmonics(vNormal) * 1.0 + col.rgb * 0.0, 1.0);
+	gl_FragColor = vec4(sphericalHarmonics(vNormal), 1.0);
 }
 
 

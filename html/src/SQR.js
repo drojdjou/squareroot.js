@@ -6,7 +6,7 @@ SQR = {
 
 	// Placeholder that holds current gl context. This is set in Context.create(), can be modified manually too
 	gl: null, 
-	// Placeholder that holdes a fullscreen geometry for post effects. Lazy crazted in PostEffect.js
+	// Placeholder that holdes a fullscreen geometry for post effects. Lazily created in PostEffect.js
 	fullScreenQuad: null,
 	//
 	shaderPath: '.',
@@ -21,14 +21,14 @@ SQR = {
 	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },
 	v3n3u2: function() { return { aPosition: 3, aNormal: 3, aUV: 2 }; },
 
-	// GL contstants
-	POINTS          : 0x0000,
-    LINES           : 0x0001,
-    LINE_LOOP       : 0x0002,
-    LINE_STRIP      : 0x0003,
-    TRIANGLES       : 0x0004,
-    TRIANGLE_STRIP  : 0x0005,
-    TRIANGLE_FAN	: 0x0006,
+	// GL contstants (removed, because this stuff can be accessed via SQR.gl)
+	// POINTS          : 0x0000,
+	// LINES           : 0x0001,
+	// LINE_LOOP       : 0x0002,
+	// LINE_STRIP      : 0x0003,
+	// TRIANGLES       : 0x0004,
+	// TRIANGLE_STRIP  : 0x0005,
+	// TRIANGLE_FAN	   : 0x0006,
 
     // Error reporting 
 

@@ -15,7 +15,7 @@ SQR.Primitives.createCube = function(w, h, d) {
 	var v4 = new SQR.V3(w * -0.5,   h *  0.5,   d * -0.5); // Top left
 	var v5 = new SQR.V3(w *  0.5,   h *  0.5,   d * -0.5); // Top right
 	var v6 = new SQR.V3(w * -0.5,   h * -0.5,   d * -0.5); // Bottom left
-	var v7 = new SQR.V3(w *  0.5,   h * -0.5,   d * -0.5);// Bottom right
+	var v7 = new SQR.V3(w *  0.5,   h * -0.5,   d * -0.5); // Bottom right
 
 	var u0 = new SQR.V2(0, 1);
 	var u1 = new SQR.V2(1, 1);

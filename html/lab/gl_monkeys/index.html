@@ -60,7 +60,7 @@
         var normMat = new SQR.Matrix33();
         var proj = new SQR.ProjectionMatrix().perspective(70, window.innerWidth/window.innerHeight, 1, 1000);
 
-        var numSquares = 12000, squarePositions = [], squareRotations = [], matrices = [], normalMatrices = [];
+        var numSquares = parseInt(document.location.search.substring(1)) || 12000, squarePositions = [], squareRotations = [], matrices = [], normalMatrices = [];
         var globalRotate = 0;
 
         document.querySelector('.num').innerHTML = numSquares;
@@ -83,7 +83,9 @@
 
         var my = 0, mx = 0, tx = 0, ty = 0;
 
-        document.addEventListener('mousemove', function(e) {
+        var mousemove = ('ontouchstart' in document) ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
             tx = e.pageX / window.innerWidth;
             ty = e.pageY / window.innerHeight;
         });
