@@ -17,14 +17,14 @@ varying float rfac;
 void main()
 {
 	vNormalLoc = aNormal;
-	vNormal = uNormalMatrix * aNormal;
+	vNormal = normalize(uNormalMatrix * aNormal);
 
 	vec4 mPosition = uMatrix * vec4(aPosition, 1.0);
 	vec4 mvPosition = uViewMatrix * vec4(aPosition, 1.0);
 
 	gl_Position = uProjection * mvPosition;
 
-	vec3 incident = normalize(-mPosition.xyz);
+	vec3 incident = normalize(mvPosition.xyz);
 
 	vRetVec = refract(incident, vNormal, 1.0);
 	vRefVec = reflect(incident, vNormal);

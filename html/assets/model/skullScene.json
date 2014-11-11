@@ -2,7 +2,7 @@
 	
 "path" : "",
 "ambient": { "r":0.2, "g":0.2, "b":0.2, "a":1 },
-"background": { "r":0, "g":0, "b":0, "a":0.01960784 },
+"background": { "r":0, "g":0, "b":0, "a":1 },
 
 "quaternions": true,
 
@@ -14,9 +14,9 @@
 	
 "materials": {
 	
-	"craneo_difuso": { 
+	"default_diffuse": { 
 		"type": "Phong",
-		"color": { "r":0.8, "g":0.7177596, "b":0.5866667, "a":1 },
+		"color": { "r":1, "g":1, "b":1, "a":0.5 },
 		"specularIntensity": 0,
         "shininess": 0,
 		"textureTile": [  ],
@@ -36,24 +36,9 @@
 },
 
 "cameras": {
-	
-	"camera": { 
-		"fov": 60,
-		"near": 0.3,
-		"far": 1000
-	}
-
 },
 
 "transforms": [
-	
-	{
-		"uid": "t--1220",
-        "name": "camera",
-		"position": [ 0,0,1 ],
-		"rotation": [ 0,0,0,1 ],
-		"camera": "camera"
-	},
 	
 	{
 		"uid": "t--50842",
@@ -64,11 +49,11 @@
 	},
 	
 	{
-		"uid": "t--75486",
-        "name": "skull",
+		"uid": "t--117342",
+        "name": "craneo",
 		"position": [ 0,0,0 ],
-		"rotation": [ -0.0000001152,-0.7071067,0.7071068,-0.0000002821 ],
-		"renderer": "craneo_difuso",
+		"rotation": [ 0.7071069,0,0,0.7071067 ],
+		"renderer": "default_diffuse",
 		"mesh": "craneo",
 		"meshId": "m-6338"
 	}

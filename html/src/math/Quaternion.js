@@ -155,7 +155,7 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
  *  @param t interpolation value [0-1]
  *  @param qr the quaterion to store the results in and return. If omitted results are returned in a new quaternion object.
  */
-SQR.Quaternion.slerp = function(qa, qb, t, qr) {
+SQR.Quaternion.slerp = function(qb, qa, t, qr) {
     qr = qr || new SQR.Quaternion();
 
     var cha = qa.w * qb.w + qa.x * qb.x + qa.y * qb.y + qa.z * qb.z;

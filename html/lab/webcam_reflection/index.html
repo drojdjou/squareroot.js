@@ -48,6 +48,7 @@
         var w = window.innerWidth, h = window.innerHeight;
 
         var trackball = SQR.Trackball();
+        var currentRotation = new SQR.Quaternion();
 
         var ctx = SQR.Context('#gl-canvas')
             .create()
@@ -122,7 +123,10 @@
             skullBg.rotation.y += 0.002;
             // camera.position.z = my * 20;
 
-            skullRoot.quaternion.copyFrom(trackball.rotation);
+            SQR.Quaternion.slerp(trackball.rotation, currentRotation, 0.05, currentRotation);
+
+            skullRoot.quaternion.copyFrom(currentRotation);
+            
             renderer.render(root, camera);
 
             mx += (tx - mx) * 0.1;
