@@ -46,13 +46,9 @@
         '~light/sphar-st-peter.glsl',
         '~light/sphar-sunset.glsl',
         'shader.glsl',
-        'depth.glsl',
-        'bokeh.glsl',
-        'depthOfField.glsl',
         'blur.glsl',
-        '../../assets/model/elephant.json',
-        '../../assets/model/monkey.json',
-        '../../assets/monument.jpg'
+        'bloom.glsl',
+        '../../assets/model/elephant.json'
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
@@ -60,7 +56,7 @@
         var ctx = SQR.Context('#gl-canvas')
             .create()
             .size(w, h).
-            clearColor(0.5, 0.5, 0.5, 1);
+            clearColor(0, 0, 0, 1);
 
         var renderer = SQR.Renderer(ctx);
         renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
@@ -87,12 +83,17 @@
 
         var shader = SQR.Shader(assets['shader.glsl'])
                 .use()
-                .setUniform('uTexture', SQR.Texture(assets['../../assets/monument.jpg']))
                 .attribPointers(buffer);
 
         var num = parseInt(document.location.search.substring(1)) || 500;
 
         document.querySelector('.num').innerHTML = num;
+
+        var t = SQR.Transform();
+        t.buffer = buffer;
+        t.shader = shader;
+        // t.scale.set(2, 2, 2);
+        hero.add(t);
 
         for (var i = 0; i < num; i++) {
             var t = SQR.Transform();
@@ -104,20 +105,16 @@
             hero.add(t);
         }
 
-        var depthShader = SQR.Shader(assets['depth.glsl'])
-            .use()
-            .setUniform('uProjection', renderer.projection)
-            .setUniform('uNear', 0)
-            .setUniform('uFar',  40);  
-
-        var depthFBO = SQR.FrameBuffer(w, h);    
         var rawFBO = SQR.FrameBuffer(w, h);    
-        var bokeh = SQR.PostEffect(assets['bokeh.glsl']);
-        bokeh.shader
-            .use()
-            .setUniform('uScreenSize', [w, h, w/h]);
+        var blurXFBO = SQR.FrameBuffer(w, h);   
+        var blurYFBO = SQR.FrameBuffer(w, h);   
+
+        var blur = SQR.PostEffect(assets['blur.glsl']);
+        var bloom = SQR.PostEffect(assets['bloom.glsl']);
 
         var my = 0.4, mx = 0.4, tx = mx, ty = my;
+
+        var blurForce;
 
         var render = function() {
             requestAnimationFrame(render);
@@ -130,25 +127,33 @@
             // camroot.rotation.y = mx * SQR.TWOPI;
             camera.position.z = -50 + my * 200;
 
-            for(var i = 0; i < hero.numChildren; i++) {
+            for(var i = 1; i < hero.numChildren; i++) {
                 hero.children[i].rotation.x += 0.005;
                 hero.children[i].rotation.y += 0.007;
             }
 
-            depthFBO.bind();
-            ctx.clearColor(0, 0, 0, 1).clear();
-            renderer.render(root, camera, { replacementShader: depthShader });
-
             rawFBO.bind();
-            ctx.clearColor(0, 0, 0, 1);
             renderer.render(root, camera);
+
+            blurForce = 0.02;
+
+            blurXFBO.bind();
+            blur.shader.use();
+            blur.shader.setUniform('uDelta', [0.0, blurForce]);
+            blur.shader.setUniform('uTexture', rawFBO.texture);
+            renderer.render(blur);
+
+            blurYFBO.bind();
+            blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+            blur.shader.setUniform('uTexture', blurXFBO.texture);
+            renderer.render(blur);
 
             renderer.renderToScreen();
             ctx.gl.viewport(0, 0, w, h);
-            bokeh.shader.use();
-            bokeh.shader.setUniform('uTexture', rawFBO.texture);
-            bokeh.shader.setUniform('uDepthTexture', depthFBO.texture);
-            renderer.render(bokeh);
+            bloom.shader.use();
+            bloom.shader.setUniform('uTexture', rawFBO.texture);
+            bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+            renderer.render(bloom);
         }
 
         render();

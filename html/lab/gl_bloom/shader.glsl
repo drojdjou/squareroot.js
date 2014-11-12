@@ -22,18 +22,15 @@ void main() {
 precision mediump float;
 #endif
 
-//#include ~light/sphar-eucalyptus.glsl
+//#include ~light/sphar-sunset.glsl
 //#include ~light/sphar.glsl
 
                
 varying vec3 vNormal;
 varying vec2 vUV;
-
-uniform sampler2D uTexture;
-           
+        
 void main() {
-    vec4 col = texture2D(uTexture, vUV);
-	gl_FragColor = vec4(sphericalHarmonics(vNormal), 1.0);
+    gl_FragColor = vec4(sphericalHarmonics(vNormal), 1.0);
 }
 
 

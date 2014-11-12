@@ -2,7 +2,7 @@ body {
     overflow: hidden;
     background-color: #000;
     color: #fff;
-    font-family: monospace;
+    font-family: sans-serif;
     margin: 15px;
 }
 
@@ -19,6 +19,11 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+li {
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 a {
