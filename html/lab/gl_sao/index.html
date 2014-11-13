@@ -17,13 +17,19 @@
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix33.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
+<script type="text/javascript" src="../../src/primitives/Triangle.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/extras/TextureGenerator.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -46,8 +52,9 @@
         '~light/sphar-st-peter.glsl',
         '~light/sphar-sunset.glsl',
         'shader.glsl',
-        'blur.glsl',
-        'bloom.glsl',
+        'sao.glsl',
+        'normal2color.glsl',
+        'depth.glsl',
         '../../assets/model/elephant.json'
     ], function(assets) {
 
@@ -59,10 +66,10 @@
             clearColor(0, 0, 0, 1);
 
         var renderer = SQR.Renderer(ctx);
-        renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 0.3, 1000);
 
         var camera = SQR.Transform();
-        camera.position.set(0, 0, 50);
+        camera.position.set(0, -1, 30);
 
         var camroot = SQR.Transform();
         camroot.add(camera);
@@ -81,13 +88,15 @@
                 .index(model.tris)
                 .update();
 
+        // var buffer = SQR.Primitives.createCube(6, 6, 6).update();
+
+        var num = parseInt(document.location.search.substring(1)) || 50;
+
+        document.querySelector('.num').innerHTML = num;
+
         var shader = SQR.Shader(assets['shader.glsl'])
                 .use()
                 .attribPointers(buffer);
-
-        var num = parseInt(document.location.search.substring(1)) || 500;
-
-        document.querySelector('.num').innerHTML = num;
 
         var t = SQR.Transform();
         t.buffer = buffer;
@@ -99,22 +108,36 @@
             var t = SQR.Transform();
             t.buffer = buffer;
             t.shader = shader;
-            t.position.random().norm().mul(20 + Math.random() * 80);
+            t.position.random().norm().mul(0 + Math.random() * 10);
             t.rotation.random().mul(SQR.TWOPI);
             // t.isStatic = true;
             hero.add(t);
         }
 
-        var rawFBO = SQR.FrameBuffer(w, h);    
-        var blurXFBO = SQR.FrameBuffer(w, h);   
-        var blurYFBO = SQR.FrameBuffer(w, h);   
+        
 
-        var blur = SQR.PostEffect(assets['blur.glsl']);
-        var bloom = SQR.PostEffect(assets['bloom.glsl']);
+        var normal2color = SQR.Shader(assets['normal2color.glsl'])
+            .use()
+            .setUniform('uProjection', renderer.projection);
+
+        var depth = SQR.Shader(assets['depth.glsl'])
+            .use()
+            .setUniform('uProjection', renderer.projection)
+            .setUniform('uNear', 0.3)
+            .setUniform('uFar',  40);  
+
+        var rawFBO = SQR.FrameBuffer(w, h);     
+        var normalFBO = SQR.FrameBuffer(w, h);     
+        var depthFBO = SQR.FrameBuffer(w, h);   
+
+        var noise = SQR.Texture(SQR.TextureGenerator.noise(512)); 
+
+        var inverseProj = new SQR.ProjectionMatrix();
+        renderer.projection.inverse(inverseProj); 
+
+        var sao = SQR.PostEffect(assets['sao.glsl']);
 
         var my = 0.4, mx = 0.4, tx = mx, ty = my;
-
-        var blurForce;
 
         var render = function() {
             requestAnimationFrame(render);
@@ -125,38 +148,32 @@
             ctx.clear();
             camroot.rotation.y += 0.002;
             // camroot.rotation.y = mx * SQR.TWOPI;
-            camera.position.z = -50 + my * 200;
+            camera.position.z = 20 + my * 10;
 
             for(var i = 1; i < hero.numChildren; i++) {
-                hero.children[i].rotation.x += 0.005;
-                hero.children[i].rotation.y += 0.007;
+                // hero.children[i].rotation.x += 0.005;
+                // hero.children[i].rotation.y += 0.007;
             }
 
+            depthFBO.bind();
+            renderer.render(root, camera, { replacementShader: depth });
+
+            normalFBO.bind();
+            renderer.render(root, camera, { replacementShader: normal2color });
+
             rawFBO.bind();
+            // renderer.renderToScreen();
             renderer.render(root, camera);
-
-            // Bloom
-            // blurForce = mx * 0.033;
-            // Glow
-            blurForce = mx * 0.1;
-
-            blurXFBO.bind();
-            blur.shader.use();
-            blur.shader.setUniform('uDelta', [0.0, blurForce]);
-            blur.shader.setUniform('uTexture', rawFBO.texture);
-            renderer.render(blur);
-
-            blurYFBO.bind();
-            blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-            blur.shader.setUniform('uTexture', blurXFBO.texture);
-            renderer.render(blur);
 
             renderer.renderToScreen();
             ctx.gl.viewport(0, 0, w, h);
-            bloom.shader.use();
-            bloom.shader.setUniform('uTexture', rawFBO.texture);
-            bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
-            renderer.render(bloom);
+            sao.shader.use();
+            sao.shader.setUniform('bgl_DepthTexture', depthFBO.texture);
+            sao.shader.setUniform('bgl_RenderedTexture', rawFBO.texture);
+            sao.shader.setUniform('bgl_NoiseTexture', noise);
+            sao.shader.setUniform('bgl_RenderedTextureWidth', w);
+            sao.shader.setUniform('bgl_RenderedTextureHeight', h);
+            renderer.render(sao);
         }
 
         render();

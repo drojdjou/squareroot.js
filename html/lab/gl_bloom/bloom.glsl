@@ -16,8 +16,17 @@ uniform sampler2D uTexture;
 uniform sampler2D uBlurTexture;
 varying vec2 vUV;
 
+float brightness(vec3 c) {
+    return c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722;
+}
+
 void main(void) {
     vec3 c = texture2D(uTexture, vUV).rgb;
     vec3 b = texture2D(uBlurTexture, vUV).rgb;
-    gl_FragColor = vec4(max(c, b), 1.0);
+
+    // Bloom
+    // gl_FragColor = vec4(max(c, b), 1.0);
+    // Glow
+    if(c.r > 0.0) gl_FragColor = vec4(c, 1.0);
+    else gl_FragColor = vec4(b * 2.0, 1.0);
 }
