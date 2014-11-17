@@ -22,7 +22,7 @@ void main() {
 precision mediump float;
 #endif
 
-//#include ~light/sphar-sunset.glsl
+//#include ~light/sphar-cathedral.glsl
 //#include ~light/sphar.glsl
 
                
@@ -30,8 +30,8 @@ varying vec3 vNormal;
 varying vec2 vUV;
         
 void main() {
-    // gl_FragColor = vec4(sphericalHarmonics(vNormal), 1.0);
-    gl_FragColor = vec4(1.0, 0.8, 0.8, 1.0);
+    gl_FragColor = vec4(0.2 + sphericalHarmonics(vNormal) * 0.8, 1.0);
+    // gl_FragColor = vec4(1.0, 0.8, 0.8, 1.0);
 }
 
 

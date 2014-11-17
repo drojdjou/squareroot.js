@@ -18,6 +18,8 @@ precision mediump float;
 varying vec2 vUV;
 
 /*
+https://dl.dropboxusercontent.com/u/11542084/ssao_nohalo_1.2
+
 SSAO GLSL shader v1.2
 assembled by Martins Upitis (martinsh) (devlog-martinsh.blogspot.com)
 original technique is made by Arkano22 (www.gamedev.net/topic/550699-ssao-no-halo-artifacts/)
@@ -27,16 +29,16 @@ changelog:
 1.1 - added spiral sampling method from here:
 (http://www.cgafaq.info/wiki/Evenly_distributed_points_on_sphere)
 */
-uniform sampler2D bgl_DepthTexture;
-uniform sampler2D bgl_RenderedTexture;
-uniform sampler2D bgl_NoiseTexture;
-uniform float bgl_RenderedTextureWidth;
-uniform float bgl_RenderedTextureHeight;
+uniform sampler2D uDepthTexture;
+uniform sampler2D uTexture;
+uniform sampler2D uNoiseTexture;
+uniform float uTextureWidth;
+uniform float uTextureHeight;
 
 #define PI    3.14159265
 
-float width = bgl_RenderedTextureWidth; //texture width
-float height = bgl_RenderedTextureHeight; //texture height
+float width = uTextureWidth; //texture width
+float height = uTextureHeight; //texture height
 
 //------------------------------------------
 //general stuff
@@ -79,12 +81,12 @@ float lumInfluence = 0.1; //how much luminance affects occlusion
 // }
 
 vec2 rand(vec2 coord) {
-  return texture2D(bgl_NoiseTexture, coord).xy * noiseamount;
+  return texture2D(uNoiseTexture, coord).xy * noiseamount;
 }
 
 float doMist()
 {
-  float zdepth = texture2D(bgl_DepthTexture, vUV).x;
+  float zdepth = texture2D(uDepthTexture, vUV).x;
   float depth = -zfar * znear / (zdepth * (zfar - znear) - zfar);
   return clamp((depth-miststart)/mistend,0.0,1.0);
 }
@@ -92,7 +94,7 @@ float doMist()
 float readDepth(in vec2 coord) 
 {
   if (vUV.x < 0.0|| vUV.y < 0.0) return 1.0;
-  return (2.0 * znear) / (zfar + znear - texture2D(bgl_DepthTexture, coord ).x * (zfar-znear));
+  return (2.0 * znear) / (zfar + znear - texture2D(uDepthTexture, coord ).x * (zfar-znear));
 }
 
 float compareDepths(in float depth1, in float depth2,inout int far)
@@ -169,16 +171,18 @@ void main(void)
   ao = 1.0-ao;  
   
   if (mist) {
-    ao = mix(ao, 1.0,doMist());
+    ao = mix(ao, 1.0, doMist());
   }
   
-  vec3 color = texture2D(bgl_RenderedTexture, vUV).rgb;
+  vec3 color = texture2D(uTexture, vUV).rgb;
   
   vec3 lumcoeff = vec3(0.299,0.587,0.114);
   float lum = dot(color.rgb, lumcoeff);
-  vec3 luminance = vec3(lum, lum, lum);
+
+  ao = mix(ao, 1.0, lum * lumInfluence);
   
-  vec3 final = vec3(color * mix(vec3(ao),vec3(1.0),luminance*lumInfluence));//mix(color*ao, white, luminance)
+  vec3 final = color * vec3(ao);
+  // vec3 final = color;
   
   gl_FragColor = vec4(final,1.0); 
   

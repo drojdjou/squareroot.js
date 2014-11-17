@@ -1,9 +1,12 @@
+@import url(http://fonts.googleapis.com/css?family=Lora);
+@import url(http://fonts.googleapis.com/css?family=Lato:900,400,300italic);
+
 body {
     overflow: hidden;
     background-color: #000;
     color: #fff;
     font-family: sans-serif;
-    margin: 15px;
+    margin: 0;
 }
 
 canvas {
@@ -19,6 +22,10 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+.demo-list {
+  padding: 20px;
 }
 
 li {
@@ -41,4 +48,116 @@ a:hover {
     left: 0;
     background-color: rgba(0,0,0,0.6);
     padding: 10px;
+    display: none;
 }
+
+header button {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Lato;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 6px 15px 6px 15px;
+    margin: 10px;
+    background-color: #333333;
+    color: #aaa;
+    font-size: 0.8em;
+    font-weight: 100;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 0;
+    outline: none;
+    z-index: 1000;
+}
+
+header button:hover {
+    background-color: #ffffff;
+    color: #000000;
+
+}
+
+header button:after {
+    content: 'info + code';
+}
+
+header article {
+    overflow: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 60px 20px 20px 20px;
+    display: none;
+}
+
+@media (min-width: 900px) {
+    header article {
+      margin: 0px;
+      padding: 20px;
+    }
+}
+
+header code {
+    white-space: pre;
+    color: #808080;
+    display: block;
+    margin: 0 0 30px 0;
+}
+
+h1 {
+    margin: 0;
+    padding: 0;
+    font-family: Lato;
+}
+
+article code {
+  color: #aaa;
+  border-radius: 2px;
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+article code.block {
+  display: block;
+  white-space: pre-wrap;
+  font-size: 0.8em;
+}
+article code.block-pre {
+  display: block;
+  white-space: pre-wrap;
+}
+article .comment {
+  color: #74725e;
+}
+article .keyword {
+  color: #00d9ef;
+}
+article .object {
+  color: #bf76d7;
+}
+article .operator {
+  color: #ff0073;
+}
+article .string {
+  color: #e1d65a;
+}
+article .func {
+  color: #4e9d23;
+}
+
+
+
+
+
+
+
+
+
+
+

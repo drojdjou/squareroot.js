@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>webgl boilerplate brick</title>
+<title>cube</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -21,73 +21,84 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<script type="text/javascript">
+<script type="text/javascript" id="gl-script">
 
-    SQR.Loader.loadAssets(['shader.glsl'], function(assets) {
+SQR.Loader.loadAssets(['shader.glsl'], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight;
+    var w = window.innerWidth, h = window.innerHeight;
 
-        var ctx = SQR.Context('#gl-canvas')
-            .create()
-            .size(w, h).
-            clearColor(0, 0, 0, 1);
+    var ctx = SQR.Context('#gl-canvas')
+        .create()
+        .size(w, h).
+        clearColor(0, 0, 0, 1);
 
-        var r = function() { return Math.random() };
+    var r = function() { return Math.random() };
 
-        var geo = SQR.Buffer()
-            .layout(SQR.v2c3(), 4)
-            .data('aPosition',      -100, -100,        100, -100,      100, 100,      -100, 100)
-            .data('aColor',          r(), r(), r(),    r(), r(), r(),  r(), r(), r(),  r(), r(), r())
-            .index(0, 1, 2, 0, 2, 3)
-            .update();
+    var geo = SQR.Buffer()
+        .layout(SQR.v2c3(), 4)
+        .data('aPosition',      -100, -100,        100, -100,      100, 100,      -100, 100)
+        .data('aColor',          r(), r(), r(),    r(), r(), r(),  r(), r(), r(),  r(), r(), r())
+        .index(0, 1, 2, 0, 2, 3)
+        .update();
 
-        var shader = SQR.Shader(assets['shader.glsl'])
-            .use();
+    var shader = SQR.Shader(assets['shader.glsl'])
+        .use();
 
-        var mat2 = new SQR.Matrix2D();
-        var mat4 = new SQR.Matrix44();
-        var proj = new SQR.ProjectionMatrix().screenPixels2d();
+    var mat2 = new SQR.Matrix2D();
+    var mat4 = new SQR.Matrix44();
+    var proj = new SQR.ProjectionMatrix().screenPixels2d();
 
-        shader.setUniform('uColor', new Float32Array([1.0, 0.0, 0.0, 1.0]));
-        // shader.setUniform('uProjection', proj.data);
-        var concatMatrixUniform = shader.getUniform('uConcatMatrix');
+    shader.setUniform('uColor', new Float32Array([1.0, 0.0, 0.0, 1.0]));
+    // shader.setUniform('uProjection', proj.data);
+    var concatMatrixUniform = shader.getUniform('uConcatMatrix');
 
-        var r = 0, s = 0;
+    var r = 0, s = 0;
 
-        var updateColor = function(i, data) {
-            var r =  data[i+0], g =  data[i+1], b =  data[i+2];
+    var updateColor = function(i, data) {
+        var r =  data[i+0], g =  data[i+1], b =  data[i+2];
 
-            r += 0.01, g += 0.01, b += 0.01;
+        r += 0.01, g += 0.01, b += 0.01;
 
-            if(r > 1) r -= 1;
-            if(g > 1) g -= 1;
-            if(b > 1) b -= 1;
+        if(r > 1) r -= 1;
+        if(g > 1) g -= 1;
+        if(b > 1) b -= 1;
 
-            data[i+0] = r, data[i+1] = g, data[i+2] = b;
-        };
+        data[i+0] = r, data[i+1] = g, data[i+2] = b;
+    };
 
-        
+    var render = function() {
+        requestAnimationFrame(render);
+        ctx.clear();
 
-        var render = function() {
-            requestAnimationFrame(render);
-            ctx.clear();
+        geo.iterate('aColor', updateColor);
+        geo.update();
 
-            geo.iterate('aColor', updateColor);
-            geo.update();
+        mat4.identity().multiply(proj).translate(w/2, h/2, 0).rotate(0, 0, r);
+        shader.setUniform(concatMatrixUniform, mat4.data).attribPointers(geo);
 
-            mat4.identity().multiply(proj).translate(w/2, h/2, 0).rotate(0, 0, r);
-            shader.setUniform(concatMatrixUniform, mat4.data).attribPointers(geo);
+        geo.draw();
+        r += 0.01;
+    }
 
-            geo.draw();
-            r += 0.01;
-        }
-
-        render();
-    });
+    render();
+});
 
 </script>
 
-<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+<header>
+    <button class="icon"></button>
+    <article>
+        <h1>Just a rotating square</h1>
+        <code></code>
+    </article>
+</header>
+<script type="text/javascript" src="../base.js"></script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
 
 </body>
 </head>

@@ -25,8 +25,8 @@ void main(void) {
     vec3 b = texture2D(uBlurTexture, vUV).rgb;
 
     // Bloom
-    // gl_FragColor = vec4(max(c, b), 1.0);
+    gl_FragColor = vec4(max(c, b), 1.0);
     // Glow
-    if(c.r > 0.0) gl_FragColor = vec4(c, 1.0);
-    else gl_FragColor = vec4(b * 2.0, 1.0);
+    // if(c.r > 0.0) gl_FragColor = vec4(c, 1.0);
+    // else gl_FragColor = vec4(b * 2.0, 1.0);
 }

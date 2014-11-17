@@ -25,103 +25,103 @@
 
 <div class="num"></div>
 
-<script type="text/javascript">
+<script type="text/javascript" id="gl-script">
 
-    SQR.Loader.loadAssets([
-        'shader.glsl',
-        '../../assets/model/monkey.json'
-    ], function(assets) {
+SQR.Loader.loadAssets([
+    'shader.glsl',
+    '../../assets/model/monkey.json'
+], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight;
+    var w = window.innerWidth, h = window.innerHeight;
 
-        ctx = SQR.Context('#gl-canvas')
-            .create()
-            .size(w, h).
-            clearColor(1, 1, 1, 1);
+    ctx = SQR.Context('#gl-canvas')
+        .create()
+        .size(w, h).
+        clearColor(1, 1, 1, 1);
 
 
-        ctx.gl.frontFace(ctx.gl.CCW);
-        ctx.gl.enable(ctx.gl.DEPTH_TEST);
+    ctx.gl.frontFace(ctx.gl.CCW);
+    ctx.gl.enable(ctx.gl.DEPTH_TEST);
 
-        var model = assets['../../assets/model/monkey.json'];
-        
-        geo = SQR.Buffer()
-            .layout(SQR.v3n3(), model.vertices.length / 3)
-            .data('aPosition', model.vertices)
-            .data('aNormal',  model.normals)
-            .index(model.tris)
-            .update();
+    var model = assets['../../assets/model/monkey.json'];
+    
+    geo = SQR.Buffer()
+        .layout(SQR.v3n3(), model.vertices.length / 3)
+        .data('aPosition', model.vertices)
+        .data('aNormal',  model.normals)
+        .index(model.tris)
+        .update();
 
-        var shader = SQR.Shader(assets['shader.glsl'])
-            .attribPointers(geo)
-            .use();
+    var shader = SQR.Shader(assets['shader.glsl'])
+        .attribPointers(geo)
+        .use();
 
-        var worldMat = new SQR.Matrix44();
-        var normMat = new SQR.Matrix33();
-        var proj = new SQR.ProjectionMatrix().perspective(70, window.innerWidth/window.innerHeight, 1, 1000);
+    var worldMat = new SQR.Matrix44();
+    var normMat = new SQR.Matrix33();
+    var proj = new SQR.ProjectionMatrix().perspective(70, window.innerWidth/window.innerHeight, 1, 1000);
 
-        var numSquares = parseInt(document.location.search.substring(1)) || 12000, squarePositions = [], squareRotations = [], matrices = [], normalMatrices = [];
-        var globalRotate = 0;
+    var numSquares = parseInt(document.location.search.substring(1)) || 12000, squarePositions = [], squareRotations = [], matrices = [], normalMatrices = [];
+    var globalRotate = 0;
 
-        document.querySelector('.num').innerHTML = numSquares;
+    document.querySelector('.num').innerHTML = numSquares;
 
-        for(var i = 0; i < numSquares; i++) {
-            var p = new SQR.V3().random().norm().mul(10 + 100 * Math.random())
-            var r = new SQR.V3().random().mul(100)
-            var m = new SQR.Matrix44();
-            var n = new SQR.Matrix33();
+    for(var i = 0; i < numSquares; i++) {
+        var p = new SQR.V3().random().norm().mul(10 + 100 * Math.random())
+        var r = new SQR.V3().random().mul(100)
+        var m = new SQR.Matrix44();
+        var n = new SQR.Matrix33();
 
-            m.translate(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
+        m.translate(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
 
-            squarePositions.push(p);
-            squareRotations.push(r);
-            matrices.push(m);
-            normalMatrices.push(m.inverseMat3(n));
-        }
+        squarePositions.push(p);
+        squareRotations.push(r);
+        matrices.push(m);
+        normalMatrices.push(m.inverseMat3(n));
+    }
 
-        shader.setUniform('uProjection', proj.data);
+    shader.setUniform('uProjection', proj.data);
 
-        var my = 0, mx = 0, tx = 0, ty = 0;
+    var my = 0, mx = 0, tx = 0, ty = 0;
 
-        var isTouch = 'ontouchstart' in document;
-        var mousemove = isTouch ? 'touchmove' : 'mousemove';
+    var isTouch = 'ontouchstart' in document;
+    var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
-        document.addEventListener(mousemove, function(e) {
-            e = isTouch ? e.targetTouches[0] : e;
-            tx = e.pageX / window.innerWidth;
-            ty = e.pageY / window.innerHeight;
-        });
-
-        var render = function() {
-            requestAnimationFrame(render);
-
-            ctx.clear();
-
-            worldMat.setTranslation(0, 0, -10 + -170 * my).rotate(0, globalRotate, 0);
-            shader.setUniform('uViewMatrix', worldMat.data);
-            mx += (tx - mx) * 0.1;
-            my += (ty - my) * 0.1;
-            
-            for(var i = numSquares - 1; i >= 0; i--) {
-                var p = squarePositions[i];
-                var r = squareRotations[i];
-                var m = matrices[i];
-                m.setTranslation(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
-                var n = normalMatrices[i];
-                r.x += 0.01, r.y += 0.01, r.z += 0.01;
-                shader.setUniform('uMatrix', m);
-                shader.setUniform('uNormalMatrix', m.inverseMat3(n));
-                
-                geo.draw();
-
-                
-            }
-
-            globalRotate += 0.002;
-        }
-
-        render();
+    document.addEventListener(mousemove, function(e) {
+        e = isTouch ? e.targetTouches[0] : e;
+        tx = e.pageX / window.innerWidth;
+        ty = e.pageY / window.innerHeight;
     });
+
+    var render = function() {
+        requestAnimationFrame(render);
+
+        ctx.clear();
+
+        worldMat.setTranslation(0, 0, -10 + -170 * my).rotate(0, globalRotate, 0);
+        shader.setUniform('uViewMatrix', worldMat.data);
+        mx += (tx - mx) * 0.1;
+        my += (ty - my) * 0.1;
+        
+        for(var i = numSquares - 1; i >= 0; i--) {
+            var p = squarePositions[i];
+            var r = squareRotations[i];
+            var m = matrices[i];
+            m.setTranslation(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
+            var n = normalMatrices[i];
+            r.x += 0.01, r.y += 0.01, r.z += 0.01;
+            shader.setUniform('uMatrix', m);
+            shader.setUniform('uNormalMatrix', m.inverseMat3(n));
+            
+            geo.draw();
+
+            
+        }
+
+        globalRotate += 0.002;
+    }
+
+    render();
+});
 
 </script>
 
