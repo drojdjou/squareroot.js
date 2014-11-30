@@ -7,6 +7,7 @@ SQR.Context = function(canvas) {
 
 	c.create = function(params) {
 		gl = canvas.getContext("experimental-webgl", { antialias: true });
+		c.gl = gl;
         c.setAsCurrent();
 		return c;
 	}

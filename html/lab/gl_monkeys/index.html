@@ -3,6 +3,12 @@
 <head>
 <title>12(thousand) monkeys</title>
 
+<!--
+
+up to 38FPS - 15" MBP Retina, Chrome, presentation mode
+
+-->
+
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
@@ -97,7 +103,7 @@ SQR.Loader.loadAssets([
 
         ctx.clear();
 
-        worldMat.setTranslation(0, 0, -10 + -170 * my).rotate(0, globalRotate, 0);
+        worldMat.identity().setTranslation(0, 0, -10 + -170 * my).rotate(0, globalRotate, 0);
         shader.setUniform('uViewMatrix', worldMat.data);
         mx += (tx - mx) * 0.1;
         my += (ty - my) * 0.1;
@@ -106,7 +112,7 @@ SQR.Loader.loadAssets([
             var p = squarePositions[i];
             var r = squareRotations[i];
             var m = matrices[i];
-            m.setTranslation(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
+            m.identity().setTranslation(p.x, p.y, p.z).rotate(r.x, r.y, r.z);
             var n = normalMatrices[i];
             r.x += 0.01, r.y += 0.01, r.z += 0.01;
             shader.setUniform('uMatrix', m);
