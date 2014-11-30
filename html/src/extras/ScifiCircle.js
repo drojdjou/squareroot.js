@@ -1,0 +1,1 @@
+SQR.ScifiCircle = function() {}

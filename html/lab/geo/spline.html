@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Line smoothing</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+
+<script type="text/javascript">
+
+var w = window.innerWidth, h = window.innerHeight;
+
+var cnv = document.querySelector('canvas');
+cnv.width = w;
+cnv.height = h;
+
+var ctx = cnv.getContext('2d');
+var cx = w/2, cy = h/2, r = 30;
+
+var spline = SQR.Spline()
+
+	// .addSegment(cx, cy)
+	// .addSegment(cx, cy-r)
+	// .addSegment(cx-r, cy-r)
+	// .addSegment(cx-r, cy+r)
+	// .addSegment(cx+r, cy+r)
+	// .addSegment(cx+r, cy-r*2)
+	// .addSegment(cx-r*2, cy-r*2)
+	// .addSegment(cx-r*2, cy+r*2)
+	// .addSegment(cx+r*2, cy+r*2)
+	// .addSegment(cx+r*2, cy-r*3)
+	// .addSegment(cx-r*3, cy-r*3)
+	// .addSegment(cx-r*3, cy+r*3)
+	// .addSegment(cx+r*3, cy+r*3)
+	// .addSegment(cx+r*3, cy-r*4)
+
+	// .addSegment(20, cy)
+	// .addSegment(w/3, cy+100)
+	// .addSegment(w/3*2, cy+100)
+	// .addSegment(w-20, cy)
+
+	.addSegment(100, cy)
+	.addSegment(w/3, cy+100)
+	.addSegment(w/3*2, cy+100)
+	.addSegment(w-180, cy)
+	.addSegment(w/3*2, cy-100)
+	.addSegment(w/3, cy-100)
+	
+	.create(0.8, true);
+
+var cars = [], numCars = 200;
+
+for(var i = 0; i < numCars; i++) {
+	cars.push({ 
+		t: Math.random(), 
+		s: 0.001 + Math.random() * 0.001, 
+		o: Math.random() * 40,
+		c: 80 + (Math.random() * 80) | 0
+	});
+}
+
+var t = 0, speed = 0.003;
+
+var draw = function() {
+
+	requestAnimationFrame(draw);
+
+	ctx.clearRect(0, 0, w, h);
+
+	ctx.fillStyle = 'rgba(60, 0, 0, 1)';
+
+	ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
+	ctx.lineWidth = 2;
+
+	// ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+	// ctx.beginPath();
+	// for(var i = 0, l = spline.segments.length; i < l; i++) {
+	// 	var s = spline.segments[i];
+	// 	if(i == 0) ctx.moveTo(s.x, s.y);
+	// 	else ctx.lineTo(s.x, s.y);
+	// }
+	// ctx.stroke();
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgba(255, 0, 0, 0)';
+
+	for(var i = 0, l = spline.points.length; i < l; i++) {
+		var c = spline.points[i];
+
+		if(i == 0) ctx.moveTo(c.p0.x, c.p0.y);
+		ctx.bezierCurveTo(c.c0.x, c.c0.y, c.c1.x, c.c1.y, c.p1.x, c.p1.y);		
+	}
+
+	ctx.stroke();
+	// ctx.fill();
+
+	
+	
+	for(var i = 0; i < numCars; i++) {
+		var t = cars[i].t;
+		var o = cars[i].o;
+
+		cars[i].t += cars[i].s;
+		cars[i].t = cars[i].t % 1;
+
+		var p = spline.valueAt(t);
+		var a = spline.velocityAt(t).norm().mul(o);
+
+		// t += a.mag() * 0.00001;
+		t += speed;
+		t = t % 1;
+
+		ctx.save();
+
+		ctx.translate(p.x, p.y);
+		ctx.translate(-a.y, a.x);
+		ctx.rotate(Math.atan2(a.y, a.x));
+		
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+		ctx.translate(-2, -2);
+		ctx.beginPath();
+		ctx.moveTo(-12, -6);
+		ctx.lineTo(-12,  6);
+		ctx.lineTo( 12,  0);
+		ctx.lineTo( 12,  0);
+		ctx.fill();
+		
+		ctx.fillStyle = 'rgba(0, ' + cars[i].c + ', 128, 1)';
+		ctx.translate(2, 2);
+		ctx.beginPath();
+		ctx.moveTo(-12, -6);
+		ctx.lineTo(-12,  6);
+		ctx.lineTo( 12,  0);
+		ctx.lineTo( 12,  0);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
+}
+
+draw();
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

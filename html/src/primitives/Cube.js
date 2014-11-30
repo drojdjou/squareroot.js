@@ -24,18 +24,18 @@ SQR.Primitives.createCube = function(w, h, d) {
 
 	var faces = [];
 
-	faces.push(SQR.Triangle().setPosition(v0, v1, v3).setUV(u0, u1, u3));
-	faces.push(SQR.Triangle().setPosition(v0, v3, v2).setUV(u0, u3, u2));
-	faces.push(SQR.Triangle().setPosition(v4, v7, v5).setUV(u0, u3, u1));
-	faces.push(SQR.Triangle().setPosition(v4, v6, v7).setUV(u0, u2, u3));
-	faces.push(SQR.Triangle().setPosition(v0, v2, v6).setUV(u1, u3, u2));
-	faces.push(SQR.Triangle().setPosition(v0, v6, v4).setUV(u1, u2, u0));
-	faces.push(SQR.Triangle().setPosition(v1, v7, v3).setUV(u1, u2, u3));
-	faces.push(SQR.Triangle().setPosition(v1, v5, v7).setUV(u1, u0, u2));
-	faces.push(SQR.Triangle().setPosition(v0, v4, v5).setUV(u0, u2, u3));
-	faces.push(SQR.Triangle().setPosition(v0, v5, v1).setUV(u0, u3, u1));
-	faces.push(SQR.Triangle().setPosition(v2, v7, v6).setUV(u0, u3, u2));
-	faces.push(SQR.Triangle().setPosition(v2, v3, v7).setUV(u0, u1, u3));
+	faces.push(SQR.Face().setPosition(v0, v1, v3).setUV(u0, u1, u3));
+	faces.push(SQR.Face().setPosition(v0, v3, v2).setUV(u0, u3, u2));
+	faces.push(SQR.Face().setPosition(v4, v7, v5).setUV(u0, u3, u1));
+	faces.push(SQR.Face().setPosition(v4, v6, v7).setUV(u0, u2, u3));
+	faces.push(SQR.Face().setPosition(v0, v2, v6).setUV(u1, u3, u2));
+	faces.push(SQR.Face().setPosition(v0, v6, v4).setUV(u1, u2, u0));
+	faces.push(SQR.Face().setPosition(v1, v7, v3).setUV(u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v1, v5, v7).setUV(u1, u0, u2));
+	faces.push(SQR.Face().setPosition(v0, v4, v5).setUV(u0, u2, u3));
+	faces.push(SQR.Face().setPosition(v0, v5, v1).setUV(u0, u3, u1));
+	faces.push(SQR.Face().setPosition(v2, v7, v6).setUV(u0, u3, u2));
+	faces.push(SQR.Face().setPosition(v2, v3, v7).setUV(u0, u1, u3));
 
 	var c = 0, t;
 	faces.forEach(function(t) {

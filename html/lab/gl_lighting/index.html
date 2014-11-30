@@ -24,6 +24,7 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -40,13 +41,13 @@
 
     SQR.Loader.loadAssets([
         '~light/sphar.glsl',
-        '~light/sphar-cathedral.glsl',
-        '~light/sphar-eucalyptus.glsl',
-        '~light/sphar-oldtown.glsl',
-        '~light/sphar-st-peter.glsl',
-        '~light/sphar-sunset.glsl',
+        'sphar-custom.glsl',
         'shader.glsl',
-        'edge.glsl',
+        'background.glsl',
+        'grace-probe.jpg',
+        'arches.jpg',
+        'kitchen-probe.jpg',
+        'narrowpath.jpg',
         '../../assets/model/elephant.json'
     ], function(assets) {
 
@@ -63,7 +64,7 @@
         renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
 
         var camera = SQR.Transform();
-        camera.position.set(0, -1, 50);
+        // camera.position.x = 1;
 
         var camroot = SQR.Transform();
         camroot.add(camera);
@@ -86,12 +87,13 @@
                 .use()
                 .attribPointers(buffer);
 
-        var num = parseInt(document.location.search.substring(1)) || 500;
+        var num = parseInt(document.location.search.substring(1)) || 0;
 
         var t = SQR.Transform();
         t.buffer = buffer;
         t.shader = shader;
         // t.scale.set(2, 2, 2);
+        t.rotation.y = Math.PI * -0.5;
         hero.add(t);
 
         for (var i = 0; i < num; i++) {
@@ -101,14 +103,24 @@
             t.position.random().norm().mul(20 + Math.random() * 80);
             t.rotation.random().mul(SQR.TWOPI);
             // t.isStatic = true;
+            t.scale.set(-1, 1, 1);
             hero.add(t);
         }
 
-        var rawFBO = SQR.FrameBuffer(w, h);    
+        var backgroundBuffer = SQR.Primitives.create2DQuad( w * -0.5, w * -0.5, w, w );
+        var backgroundMatrix = new SQR.Matrix44(); 
+        backgroundMatrix.identity().multiply(new SQR.ProjectionMatrix().screenPixels2d()).translate(w/2, h/2, 0).scale(-1.2, 1.2, 1);
 
-        var edge = SQR.PostEffect(assets['edge.glsl']);
+        var backgroundTexture = SQR.Texture(assets['narrowpath.jpg']);
+        var backgroundShader = SQR.Shader(assets['background.glsl'])
+                .use()
+                .setUniform('uConcatMatrix', backgroundMatrix.data);
 
-        var my = 0.4, mx = 0.4, tx = mx, ty = my;
+        SQR.Debug.traceBuffer(backgroundBuffer, true);
+
+        var my = 0, mx = 0, tx = mx, ty = my;
+
+        var options = { dontClear: true };
 
         var render = function() {
             requestAnimationFrame(render);
@@ -117,28 +129,30 @@
             my += (ty - my) * 0.1;
 
             ctx.clear();
-            camroot.rotation.y += 0.002;
+
+            ctx.gl.depthMask(false);
+            ctx.gl.disable(ctx.gl.CULL_FACE);
+
+            backgroundBuffer.bind();
+            backgroundShader
+                .use()
+                .setUniform('uTexture', backgroundTexture)
+                .attribPointers(backgroundBuffer);
+
+            backgroundBuffer.draw();
+
+            ctx.gl.depthMask(true);
+
+            camroot.rotation.y = mx * Math.PI * 2;
             // camroot.rotation.y = mx * SQR.TWOPI;
-            camera.position.z = -50 + my * 200;
+            camera.position.z = 13;
 
             for(var i = 1; i < hero.numChildren; i++) {
                 hero.children[i].rotation.x += 0.005;
                 hero.children[i].rotation.y += 0.007;
             }
 
-            rawFBO.bind();
-            renderer.render(root, camera);
-
-            renderer.renderToScreen();
-            ctx.gl.viewport(0, 0, w, h);
-            edge.shader.use();
-            edge.shader.setUniform('uTexture', rawFBO.texture);
-
-            var now = new Date().getTime() - startTime;
-            edge.shader.setUniform('uTime', now / 40);
-
-
-            renderer.render(edge);
+            renderer.render(root, camera, options);
         }
 
         render();

@@ -103,7 +103,7 @@ SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
 }
 
 /**
- *  Returns a perspective projection matrix.
+ *  Returns vector mautipled by this matrix
  */
 SQR.ProjectionMatrix.prototype.transformVector = function(v, pv) {
     var x = v.x, y = v.y, z = v.z, w = v.w;

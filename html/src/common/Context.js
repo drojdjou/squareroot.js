@@ -1,20 +1,13 @@
 SQR.Context = function(canvas) {
 
-	var c = { canvas: canvas },
-		gl;
-
 	if(!canvas) canvas = document.createElement('canvas');
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
 
+	var c = { canvas: canvas }, gl;
+
 	c.create = function(params) {
 		gl = canvas.getContext("experimental-webgl", { antialias: true });
-		c.gl = gl;
-
-		gl.enable(gl.CULL_FACE);
-        gl.frontFace(gl.CW);
-
-        SQR.gl = gl;
-
+        c.setAsCurrent();
 		return c;
 	}
 
@@ -32,6 +25,11 @@ SQR.Context = function(canvas) {
 
 	c.clear = function() {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		return c;
+	}
+
+	c.setAsCurrent = function() {
+		SQR.gl = gl;
 		return c;
 	}
 

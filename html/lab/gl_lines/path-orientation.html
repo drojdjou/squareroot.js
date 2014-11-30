@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>webgl boilerplate brick</title>
+<title>lines and curves</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -20,9 +20,14 @@
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -31,12 +36,11 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
         'shader.glsl',
+        'normal2color.glsl',
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
@@ -44,35 +48,52 @@
         var ctx = SQR.Context('#gl-canvas')
             .create()
             .size(w, h).
-            clearColor(1, 1, 1, 1);
+            clearColor(0, 0.15, 0.2, 1);
 
-        var renderer = new SQR.Renderer(ctx);
+        var renderer = SQR.Renderer(ctx);
         renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
 
-        var camera = new SQR.Transform();
-        camera.position.z = 100;
+        var camera = SQR.Transform();
+        camera.position.z = 300;
 
-        var numSquares = parseInt(document.location.search.substring(1)) || 12000;
-        document.querySelector('.num').innerHTML = numSquares;
-
-        var buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        var shader = SQR.Shader(assets['shader.glsl']).use().attribPointers(buffer);
-
-        var root = new SQR.Transform();
-        var camRoot = new SQR.Transform();
-        root.add(camRoot);
+        var camRoot = SQR.Transform();
         camRoot.add(camera);
 
-        for(var i = 0; i < numSquares; i++) {
-            var t = new SQR.Transform();
-            var sp = (0.5 + 0.5 * Math.random()) * 80;
-            t.position.random().norm().mul(sp);
-            t.rotation.random().mul(SQR.TWOPI);
-            t.buffer = buffer;
-            t.shader = shader;
-            t.isStatic = true;
-            root.add(t);
-        }
+        var curve = new SQR.Spline()
+            .addSegment(100, 100,  -100)
+            .addSegment(100, 100,  100)
+            .addSegment(0,   -100,   0)
+            .addSegment(-100, 100, -100)
+            .addSegment(-100, 100,  100)
+            .create(0.5);
+        
+
+        var curveResolution = 120;
+
+        var curveBuffer = SQR.Buffer()
+            .layout({ aPosition: 3 }, curveResolution)
+            .setMode(SQR.gl.LINE_STRIP);
+
+            for(var i = 0; i < curveResolution; i++) {
+                curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
+            }
+
+            curveBuffer.update();
+
+        
+
+        var cube = SQR.Transform();
+        cube.directMatrixMode = true;
+        cube.buffer = SQR.Primitives.createCube(10, 10, 20).update();
+        cube.shader = SQR.Shader(assets['normal2color.glsl']);
+
+        var line = SQR.Transform();
+        line.buffer = curveBuffer;
+        line.shader = SQR.Shader(assets['shader.glsl']);
+        line.uniforms = { 'uColor': [1, 1, 1] };
+
+        var root = SQR.Transform();
+        root.add(camRoot, line, cube);
 
         var my = 0, mx = 0, tx = 0, ty = 0;
 
@@ -85,12 +106,24 @@
             ty = e.pageY / window.innerHeight;
         });
 
+        var phase = 0;
+
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
-            camRoot.rotation.y += 0.002;
-            camera.position.z = my * 200;
+
+            var p = Math.sin(phase) * 0.5 + 0.5;
+            curve.matrixAt(p, cube.matrix);
+            phase += 0.01;
+
+            // cube.rotation.x += 0.01;
+            // cube.rotation.y += 0.01;
+
+            camRoot.rotation.y += 0.005;
+            // camera.position.z = my * 200;
             renderer.render(root, camera);
+
+            
 
             mx += (tx - mx) * 0.1;
             my += (ty - my) * 0.1;

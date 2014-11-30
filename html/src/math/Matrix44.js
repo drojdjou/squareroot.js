@@ -125,21 +125,18 @@ SQR.Matrix44 = function() {
 
     this.setScale = function(sx, sy, sz, m) {
         var d = m || this.data;
-        this.identity(m);
         d[0] = sx,d[5] = sy,d[10] = sz;
         return m || this;
     }
 
     this.setTranslation = function(tx, ty, tz, m) {
         var d = m || this.data;
-        this.identity(m);
-        d[12] = tx,d[13] = ty,d[14] = tz;
+        d[12] = tx, d[13] = ty, d[14] = tz;
         return m || this;
     }
 
     this.setRotation = function(rx, ry, rz, m) {
         var d = m || this.data;
-        this.identity(m);
         var six = Math.sin(rx), cox = Math.cos(rx), 
             siy = Math.sin(ry), coy = Math.cos(ry), 
             siz = Math.sin(rz), coz = Math.cos(rz);
@@ -160,16 +157,19 @@ SQR.Matrix44 = function() {
     }
 
     this.translate = function(tx, ty, tz) {
+        this.identity(SQR.Matrix44.__temp);
         this.setTranslation(tx, ty, tz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
     this.rotate = function(rx, ry, rz) {
+        this.identity(SQR.Matrix44.__temp);
         this.setRotation(rx, ry, rz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
     this.scale = function(sx, sy, sz) {
+        this.identity(SQR.Matrix44.__temp);
         this.setScale(sx, sy, sz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }

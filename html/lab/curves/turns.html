@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>turns</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/extras/TextureGenerator.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/QuadraticBezier.js"></script>
+
+<script type="text/javascript">
+
+var s = 400;
+
+var cnv = document.querySelector('canvas');
+cnv.width = s * 2;
+cnv.height = s;
+
+var ctx = cnv.getContext('2d');
+var curve = new SQR.QuadraticBezier(
+
+	new SQR.V2(0, 0),
+	new SQR.V2(0, 160),
+	new SQR.V2(160, 160),
+	new SQR.V2(160, 00)
+
+);
+
+var dots = [], numDots = 200;
+
+for(var i = 0; i < numDots; i++) {
+	dots.push({
+		c: 128 + (Math.random() * 127) | 0,
+		t: Math.random(),
+		s: -0.005 + Math.random() * -0.005,
+		o: (Math.random() * 2 - 1) * 10
+	});
+}
+
+var density = 100, phase = 0;
+
+var vel = new SQR.V2();
+
+var run = function() {
+
+	requestAnimationFrame(run);
+
+	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+	ctx.fillRect(0, 0, s * 2, s);
+
+	ctx.save();
+	ctx.translate(400, 40);
+	ctx.scale(2, 2);
+
+	ctx.fillStyle = 'rgb(255, 0, 0)';
+	// ctx.fillRect(curve.p1.x - 2, curve.p1.y - 2, 4, 4);
+	// ctx.fillRect(curve.c1.x - 2, curve.c1.y - 2, 4, 4);
+	// ctx.fillRect(curve.c0.x - 2, curve.c0.y - 2, 4, 4);
+
+	ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+	ctx.beginPath();
+	ctx.moveTo(0, 0);
+
+	for(var i = 0; i < density; i++) {
+		var v = curve.valueAt(i/density);
+		ctx.lineTo(v.x, v.y);
+	}
+
+	var p = Math.sin(phase);
+	var ps = Math.sin(p + Math.PI * 0.5);
+	var pc = Math.cos(p + Math.PI * 0.5);
+	phase += 0.01;
+
+	var strechFactor = 0.8 + (1 - Math.abs(p)) * 0.2;
+
+	curve.c0.x = pc * 0 * strechFactor;
+	curve.c0.y = ps * 40 * strechFactor;
+
+	curve.c1.x = pc * 40 * strechFactor;
+	curve.c1.y = ps * 120 * strechFactor;
+
+	curve.p1.x = pc * 160 * strechFactor;
+	curve.p1.y = ps * 160 * strechFactor;
+	ctx.stroke();
+
+	// for(var i = 0; i < density; i++) {
+	// 	var v = curve.valueAt(i/density);
+	// 	curve.velocityAt(i/density, vel);
+	// 	ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+	// 	ctx.beginPath();
+	// 	vel.norm().mul(10);
+	// 	ctx.lineTo(v.x, v.y);
+	// 	ctx.lineTo(v.x + vel.y * 1, v.y + vel.x * -1);
+	// 	ctx.stroke();
+	// }
+
+	
+	
+
+
+	for(var i = 0; i < numDots; i++) {
+		var d = dots[i];
+
+		d.t += d.s;
+		if(d.t < 0) d.t += 1;
+		if(d.t > 1) d.t -= 1;
+
+		var v = curve.valueAt(d.t);
+		curve.velocityAt(d.t, vel);
+
+		vel.norm().mul(d.o).perp();
+		
+		// vel.mul(Math.sin(d.t * Math.PI));
+
+		ctx.fillStyle = 'rgba(120, 160, ' + d.c + ', ' + d.t + ')';
+		ctx.beginPath();
+		ctx.arc(v.x + vel.x, v.y + vel.y, 2, 0, Math.PI * 2);
+		ctx.fill();
+	}
+
+	
+
+	ctx.restore();
+}
+
+run();
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

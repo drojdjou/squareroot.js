@@ -3,7 +3,7 @@ SQR.TextureGenerator = {
 	noise: function(w, h) {
 
 		w = w || 512;
-		h = h ||w;
+		h = h || w;
 
 		var c = document.createElement('canvas')
 		c.width = w, c.height = h;
@@ -23,7 +23,7 @@ SQR.TextureGenerator = {
 
 		return c;
 
-	}
+	},
 
 };
 

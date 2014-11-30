@@ -1,10 +1,16 @@
-SQR.Buffer = function(_gl) {
+SQR.Buffer = function() {
 
 	var b = {};
-	var gl = _gl;
 	var hasIndex = false;
 	var data, indices;
 	var buffer, indexBuffer;
+
+	b.mode = SQR.gl.TRIANGLES;
+
+	b.setMode = function(m) {
+		b.mode = m
+		return b;
+	}
 
 	/**
 	 *	Example layout: attributes = { aPosition: 3, aColor: 4, aUV: 2 }
@@ -56,14 +62,19 @@ SQR.Buffer = function(_gl) {
 		for(var j = 0; j < s.size; j++) {
 			data[position * b.strideSize + j + s.offset] = array[j];
 		}
+
+		return b;
 	}
 
 	b.iterate = function(attribute, callback) {
 		var s = b.attributes[attribute];
+		var c = 0;
 
 		for(var i = 0; i < data.length; i += b.strideSize) {
-			callback(i + s.offset, data);
+			callback(i + s.offset, data, c);
+			c++;
 		}
+		return b;
 	}
 
 	b.bind = function() {
@@ -100,12 +111,13 @@ SQR.Buffer = function(_gl) {
         return b;
 	}
 
-	b.draw = function(mode) {
+	b.draw = function() {
 		var gl = SQR.gl;
+
 		if(hasIndex)
-			gl.drawElements(mode || SQR.gl.TRIANGLES, b.indexSize, gl.UNSIGNED_SHORT, 0);
+			gl.drawElements(b.mode, b.indexSize, gl.UNSIGNED_SHORT, 0);
 		else 
-			gl.drawArrays(mode || SQR.gl.TRIANGLES, 0, b.size);
+			gl.drawArrays(b.mode, 0, b.size);
 	}
 
 	b.getDataArray = function() {

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>lines and curves</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        'shader.glsl',
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0.15, 0.2, 1);
+
+        var renderer = SQR.Renderer(ctx);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+
+        var camera = SQR.Transform();
+        camera.position.z = 200;
+
+        var camRoot = SQR.Transform();
+        camRoot.add(camera);
+
+        var curve = new SQR.Bezier();
+        curve.p0 = new SQR.V3(-50,   0,  50); 
+        curve.c0 = new SQR.V3(  0, -50,  50);
+        curve.c1 = new SQR.V3(  0,   0, -50);
+        curve.p1 = new SQR.V3(-50,  50, -50);
+
+        var lineBuffer = SQR.Buffer()
+            .layout({ aPosition: 3 }, 4)
+            .data('aPosition', 
+                curve.p0.x, curve.p0.y, curve.p0.z,
+                curve.c0.x, curve.c0.y, curve.c0.z,
+                curve.c1.x, curve.c1.y, curve.c1.z,
+                curve.p1.x, curve.p1.y, curve.p1.z
+             )
+            .setMode(SQR.gl.LINE_STRIP)
+            .update();
+
+        var curveResolution = 20;
+
+        var curveBuffer = SQR.Buffer()
+            .layout({ aPosition: 3 }, curveResolution+1)
+            .setMode(SQR.gl.LINE_STRIP);
+
+        for(var i = 0; i <= curveResolution; i++) {
+            curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
+        }
+
+        curveBuffer.update();
+
+
+        var curveVelocityBuffer = SQR.Buffer()
+            .layout({ aPosition: 3 }, (curveResolution + 1) * 8)
+            .setMode(SQR.gl.LINES);
+
+        var up = new SQR.V3(0, 1, 0);
+        var mat = new SQR.Matrix44();
+
+        var xs = 5;
+        var a1 = new SQR.V3();
+        var a2 = new SQR.V3();
+        var a3 = new SQR.V3();
+        var a4 = new SQR.V3();
+
+        for(var i = 0; i <= curveResolution; i++) {
+            
+            var mat = curve.matrixAt(i / curveResolution);
+
+            a1.set(-xs, xs, 0);
+            a2.set( xs, xs, 0);
+            a3.set( xs,-xs, 0);
+            a4.set(-xs,-xs, 0);
+
+            mat.transformVector(a1);
+            mat.transformVector(a2);
+            mat.transformVector(a3);
+            mat.transformVector(a4);
+
+            curveVelocityBuffer.set('aPosition', i*8+0, a1);
+            curveVelocityBuffer.set('aPosition', i*8+1, a2);
+            curveVelocityBuffer.set('aPosition', i*8+2, a2);
+            curveVelocityBuffer.set('aPosition', i*8+3, a3);
+            curveVelocityBuffer.set('aPosition', i*8+4, a3);
+            curveVelocityBuffer.set('aPosition', i*8+5, a4);
+            curveVelocityBuffer.set('aPosition', i*8+6, a4);
+            curveVelocityBuffer.set('aPosition', i*8+7, a1);
+        }
+
+        curveVelocityBuffer.update();
+
+        var shader = SQR.Shader(assets['shader.glsl']);
+
+        var line = SQR.Transform();
+        line.buffer = lineBuffer;
+        line.shader = shader;
+        line.uniforms = { 'uColor': [0.25, 0.25, 0.25] };
+
+        var cline = SQR.Transform();
+        cline.buffer = curveBuffer;
+        cline.shader = shader;
+        cline.uniforms = { 'uColor': [1, 0, 0] };
+
+        var vline = SQR.Transform();
+        vline.buffer = curveVelocityBuffer;
+        vline.shader = shader;
+        vline.uniforms = { 'uColor': [1, 1, 1] };
+
+        var root = SQR.Transform();
+        root.add(camRoot);
+        root.add(cline, vline);
+
+        var my = 0, mx = 0, tx = 0, ty = 0;
+
+        var isTouch = 'ontouchstart' in document;
+        var mousemove = isTouch ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
+            e = isTouch ? e.targetTouches[0] : e;
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+            camRoot.rotation.y += 0.005;
+            // camera.position.z = my * 200;
+            renderer.render(root, camera);
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

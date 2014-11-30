@@ -3,6 +3,7 @@ SQR = {
 	// Global vars
 	TWOPI: Math.PI * 2,
 	HALFPI: Math.PI * 0.5,
+	EPSILON: 1.0e-6,
 
 	// Placeholder that holds current gl context. This is set in Context.create(), can be modified manually too
 	gl: null, 

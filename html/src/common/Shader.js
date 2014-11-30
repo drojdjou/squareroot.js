@@ -14,7 +14,8 @@ SQR.Shader = function(source, options) {
 			var l = ls[i];
 
 			if (l.indexOf("//#include") > -1) {
-				var p = SQR.shaderPath + l.substring(12);
+				var p = l.substring(11);
+				p = p.replace('~', SQR.shaderPath);
 				var inc = SQR.Loader.assets[p];
 				if(!inc) throw "> SQR.Shader. Include not found " + p;
 				ls[i] = inc;
@@ -230,14 +231,6 @@ SQR.Shader = function(source, options) {
 		return s;
 	}
 
-	s.enableAttributes = function() {
-		attrList.forEach(function(a) {
-			SQR.gl.enableVertexAttribArray(a.location);
-		});
-
-		return s;
-	}
-
 	s.use = function() {
 		SQR.gl.useProgram(program);
 		return s;
@@ -250,7 +243,9 @@ SQR.Shader = function(source, options) {
 			var a = attrList[i];
 		 	var ga = geo.attributes[a.name];
 		 	if(!ga) throw "> SQR.Shader expects attribute " + a.name + " but geometry doesn't provide it";
+		 	if(!a.enabled) gl.enableVertexAttribArray(a.location);
 			gl.vertexAttribPointer(a.location, ga.size, gl.FLOAT, false, geo.strideByteSize, ga.byteOffset);
+			a.enabled = true;
 		}
 		return s;
 	}
@@ -259,7 +254,6 @@ SQR.Shader = function(source, options) {
 	if(!options || !options.doNotCompile) {
 		s.compile();
 		s.inspect();
-        s.enableAttributes();
 	}
 
 	return s;

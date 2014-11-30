@@ -96,7 +96,7 @@ SQR.Loader.loadAssets([
     var t = SQR.Transform();
     t.buffer = buffer;
     t.shader = shader;
-    // t.scale.set(2, 2, 2);
+    // t.scale.set(-1, 1, 1);
     hero.add(t);
 
     for (var i = 0; i < num; i++) {
@@ -144,7 +144,7 @@ SQR.Loader.loadAssets([
         mx += (tx - mx) * 0.1;
         my += (ty - my) * 0.1;
 
-        ctx.clear();
+        
         camroot.rotation.y += 0.002;
         // camroot.rotation.y = mx * SQR.TWOPI;
         camera.position.z = 20 + my * 10;
@@ -170,6 +170,7 @@ SQR.Loader.loadAssets([
             sao.shader.setUniform('uNoiseTexture', noise);
             sao.shader.setUniform('uTextureWidth', w);
             sao.shader.setUniform('uTextureHeight', h);
+            ctx.clear();
             renderer.render(sao);
         }
     }

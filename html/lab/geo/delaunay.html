@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Delaunay trinagluation</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10000;
+	width: 100%;
+	opacity: 0.4;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<img src="../../assets/lawrence.jpg">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Triangle.js"></script>
+<script type="text/javascript" src="../../src/math/Delaunay.js"></script>
+
+
+<script type="text/javascript">
+
+var w = window.innerWidth, h = window.innerHeight;
+
+var img = document.querySelector('img');
+var imgVisible = true;
+
+var imgcnv = document.createElement('canvas');
+imgcnv.width = img.naturalWidth;
+imgcnv.height = img.naturalHeight;
+
+var imgctx = imgcnv.getContext('2d');
+imgctx.drawImage(img, 0, 0);
+
+var imgdata = imgctx.getImageData(0, 0, imgcnv.width, imgcnv.height).data;
+
+var cnv = document.querySelector('canvas');
+cnv.width = w;
+cnv.height = h;
+
+var ctx = cnv.getContext('2d');
+
+var points = [], triangles = [];
+
+var addPoint = function(x, y) {
+	points.push(new SQR.V2(x, y));
+}
+
+var addInitPoints = function(n) {
+	points.length = 0;
+ 
+	addPoint(0, 0);
+	addPoint(0, h);
+	addPoint(w, h);
+	addPoint(w, 0);
+
+	for(var i = 0; i < n; i++) {
+		var a = Math.random() * Math.PI * 2;
+		var x = w * 0.5 + Math.cos(a) * w * 0.6 * Math.random();
+		var y = h * 0.5 + Math.sin(a) * w * 0.6 * Math.random();
+		addPoint(x | 0, y | 0);
+	}
+
+	triangles = SQR.Delaunay.triangulate(points);
+}
+
+var addGrid = function(n) {
+
+	var nx = w / n + 1;
+	var ny = h / n + 1;
+
+	for(var x = 0; x < nx; x++) {
+		for(var y = 0; y < ny; y++) {
+			addPoint(
+				x * n + Math.random() * 10, 
+				y * n +  Math.random() * 10
+			);
+		}
+	}
+
+	triangles = SQR.Delaunay.triangulate(points);	
+}
+
+var onClick = function(e) {
+	var r = 100, n = 20;
+
+	addPoint(e.pageX, e.pageY);
+
+	for(var i = 0; i < n; i++) {
+		var a = Math.random() * SQR.TWOPI;
+		var rd = Math.random() * r;
+		addPoint(e.pageX + Math.cos(a) * rd, e.pageY + Math.sin(a) * rd);
+	}
+
+	triangles = SQR.Delaunay.triangulate(points);
+	run();
+}
+
+var onKeyDown = function(e) {
+	if(e.keyCode == 32) {
+		imgVisible = !imgVisible;
+		img.style.display = imgVisible ? 'block' : 'none';
+	}
+}
+
+var run = function() {
+	// requestAnimationFrame(run);
+	ctx.clearRect(0, 0, w, h);
+
+	for(var i = 0, l = triangles.length; i < l; i++) {
+		var t = triangles[i];
+		t.calculateCentroid();
+
+		var x = (t.centroid.x / w * img.naturalWidth) | 0;
+		var y = (t.centroid.y / h * img.naturalHeight) | 0;
+
+		var ri = (img.naturalWidth * y + x) * 4 + 0;
+		var gi = (img.naturalWidth * y + x) * 4 + 1;
+		var bi = (img.naturalWidth * y + x) * 4 + 2;
+
+		var r = imgdata[ri];
+        var g = imgdata[gi];
+        var b = imgdata[bi];
+
+        var c = ((r + g + b) / 3) | 0;
+
+		// ctx.fillStyle = 'rgb(' + c + ',' + c + ',' + c + ')';
+		ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b  + ')';
+
+		ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+		// ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+
+		ctx.beginPath();
+		ctx.moveTo(t.v0.x, t.v0.y);
+		ctx.lineTo(t.v1.x, t.v1.y);
+		ctx.lineTo(t.v2.x, t.v2.y);
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+	}
+}
+
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('click', onClick);
+// addInitPoints(0);
+addGrid(40 );
+run();
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

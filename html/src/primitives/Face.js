@@ -1,4 +1,4 @@
-SQR.Triangle = function() {
+SQR.Face = function() {
 
     var t = {};
     

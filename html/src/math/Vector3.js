@@ -129,6 +129,17 @@ SQR.V3.prototype.toArray = function() {
     return this.array;
 }
 
+/**
+ *  Assuming the vector was projected using the SQR.ProjectionMatrix, use this
+ *  to calculate it's screen space.
+ */
+SQR.V3.prototype.toScreenSpace = function(w, h) {
+    w = w || window.innerWidth;
+    h = h || window.innerHeight;
+    this.x = (this.x / this.z) * w/2 + w/2;
+    this.y = (this.y / this.z) * h/2 + h/2;
+}
+
 SQR.V3.up = new SQR.V3(0,1,0);
 SQR.V3.forward = new SQR.V3(0,0,1);
 

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Voronoi diagram</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10000;
+	width: 100%;
+	opacity: 0.4;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<img src="../../assets/lawrence.jpg">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Triangle.js"></script>
+<script type="text/javascript" src="../../lib/Voronoi.js"></script>
+
+
+<script type="text/javascript">
+
+var w = window.innerWidth, h = window.innerHeight;
+
+var img = document.querySelector('img');
+var imgVisible = true;
+
+var imgcnv = document.createElement('canvas');
+imgcnv.width = img.naturalWidth;
+imgcnv.height = img.naturalHeight;
+
+var imgctx = imgcnv.getContext('2d');
+imgctx.drawImage(img, 0, 0);
+
+var imgdata = imgctx.getImageData(0, 0, imgcnv.width, imgcnv.height).data;
+
+var cnv = document.querySelector('canvas');
+cnv.width = w;
+cnv.height = h;
+
+var ctx = cnv.getContext('2d');
+
+var points = [], cells = [];
+
+var voronoi = new Voronoi(), diagram;
+var bbox = { xl:0, xr:w, yt:0, yb:h };
+
+var addPoint = function(x, y) {
+	points.push(new SQR.V2(x, y));
+}
+
+var addInitPoints = function(n) {
+	points.length = 0;
+ 
+	addPoint(0, 0);
+	addPoint(0, h);
+	addPoint(w, h);
+	addPoint(w, 0);
+
+	// for(var i = 0; i < n; i++) {
+	// 	var a = Math.random() * Math.PI * 2;
+	// 	var x = w * 0.5 + Math.cos(a) * w * 0.6 * Math.random();
+	// 	var y = h * 0.5 + Math.sin(a) * w * 0.6 * Math.random();
+	// 	addPoint(x | 0, y | 0);
+	// }
+
+	if(points.length > 0) diagram = voronoi.compute(points, bbox);
+}
+
+var addGrid = function(n) {
+
+	var nx = w / n + 1;
+	var ny = h / n + 1;
+
+	for(var x = 0; x < nx; x++) {
+		for(var y = 0; y < ny; y++) {
+			addPoint(
+				x * n + Math.random() * 10, 
+				y * n +  Math.random() * 10
+			);
+		}
+	}
+
+	if(points.length > 0) diagram = voronoi.compute(points, bbox);
+}
+
+var onClick = function(e) {
+	var r = 100, n = 0;
+
+	addPoint(e.pageX, e.pageY);
+
+	for(var i = 0; i < n; i++) {
+		var a = Math.random() * SQR.TWOPI;
+		var rd = Math.random() * r;
+		addPoint(e.pageX + Math.cos(a) * rd, e.pageY + Math.sin(a) * rd);
+	}
+
+	diagram = voronoi.compute(points, bbox);
+	run();
+}
+
+var onKeyDown = function(e) {
+	if(e.keyCode == 32) {
+		imgVisible = !imgVisible;
+		img.style.display = imgVisible ? 'block' : 'none';
+	}
+}
+
+var run = function() {
+	// requestAnimationFrame(run);
+	ctx.clearRect(0, 0, w, h);
+
+	if(!diagram) return;
+
+	for(var i = 0, l = diagram.cells.length; i < l; i++) {
+		var c = diagram.cells[i];
+
+		var x = (c.site.x / w * img.naturalWidth) | 0;
+		var y = (c.site.y / h * img.naturalHeight) | 0;
+
+		var ri = (img.naturalWidth * y + x) * 4 + 0;
+		var gi = (img.naturalWidth * y + x) * 4 + 1;
+		var bi = (img.naturalWidth * y + x) * 4 + 2;
+
+		var r = imgdata[ri];
+        var g = imgdata[gi];
+        var b = imgdata[bi];
+
+		
+		ctx.strokeStyle = 'rgb(128, 0, 0)';
+
+		
+		// ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b  + ')';
+
+		
+
+
+		ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b  + ')';
+
+		ctx.beginPath();
+
+		console.log('-- cell --');
+
+		for(var ci = 0; ci < c.halfedges.length; ci++) {
+			var e = c.halfedges[ci].edge;
+			console.log('[', e.va.x|0, e.va.y|0,' > ', e.vb.x|0, e.vb.y|0, ']');
+		}
+
+		// ctx.closePath();
+		// ctx.fill();
+		ctx.stroke();
+
+		ctx.fillStyle = 'rgb(255, 255, 255)';
+		ctx.fillRect(c.site.x - 1, c.site.y - 1, 2, 2);
+		
+	}
+}
+
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('click', onClick);
+// addInitPoints(10);
+// addGrid(40 );
+run();
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

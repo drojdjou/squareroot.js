@@ -3,7 +3,7 @@ SQR.Debug = (function() {
 	var d = {};
 
 	var v3ToString = function(v) {
-		return '[' + v.x.toPrecision(2) + ', ' + v.y.toPrecision(2) + ', ' + v.y.toPrecision(2) + ']'
+		return '[' + v.x.toPrecision(2) + ', ' + v.y.toPrecision(2) + ', ' + v.z.toPrecision(2) + ']'
 	}
 
 	var matToString = function(m) {
@@ -12,7 +12,7 @@ SQR.Debug = (function() {
 		return '[ ' + d.join(', ') + ' ]'
 	}
 
-	d.traceBuffer = function(b) {
+	d.traceBuffer = function(b, dumpData) {
 		var d = '';
 		d += 'buffer ';
 		d += b.strideSize + ' (' + b.strideByteSize + ') x ' + b.size + ' | ';
@@ -24,10 +24,16 @@ SQR.Debug = (function() {
 		var a = [], oa = b.getDataArray();
 		for(var i = 0; i < b.strideSize; i++) a.push(oa[i].toPrecision(2));
 		console.log('[' + a.join(', ') + '] ' + oa.length + '/' + (b.size * b.strideSize));
+
+		if(dumpData) console.log(b.getDataArray());
 	}
 
 	d.traceVector3 = function(v) {
 		console.log('v3', v3ToString(v));
+	}
+
+	d.traceMat = function(m) {
+		console.log('mat', matToString(m));
 	}
 
 	d.traceTransform = function(t) {

@@ -12,6 +12,7 @@ SQR.Transform = function() {
 	t.useQuaternion = false;
 
     t.isStatic = false;
+    t.directMatrixMode = false;
     var transformState = 0;
 
 	t.matrix = new SQR.Matrix44();
@@ -73,11 +74,20 @@ SQR.Transform = function() {
     }
 
     t.draw = function(options) {
-        var shader = (options && options.replacementShader) ? options.replacementShader : t.shader;
+        var isReplacementShader = options && options.replacementShader;
+        var shader = isReplacementShader ? options.replacementShader : t.shader;
 
         shader.setUniform('uMatrix', t.viewMatrix);
         shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
+
+        if(!isReplacementShader && t.uniforms) {
+            var un = Object.keys(t.uniforms);
+            for(var i = 0, l = un.length; i < l; i++) {
+                shader.setUniform(un[i], t.uniforms[un[i]]);
+            }
+        }
+
     	t.buffer.draw();
     }
 
@@ -91,17 +101,17 @@ SQR.Transform = function() {
 
         if(transformState == 1) return;
 
-    	var p = t.position;
-        
-        var s = t.scale;
-        
-
-        if (t.useQuaternion) {
-            var q = t.quaternion;
-        	t.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
-       	} else {
-            var r = t.rotation;
-			t.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+        if(!t.directMatrixMode) {
+        	var p = t.position;
+            var s = t.scale;
+            
+            if (t.useQuaternion) {
+                var q = t.quaternion;
+            	t.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
+           	} else {
+                var r = t.rotation;
+    			t.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+            }
         }
 
         if (t.parent) {
@@ -111,7 +121,7 @@ SQR.Transform = function() {
             t.matrix.copyTo(t.globalMatrix);
         }
 
-        t.globalMatrix.inverseMat3(t.normalMatrix);
+        
 
         if(t.isStatic) transformState = 1;
     }
@@ -127,6 +137,7 @@ SQR.Transform = function() {
         if(inverseCamMatrix) {
             inverseCamMatrix.copyTo(t.viewMatrix);
             t.viewMatrix.multiply(t.globalMatrix);
+            t.viewMatrix.inverseMat3(t.normalMatrix);
         } else {
             t.globalMatrix.copyTo(t.viewMatrix);
         }

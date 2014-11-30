@@ -22,7 +22,7 @@ void main() {
 precision mediump float;
 #endif
 
-//#include ~light/sphar-cathedral.glsl
+//#include sphar-custom.glsl
 //#include ~light/sphar.glsl
 
                
