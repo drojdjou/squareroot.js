@@ -1,11 +1,11 @@
 CodeColor = {
-	reComment: /.*(\/\/.*)/,
+	reComment: /^.*(\/\/.*)/,
 	reKeyword: /(function|var|document|window)/g,
 	reString: /("[^"]*")/g,
 	reOperator: /[^a-zA-Z0-9](if|for|return|switch|case|while)[^a-zA-Z0-9]/g,
 	reSymbol: /\s=|\s\*|\s\+|\s-|\s\/\s/g,
 	reObject: /true|false|Date/,
-	reStringBack: /%%(.)%%/g,
+	reStringBack: /%%(.*)%%/g,
 	reFunction: /[\s|\.]([_a-zA-Z0-9]*)\(/g,
 	reFunction2: /[\s|\.]([_a-zA-Z0-9]*) = function/g
 };
@@ -24,7 +24,7 @@ CodeColor.colorize = function(query) {
 	var numCodeBlocks = codeBlocks.length;
 	var stringTempArray = []
 
-	console.log(numCodeBlocks + " code blocks found for " + query);
+	// console.log(numCodeBlocks + " code blocks found for " + query);
 
 	for(var i = 0; i < numCodeBlocks; i++) {
 		var code = codeBlocks[i].innerHTML.split("\n");
@@ -34,39 +34,42 @@ CodeColor.colorize = function(query) {
 
 		for(var j = 0; j < numLines; j++) {
 
-			code[j] = code[j].replace(CodeColor.reString, function(match) {
-				return CodeColor.wrapString(match, 'string', stringTempArray);
-			});
+			// if(code[j].indexOf('//') > -1) {
+			// 	code[j] = CodeColor.wrapString(code[j], 'comment', stringTempArray);
+			// } else {
 
-			code[j] = code[j].replace(CodeColor.reFunction2, function(match, m1) {
-				return match.replace(m1, CodeColor.wrap(m1, 'func'));
-			});
+				code[j] = code[j].replace(CodeColor.reComment, function(match, m1) {
+					return match.replace(m1, CodeColor.wrapString(m1, 'comment', stringTempArray));
+				});
 
-			code[j] = code[j].replace(CodeColor.reFunction, function(match, m1) {
-				return match.replace(m1, CodeColor.wrap(m1, 'func'));
-			});
+				code[j] = code[j].replace(CodeColor.reString, function(match) {
+					return CodeColor.wrapString(match, 'string', stringTempArray);
+				});
 
-			code[j] = code[j].replace(CodeColor.reOperator, function(match, m1) {
-				return match.replace(m1, CodeColor.wrap(m1, 'operator'));
-			});
+				code[j] = code[j].replace(CodeColor.reFunction2, function(match, m1) {
+					return match.replace(m1, CodeColor.wrap(m1, 'func'));
+				});
 
-			code[j] = code[j].replace(CodeColor.reSymbol, function(match, m1) {
-				return CodeColor.wrap(match, 'operator');
-			});
+				code[j] = code[j].replace(CodeColor.reFunction, function(match, m1) {
+					return match.replace(m1, CodeColor.wrap(m1, 'func'));
+				});
 
-			code[j] = code[j].replace(CodeColor.reComment, function(match) {
-				return CodeColor.wrap(match, 'comment');
-			});
+				code[j] = code[j].replace(CodeColor.reOperator, function(match, m1) {
+					return match.replace(m1, CodeColor.wrap(m1, 'operator'));
+				});
 
-			code[j] = code[j].replace(CodeColor.reKeyword, function(match) {
-				return CodeColor.wrap(match, 'keyword');
-			});
+				code[j] = code[j].replace(CodeColor.reSymbol, function(match, m1) {
+					return CodeColor.wrap(match, 'operator');
+				});
 
-			code[j] = code[j].replace(CodeColor.reObject, function(match) {
-				return CodeColor.wrap(match, 'object');
-			});
+				code[j] = code[j].replace(CodeColor.reKeyword, function(match) {
+					return CodeColor.wrap(match, 'keyword');
+				});
 
-			
+				code[j] = code[j].replace(CodeColor.reObject, function(match) {
+					return CodeColor.wrap(match, 'object');
+				});
+			// }
 
 			code[j] = code[j].replace(CodeColor.reStringBack, function(match, m1) {
 				return stringTempArray[parseInt(m1)];
@@ -87,10 +90,11 @@ var articleVisible = false;
 button.addEventListener('click', function(e) {
 	articleVisible = !articleVisible;
 	article.style.display = articleVisible ? 'block' : 'none';
-	if(window.innerWidth > 1024) {
+	if(window.innerWidth > 900) {
 		code.innerHTML = src.innerHTML;
 		CodeColor.colorize("code");
 	} else {
 		code.innerHTML = "";
+		code.style.display = 'none';
 	}
 });
