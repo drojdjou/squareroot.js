@@ -162,12 +162,22 @@ SQR.Loader.loadAssets([
         v.mul(t);
     }
 
-    // var rawFBO = SQR.FrameBuffer(w, h);    
-    // var blurXFBO = SQR.FrameBuffer(w, h);   
-    // var blurYFBO = SQR.FrameBuffer(w, h);   
+    var rawFBO = SQR.FrameBuffer(w, h);    
+    var blurXFBO = SQR.FrameBuffer(w, h);   
+    var blurYFBO = SQR.FrameBuffer(w, h);   
 
-    // var blur = SQR.PostEffect(assets['blur.glsl']);
-    // var bloom = SQR.PostEffect(assets['bloom.glsl']);
+    var blur = SQR.PostEffect(assets['blur.glsl']);
+    var bloom = SQR.PostEffect(assets['bloom.glsl']);
+
+    var renderBloom = false;
+
+    document.addEventListener('keydown', function(e) {
+
+        if(e.keyCode == 'Q'.charCodeAt(0)) {
+            renderBloom = !renderBloom;
+        }
+
+    });
 
     var render = function() {
         requestAnimationFrame(render);
@@ -179,32 +189,41 @@ SQR.Loader.loadAssets([
             f.update(p, p + 0.03, fishify);
             f.phase += f.speed;
         }
+
+        camRoot.rotation.y = (mx * 2 - 1) * 0.2;
+        camRoot.rotation.x = (my * 2 - 1) * 0.2;
         
-        renderer.render(root, camera);
+        if(renderBloom) {
+    
+            // At apply the bloom post-effect
+            rawFBO.bind();
+            renderer.render(root, camera);
 
-        // At apply the bloom post-effect
-        // rawFBO.bind();
-        // renderer.render(root, camera);
+            blurForce = 0.02;
 
-        // blurForce = 0.02;
+            blurXFBO.bind();
+            blur.shader.use();
+            blur.shader.setUniform('uDelta', [0.0, blurForce]);
+            blur.shader.setUniform('uTexture', rawFBO.texture);
+            renderer.render(blur);
 
-        // blurXFBO.bind();
-        // blur.shader.use();
-        // blur.shader.setUniform('uDelta', [0.0, blurForce]);
-        // blur.shader.setUniform('uTexture', rawFBO.texture);
-        // renderer.render(blur);
+            blurYFBO.bind();
+            blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+            blur.shader.setUniform('uTexture', blurXFBO.texture);
+            renderer.render(blur);
 
-        // blurYFBO.bind();
-        // blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-        // blur.shader.setUniform('uTexture', blurXFBO.texture);
-        // renderer.render(blur);
+            renderer.renderToScreen();
+            ctx.gl.viewport(0, 0, w, h);
+            bloom.shader.use();
+            bloom.shader.setUniform('uTexture', rawFBO.texture);
+            bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+            renderer.render(bloom);
 
-        // renderer.renderToScreen();
-        // ctx.gl.viewport(0, 0, w, h);
-        // bloom.shader.use();
-        // bloom.shader.setUniform('uTexture', rawFBO.texture);
-        // bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
-        // renderer.render(bloom);
+        } else {
+
+            renderer.render(root, camera);
+
+        }
 
         mx += (tx - mx) * 0.1;
         my += (ty - my) * 0.1;
