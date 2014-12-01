@@ -82,18 +82,21 @@ SQR.Spline = function() {
 	}
 
 	s.valueAt = function(t, v) {
+		if(t == 1) t = 0.999999;
 		t = t % 1;
 		var tf = t * points.length;
 		return points[tf | 0].valueAt(tf % 1, v);
 	}
 
 	s.velocityAt = function(t, v) {
+		if(t == 1) t = 0.999999;
 		t = t % 1;
 		var tf = t * points.length;
 		return points[tf | 0].velocityAt(tf % 1, v);
 	}
 
 	s.matrixAt = function(t, m) {
+		if(t == 1) t = 0.999999;
 		t = t % 1;
 		var tf = t * points.length;
 		return points[tf | 0].matrixAt(tf % 1, m);

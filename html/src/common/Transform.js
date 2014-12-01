@@ -5,6 +5,8 @@ SQR.Transform = function() {
 
 	var inverseWorldMatrix;
 
+    t.name = 'sqr.transform.' + SQR.TransformCount++;
+
 	t.position = new SQR.V3();
 	t.quaternion = new SQR.Quaternion();
 	t.rotation = new SQR.V3();
@@ -162,3 +164,5 @@ SQR.Transform = function() {
 	return t;
 
 }
+
+SQR.TransformCount = 0;

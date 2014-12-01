@@ -55,10 +55,10 @@
 
         var camera = SQR.Transform();
         camera.position.z = 300;
+        camera.directMatrixMode = true;
 
         var camRoot = SQR.Transform();
-        camRoot.add(camera);
-
+        
         var curve = new SQR.Spline()
             .addSegment(100, 100,  -100)
             .addSegment(100, 100,  100)
@@ -94,6 +94,7 @@
 
         var root = SQR.Transform();
         root.add(camRoot, line, cube);
+        camRoot.add(camera);
 
         var my = 0, mx = 0, tx = 0, ty = 0;
 
@@ -112,15 +113,28 @@
             requestAnimationFrame(render);
             ctx.clear();
 
-            var p = Math.sin(phase) * 0.5 + 0.5;
+
+
+            var p = Math.cos(phase * Math.PI * 2) * 0.5 + 0.5;
+            var v = curve.velocityAt(p);
+            if(phase % 1 < 0.5) v.neg();
+            var d = SQR.V3.dot(v.norm(), SQR.V3.up);
+            // console.log(d);
+
             curve.matrixAt(p, cube.matrix);
-            phase += 0.01;
+
+            phase += 0.0005 + 0.001 * (2 - (d + 1));
 
             // cube.rotation.x += 0.01;
             // cube.rotation.y += 0.01;
 
-            camRoot.rotation.y += 0.005;
-            // camera.position.z = my * 200;
+            // camRoot.rotation.y += 0.005;
+            camera.position.z = 200 + my * 200;
+
+            cube.matrix.extractPosition(cube.position);
+            camera.matrix.lookAt(cube.position);
+            camera.matrix.setTranslation(camera.position.x, camera.position.y, camera.position.z);
+
             renderer.render(root, camera);
 
             

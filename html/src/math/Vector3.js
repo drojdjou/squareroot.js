@@ -4,7 +4,7 @@
  * A 3-dimensional vector
  *
  */
-SQR.V3 = function(x, y, z, w) {
+SQR.V3 = function(x, y, z, w, i) {
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
@@ -31,8 +31,8 @@ SQR.V3.prototype.copyTo = function(p) {
 SQR.V3.prototype.copyFrom = function(p) {
     this.x = p.x;
     this.y = p.y;
-    this.z = p.z;
-    this.w = p.w;
+    this.z = p.z || 0; // in case p is SQR.V2
+    this.w = (p.w !== undefined) ? p.w : 1;
     return this;
 }
 
@@ -131,7 +131,7 @@ SQR.V3.prototype.toArray = function() {
 
 /**
  *  Assuming the vector was projected using the SQR.ProjectionMatrix, use this
- *  to calculate it's screen space.
+ *  to calculate it's screen space. (useful for software rendering, ex. on canvas 2d)
  */
 SQR.V3.prototype.toScreenSpace = function(w, h) {
     w = w || window.innerWidth;
@@ -139,6 +139,23 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
     this.x = (this.x / this.z) * w/2 + w/2;
     this.y = (this.y / this.z) * h/2 + h/2;
 }
+
+/**
+ *  Use this for caculating per-vertex normals
+ */
+SQR.V3.prototype.addNormal = function(_n) {
+
+    if(!this.normal) {
+        this.normal = new SQR.V3();
+    }
+
+    this.normal.add(this.normal, _n);
+}
+
+SQR.V3.prototype.resetNormal = function(_n) {
+    if(this.normal) this.normal.set();
+}
+
 
 SQR.V3.up = new SQR.V3(0,1,0);
 SQR.V3.forward = new SQR.V3(0,0,1);

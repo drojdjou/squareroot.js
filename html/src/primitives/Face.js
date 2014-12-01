@@ -12,17 +12,9 @@ SQR.Face = function() {
         return t;
     }
 
-    t.setNormalVertex = function(na, nb, nc) {
-
-    }
-
     t.setUV = function(uva, uvb, uvc) {
         t.uva = uva, t.uvb = uvb, t.uvc = uvc;
         return t;
-    }
-
-    t.setCustom = function(name, data) {
-
     }
 
     t.calculateNormal = function() {
@@ -32,11 +24,18 @@ SQR.Face = function() {
 
         t1.sub(t.b, t.a);
         t2.sub(t.c, t.a);
-        t.normal.cross(t1, t2).norm();
+        t.normal.cross(t1, t2);
         return t;
     }
 
-    t.toBuffer = function(geo, position) {
+    t.addNormalToVertices = function() {
+        t.a.addNormal(t.normal);
+        t.b.addNormal(t.normal);
+        t.c.addNormal(t.normal);
+        return t;
+    }
+
+    t.toBuffer = function(geo, position, perVertextNormal) {
         var c = position * 3;
 
         if(geo.attributes['aPosition']) {
@@ -45,10 +44,16 @@ SQR.Face = function() {
             geo.set('aPosition', c+2, t.c);
         }
 
-        if(geo.attributes['aNormal'] && t.normal) {
+        if(geo.attributes['aNormal'] && t.normal && !perVertextNormal) {
             geo.set('aNormal', c+0, t.normal);
             geo.set('aNormal', c+1, t.normal);
             geo.set('aNormal', c+2, t.normal);
+        }
+
+        if(geo.attributes['aNormal'] && perVertextNormal) {
+            geo.set('aNormal', c+0, t.a.normal);
+            geo.set('aNormal', c+1, t.b.normal);
+            geo.set('aNormal', c+2, t.c.normal);
         }
 
         if(geo.attributes['aUV'] && t.uva) {

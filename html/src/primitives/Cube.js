@@ -42,6 +42,6 @@ SQR.Primitives.createCube = function(w, h, d) {
 		t.calculateNormal().toBuffer(geo, c);
 		c++;
 	});
-
+	
 	return geo;
 }

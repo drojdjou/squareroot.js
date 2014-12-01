@@ -20,7 +20,7 @@ SQR.Matrix44 = function() {
         var d = this.data;
         var x = v.x, y = v.y, z = v.z, w = v.w;
         pv = pv || v;
-
+        
         pv.x = d[0] * x + d[4] * y + d[8] * z + d[12] * w;
         pv.y = d[1] * x + d[5] * y + d[9] * z + d[13] * w;
         pv.z = d[2] * x + d[6] * y + d[10] * z + d[14] * w;
@@ -335,9 +335,11 @@ SQR.Matrix44 = function() {
 
     this.lookAt = function (target, up) {
         var d = this.data;
-        var x = SQR.Matrix44.__tv1;
-        var y = SQR.Matrix44.__tv2;
-        var z = SQR.Matrix44.__tv3;
+        var x = SQR.V3.__tv1;
+        var y = SQR.V3.__tv2;
+        var z = SQR.V3.__tv3;
+
+        up = up || SQR.V3.up;
 
         // console.log(target, up);
 
@@ -362,10 +364,6 @@ SQR.Matrix44 = function() {
 
     this.identity();
 }
-
-SQR.Matrix44.__temp = new Float32Array(16);
-
-
 
 
 

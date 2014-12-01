@@ -15,7 +15,7 @@ SQR.Debug = (function() {
 	d.traceBuffer = function(b, dumpData) {
 		var d = '';
 		d += 'buffer ';
-		d += b.strideSize + ' (' + b.strideByteSize + ') x ' + b.size + ' | ';
+		d += 'stride: ' + b.strideSize + ' (' + b.strideByteSize + ' bytes) x ' + b.size + '\n';
 
 		for(var a in b.attributes) d += a + '[' + b.attributes[a].size + '], ';
 

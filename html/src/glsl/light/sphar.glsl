@@ -5,7 +5,7 @@ const float C4 = 0.886227;
 const float C5 = 0.247708;
 
 vec3 sphericalHarmonics(vec3 n) {
-
+    
     vec3 c =  C1 * L22 * (n.x * n.x - n.y * n.y) +
                     C3 * L20 * n.z * n.z +
                     C4 * L00 -

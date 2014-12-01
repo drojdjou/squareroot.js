@@ -87,14 +87,8 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
 
         var va = that.valueAt(t);
         var vc = that.velocityAt(t).norm();
-
-        var vl = SQR.V3.__tv1.set();
-        vl.cross(vc, SQR.V3.up);
-        vl.norm();
-
-        var vn = SQR.V3.__tv2.set();
-        vn.cross(vc, vl);
-        vn.norm()
+        var vl = SQR.V3.__tv1.set().cross(vc, SQR.V3.up);//.norm();
+        var vn = SQR.V3.__tv2.set().cross(vc, vl);//.norm()
 
         m.data[0] = vl.x, m.data[4] = vn.x, m.data[8] = vc.x;
         m.data[1] = vl.y, m.data[5] = vn.y, m.data[9] = vc.y;

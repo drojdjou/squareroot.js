@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>lines and curves</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Extrude.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    SQR.shaderPath = '../../src/glsl/'
+
+    SQR.Loader.loadAssets([
+        '~light/sphar-eucalyptus.glsl',
+        '~light/sphar.glsl',
+        'shader.glsl',
+        'normal2color.glsl',
+        'sphar.glsl',
+        'blur.glsl',
+        'bloom.glsl'
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0.15, 0.2, 1);
+
+        var renderer = SQR.Renderer(ctx);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+
+        var camera = SQR.Transform();
+        camera.position.z = 400;
+        camera.position.y = 140;
+        camera.rotation.x = 0.1;
+
+        var camRoot = SQR.Transform();
+
+        var curve = new SQR.Spline()
+            .addSegment( 200,  100,  100)
+            .addSegment(   0, -100, -200)
+            .addSegment(   0,  100,  200)
+            .addSegment(-200,  150, -100)
+            .create(0.5, true);
+        
+
+        var curveResolution = 320;
+
+        var curveBuffer = SQR.Buffer()
+            .layout({ aPosition: 3 }, curveResolution+1)
+            .setMode(SQR.gl.LINE_STRIP);
+
+            for(var i = 0; i <= curveResolution; i++) {
+                curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
+            }
+
+            curveBuffer.update();
+
+        var line = SQR.Transform();
+        line.buffer = curveBuffer;
+        line.shader = SQR.Shader(assets['shader.glsl']);
+        line.uniforms = { 'uColor': [1, 1, 1] };
+
+
+        var root = SQR.Transform();
+        root.add(camRoot);
+        // root.add(line);
+        camRoot.add(camera);
+
+        var s = 4, shape = [
+            new SQR.V2( 0,  s),
+            new SQR.V2(-s, -s),
+            new SQR.V2( s, -s)
+        ];
+
+        var n2c = SQR.Shader(assets['sphar.glsl']);
+        var extrudes = [], 
+            fishes = [], 
+            numFish = parseInt(document.location.search.substring(1)) || 200;
+
+        for(var i = 0; i < numFish; i++) {
+
+            var extrude = SQR.Extrude().setPaths(shape, curve, 6);
+            extrudes.push(extrude);
+            extrude.phase = Math.random() * 2;
+            extrude.speed = 0.0005 + Math.random() * 0.002;
+
+            for(var j = 0; j < 3; j++) {
+                var fish = SQR.Transform();
+                fish.buffer = extrude.buffer;
+                fish.shader = n2c;
+            
+                fish.name = 'fish.' + i;
+
+                var sp = 120;
+
+                fish.position.x += Math.random() * sp - sp/2;
+                fish.position.y += Math.random() * sp - sp/2;
+                fish.position.z += Math.random() * sp - sp/2;
+
+                fish.rotation.x += Math.random() * 0.1;
+                fish.rotation.y += Math.random() * 0.1;
+                fish.rotation.z += Math.random() * 0.1;
+
+                fishes.push(fish);
+                root.add(fish);
+            }
+        }
+
+        var my = 0, mx = 0, tx = 0, ty = 0;
+
+        var isTouch = 'ontouchstart' in document;
+        var mousemove = isTouch ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
+            e = isTouch ? e.targetTouches[0] : e;
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+        var phase = 0;
+
+        var fishify = function(t, v) {
+            t = 1 - Math.abs(t * 2 - 1);
+            t = Math.sin(t * Math.PI * 0.5);
+            v.mul(t);
+        }
+
+        // var rawFBO = SQR.FrameBuffer(w, h);    
+        // var blurXFBO = SQR.FrameBuffer(w, h);   
+        // var blurYFBO = SQR.FrameBuffer(w, h);   
+
+        // var blur = SQR.PostEffect(assets['blur.glsl']);
+        // var bloom = SQR.PostEffect(assets['bloom.glsl']);
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+        
+            for(var i = 0; i < numFish; i++) {
+                var f = extrudes[i];
+                var p = f.phase;
+                f.update(p, p + 0.03, fishify);
+                f.phase += f.speed;
+            }
+            
+            renderer.render(root, camera);
+
+            // rawFBO.bind();
+            // renderer.render(root, camera);
+
+            // // Bloom
+            // blurForce = 0.02;
+            // // Glow
+            // // blurForce = mx * 0.1;
+
+            // blurXFBO.bind();
+            // blur.shader.use();
+            // blur.shader.setUniform('uDelta', [0.0, blurForce]);
+            // blur.shader.setUniform('uTexture', rawFBO.texture);
+            // renderer.render(blur);
+
+            // blurYFBO.bind();
+            // blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+            // blur.shader.setUniform('uTexture', blurXFBO.texture);
+            // renderer.render(blur);
+
+            // renderer.renderToScreen();
+            // ctx.gl.viewport(0, 0, w, h);
+            // bloom.shader.use();
+            // bloom.shader.setUniform('uTexture', rawFBO.texture);
+            // bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+            // renderer.render(bloom);
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

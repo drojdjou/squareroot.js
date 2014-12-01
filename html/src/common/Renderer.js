@@ -16,6 +16,8 @@ SQR.Renderer = function(context) {
         }
 	}
 
+	var lastBuffer, lastShader, shaderChanged, bufferChanged;
+
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
 
@@ -32,8 +34,8 @@ SQR.Renderer = function(context) {
 			camera.computeInverseMatrix();
 		}
 
-		var objectsToRender = renderObjects.length, ro;
-		var lastBuffer = null, lastShader = null;
+		var objectsToRender = renderObjects.length, ro, lastBuffer = null, lastShader = null;
+		
 
 		var hasReplacementShader = options && options.replacementShader;
 
@@ -43,24 +45,25 @@ SQR.Renderer = function(context) {
 
 		for(var i = 0; i < objectsToRender; i++) {
 
+			shaderChanged = false, bufferChanged = false;
+
 			var ro = renderObjects[i];
 
 			if(lastBuffer != ro.buffer) {
 				lastBuffer = ro.buffer;
 				lastBuffer.bind();
-				if(lastShader) {
-					lastShader.attribPointers(lastBuffer);
-				}
+				bufferChanged = true;
 			}
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
 				lastShader.setUniform('uProjection', r.projection);
-				if(lastBuffer) {
-					lastShader.attribPointers(lastBuffer);
-				}
+				shaderChanged = true;
 			}
 
+			if(shaderChanged || bufferChanged) {
+				lastShader.attribPointers(lastBuffer);
+			}
 			
 
 			ro.transformView(camera ? camera.inverseWorldMatrix : null);
