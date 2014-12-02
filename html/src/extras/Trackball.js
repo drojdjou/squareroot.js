@@ -5,10 +5,12 @@ Trackball controls for Three.js
 Usage: 
 
 
-var trackball = new Trackball();
+var trackball = new SQR.Trackball();
+
+t.useQuaternion = true;
 
 // then, inside render function
-var quaternion = trackball.rotation;
+t.quaternion.copyFrom(trackball.rotation);
 // ...and apply to an object
 
 */

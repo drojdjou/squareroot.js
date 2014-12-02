@@ -68,6 +68,16 @@ SQR.Loader = {
 		});
     },
 
+    loadVideo: function(path, callback) {
+    	var videoReady = function() {
+	    	callback(video, path);
+	    }
+
+    	var video = document.createElement('video');
+    	video.autoplay = true;
+    	video.addEventListener('canplaythrough', videoReady, false);
+    	video.src = path;
+    },
 
 	loadAssets: function(paths, init) {
 		var toLoad = paths.length;
@@ -99,6 +109,10 @@ SQR.Loader = {
 				case 'json':
 				case 'js':
 					SQR.Loader.loadJSON(p, onAsset);
+					break;
+				case 'mp4':
+				case 'webm':
+					SQR.Loader.loadVideo(p, onAsset);
 					break;
 				case 'webcam':
 					SQR.Loader.loadWebcam(onAsset);

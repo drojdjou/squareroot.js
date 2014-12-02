@@ -365,8 +365,7 @@ SQR.Matrix44 = function() {
     this.identity();
 }
 
-
-
+SQR.Matrix44.__temp = new Float32Array(16);
 
 
 

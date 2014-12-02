@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>all the primitives</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cylinder.js"></script>
+<script type="text/javascript" src="../../src/primitives/Icosphere.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        'n2c.glsl',
+        'tex.glsl',
+        '../../assets/cypress.jpg',
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(1, 1, 1, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+        renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+
+        var camera = new SQR.Transform();
+        camera.position.z = 20;
+
+        var numSquares = parseInt(document.location.search.substring(1)) || 12000;
+        document.querySelector('.num').innerHTML = numSquares;
+
+        var root = new SQR.Transform();
+        var camRoot = new SQR.Transform();
+        root.add(camRoot);
+        camRoot.add(camera);
+
+
+        var shader = SQR.Shader(assets['tex.glsl']);
+        shader.use().setUniform('uTexture', SQR.Texture(assets['../../assets/cypress.jpg']));
+        
+        var cube = new SQR.Transform();
+        cube.buffer = SQR.Primitives.createCube(4, 4, 4).update();
+        // cube.buffer.mode = SQR.gl.LINES;
+        cube.shader = shader;
+        root.add(cube);
+
+        var plane = new SQR.Transform();
+        plane.buffer = SQR.Primitives.createPlane(5, 5, 10, 10).update();
+        // plane.buffer.mode = SQR.gl.POINT;
+        plane.shader = shader;
+        root.add(plane);
+
+        var plane2 = new SQR.Transform();
+        plane2.buffer = SQR.Primitives.createPlane(5, 5, 10, 10).update();
+        // plane.buffer.mode = SQR.gl.POINT;
+        plane2.rotation.z = Math.PI;
+        plane2.shader = shader;
+        root.add(plane2);
+
+        var sphere = new SQR.Transform();
+        sphere.buffer = SQR.Primitives.createSphere(3, 20, 20, { flatShading:false }).update();
+        // sphere.buffer.mode = SQR.gl.LINES;
+        sphere.shader = shader;
+        root.add(sphere);
+
+        var cylinder = new SQR.Transform();
+        cylinder.buffer = SQR.Primitives.createCylinder(5, 2, 20).update();
+        // cylinder.buffer.mode = SQR.gl.LINES;
+        cylinder.shader = shader;
+        root.add(cylinder);
+
+        var icosphere = new SQR.Transform();
+        icosphere.buffer = SQR.Primitives.createIcosphere(3, 3, { flatShading:true }).update();
+        // icosphere.buffer.mode = SQR.gl.POINTS;
+        icosphere.shader = shader;
+        root.add(icosphere);
+
+
+        cube.position.set(-5, -5, 0);
+        plane.position.set( 0, -5, 0);
+        plane2.position.set(0, -5, 0);
+        sphere.position.set(6, -5, 0);
+        cylinder.position.set(-2.5, 5, 0);
+        icosphere.position.set(5, 5, 0);
+
+
+        var my = 0, mx = 0, tx = 0, ty = 0;
+
+        var isTouch = 'ontouchstart' in document;
+        var mousemove = isTouch ? 'touchmove' : 'mousemove';
+
+        document.addEventListener(mousemove, function(e) {
+            e = isTouch ? e.targetTouches[0] : e;
+            tx = e.pageX / window.innerWidth;
+            ty = e.pageY / window.innerHeight;
+        });
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+
+            camRoot.rotation.y += 0.005;
+            camRoot.rotation.x += 0.01;
+
+            // camRoot.rotation.x = Math.PI * -0.5;
+            // camRoot.rotation.y = Math.PI * -0.5;
+
+            renderer.render(root, camera);
+
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

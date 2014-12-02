@@ -40,7 +40,7 @@
 
 <script type="text/javascript" id="gl-script">
 
-var numFish = parseInt(document.location.search.substring(1)) || 150; 
+var numFish = parseInt(document.location.search.substring(1)) || 250; 
 // each fish repeated 3x. append ?XXX to URL where XXX is number of fish you want to see
 
 SQR.shaderPath = '../../src/glsl/'
@@ -129,6 +129,9 @@ SQR.Loader.loadAssets([
             fish.name = 'fish.' + i;
 
             var sp = 120;
+
+            // the transform never moves, only the geometry does, hence...
+            fish.isStatic = true;
 
             fish.position.x += Math.random() * sp - sp/2;
             fish.position.y += Math.random() * sp - sp/2;

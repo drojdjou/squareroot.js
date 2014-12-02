@@ -4,7 +4,10 @@ SQR.Renderer = function(context) {
 	var uniforms = {}, renderObjects = [];
 
 	var updateTransform = function(t) {
+		if(!t.active) return;
+
 		t.transformWorld();
+		
 		if (t.numChildren > 0) {
             for (var i = 0; i < t.numChildren; i++) {
                 updateTransform(t.children[i]);

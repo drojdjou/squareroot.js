@@ -6,6 +6,7 @@ SQR.Transform = function() {
 	var inverseWorldMatrix;
 
     t.name = 'sqr.transform.' + SQR.TransformCount++;
+    t.active = true;
 
 	t.position = new SQR.V3();
 	t.quaternion = new SQR.Quaternion();

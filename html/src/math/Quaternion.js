@@ -183,6 +183,10 @@ SQR.Quaternion.slerp = function(qb, qa, t, qr) {
     return qr;
 }
 
+SQR.Quaternion.prototype.slerp = function(qa, qb, t) {
+    SQR.Quaternion.slerp(qa, qb, t, this);
+}
+
 SQR.Quaternion.__tv1 = new SQR.Quaternion();
 SQR.Quaternion.__tv2 = new SQR.Quaternion();
 SQR.Quaternion.__tv3 = new SQR.Quaternion();

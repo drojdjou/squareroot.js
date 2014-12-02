@@ -5,6 +5,9 @@ SQR.Shader = function(source, options) {
 	var uniforms = {}, uniformList = [], uniformTextures = [];
 
 	var parseGLSL = function(s) {
+
+		if(!s) throw "> SQR.Shader.parseGLSL - Shader source code missing";
+
 		var vertex = "", fragment = "";
 		var isVertex = true;
 
@@ -17,7 +20,7 @@ SQR.Shader = function(source, options) {
 				var p = l.substring(11);
 				p = p.replace('~', SQR.shaderPath);
 				var inc = SQR.Loader.assets[p];
-				if(!inc) throw "> SQR.Shader. Include not found " + p;
+				if(!inc) throw "> SQR.Shader.parseGLSL - Include not found " + p;
 				ls[i] = inc;
 			}
 		}
@@ -208,9 +211,9 @@ SQR.Shader = function(source, options) {
 	var setTexture = function(uniform, texture) {
 		var gl = SQR.gl, id = uniform.texId;
 		uniform.texref = texture;
-		if(texture.isAnimated) texture.update();
 	    gl.activeTexture(gl.TEXTURE0 + id); // 33984
 		gl.bindTexture(gl.TEXTURE_2D, texture.tex || texture);
+		if(texture.isAnimated) texture.update();
 		gl.uniform1i(uniform.location, id);
 	}
 

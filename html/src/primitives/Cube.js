@@ -24,24 +24,19 @@ SQR.Primitives.createCube = function(w, h, d) {
 
 	var faces = [];
 
-	faces.push(SQR.Face().setPosition(v0, v1, v3).setUV(u0, u1, u3));
-	faces.push(SQR.Face().setPosition(v0, v3, v2).setUV(u0, u3, u2));
-	faces.push(SQR.Face().setPosition(v4, v7, v5).setUV(u0, u3, u1));
-	faces.push(SQR.Face().setPosition(v4, v6, v7).setUV(u0, u2, u3));
-	faces.push(SQR.Face().setPosition(v0, v2, v6).setUV(u1, u3, u2));
-	faces.push(SQR.Face().setPosition(v0, v6, v4).setUV(u1, u2, u0));
-	faces.push(SQR.Face().setPosition(v1, v7, v3).setUV(u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v1, v5, v7).setUV(u1, u0, u2));
-	faces.push(SQR.Face().setPosition(v0, v4, v5).setUV(u0, u2, u3));
-	faces.push(SQR.Face().setPosition(v0, v5, v1).setUV(u0, u3, u1));
-	faces.push(SQR.Face().setPosition(v2, v7, v6).setUV(u0, u3, u2));
-	faces.push(SQR.Face().setPosition(v2, v3, v7).setUV(u0, u1, u3));
-
+	faces.push(SQR.Face().setPosition(v0, v1, v2, v3).setUV(u0, u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v5, v4, v7, v6).setUV(u0, u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v4, v0, v6, v2).setUV(u0, u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v1, v5, v3, v7).setUV(u0, u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v4, v5, v0, v1).setUV(u0, u1, u2, u3));
+	faces.push(SQR.Face().setPosition(v2, v3, v6, v7).setUV(u0, u1, u2, u3));
+	
 	var c = 0, t;
 	faces.forEach(function(t) {
-		t.calculateNormal().toBuffer(geo, c);
-		c++;
+		c += t.calculateNormal().toBuffer(geo, c);
 	});
+
+	// SQR.Debug.traceBuffer(geo, true);
 	
 	return geo;
 }

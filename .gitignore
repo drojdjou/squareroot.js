@@ -5,3 +5,4 @@ node_modules
 *node_modules
 out
 demo/ig-*
+demo/*/*.mp4

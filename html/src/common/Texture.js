@@ -1,5 +1,7 @@
 SQR.Texture = function(s, options) {
 
+    options = options || {};
+
 	var t = {};
 	var gl = SQR.gl;
 	var source = s;
@@ -14,11 +16,14 @@ SQR.Texture = function(s, options) {
 
 	t.update = function() {
 		var gl = SQR.gl;
-		gl.bindTexture(gl.TEXTURE_2D, texture);
+		// gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-        gl.bindTexture(gl.TEXTURE_2D, null);
+        // gl.bindTexture(gl.TEXTURE_2D, null);
         return t;
 	}
+
+    var wrapS = options.wrapS || options.wrap || gl.CLAMP_TO_EDGE;
+    var wrapT = options.wrapT || options.wrap || gl.CLAMP_TO_EDGE;
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -26,8 +31,8 @@ SQR.Texture = function(s, options) {
     if(isPowerOfTwo()) gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     t.tex = texture;

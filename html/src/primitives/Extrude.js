@@ -106,8 +106,9 @@ SQR.Extrude = function() {
 			}
 		}
 
+		var c = 0;
 		for(var i = 0, fl = faces.length; i < fl; i++) {
-			faces[i].calculateNormal().toBuffer(e.buffer, i);
+			c += faces[i].calculateNormal().toBuffer(e.buffer, c);
 		}
 	}
 
