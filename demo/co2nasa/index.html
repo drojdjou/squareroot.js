@@ -36,47 +36,49 @@
 <script type="text/javascript" src="../../html/src/extras/Trackball.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../../html/lab/base.css">
-
-<style type="text/css">
-
-#caption {
-    position: absolute;
-    height: 63px;
-    width: 1024px;
-    bottom: 0;
-    left: 50%;
-    margin-left: -512px;
-    overflow: hidden;
-}
-
-#caption video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin-top: -513px;
-    width: 1024px;
-}
-
-</style>
+<link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 <body>
 
 <canvas id="gl-canvas"></canvas>
 
+<div id="loader">loading assets</div>
+<div id="replay">play again</div>
 <div id="caption"></div>
 
+<div id="info-button">info</div>
+<div id="info"><p>Interactive visualization of an ultra-high-resolution NASA computer model showing how carbon dioxide in the atmosphere travels around the globe. Based on <a href="https://www.youtube.com/watch?v=x1SgmFa0r04">original video published by NASA</a>.<br>Click and drag to rotate the globe.<br>by <a href="http://bartekdrozdz.com">Bartek Drozdz</a></p></div>
+
+<div id="nogl">You need a <a href="https://www.google.com/intl/en/chrome/browser/desktop/index.html">WebGL enabled browser</a> to view this content.</div>
+
 <script type="text/javascript">
+
+var loader, info, infobtn, nogl, replay, videoUrl;
+
+var checkWebGL = function() {
+    try { 
+        var canvas = document.createElement('canvas'); 
+        return !!window.WebGLRenderingContext && 
+            (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch(e) { 
+        return false; 
+    } 
+}
+
+var init = function() {
 
     SQR.Loader.loadAssets([
         'earth.glsl',
         'space.glsl',
-        'co2_s.mp4',
+        videoUrl,
         'earth.jpg',
         'space.jpg',
         'blur.glsl',
         'bloom.glsl'
     ], function(assets) {
+
+        loader.style.display = 'none';
 
         var w = window.innerWidth, h = window.innerHeight;
 
@@ -99,6 +101,15 @@
         root.add(camRoot);
         camRoot.add(camera);
 
+        replay.addEventListener('click', function() {
+            assets['co2_s.mp4'].currentTime = 0;
+            assets['co2_s.mp4'].play();
+            replay.style.display = 'none';
+        });
+
+        assets['co2_s.mp4'].addEventListener('ended', function() {
+            replay.style.display = 'block';
+        });
 
         var shader = SQR.Shader(assets['earth.glsl']);
         shader.use()
@@ -144,6 +155,15 @@
         var blur = SQR.PostEffect(assets['blur.glsl']);
         var bloom = SQR.PostEffect(assets['bloom.glsl']);
 
+        window.addEventListener('resize', function() {
+            w = window.innerWidth, h = window.innerHeight;
+            rawFBO.resize(w, h);
+            spaceFBO.resize(w, h);
+            blurXFBO.resize(w, h);
+            blurYFBO.resize(w, h);
+            renderer.projection.perspective(70, w/h, 1, 1000);
+        });
+
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
@@ -188,8 +208,35 @@
             my += (ty - my) * 0.1;
         }
 
-        setTimeout(render, 1000);
+        render();
     });
+
+}
+
+infobtn = document.querySelector('#info-button');
+info = document.querySelector('#info');
+loader = document.querySelector('#loader');
+nogl = document.querySelector('#nogl');
+replay = document.querySelector('#replay');
+
+var infoVisible = false;
+
+var toggleInfo = function() {
+    infoVisible = !infoVisible;
+    info.style.display = infoVisible ? 'block' : 'none';
+}
+
+infobtn.addEventListener('click', toggleInfo);
+info.addEventListener('click', toggleInfo);
+
+videoUrl = 'co2_s.mp4';
+
+if(!checkWebGL()) {
+    loader.style.display = 'none';
+    nogl.style.display = 'block';
+} else {
+    init();
+}
 
 </script>
 

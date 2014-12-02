@@ -76,7 +76,15 @@ SQR.Loader = {
     	var video = document.createElement('video');
     	video.autoplay = true;
     	video.addEventListener('canplaythrough', videoReady, false);
-    	video.src = path;
+
+
+    	var p = path;
+
+    	if(!video.canPlayType('video/mp4')) {
+    		p = p.replace('mp4', 'webm');
+    	}
+
+    	video.src = p;
     },
 
 	loadAssets: function(paths, init) {

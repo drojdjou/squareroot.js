@@ -11,8 +11,7 @@ SQR.FrameBuffer = function(width, height, resolution) {
 
     resolution = resolution || 1;
 
-    width = (width * resolution) | 0;
-    height = (height * resolution) | 0;
+    
     
     var f = {}, gl = SQR.gl;
 
@@ -50,6 +49,18 @@ SQR.FrameBuffer = function(width, height, resolution) {
     f.bind = function() {
         gl.viewport(0, 0, width, height);
         gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
+    }
+
+    f.resize = function(w, h) {
+        width = (width * resolution) | 0;
+        height = (height * resolution) | 0;
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
+        gl.bindTexture(gl.TEXTURE_2D, f.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+        gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
     }
 
     return f;
