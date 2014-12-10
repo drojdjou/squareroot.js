@@ -120,8 +120,9 @@ SQR.ConvexHull = (function() {
 	// based on algorithm from Chapter 1 in 
 	// http://www.amazon.com/dp/3540779736/?tag=stackoverfl08-20
 
-	// and code from (basically the implementation of the above)
+	// and code from 
 	// http://blog.cedric.ws/draw-the-convex-hull-with-canvas-and-javascript
+	// (which is basically the implementation of the algorithm explained in the book above)
 
 	var upper = [], lower = [], hull = [];
 
