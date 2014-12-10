@@ -52,6 +52,7 @@ SQR.Loader = {
 	    };
 
 	    var onVideo = function(stream) {
+	    	video.strea = stream;
 			video.src = window.URL.createObjectURL(stream);
 	        video.play();
 	        video.addEventListener('canplaythrough', videoReady, false);
