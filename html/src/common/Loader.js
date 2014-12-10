@@ -4,11 +4,12 @@ SQR.Loader = {
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
 
-		request.onreadystatechange = function(){
+		request.addEventListener('readystatechange', function(){
 			if (request.readyState == 4) {
+				request.removeEventListener('readystatechange');
 				callback(request.responseText, path);
 			}
-		};
+		});
 
 		request.send();
 	},
@@ -103,7 +104,14 @@ SQR.Loader = {
 			var p = paths[i];
 			var e = p.substring(p.lastIndexOf('.') + 1);
 
-			p = p.replace('~', SQR.shaderPath);
+			if(p.indexOf('~') > -1) {
+				if(SQR.GLSL && SQR.GLSL[p.substring(2)]) {
+					toLoad--;
+					continue;
+				} else {
+					p = p.replace('~', SQR.shaderPath);
+				}
+			}
 			
 			switch(e) {
 				case 'glsl':

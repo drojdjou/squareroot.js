@@ -15,7 +15,7 @@ img {
 	left: 0;
 	z-index: 10000;
 	width: 100%;
-	opacity: 0.4;
+	opacity: 0.1;
 }
 
 </style>
@@ -64,10 +64,10 @@ var addPoint = function(x, y) {
 var addInitPoints = function(n) {
 	points.length = 0;
  
-	addPoint(0, 0);
-	addPoint(0, h);
-	addPoint(w, h);
-	addPoint(w, 0);
+	// addPoint(0, 0);
+	// addPoint(0, h);
+	// addPoint(w, h);
+	// addPoint(w, 0);
 
 	for(var i = 0; i < n; i++) {
 		var a = Math.random() * Math.PI * 2;
@@ -97,7 +97,7 @@ var addGrid = function(n) {
 }
 
 var onClick = function(e) {
-	var r = 100, n = 20;
+	var r = 20, n = 10;
 
 	addPoint(e.pageX, e.pageY);
 
@@ -157,8 +157,8 @@ var run = function() {
 
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('click', onClick);
-// addInitPoints(0);
-addGrid(40 );
+addInitPoints(0);
+// addGrid(40 ); 
 run();
 
 </script>
