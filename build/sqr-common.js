@@ -43,7 +43,7 @@ SQR = {
 /* --- --- [Version.js] --- --- */
 
 /** DO NOT EDIT. Updated from version.json **/
-SQR.Version = {"version":"3","build":2,"date":"2014-12-10T09:03:06.463Z"}
+SQR.Version = {"version":"3","build":3,"date":"2014-12-10T09:04:17.552Z"}
 
 /* --- --- [common/Buffer.js] --- --- */
 
@@ -345,7 +345,7 @@ SQR.Loader = {
 	    };
 
 	    var onVideo = function(stream) {
-	    	video.strea = stream;
+	    	video.stream = stream;
 			video.src = window.URL.createObjectURL(stream);
 	        video.play();
 	        video.addEventListener('canplaythrough', videoReady, false);
