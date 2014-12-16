@@ -42,6 +42,18 @@ SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
 SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom, near, far) {
 
     var te = this.data;
+
+     /**
+     *  @property the near clipping
+     *  @readonly
+     */
+    this.near = near;
+
+    /**
+     *  @property the far clipping
+     *  @readonly
+     */
+    this.far = far;
     
     var w = right - left;
     var h = top - bottom;

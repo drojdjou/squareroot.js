@@ -98,6 +98,13 @@ SQR.V3.prototype.sub = function(a, b) {
     return this;
 }
 
+SQR.V3.prototype.lerp = function(a, b, t) {
+    this.x = a.x + (b.x - a.x) * t;
+    this.y = a.y + (b.y - a.y) * t;
+    this.z = a.z + (b.z - a.z) * t;
+    return this;
+}
+
 SQR.V3.prototype.random = function() {
     this.x = Math.random() * 2 - 1;
     this.y = Math.random() * 2 - 1;
@@ -118,7 +125,7 @@ SQR.V3.prototype.cross = function(a, b) {
 }
 
 SQR.V3.prototype.toUniform = function() {
-    return toArray();
+    return this.toArray();
 }
 
 SQR.V3.prototype.toArray = function() {

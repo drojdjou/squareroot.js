@@ -1,5 +1,12 @@
+/**
+ *	Utility to load different types of files 
+ *	(and also some WebRTC related stuff, see below)
+ */
 SQR.Loader = {
 
+	/** 
+	 *	Load a text file and return it's contents in the callback.
+	 */
 	loadText: function(path, callback){
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
@@ -14,12 +21,20 @@ SQR.Loader = {
 		request.send();
 	},
 
+	/** 
+	 *	Load a JSON file and return it's contents in the callback.
+	 *	This function will parse the JSON data for you and return an Object.
+	 */
 	loadJSON: function(path, callback){
 		SQR.Loader.loadText(path, function(text) {
 			callback(JSON.parse(text), path);
 		});
 	},
 
+	/** 
+	 *	Load an image file and return it's contents in the callback
+	 *	as Image object.
+	 */
 	loadImage: function(path, callback){
 		var img = new Image();
 		if(callback) {
@@ -33,18 +48,21 @@ SQR.Loader = {
 		return img;
 	},
 
-	loadWebcam: function(callback) {
+	/** 
+	 *	Initiate user stream (webcam). 
+	 */
+	loadWebcam: function(callback, options) {
 		navigator.getUserMedia  = navigator.getUserMedia ||
                                 navigator.webkitGetUserMedia ||
                                 navigator.mozGetUserMedia ||
                                 navigator.msGetUserMedia;
 
         if(!navigator.getUserMedia) {
-        	console.warn('getUserMedia not supported');
+        	console.error('> SQR.Loader - getUserMedia not supported');
         	callback();
         }
 
-        var options = {
+        options = options || {
         	audio: false,
 	        video: {
 	        	// mandatory: { minWidth: 1920, minHeight: 1080 }
@@ -66,10 +84,13 @@ SQR.Loader = {
     	video.autoplay = true;
 
 		navigator.getUserMedia(options, onVideo, function(e) { 
-			console.warn('getUserMedia error ', e);
+			console.error('> SQR.Loader - getUserMedia error ', e);
 		});
     },
 
+    /**
+     *	Preload a video so that it can be used as a texture (typically)
+     */
     loadVideo: function(path, callback) {
     	var videoReady = function() {
 	    	callback(video, path);
@@ -89,20 +110,41 @@ SQR.Loader = {
     	video.src = p;
     },
 
-	loadAssets: function(paths, init) {
+    /**
+     *	Load multiple assets of type:
+     *
+     *	- text, including GLSL code
+     *	- JSON, including model, geometry, scene. etc..
+     *	- image (jpg, gif, png), video (mp4, webm)
+     *	- webcam (it will initiate the webcam, 
+     *			  ask user for permisions, and return a ready to use stream)
+     */
+	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;
 		SQR.Loader.assets = {};
+		var aliases = {};
 
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[p] = asset;
+			SQR.Loader.assets[aliases[p] || p] = asset;
 			toLoad--;
+
+			if(progressCallback) {
+				progressCallback(toLoad, paths.length);
+			}
+
 			if(toLoad == 0) {
-				init(SQR.Loader.assets);
+				callback(SQR.Loader.assets);
 			}
 		}
 		
 		for(var i = 0; i < toLoad; i++) {
 			var p = paths[i];
+
+			if(typeof(p) != 'string') {
+				aliases[p[0]] = p[1];
+				p = p[0];
+			}
+
 			var e = p.substring(p.lastIndexOf('.') + 1);
 
 			if(p.indexOf('~') > -1) {

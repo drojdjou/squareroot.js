@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Face Tracker</title>
+		<meta charset="utf-8">
+
+		<style type="text/css">
+
+		body {
+			background-color: #000000;
+			color: #ffffff;
+			font-family: monospace;
+		}
+
+		canvas {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+
+		ul {
+			position: absolute;
+			top: 0;
+			right: 0;
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
+
+		ul li {
+			padding: 10px;
+			border-bottom: 1px dashed white;
+		}
+
+		li:hover {
+			cursor: pointer;
+			text-decoration: underline;
+		}
+
+		</style>
+	</head>
+	<body>
+
+		<script src="../../lib/model_pca_20_svm.js"></script>
+		<script src="../../lib/clm.js"></script>
+
+		<div id="content">
+
+			<p>
+				1. Drag & drop any picture to test it or select from the pictures on the right<br>
+				2. If the face is not found or misplaced, click/drag on the image to select the face<br>(ok to try it multiple times)
+			</p>
+
+			<div id="container">
+				<canvas id="image"></canvas>
+				<canvas id="overlay"></canvas>
+			</div>
+
+			<ul>
+				<li data-href="../../assets/lawrence.jpg">J. Lawrence</li>
+				<li data-href="../../assets/matthew.jpg">Matthew Mc Conaghey</li>
+			</ul>
+
+			<div class="tools">
+
+			</div>
+
+			<script>
+
+				var topOffset = 80;
+
+				var lis = document.querySelectorAll('li');
+				lis = Array.prototype.slice.call(lis);
+				lis.forEach(function(li) {
+					li.addEventListener('click', function(e) {
+						var href = e.target.getAttribute('data-href');
+						img.src = href;
+					});
+				});
+
+				var imageCanvas = document.querySelector('#image');
+				var cc = imageCanvas.getContext('2d');
+				var overlay = document.querySelector('#overlay');
+				var overlayCC = overlay.getContext('2d');
+
+				imageCanvas.style.top = topOffset + 'px';
+				overlay.style.top = topOffset + 'px';
+			
+				var img = new Image();
+				img.onload = function() {
+
+					console.log(img.width, img.height);
+
+					imageCanvas.width = img.width, imageCanvas.height = img.height;
+					overlay.width = img.width, overlay.height = img.height;
+
+					cc.drawImage(img,0,0);
+					trackFace();
+				};
+
+				img.src = '../../assets/matthew.jpg';
+			
+				var ctrack = new clm.tracker({stopOnConvergence : true});
+				ctrack.init(pModel);
+				
+				function trackFace(box) {
+					console.log('START');
+					ctrack.reset();
+					ctrack.start(imageCanvas, box);
+					hasTrackingInfo = false;
+					drawLoop();
+				}
+				
+				function drawLoop() {
+					requestAnimationFrame(drawLoop);
+					
+
+					if(isDown) {
+						overlayCC.clearRect(0, 0, overlay.width, overlay.height);
+						overlayCC.strokeStyle = '#ff0000';
+						overlayCC.beginPath();
+						overlayCC.moveTo(box[0], box[1]);
+						overlayCC.lineTo(box[0] + box[2], box[1]);
+						overlayCC.lineTo(box[0] + box[2], box[1] + box[3]);
+						overlayCC.lineTo(box[0], box[1] + box[3]);
+						overlayCC.lineTo(box[0], box[1]);
+						overlayCC.stroke();
+					}
+				}
+
+				function drawResult() {
+					if (ctrack.getCurrentPosition()) {
+						overlayCC.clearRect(0, 0, overlay.width, overlay.height);
+						ctrack.draw(overlay);
+					}
+				}
+
+				var box = [], isDown = false;
+
+				var isTouch = 'ontouchstart' in document;
+				var downEvent = isTouch ? 'touchstart' : 'mousedown';
+				var moveEvent = isTouch ? 'touchmove' : 'mousemove';
+				var upEvent =   isTouch ? 'touchend' : 'mouseup';
+
+				overlay.addEventListener(downEvent, function(e) {
+					isDown = true;
+					box[0] = e.pageX;
+					box[1] = e.pageY - topOffset;
+					box[2] = 0;
+					box[3] = 0;
+				});
+
+				overlay.addEventListener(moveEvent, function(e) {
+					box[2] = e.pageX - box[0];
+					box[3] = e.pageY - topOffset - box[1];
+				});
+
+				overlay.addEventListener(upEvent, function(e) {
+					box[2] = e.pageX - box[0];
+					box[3] = e.pageY - topOffset - box[1];
+					isDown = false;
+					// if box tto small don't bother
+					if(box[2] > 20 && box[3] > 20) trackFace(box);
+				});
+
+				document.addEventListener('dragover', function(e) {
+				    e.stopPropagation();
+				    e.preventDefault();
+				    e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+				}, false);
+
+				document.addEventListener('drop', function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+
+					var files = e.dataTransfer.files;
+
+					if(files.length >= 1) {
+						var f = files[0];
+						var reader = new FileReader();
+
+						reader.onload = function(re) {
+							img.src = re.target.result;
+						}
+
+						reader.readAsDataURL(f);
+					}
+
+
+					return false;
+				}, false);
+				
+				// detect if tracker fails to find a face
+				document.addEventListener("clmtrackrNotFound", function(event) {
+					ctrack.stop();
+					console.log("NOT FOUND");
+				}, false);
+				
+				// detect if tracker loses tracking of face
+				document.addEventListener("clmtrackrLost", function(event) {
+					ctrack.stop();
+					console.log("LOST");
+				}, false);
+				
+				// detect if tracker has converged
+				document.addEventListener("clmtrackrConverged", function(event) {
+					console.log('DONE!');
+					drawResult();
+				}, false);
+				
+				// update stats on iteration
+				document.addEventListener("clmtrackrIteration", function(event) {
+				}, false);
+
+			</script>
+		</div>
+
+		<script>
+		if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+			document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+		}
+		</script>
+	</body>
+</html>

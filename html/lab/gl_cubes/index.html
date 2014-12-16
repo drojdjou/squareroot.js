@@ -36,7 +36,7 @@
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
-        'shader.glsl',
+        'normal2color.glsl',
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight;
@@ -56,7 +56,7 @@
         document.querySelector('.num').innerHTML = numSquares;
 
         var buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        var shader = SQR.Shader(assets['shader.glsl']).use().attribPointers(buffer);
+        var shader = SQR.Shader(assets['normal2color.glsl']).use().attribPointers(buffer);
 
         var root = new SQR.Transform();
         var camRoot = new SQR.Transform();

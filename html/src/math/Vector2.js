@@ -79,6 +79,12 @@ SQR.V2.prototype.sub = function(a, b) {
     return this;
 }
 
+SQR.V2.prototype.lerp = function(a, b, t) {
+    this.x = a.x + (b.x - a.x) * t;
+    this.y = a.y + (b.y - a.y) * t;
+    return this;
+}
+
 SQR.V2.dot = function(a, b) {
     return (a.x * b.x + a.y * b.y)
 }

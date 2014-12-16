@@ -9,6 +9,7 @@ SQR.Transform = function() {
     t.active = true;
 
 	t.position = new SQR.V3();
+    t.globalPosition = new SQR.V3();
 	t.quaternion = new SQR.Quaternion();
 	t.rotation = new SQR.V3();
 	t.scale = new SQR.V3(1, 1, 1);
@@ -84,6 +85,13 @@ SQR.Transform = function() {
         shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
 
+        if(!isReplacementShader && shader.uniforms) {
+            var un = Object.keys(shader.uniforms);
+            for(var i = 0, l = un.length; i < l; i++) {
+                shader.setUniform(un[i], shader.uniforms[un[i]]);
+            }
+        }
+
         if(!isReplacementShader && t.uniforms) {
             var un = Object.keys(t.uniforms);
             for(var i = 0, l = un.length; i < l; i++) {
@@ -124,7 +132,7 @@ SQR.Transform = function() {
             t.matrix.copyTo(t.globalMatrix);
         }
 
-        
+        t.globalMatrix.extractPosition(t.globalPosition);
 
         if(t.isStatic) transformState = 1;
     }
