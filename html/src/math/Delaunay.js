@@ -8,6 +8,8 @@
 */
 SQR.Delaunay = (function() {
 
+	var delaunay = {};
+
 	var Edge = function(v0, v1) {
 		this.v0 = v0;
 		this.v1 = v1;
@@ -89,7 +91,13 @@ SQR.Delaunay = (function() {
 		return uniqueEdges;
 	}
 
-	var triangulate = function(vertices) {
+	/**
+	 *	Performs Delaunay triangulation.
+	 *
+	 *	@param vertices - a list of 2d vertices (can be SQR.V2, SQR.V3 or any object that has x and y properties)
+	 *	@returns tirnalges - a list of SQR.Triangles
+	 */
+	delaunay.triangulate = function(vertices) {
 		var triangles = [];
 
 		var st = createSuperTriangle(vertices);
@@ -105,16 +113,14 @@ SQR.Delaunay = (function() {
 
 		// Remove triangles that shared edges with "supertriangle"
 		triangles = triangles.filter(function(triangle) {
-		return !(triangle.v0 == st.v0 || triangle.v0 == st.v1 || triangle.v0 == st.v2 ||
-		triangle.v1 == st.v0 || triangle.v1 == st.v1 || triangle.v1 == st.v2 ||
-		triangle.v2 == st.v0 || triangle.v2 == st.v1 || triangle.v2 == st.v2);
+			return !(triangle.v0 == st.v0 || triangle.v0 == st.v1 || triangle.v0 == st.v2 ||
+			triangle.v1 == st.v0 || triangle.v1 == st.v1 || triangle.v1 == st.v2 ||
+			triangle.v2 == st.v0 || triangle.v2 == st.v1 || triangle.v2 == st.v2);
 		});
 
 		return triangles;
 	}
 
-	return {
-		triangulate: triangulate
-	}
+	return delaunay;
 
 })();
