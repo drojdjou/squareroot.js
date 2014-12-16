@@ -43,7 +43,7 @@ SQR = {
 /* --- --- [Version.js] --- --- */
 
 /** DO NOT EDIT. Updated from version.json **/
-SQR.Version = {"version":"3","build":3,"date":"2014-12-10T09:04:17.552Z"}
+SQR.Version = {"version":"3","build":4,"date":"2014-12-16T19:16:46.523Z"}
 
 /* --- --- [common/Buffer.js] --- --- */
 
@@ -179,20 +179,54 @@ SQR.Buffer = function() {
 
 /* --- --- [common/Context.js] --- --- */
 
+/**
+ *	When creating the Context object, a canvas element or a selector (ex. #gl-canvas) 
+ *	can be passed to this function. If omitted a new canvas element will be created
+ *	and it will be available as the .canvas property of the object 
+ *	returned by the SQR.Context functio.
+ */
 SQR.Context = function(canvas) {
+
+	var NOGL = "> SQR.Context - Webgl is not supported.";
 
 	if(!canvas) canvas = document.createElement('canvas');
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
 
 	var c = { canvas: canvas }, gl;
 
-	c.create = function(params) {
-		gl = canvas.getContext("experimental-webgl", { antialias: true });
+	/**
+	 *	Creates the webgl context. 
+	 *	Options as defined in Specs, section 5.2 
+	 *	(https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2)
+	 *	Passing the options is not mandatory, if uses default values otherwise.
+	 *
+	 *	onError - specify a fallback funcion in case WebGL is not supported
+	 *	if ommited, this function will throw a error if there are problems.
+	 */
+	c.create = function(options, onError) {
+
+		onError = onError || function() { throw NOGL; };
+
+		options = options || {};
+		if(options.antialias === undefined) options.antialias = true;
+
+		if(!window.WebGLRenderingContext) onError()
+
+		try {
+			gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+	    } catch(e) { 
+	    	console.error(e);
+	    	onError();
+	    } 
+
 		c.gl = gl;
         c.setAsCurrent();
 		return c;
 	}
 
+	/** 
+	 *	Sets the canvas and the viewport size to the given values.
+	 */
 	c.size = function(w, h) {
 		canvas.width = w;
 		canvas.height = h;
@@ -200,16 +234,29 @@ SQR.Context = function(canvas) {
 		return c;
 	}
 
+	/**
+	 *	Define clear color. 
+	 *	r, g, b, a are in [0-1] range.
+	 */
 	c.clearColor = function(r, g, b, a) {
 		gl.clearColor(r, g, b, a);
 		return c;
 	}
 
+	/**
+	 *	Quick viewport clear function - clears both color and depth buffers.
+	 *	Typically called at each frame before rendering to screen.
+	 *	For custom clearing options use SQR.gl.clear()
+	 */
 	c.clear = function() {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		return c;
 	}
 
+	/**
+	 *	Sets this context as current in the global SQR.gl variable.
+	 *	This variable is used by the engine to perform rendering.
+	 */
 	c.setAsCurrent = function() {
 		SQR.gl = gl;
 		return c;
@@ -291,8 +338,15 @@ SQR.FrameBuffer = function(width, height, resolution) {
 
 /* --- --- [common/Loader.js] --- --- */
 
+/**
+ *	Utility to load different types of files 
+ *	(and also some WebRTC related stuff, see below)
+ */
 SQR.Loader = {
 
+	/** 
+	 *	Load a text file and return it's contents in the callback.
+	 */
 	loadText: function(path, callback){
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
@@ -307,12 +361,20 @@ SQR.Loader = {
 		request.send();
 	},
 
+	/** 
+	 *	Load a JSON file and return it's contents in the callback.
+	 *	This function will parse the JSON data for you and return an Object.
+	 */
 	loadJSON: function(path, callback){
 		SQR.Loader.loadText(path, function(text) {
 			callback(JSON.parse(text), path);
 		});
 	},
 
+	/** 
+	 *	Load an image file and return it's contents in the callback
+	 *	as Image object.
+	 */
 	loadImage: function(path, callback){
 		var img = new Image();
 		if(callback) {
@@ -326,18 +388,21 @@ SQR.Loader = {
 		return img;
 	},
 
-	loadWebcam: function(callback) {
+	/** 
+	 *	Initiate user stream (webcam). 
+	 */
+	loadWebcam: function(callback, options) {
 		navigator.getUserMedia  = navigator.getUserMedia ||
                                 navigator.webkitGetUserMedia ||
                                 navigator.mozGetUserMedia ||
                                 navigator.msGetUserMedia;
 
         if(!navigator.getUserMedia) {
-        	console.warn('getUserMedia not supported');
+        	console.error('> SQR.Loader - getUserMedia not supported');
         	callback();
         }
 
-        var options = {
+        options = options || {
         	audio: false,
 	        video: {
 	        	// mandatory: { minWidth: 1920, minHeight: 1080 }
@@ -359,10 +424,13 @@ SQR.Loader = {
     	video.autoplay = true;
 
 		navigator.getUserMedia(options, onVideo, function(e) { 
-			console.warn('getUserMedia error ', e);
+			console.error('> SQR.Loader - getUserMedia error ', e);
 		});
     },
 
+    /**
+     *	Preload a video so that it can be used as a texture (typically)
+     */
     loadVideo: function(path, callback) {
     	var videoReady = function() {
 	    	callback(video, path);
@@ -382,20 +450,41 @@ SQR.Loader = {
     	video.src = p;
     },
 
-	loadAssets: function(paths, init) {
+    /**
+     *	Load multiple assets of type:
+     *
+     *	- text, including GLSL code
+     *	- JSON, including model, geometry, scene. etc..
+     *	- image (jpg, gif, png), video (mp4, webm)
+     *	- webcam (it will initiate the webcam, 
+     *			  ask user for permisions, and return a ready to use stream)
+     */
+	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;
 		SQR.Loader.assets = {};
+		var aliases = {};
 
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[p] = asset;
+			SQR.Loader.assets[aliases[p] || p] = asset;
 			toLoad--;
+
+			if(progressCallback) {
+				progressCallback(toLoad, paths.length);
+			}
+
 			if(toLoad == 0) {
-				init(SQR.Loader.assets);
+				callback(SQR.Loader.assets);
 			}
 		}
 		
 		for(var i = 0; i < toLoad; i++) {
 			var p = paths[i];
+
+			if(typeof(p) != 'string') {
+				aliases[p[0]] = p[1];
+				p = p[0];
+			}
+
 			var e = p.substring(p.lastIndexOf('.') + 1);
 
 			if(p.indexOf('~') > -1) {
@@ -873,6 +962,7 @@ SQR.Transform = function() {
     t.active = true;
 
 	t.position = new SQR.V3();
+    t.globalPosition = new SQR.V3();
 	t.quaternion = new SQR.Quaternion();
 	t.rotation = new SQR.V3();
 	t.scale = new SQR.V3(1, 1, 1);
@@ -948,6 +1038,13 @@ SQR.Transform = function() {
         shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
 
+        if(!isReplacementShader && shader.uniforms) {
+            var un = Object.keys(shader.uniforms);
+            for(var i = 0, l = un.length; i < l; i++) {
+                shader.setUniform(un[i], shader.uniforms[un[i]]);
+            }
+        }
+
         if(!isReplacementShader && t.uniforms) {
             var un = Object.keys(t.uniforms);
             for(var i = 0, l = un.length; i < l; i++) {
@@ -988,7 +1085,7 @@ SQR.Transform = function() {
             t.matrix.copyTo(t.globalMatrix);
         }
 
-        
+        t.globalMatrix.extractPosition(t.globalPosition);
 
         if(t.isStatic) transformState = 1;
     }
