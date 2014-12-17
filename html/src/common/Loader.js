@@ -11,12 +11,14 @@ SQR.Loader = {
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
 
-		request.addEventListener('readystatechange', function(){
+		var onReadystatechange = function(){
 			if (request.readyState == 4) {
-				request.removeEventListener('readystatechange');
+				request.removeEventListener('readystatechange', onReadystatechange);
 				callback(request.responseText, path);
 			}
-		});
+		}
+
+		request.addEventListener('readystatechange', onReadystatechange);
 
 		request.send();
 	},
