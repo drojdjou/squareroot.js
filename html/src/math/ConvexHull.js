@@ -53,7 +53,7 @@ SQR.ConvexHull = (function() {
 		u.push(p[p.length-2]);
 
 		for(var i = p.length-3; i >= 0; i--) {
-			u.push(points[i]);
+			u.push(p[i]);
 
 			while(u.length > 2 &&
 				!isRight(

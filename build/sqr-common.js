@@ -43,7 +43,7 @@ SQR = {
 /* --- --- [Version.js] --- --- */
 
 /** DO NOT EDIT. Updated from version.json **/
-SQR.Version = {"version":"3","build":4,"date":"2014-12-16T19:16:46.523Z"}
+SQR.Version = {"version":"3","build":5,"date":"2014-12-17T23:25:04.099Z"}
 
 /* --- --- [common/Buffer.js] --- --- */
 
@@ -62,18 +62,19 @@ SQR.Buffer = function() {
 	}
 
 	/**
-	 *	Example layout: attributes = { aPosition: 3, aColor: 4, aUV: 2 }
+	 *	Example layout: layout = { aPosition: 3, aColor: 4, aUV: 2 }
 	 *	Can also use the constant functions from SQR - ex SQR.v2c3()
 	 */
-	b.layout = function(attributes, size) {
+	b.layout = function(layout, size) {
 		b.size = size;
 		b.strideSize = 0;
-		b.attributes = attributes;
+		b.layout = layout;
+		b.attributes = {};
 
-		for(var a in attributes) {
-			var aa = { offset: b.strideSize, byteOffset: b.strideSize * 4, size: attributes[a] };
-			b.strideSize += attributes[a];
-			attributes[a] = aa;
+		for(var a in layout) {
+			var aa = { offset: b.strideSize, byteOffset: b.strideSize * 4, size: layout[a] };
+			b.strideSize += layout[a];
+			b.attributes[a] = aa;
 		}
 
 		b.strideByteSize = b.strideSize * 4;
@@ -160,6 +161,10 @@ SQR.Buffer = function() {
         return b;
 	}
 
+	b.isIndexed = function() {
+		return hasIndex;
+	}
+
 	b.draw = function() {
 		var gl = SQR.gl;
 
@@ -169,8 +174,17 @@ SQR.Buffer = function() {
 			gl.drawArrays(b.mode, 0, b.size);
 	}
 
+	b.setRawData = function(array, offset) {
+		data.set(array, offset);
+	}
+
 	b.getDataArray = function() {
 		return data;
+	}
+
+	b.destroy  = function() {
+		SQR.gl.deleteBuffer(buffer);
+		if(hasIndex) SQR.gl.deleteBuffer(indexBuffer);
 	}
 
 	return b;
@@ -351,12 +365,14 @@ SQR.Loader = {
 		var request = new XMLHttpRequest();
 		request.open("GET", path);
 
-		request.addEventListener('readystatechange', function(){
+		var onReadystatechange = function(){
 			if (request.readyState == 4) {
-				request.removeEventListener('readystatechange');
+				request.removeEventListener('readystatechange', onReadystatechange);
 				callback(request.responseText, path);
 			}
-		});
+		}
+
+		request.addEventListener('readystatechange', onReadystatechange);
 
 		request.send();
 	},
@@ -1011,6 +1027,11 @@ SQR.Transform = function() {
         return t;
     }
 
+    t.removeAll = function() {
+        t.children.length = 0;
+        t.numChildren = 0;
+    }
+
     /**
      * Check if transform is child of this transfom
      * @param t the {SQR.Transfom} to look for
@@ -1104,6 +1125,7 @@ SQR.Transform = function() {
             t.viewMatrix.inverseMat3(t.normalMatrix);
         } else {
             t.globalMatrix.copyTo(t.viewMatrix);
+            t.viewMatrix.inverseMat3(t.normalMatrix);
         }
         
     }
