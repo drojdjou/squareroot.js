@@ -58,6 +58,11 @@ SQR.Transform = function() {
         return t;
     }
 
+    t.removeAll = function() {
+        t.children.length = 0;
+        t.numChildren = 0;
+    }
+
     /**
      * Check if transform is child of this transfom
      * @param t the {SQR.Transfom} to look for
@@ -151,6 +156,7 @@ SQR.Transform = function() {
             t.viewMatrix.inverseMat3(t.normalMatrix);
         } else {
             t.globalMatrix.copyTo(t.viewMatrix);
+            t.viewMatrix.inverseMat3(t.normalMatrix);
         }
         
     }

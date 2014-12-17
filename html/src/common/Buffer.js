@@ -13,18 +13,19 @@ SQR.Buffer = function() {
 	}
 
 	/**
-	 *	Example layout: attributes = { aPosition: 3, aColor: 4, aUV: 2 }
+	 *	Example layout: layout = { aPosition: 3, aColor: 4, aUV: 2 }
 	 *	Can also use the constant functions from SQR - ex SQR.v2c3()
 	 */
-	b.layout = function(attributes, size) {
+	b.layout = function(layout, size) {
 		b.size = size;
 		b.strideSize = 0;
-		b.attributes = attributes;
+		b.layout = layout;
+		b.attributes = {};
 
-		for(var a in attributes) {
-			var aa = { offset: b.strideSize, byteOffset: b.strideSize * 4, size: attributes[a] };
-			b.strideSize += attributes[a];
-			attributes[a] = aa;
+		for(var a in layout) {
+			var aa = { offset: b.strideSize, byteOffset: b.strideSize * 4, size: layout[a] };
+			b.strideSize += layout[a];
+			b.attributes[a] = aa;
 		}
 
 		b.strideByteSize = b.strideSize * 4;
@@ -111,6 +112,10 @@ SQR.Buffer = function() {
         return b;
 	}
 
+	b.isIndexed = function() {
+		return hasIndex;
+	}
+
 	b.draw = function() {
 		var gl = SQR.gl;
 
@@ -120,8 +125,17 @@ SQR.Buffer = function() {
 			gl.drawArrays(b.mode, 0, b.size);
 	}
 
+	b.setRawData = function(array, offset) {
+		data.set(array, offset);
+	}
+
 	b.getDataArray = function() {
 		return data;
+	}
+
+	b.destroy  = function() {
+		SQR.gl.deleteBuffer(buffer);
+		if(hasIndex) SQR.gl.deleteBuffer(indexBuffer);
 	}
 
 	return b;
