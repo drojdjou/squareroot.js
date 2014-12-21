@@ -24,6 +24,10 @@ SQR.GeometryTools = (function() {
 	        		size += t.buffer.size;
 	        	}
 	        }
+
+	        if(t.shader) {
+	        	container.shader = t.shader;
+	        }
 		}
 
 		updateTransform(container);
@@ -63,14 +67,10 @@ SQR.GeometryTools = (function() {
 				c++;
 		}
 
-		console.log('batched ' + container.numChildren + ' geometries, ' + size + ' vertices, ' + offset + ' elements in array');
+		// console.log('batched ' + container.numChildren + ' geometries, ' + size + ' vertices, ' + offset + ' elements in array');
 
 		container.removeAll();
-
-		var b = new SQR.Transform();
-		b.shader = container.shader;
-		b.buffer = cb.update();
-		container.add(b);
+		container.buffer = cb.update();
 	}
 
 	return geoTools;

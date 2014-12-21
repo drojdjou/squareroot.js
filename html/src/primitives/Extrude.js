@@ -45,12 +45,18 @@ SQR.Extrude = function() {
 	var shape, shapeSize, path, resolution, range, start, end, cap;
 	var vertices = [], faces = [];
 
-	e.setPaths = function(_shape, _path, _resolution) {
+	/**
+	 *	_shape - array of SQR.V2 defining the profile shape
+	 *	_path - SQR.Curve along which the extrude takes place
+	 *	_resolution - how many times the shape will be repeated along the path. Less than 2 doesnt make sense, default is 10
+	 *	_layout - the layout of the buffer to create, default SRQ.v3n3() i.e. a 3D vertex + 3D normal
+	 */
+	e.setPaths = function(_shape, _path, _resolution, _layout) {
 		shape = _shape;
 		shapeSize = _shape.length;
 		path = _path;
 		resolution = _resolution || 10;
-		setVertices();
+		setVertices(_layout);
 		return e;
 	}
 
@@ -59,9 +65,10 @@ SQR.Extrude = function() {
 		return e;
 	}
 
-	var setVertices = function() {
+	var setVertices = function(layout) {
 		vertices.length = 0;
 		faces.length = 0;
+		layout = layout || SQR.v3n3();
 
 		for(var i = 0; i < resolution; i++) {
 			for(var j = 0; j < shapeSize; j++) {
@@ -86,7 +93,7 @@ SQR.Extrude = function() {
 			}
 		}
 
-		e.buffer.layout( {'aPosition': 3, 'aNormal': 3 }, faces.length * 3);
+		e.buffer.layout(layout, faces.length * 3);
 	}
 
 	var update = function(scalingFunc) {
@@ -108,7 +115,7 @@ SQR.Extrude = function() {
 
 		var c = 0;
 		for(var i = 0, fl = faces.length; i < fl; i++) {
-			c += faces[i].calculateNormal().toBuffer(e.buffer, c);
+			c += faces[i].calculateNormal().toBuffer(e.buffer, c, false, true);
 		}
 	}
 

@@ -62,7 +62,7 @@ SQR.Face = function() {
         return t;
     }
 
-    t.toBuffer = function(geo, position, perVertextNormal) {
+    t.toBuffer = function(geo, position, perVertextNormal, preNormalizeNormal) {
         var c = position;
 
         if(geo.attributes[ap]) {
@@ -72,6 +72,9 @@ SQR.Face = function() {
 
         if(geo.attributes[an] && (t.normal || perVertextNormal)) {
             var v = perVertextNormal, n = t.normal;
+
+            if(preNormalizeNormal && !v) t.normal.norm();
+
             geo.set(an, c+0, v ? t.a.normal : n)
                .set(an, c+1, v ? t.b.normal : n)
                .set(an, c+2, v ? t.c.normal : n);

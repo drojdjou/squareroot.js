@@ -32,7 +32,7 @@ SQR.Context = function(canvas) {
 		if(!window.WebGLRenderingContext) onError()
 
 		try {
-			gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+			gl = canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options);
 	    } catch(e) { 
 	    	console.error(e);
 	    	onError();

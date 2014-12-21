@@ -1636,7 +1636,8 @@ SQR.Spline = function() {
 	}
 
 	s.matrixAt = function(t, m) {
-		if(t == 1) t = 0.999999;
+		if(t == 0) t = SQR.EPSILON;
+		if(t == 1) t = 1 - SQR.EPSILON;
 		t = t % 1;
 		var tf = t * points.length;
 		return points[tf | 0].matrixAt(tf % 1, m);

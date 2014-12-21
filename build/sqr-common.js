@@ -43,7 +43,7 @@ SQR = {
 /* --- --- [Version.js] --- --- */
 
 /** DO NOT EDIT. Updated from version.json **/
-SQR.Version = {"version":"3","build":5,"date":"2014-12-17T23:25:04.099Z"}
+SQR.Version = {"version":"3","build":6,"date":"2014-12-21T02:41:16.155Z"}
 
 /* --- --- [common/Buffer.js] --- --- */
 
@@ -227,7 +227,7 @@ SQR.Context = function(canvas) {
 		if(!window.WebGLRenderingContext) onError()
 
 		try {
-			gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+			gl = canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options);
 	    } catch(e) { 
 	    	console.error(e);
 	    	onError();
@@ -335,8 +335,8 @@ SQR.FrameBuffer = function(width, height, resolution) {
     }
 
     f.resize = function(w, h) {
-        width = (width * resolution) | 0;
-        height = (height * resolution) | 0;
+        width = (w * resolution) | 0;
+        height = (h * resolution) | 0;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
         gl.bindTexture(gl.TEXTURE_2D, f.texture);
@@ -1044,8 +1044,8 @@ SQR.Transform = function() {
      * Execute this function on all the child transforms including this current one
      * @param f the function that will be called on each child. This function will receive the transform as argument.
      */
-    t.recurse = function(f) {
-        f(t);
+    t.recurse = function(f, excludeSelf) {
+       if(!excludeSelf) f(t);
         for (var i = 0; i < t.numChildren; i++) {
             t.children[i].recurse(f);
         }
@@ -1055,7 +1055,7 @@ SQR.Transform = function() {
         var isReplacementShader = options && options.replacementShader;
         var shader = isReplacementShader ? options.replacementShader : t.shader;
 
-        shader.setUniform('uMatrix', t.viewMatrix);
+        shader.setUniform('uMatrix', t.globalMatrix);
         shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
 

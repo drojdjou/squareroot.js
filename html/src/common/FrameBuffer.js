@@ -52,8 +52,8 @@ SQR.FrameBuffer = function(width, height, resolution) {
     }
 
     f.resize = function(w, h) {
-        width = (width * resolution) | 0;
-        height = (height * resolution) | 0;
+        width = (w * resolution) | 0;
+        height = (h * resolution) | 0;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
         gl.bindTexture(gl.TEXTURE_2D, f.texture);

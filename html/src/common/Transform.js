@@ -75,8 +75,8 @@ SQR.Transform = function() {
      * Execute this function on all the child transforms including this current one
      * @param f the function that will be called on each child. This function will receive the transform as argument.
      */
-    t.recurse = function(f) {
-        f(t);
+    t.recurse = function(f, excludeSelf) {
+       if(!excludeSelf) f(t);
         for (var i = 0; i < t.numChildren; i++) {
             t.children[i].recurse(f);
         }
@@ -86,7 +86,7 @@ SQR.Transform = function() {
         var isReplacementShader = options && options.replacementShader;
         var shader = isReplacementShader ? options.replacementShader : t.shader;
 
-        shader.setUniform('uMatrix', t.viewMatrix);
+        shader.setUniform('uMatrix', t.globalMatrix);
         shader.setUniform('uViewMatrix', t.viewMatrix);
         shader.setUniform('uNormalMatrix', t.normalMatrix);
 
