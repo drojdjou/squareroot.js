@@ -22,7 +22,7 @@ void main()
 	gl_Position = uProjection * mvPosition;
 
 	vec3 incident = normalize(mvPosition.xyz);
-	vec3 ln = aNormal * vec3(0.9, 0.9, 1.0);
+	vec3 ln = vNormal;// * vec3(1.0, 0.66, 1.0);
 	vRefVec = reflect(incident, ln);
 
 	vUV = aUV;
@@ -64,9 +64,9 @@ void main() {
 
 	vec3 rf = -vRefVec;
 	vec2 nuv;
-	nuv.x = 0.5 - atan(rf.z, rf.x) / PI2;
+	nuv.x = 0.5 - (atan(rf.z, rf.x) + 2.0) / PI2;
 	nuv.y = 0.5 - asin(rf.y) / PI;
-	nuv.x = 1.0 - nuv.x;
+	nuv.x = 1.0 - mod(nuv.x, 1.0);
 
 	vec3 noisecol = texture2D(uNoiseTexture, nuv).rgb;
 
@@ -76,9 +76,9 @@ void main() {
 
 	vec2 refuv = nuv + disp;
 
-	float fade = distance(nuv, vec2(0.5, 0.5)) * 2.0;
+	float fade = distance(nuv, vec2(0.5, 0.5)) * 1.66;
 
-	fade = smoothstep(0.6, 1.0, fade);
+	fade = smoothstep(0.4, 0.9, fade);
 
 	vec3 refcol = mix(texture2D(uTexture, refuv).rgb, vec3(1.0, 0.0, 0.0), fade);
 	
