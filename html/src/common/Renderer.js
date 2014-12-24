@@ -1,7 +1,7 @@
 SQR.Renderer = function(context) {
 
 	var r = {};
-	var uniforms = {}, renderObjects = [];
+	var uniforms = {}, renderObjects = [], transparentObjects = [];
 
 	var updateTransform = function(t) {
 		if(!t.active) return;
@@ -15,29 +15,42 @@ SQR.Renderer = function(context) {
         }
 
         if(t.buffer && t.shader) {
-        	renderObjects.push(t);
+        	if(t.transparent) transparentObjects.push(t);
+        	else renderObjects.push(t);
         }
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
 
+	var defOpts = {};
+
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
 
-		if(!options || !options.dontClear) context.clear();
+		options = options || defOpts;
 
+		if(!options.dontClear) context.clear();
+
+		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.CULL_FACE);
         gl.frontFace(gl.CW);
 
 		renderObjects.length = 0;
+		transparentObjects.length = 0;
+		
 		updateTransform(root);
 
 		if(camera) {
 			camera.computeInverseMatrix();
 		}
 
-		var objectsToRender = renderObjects.length, ro, lastBuffer = null, lastShader = null;
+		renderObjects = renderObjects.concat(transparentObjects);
+
+		var objectsToRender = renderObjects.length, ro, 
+			lastBuffer = null, 
+			lastShader = null,
+			transparentRendering = false;
 		
 
 		var hasReplacementShader = options && options.replacementShader;
@@ -52,6 +65,18 @@ SQR.Renderer = function(context) {
 
 			var ro = renderObjects[i];
 
+			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+
+			if(ro.transparent) {
+
+				if(!transparentRendering) {
+					gl.enable(gl.BLEND);
+					transparentRendering = true;
+				}
+				
+				gl.blendFunc(ro.srcFactor, ro.dstFactor);
+			}
+
 			if(lastBuffer != ro.buffer) {
 				lastBuffer = ro.buffer;
 				lastBuffer.bind();
@@ -60,16 +85,16 @@ SQR.Renderer = function(context) {
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
-				lastShader.setUniform('uProjection', r.projection);
+				var p = (camera && camera.projection) || r.projection;
+				if(!p) throw "No projection defined on camera and no default projection on renderer.";
+				lastShader.setUniform('uProjection', p);
 				shaderChanged = true;
 			}
 
 			if(shaderChanged || bufferChanged) {
 				lastShader.attribPointers(lastBuffer);
 			}
-			
 
-			ro.transformView(camera ? camera.inverseWorldMatrix : null);
 			ro.draw(options);
 		}
 

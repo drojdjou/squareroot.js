@@ -17,6 +17,8 @@ SQR = {
 
 	// Typical mesh layouts
 	// Commonly used attribute names are: aPosition, aColor, aNormal, aUV, aUV2...
+	v2: function() { return { aPosition: 2 }; },
+	v3: function() { return { aPosition: 3 }; },
 	v2u2: function() { return { aPosition: 2, aUV: 2 }; },
 	v2c3: function() { return { aPosition: 2, aColor: 3 }; },
 	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },

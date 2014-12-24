@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Realtime cubemap</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Cubemap.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['normal2color.glsl', 'n2c'],
+        ['reflective.glsl', 'refl'],
+        ['../../assets/monument.jpg', 'tex'],
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        camera.position.z = 20;
+        root.add(camera);
+
+        var cubemapBuffer = SQR.FrameBuffer(512, 512, 1, true);
+
+        var cubemapCameraHolder = SQR.Transform();
+        var cubemapCamera = SQR.Transform();
+
+        var p = new SQR.ProjectionMatrix().perspective(90, 1, 1, 1000);
+        cubemapCamera.projection = p;
+
+        cubemapCameraHolder.add(cubemapCamera);
+        root.add(cubemapCameraHolder);
+
+        var reflShader = SQR.Shader(assets['refl'])
+                        .use()
+                        .setUniform('uCubemap', cubemapBuffer.texture);
+
+        var sphere = new SQR.Transform();
+        sphere.buffer = SQR.Primitives.createSphere(5, 20, 20).update();
+        // sphere.buffer = SQR.Primitives.createCube(5, 5, 5).update();
+        sphere.shader = reflShader
+        root.add(sphere);
+
+        var cubes = new SQR.Transform();
+        root.add(cubes);
+
+        var cubeBuffer = SQR.Primitives.createCube(2, 2, 2).update();
+        var cubeShader = SQR.Shader(assets['n2c']);
+
+        var addCube = function(x, y, z, color) {
+            var c = new SQR.Transform();
+            c.shader = cubeShader;
+            c.buffer = cubeBuffer;
+            c.position.set(x, y, z);
+            c.uniforms = { 'uColor': color };
+            cubes.add(c);
+            return c;
+        }
+
+        addCube(-10,   0,    0, [1,0,0]);
+        addCube( 10,   0,    0, [0,1,0]);
+        addCube( 0,   10,    0, [0,0,1]);
+        addCube( 0,  -10,    0, [1,1,0]);
+        addCube( 0,    0,   10, [1,0,1]);
+        addCube( 0,    0,  -10, [0,1,1]);
+
+        var addMoreCube = function() {
+            var v = new SQR.V3().random().norm().mul(10);
+            var c = addCube(v.x, v.y, v.z, [1,1,1]);
+            c.rotation.set(v.x, v.y, v.z);
+            c.scale.set(0.5, 0.5, 0.5);
+        }
+
+        for(var i = 0; i < 100; i++) {
+            addMoreCube();
+        }
+
+        var tx = 0, mx = 0, ty = 0, my = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            tx = (e.pageX / w) * 2 - 1;
+            ty = (e.pageY / h) * 2 - 1;
+        });
+
+        cubemapCamera.useQuaternion = true;
+        var qt = new SQR.Quaternion();
+
+        var renderSide = function(name) {
+            cubemapBuffer.bind(name);
+            ctx.clearColor(0.2, 0, 0, 1);
+            ctx.clear();
+            ctx.gl.viewport(0, 0, 512, 512);
+
+            switch(name) {
+                case 'front':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI, 1, 0, 0);
+                break;
+                case 'back':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI, 0, 0, 1);
+                break;
+                case 'left':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
+                qt.fromAngleAxis(Math.PI, 0, 0, 1);
+                cubemapCamera.quaternion.mul(qt);
+                break;
+                case 'right':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
+                qt.fromAngleAxis(Math.PI, 0, 0, -1);
+                cubemapCamera.quaternion.mul(qt);
+                break;
+                case 'up':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+                break;
+                case 'down':
+                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 1, 0, 0);
+                break;
+            }
+
+            renderer.render(root, cubemapCamera, { dontCalculateTransforms: (name == 'front') });
+        }
+
+        var render = function() {
+            requestAnimationFrame(render);
+            mx += (tx - mx) * 0.1;
+            my += (ty - my) * 0.1;
+
+
+            renderSide('front');
+            renderSide('back');
+
+            renderSide('left');
+            renderSide('right');
+
+            renderSide('up');
+            renderSide('down');
+
+
+
+            renderer.renderToScreen();
+            ctx.clearColor(0, 0, 0, 1);
+            ctx.clear();
+            ctx.gl.viewport(0, 0, w, h);
+
+            cubes.rotation.x += 0.01;
+            cubes.rotation.y += 0.01;
+            // cubes.rotation.z += 0.01;
+
+            cubes.children.forEach(function(e) {
+                e.rotation.y += 0.01;
+                e.rotation.x += 0.02;
+            });
+
+
+            // camera.position.x = mx * 20;
+            // camera.position.y = my * 20;
+            camera.lookAt = cubes;
+            renderer.render(root, camera);
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

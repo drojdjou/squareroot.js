@@ -1,11 +1,11 @@
 // https://raw.githubusercontent.com/drojdjou/squareroot.js/gl/src/core/Transform.js
-SQR.Transform = function() {
+SQR.Transform = function(name) {
 
 	var t = {};
 
 	var inverseWorldMatrix;
 
-    t.name = 'sqr.transform.' + SQR.TransformCount++;
+    t.name = name || 'sqr.transform.' + SQR.TransformCount++;
     t.active = true;
 
 	t.position = new SQR.V3();
@@ -24,6 +24,19 @@ SQR.Transform = function() {
 	t.globalMatrix = new SQR.Matrix44();
     t.viewMatrix = new SQR.Matrix44();
     t.inverseWorldMatrix;
+
+    t.lookAt = null;
+
+    t.transparent = false;
+    t.srcFactor = null;
+    t.dstFactor = null;
+
+    t.setBlending = function(transparent, src, dst) {
+        t.transparent = transparent;
+        // By default blend the object on top with the object on the bottom
+        t.srcFactor = src || SQR.gl.SRC_ALPHA;
+        t.dstFactor = dst || SQR.gl.ONE_MINUS_SRC_ALPHA;
+    } 
 
 	t.children = [], t.numChildren = 0;
 
@@ -130,6 +143,10 @@ SQR.Transform = function() {
             }
         }
 
+        if(t.lookAt) {
+            t.matrix.lookAt(t.lookAt.position);
+        }
+
         if (t.parent) {
             t.parent.globalMatrix.copyTo(t.globalMatrix);
             t.globalMatrix.multiply(t.matrix);
@@ -140,6 +157,14 @@ SQR.Transform = function() {
         t.globalMatrix.extractPosition(t.globalPosition);
 
         if(t.isStatic) transformState = 1;
+    }
+
+    /** 
+     *  Used for sorting object in the rendering function
+     *  (not implemented yet)
+     */
+    t.viewDepth = function() {
+        return t.viewMatrix.data[14];
     }
 
     /**

@@ -5,7 +5,6 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
         .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
         .data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
         .update();
-
 }
 
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {

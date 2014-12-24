@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sprite sheet</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/extras/SpriteSheet.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body class="scrolldoc">
+
+<script type="text/javascript">
+
+// var sheet = SQR.SpriteSheet().layout(20, 5, 60).options({
+//             webglFlipY: true
+//         }).draw(function(ctx, i, t) {
+//             var a = 0;
+//             var ae = -Math.PI * 2 * (i / t * 2);
+//             var s = 30, r = s - 8;
+
+//             ctx.translate(s, s);
+
+//             ctx.fillStyle = '#ff0000';
+//             ctx.lineWidth = 10;
+//             ctx.strokeStyle = '#ff0000';
+//             ctx.beginPath();
+//             // ctx.moveTo(0, 0);
+//             ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+//             ctx.arc(0, 0, r, a, ae, i < t / 2);
+//             // ctx.arc(0, 0, r, 0, 0.1); //Math.PI * 2 * a);
+//             ctx.stroke();
+//         });
+
+var sheet = SQR.SpriteSheet().layout(10, 10, 60).options({
+            webglFlipY: true
+        }).draw(function(ctx, i, t) {
+            var a = 0;
+            var ae = -Math.PI * 2 * (i / t * 2);
+            var s = 30, r = s - 8;
+
+            ctx.translate(s, s);
+
+            ctx.fillStyle = '#ff0000';
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = '#ff0000';
+            ctx.beginPath();
+            // ctx.moveTo(0, 0);
+            ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+            ctx.arc(0, 0, r, a, ae, i < t / 2);
+            // ctx.arc(0, 0, r, 0, 0.1); //Math.PI * 2 * a);
+            ctx.stroke();
+        });
+
+document.body.appendChild(sheet.canvas);
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

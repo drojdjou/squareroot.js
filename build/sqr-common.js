@@ -19,6 +19,8 @@ SQR = {
 
 	// Typical mesh layouts
 	// Commonly used attribute names are: aPosition, aColor, aNormal, aUV, aUV2...
+	v2: function() { return { aPosition: 2 }; },
+	v3: function() { return { aPosition: 3 }; },
 	v2u2: function() { return { aPosition: 2, aUV: 2 }; },
 	v2c3: function() { return { aPosition: 2, aColor: 3 }; },
 	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },
@@ -43,7 +45,7 @@ SQR = {
 /* --- --- [Version.js] --- --- */
 
 /** DO NOT EDIT. Updated from version.json **/
-SQR.Version = {"version":"3","build":6,"date":"2014-12-21T02:41:16.155Z"}
+SQR.Version = {"version":"3","build":9,"date":"2014-12-24T06:30:26.352Z"}
 
 /* --- --- [common/Buffer.js] --- --- */
 
@@ -202,9 +204,11 @@ SQR.Buffer = function() {
 SQR.Context = function(canvas) {
 
 	var NOGL = "> SQR.Context - Webgl is not supported.";
+	var BADCTX = "> SQR.Context - Invalid canvas reference.";
 
 	if(!canvas) canvas = document.createElement('canvas');
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
+	if(!canvas.getContext) throw BADCTX;
 
 	var c = { canvas: canvas }, gl;
 
@@ -279,6 +283,100 @@ SQR.Context = function(canvas) {
 	return c;
 }
 
+/* --- --- [common/Cubemap.js] --- --- */
+
+/**
+ *  @class A cubemap texture is used for texturing reflections, skyboxes and similar effects. If your shader expects a cubemap uniform use this object to create one.
+ *
+ *  @see createCubemap in {@link SQR.SquarerootGL}
+ *
+ *  @param faces {Object} 6 paths to the textures for each face.
+ *  @param faces.up {string} the path to the image for the face up
+ *  @param faces.down {string} the path to the image for the face down
+ *  @param faces.left {string} the path to the image for the face left
+ *  @param faces.right {string} the path to the image for the face right
+ *  @param faces.back {string} the path to the image for the face back
+ *  @param faces.front {string} the path to the image for the face front
+ *
+ *  @param params {object} parameter for the texture
+ *  @param params.onLoad {function} a callback to call when all the images are loaded 
+ */
+SQR.Cubemap = function(faces, params) {
+
+    var c = {};
+    c.tex = SQR.gl.createTexture();
+
+    var facesLeft = 6;
+    var faceImages = {};
+
+    params = params || {};
+
+    var onLoad = function() {
+
+    	var gl = SQR.gl;
+
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, c.tex);
+
+        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, c.flip);
+
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.right);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.left);
+
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.up);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.down);
+
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.front);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.back);
+
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+        if (params.onLoad) params.onLoad();
+    }
+
+    var onFace = function() {
+        facesLeft--;
+        if (facesLeft <= 0) onLoad();
+    }
+
+    var load = function(name, src) {
+
+        if (typeof(src) == "string") {
+            faceImages[name] = new Image();
+            faceImages[name].onload = onFace;
+            faceImages[name].src = src;
+        } else if (src instanceof Image || !!src.getContext) {
+            faceImages[name] = src;
+            onFace();
+        }
+    }
+
+    if (faces.left) {
+        load("left", faces.left);
+        load("right", faces.right);
+        load("up", faces.up);
+        load("down", faces.down);
+        load("back", faces.back);
+        load("front", faces.front);
+    } else {
+        load("left", faces);
+        load("right", faces);
+        load("up", faces);
+        load("down", faces);
+        load("back", faces);
+        load("front", faces);
+    }
+
+    return c;
+}
+
 /* --- --- [common/FrameBuffer.js] --- --- */
 
 /**
@@ -290,48 +388,87 @@ SQR.Context = function(canvas) {
 
     @params height The width of the frame buffer
  */
-SQR.FrameBuffer = function(width, height, resolution) {
+SQR.FrameBuffer = function(width, height, resolution, isCubemap) {
 
     resolution = resolution || 1;
 
-    
-    
     var f = {}, gl = SQR.gl;
 
-    f.fbo = gl.createFramebuffer();
     f.texture = gl.createTexture();
     f.depthBuffer = gl.createRenderbuffer();
 
-    // bind fbo
-    gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
-
     // bind & setup texture
-    gl.bindTexture(gl.TEXTURE_2D, f.texture);
-
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-    // bind render buffer
-    gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-
-    // attach texture and render buffer to fbo
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, f.texture, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, f.depthBuffer);
-
-    // unbind all
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    f.bind = function() {
-        gl.viewport(0, 0, width, height);
+    if(!isCubemap) {
+        f.fbo = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
+        gl.bindTexture(gl.TEXTURE_2D, f.texture);
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+        // bind render buffer
+        gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+
+        // attach texture and render buffer to fbo
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, f.texture, 0);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, f.depthBuffer);
+
+        // unbind all
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    } else {
+        // based on http://jsperf.com/webgl-cubemap-fbo-change-face-test
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, f.texture);
+
+        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        for (var i = 0; i < 6; i++) {
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        }
+    
+        gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+        
+    
+        var makeFace = function(index) {
+            var fbo = gl.createFramebuffer();
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X + index, f.texture, 0);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, f.depthBuffer);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            return fbo;
+        };
+
+        f.faces = {
+            right: makeFace(0),
+            left: makeFace(1),
+            up: makeFace(2),
+            down: makeFace(3),
+            front: makeFace(4),
+            back: makeFace(5),
+        };
+
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    }
+
+    f.bind = function(name) {
+        var fbo = (f.faces) ? f.faces[name] : f.fbo;
+        gl.viewport(0, 0, width, height);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     }
 
     f.resize = function(w, h) {
@@ -565,7 +702,7 @@ SQR.PostEffect = function(shaderSource) {
 SQR.Renderer = function(context) {
 
 	var r = {};
-	var uniforms = {}, renderObjects = [];
+	var uniforms = {}, renderObjects = [], transparentObjects = [];
 
 	var updateTransform = function(t) {
 		if(!t.active) return;
@@ -579,29 +716,42 @@ SQR.Renderer = function(context) {
         }
 
         if(t.buffer && t.shader) {
-        	renderObjects.push(t);
+        	if(t.transparent) transparentObjects.push(t);
+        	else renderObjects.push(t);
         }
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
 
+	var defOpts = {};
+
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
 
-		if(!options || !options.dontClear) context.clear();
+		options = options || defOpts;
 
+		if(!options.dontClear) context.clear();
+
+		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.CULL_FACE);
         gl.frontFace(gl.CW);
 
 		renderObjects.length = 0;
+		transparentObjects.length = 0;
+		
 		updateTransform(root);
 
 		if(camera) {
 			camera.computeInverseMatrix();
 		}
 
-		var objectsToRender = renderObjects.length, ro, lastBuffer = null, lastShader = null;
+		renderObjects = renderObjects.concat(transparentObjects);
+
+		var objectsToRender = renderObjects.length, ro, 
+			lastBuffer = null, 
+			lastShader = null,
+			transparentRendering = false;
 		
 
 		var hasReplacementShader = options && options.replacementShader;
@@ -616,6 +766,18 @@ SQR.Renderer = function(context) {
 
 			var ro = renderObjects[i];
 
+			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+
+			if(ro.transparent) {
+
+				if(!transparentRendering) {
+					gl.enable(gl.BLEND);
+					transparentRendering = true;
+				}
+				
+				gl.blendFunc(ro.srcFactor, ro.dstFactor);
+			}
+
 			if(lastBuffer != ro.buffer) {
 				lastBuffer = ro.buffer;
 				lastBuffer.bind();
@@ -624,16 +786,16 @@ SQR.Renderer = function(context) {
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
-				lastShader.setUniform('uProjection', r.projection);
+				var p = (camera && camera.projection) || r.projection;
+				if(!p) throw "No projection defined on camera and no default projection on renderer.";
+				lastShader.setUniform('uProjection', p);
 				shaderChanged = true;
 			}
 
 			if(shaderChanged || bufferChanged) {
 				lastShader.attribPointers(lastBuffer);
 			}
-			
 
-			ro.transformView(camera ? camera.inverseWorldMatrix : null);
 			ro.draw(options);
 		}
 
@@ -753,7 +915,7 @@ SQR.Shader = function(source, options) {
 	        var u = gl.getActiveUniform(program, i);
 	        u.location = gl.getUniformLocation(program, u.name);
 
-	        if(u.type == gl.SAMPLER_2D) {
+	        if(u.type == gl.SAMPLER_2D || u.type == gl.SAMPLER_CUBE) {
 	        	u.texId = id++;
 	        	uniformTextures.push(u);
 	        }
@@ -875,7 +1037,7 @@ SQR.Shader = function(source, options) {
 	}
 
 	var setTextureCube = function(uniform, texture) {
-		var gl = SQR.gl, id = uniform.id;
+		var gl = SQR.gl, id = uniform.texId;
 		uniform.texref = texture;
 	    gl.activeTexture(gl.TEXTURE0 + id);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture.tex || texture);
@@ -926,6 +1088,11 @@ SQR.Texture = function(s, options) {
 
     options = options || {};
 
+    if(!(s instanceof HTMLVideoElement || s instanceof Image || s instanceof HTMLCanvasElement)) {
+        console.error('Invalid source: ' + s);
+        throw 'SQR.Texture > provided source is not a valid source for texture';
+    }
+
 	var t = {};
 	var gl = SQR.gl;
 	var source = s;
@@ -940,9 +1107,7 @@ SQR.Texture = function(s, options) {
 
 	t.update = function() {
 		var gl = SQR.gl;
-		// gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-        // gl.bindTexture(gl.TEXTURE_2D, null);
         return t;
 	}
 
@@ -952,9 +1117,19 @@ SQR.Texture = function(s, options) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-    if(isPowerOfTwo()) gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    var mif, mgf;
+
+    if(isPowerOfTwo()) {
+        gl.generateMipmap(gl.TEXTURE_2D);
+        mif = gl.LINEAR_MIPMAP_LINEAR, mgf = gl.LINEAR;
+    } else {
+        mif = mgf = gl.LINEAR;
+    }
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mgf);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mif);
+
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -968,13 +1143,13 @@ SQR.Texture = function(s, options) {
 /* --- --- [common/Transform.js] --- --- */
 
 // https://raw.githubusercontent.com/drojdjou/squareroot.js/gl/src/core/Transform.js
-SQR.Transform = function() {
+SQR.Transform = function(name) {
 
 	var t = {};
 
 	var inverseWorldMatrix;
 
-    t.name = 'sqr.transform.' + SQR.TransformCount++;
+    t.name = name || 'sqr.transform.' + SQR.TransformCount++;
     t.active = true;
 
 	t.position = new SQR.V3();
@@ -993,6 +1168,19 @@ SQR.Transform = function() {
 	t.globalMatrix = new SQR.Matrix44();
     t.viewMatrix = new SQR.Matrix44();
     t.inverseWorldMatrix;
+
+    t.lookAt = null;
+
+    t.transparent = false;
+    t.srcFactor = null;
+    t.dstFactor = null;
+
+    t.setBlending = function(transparent, src, dst) {
+        t.transparent = transparent;
+        // By default blend the object on top with the object on the bottom
+        t.srcFactor = src || SQR.gl.SRC_ALPHA;
+        t.dstFactor = dst || SQR.gl.ONE_MINUS_SRC_ALPHA;
+    } 
 
 	t.children = [], t.numChildren = 0;
 
@@ -1099,6 +1287,10 @@ SQR.Transform = function() {
             }
         }
 
+        if(t.lookAt) {
+            t.matrix.lookAt(t.lookAt.position);
+        }
+
         if (t.parent) {
             t.parent.globalMatrix.copyTo(t.globalMatrix);
             t.globalMatrix.multiply(t.matrix);
@@ -1109,6 +1301,14 @@ SQR.Transform = function() {
         t.globalMatrix.extractPosition(t.globalPosition);
 
         if(t.isStatic) transformState = 1;
+    }
+
+    /** 
+     *  Used for sorting object in the rendering function
+     *  (not implemented yet)
+     */
+    t.viewDepth = function() {
+        return t.viewMatrix.data[14];
     }
 
     /**

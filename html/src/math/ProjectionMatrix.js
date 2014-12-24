@@ -32,7 +32,7 @@ SQR.ProjectionMatrix.prototype.identity = function() {
  *  Returns an orthographic projection matrix that is set in screen coordinates.
  */
 SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
-    this.orthographic(0, window.innerWidth, 0, window.innerHeight, -1, 1);
+    this.orthographic(0, window.innerWidth, 0, window.innerHeight, 0, 1000);
     return this;
 }
 
@@ -41,7 +41,7 @@ SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
  */
 SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom, near, far) {
 
-    var te = this.data;
+    var m = this.data;
 
      /**
      *  @property the near clipping
@@ -63,11 +63,42 @@ SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom,
     var y = ( top + bottom ) / h;
     var z = ( far + near ) / p;
 
-    te[0] = 2 / w;    te[4] = 0;        te[8] = 0;        te[12] = -x;
-    te[1] = 0;        te[5] = 2 / h;    te[9] = 0;        te[13] = -y;
-    te[2] = 0;        te[6] = 0;        te[10] = -2/p;    te[14] = -z;
-    te[3] = 0;        te[7] = 0;        te[11] = 0;       te[15] = 1;
+    m[0] = 2 / w;    m[4] = 0;        m[8] = 0;        m[12] = -x;
+    m[1] = 0;        m[5] = 2 / h;    m[9] = 0;        m[13] = -y;
+    m[2] = 0;        m[6] = 0;        m[10] = -2/p;    m[14] = -z;
+    m[3] = 0;        m[7] = 0;        m[11] = 0;       m[15] = 1;
     return this;
+}
+
+SQR.ProjectionMatrix.prototype.frustum = function (left, right, bottom, top, near, far) {
+
+    var m = this.data;
+    var x = 2 * near / ( right - left );
+    var y = 2 * near / ( top - bottom );
+
+    var a = ( right + left ) / ( right - left );
+    var b = ( top + bottom ) / ( top - bottom );
+    var c = - ( far + near ) / ( far - near );
+    var d = - 2 * far * near / ( far - near );
+
+    m[ 0 ] = x;    m[ 4 ] = 0;    m[ 8 ] = a;    m[ 12 ] = 0;
+    m[ 1 ] = 0;    m[ 5 ] = y;    m[ 9 ] = b;    m[ 13 ] = 0;
+    m[ 2 ] = 0;    m[ 6 ] = 0;    m[ 10 ] = c;   m[ 14 ] = d;
+    m[ 3 ] = 0;    m[ 7 ] = 0;    m[ 11 ] = -1; m[ 15 ] = 0;
+
+    return this;
+
+}
+
+SQR.ProjectionMatrix.prototype.perspective2 = function (fov, aspect, near, far) {
+
+    var ymax = near * Math.tan(fov * Math.PI / 360);
+    var ymin = - ymax;
+    var xmin = ymin * aspect;
+    var xmax = ymax * aspect;
+
+    return this.frustum(xmin, xmax, ymin, ymax, near, far);
+
 }
 
 /**
@@ -92,8 +123,8 @@ SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
     var n = far - near;
 
     m[0] = near / (t * aspect);
-    m[4] = 0;
-    m[8] = 0;
+    m[4] =  0;
+    m[8] =  0;
     m[12] = 0;
 
     m[1] = 0;

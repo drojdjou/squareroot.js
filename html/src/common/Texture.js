@@ -2,6 +2,11 @@ SQR.Texture = function(s, options) {
 
     options = options || {};
 
+    if(!(s instanceof HTMLVideoElement || s instanceof Image || s instanceof HTMLCanvasElement)) {
+        console.error('Invalid source: ' + s);
+        throw 'SQR.Texture > provided source is not a valid source for texture';
+    }
+
 	var t = {};
 	var gl = SQR.gl;
 	var source = s;
@@ -16,9 +21,7 @@ SQR.Texture = function(s, options) {
 
 	t.update = function() {
 		var gl = SQR.gl;
-		// gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-        // gl.bindTexture(gl.TEXTURE_2D, null);
         return t;
 	}
 
@@ -28,9 +31,19 @@ SQR.Texture = function(s, options) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-    if(isPowerOfTwo()) gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    var mif, mgf;
+
+    if(isPowerOfTwo()) {
+        gl.generateMipmap(gl.TEXTURE_2D);
+        mif = gl.LINEAR_MIPMAP_LINEAR, mgf = gl.LINEAR;
+    } else {
+        mif = mgf = gl.LINEAR;
+    }
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mgf);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mif);
+
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
     gl.bindTexture(gl.TEXTURE_2D, null);

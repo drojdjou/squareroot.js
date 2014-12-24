@@ -101,7 +101,7 @@ SQR.Shader = function(source, options) {
 	        var u = gl.getActiveUniform(program, i);
 	        u.location = gl.getUniformLocation(program, u.name);
 
-	        if(u.type == gl.SAMPLER_2D) {
+	        if(u.type == gl.SAMPLER_2D || u.type == gl.SAMPLER_CUBE) {
 	        	u.texId = id++;
 	        	uniformTextures.push(u);
 	        }
@@ -223,7 +223,7 @@ SQR.Shader = function(source, options) {
 	}
 
 	var setTextureCube = function(uniform, texture) {
-		var gl = SQR.gl, id = uniform.id;
+		var gl = SQR.gl, id = uniform.texId;
 		uniform.texref = texture;
 	    gl.activeTexture(gl.TEXTURE0 + id);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture.tex || texture);

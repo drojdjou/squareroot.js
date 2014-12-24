@@ -7,9 +7,11 @@
 SQR.Context = function(canvas) {
 
 	var NOGL = "> SQR.Context - Webgl is not supported.";
+	var BADCTX = "> SQR.Context - Invalid canvas reference.";
 
 	if(!canvas) canvas = document.createElement('canvas');
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
+	if(!canvas.getContext) throw BADCTX;
 
 	var c = { canvas: canvas }, gl;
 

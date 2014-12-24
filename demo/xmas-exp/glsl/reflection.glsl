@@ -66,13 +66,11 @@ void main() {
 	vec2 nuv;
 	nuv.x = 0.5 - (atan(rf.z, rf.x) + 2.0) / PI2;
 	nuv.y = 0.5 - asin(rf.y) / PI;
-	nuv.x = 1.0 - mod(nuv.x, 1.0);
+	nuv.x = mod(1.0 - nuv.x, 1.0);
 
 	vec3 noisecol = texture2D(uNoiseTexture, nuv).rgb;
 
-	vec2 disp = noisecol.rb;
-	disp.x *= deco.r;
-	disp.y *= deco.r;
+	vec2 disp = noisecol.rb * (0.01 + 0.1 * deco.r);
 
 	vec2 refuv = nuv + disp;
 

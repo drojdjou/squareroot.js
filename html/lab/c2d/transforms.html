@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>transforms 2d</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+
+<script type="text/javascript" src="../../src/extras/SpriteSheet.js"></script>
+
+<script type="text/javascript">
+
+	var w = window.innerWidth, h = window.innerHeight;
+
+	var renderer = new SQR.CanvasRenderer('canvas');
+	renderer.setSize(w, h);
+
+	var root = SQR.Transform2d();
+
+	var square = SQR.Transform2d();
+	square.position.set(w/2+40, h/2);
+	square.shape = function(ctx) {
+		ctx.fillStyle = '#aa6000';
+		ctx.fillRect(-20, -20, 40, 40);
+	};
+	root.add(square);
+
+	var triangle = SQR.Transform2d();
+	triangle.position.set(50, 50);
+	triangle.shape = function(ctx) {
+		ctx.fillStyle = '#008000';
+		ctx.beginPath();
+		ctx.moveTo(-20, -20);
+		ctx.lineTo(  0,  15);
+		ctx.lineTo( 20, -20);
+		ctx.fill();
+	};
+	square.add(triangle);
+
+	var sheet = SQR.SpriteSheet().layout(50, 4, 60).options({
+		webglFlipY: false
+	}).draw(function(ctx, i, t) {
+		var a = 0;
+		var ae = -Math.PI * 2 * (i / t * 2);
+		var s = 30, r = s - 8;
+
+		ctx.translate(s, s);
+
+		ctx.fillStyle = '#ff0000';
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = '#ff0000';
+		ctx.beginPath();
+
+		ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+		ctx.arc(0, 0, r, a, ae, i < t / 2);
+		ctx.stroke();
+	});
+
+	var sprite = new SQR.Transform2d();
+	sprite.position.set(w/2, h/2);
+	sprite.shape = (function() {
+		var f = 0;
+
+		setInterval(function() {
+			f++;
+			if(f > sheet.numFrames) f = 0;
+		}, 1000/30);
+
+		return function(ctx) {
+			sheet.renderToCanvas(ctx, f);
+		}
+	})();
+	root.add(sprite);
+
+
+	var image = new SQR.Transform2d();
+	image.position.set(w/2-100, h/2);
+	image.shape = (function() {
+		var i = new Image();
+		i.src = '../../assets/play.png';
+
+		return function(ctx) {
+			ctx.drawImage(i, -60, -60, 120, 120);
+		}
+	})();
+	root.add(image);
+
+	var run = function() {
+		
+		square.rotation += 0.01;
+		triangle.rotation += 0.01;
+		renderer.render(root);
+	}
+
+	// run();
+	setInterval(run, 1000/60);
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

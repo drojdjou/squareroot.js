@@ -1,3 +1,13 @@
+/* --- --- [primitives/Basic.js] --- --- */
+
+SQR.Primitives.createPoint = function(x, y) {
+	return SQR.Buffer()
+		.layout(SQR.v2(), 1)
+		.setMode(SQR.gl.POINTS)
+		.data('aPosition', x || 0, y || 0)
+		.update();
+}
+
 /* --- --- [primitives/Cube.js] --- --- */
 
 SQR.Primitives.createCube = function(w, h, d) {
@@ -613,7 +623,6 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
         .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
         .data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
         .update();
-
 }
 
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {

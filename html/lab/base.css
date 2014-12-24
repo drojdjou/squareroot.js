@@ -9,6 +9,10 @@ body {
     margin: 0;
 }
 
+.scrolldoc {
+  overflow: visible !important;
+}
+
 canvas {
     position: absolute;
     top: 0px;

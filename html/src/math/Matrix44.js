@@ -3,9 +3,9 @@
  *
  * A multi-purpose 4x4 matrix.
  */
-SQR.Matrix44 = function() {
+SQR.Matrix44 = function(data) {
 
-    this.data = new Float32Array(16);
+    this.data = data || new Float32Array(16);
 
     this.identity = function(m) {
         var d = m || this.data;
@@ -362,7 +362,7 @@ SQR.Matrix44 = function() {
         return this;
     }
 
-    this.identity();
+    if(!data) this.identity();
 }
 
 SQR.Matrix44.__temp = new Float32Array(16);

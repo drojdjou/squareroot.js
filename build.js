@@ -142,6 +142,7 @@ saveBucket(createBucket('math'), 'sqr-math');
 saveBucket(createBucket('dev'), 'sqr-dev');
 saveBucket(createBucket('extras'), 'sqr-extras');
 saveBucket(createBucket('primitives'), 'sqr-primitives');
+saveBucket(createBucket('two'), 'sqr-two');
 
 
 

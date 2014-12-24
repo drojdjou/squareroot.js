@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>template</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Basic.js"></script>
+
+<script type="text/javascript" src="../../src/extras/SpriteSheet.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['color.glsl', 'color'],
+        ['sprite.glsl', 'sprite'],
+        ['sprite-sheet.glsl', 'sprite-sheet'],
+        ['particle.glsl', 'particle'],
+        ['../../assets/play.png', 'play']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+        var renderer = new SQR.Renderer(ctx);
+
+        var resize = function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        camera.position.z = 0;
+        root.add(camera);
+
+        var particle = new SQR.Transform();
+        particle.buffer = SQR.Primitives.createPoint(0, 0);
+        particle.shader = SQR.Shader(assets['particle'])
+            .use()
+            .setUniform('uSize', 64)
+            .setUniform('uTexture', SQR.Texture(assets['play']));
+        particle.position.set(w/6, h/2, 0);
+        particle.setBlending(true);
+        root.add(particle);
+
+        var quad = new SQR.Transform();
+        quad.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
+        quad.shader = SQR.Shader(assets['color'])
+            .use()
+            .setUniform('uColor', [0, 0.2, 0.5]);
+        quad.position.set(w/6 * 2, h/2, -2);
+        root.add(quad);
+
+        var sprite = new SQR.Transform();
+        sprite.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
+        sprite.shader = SQR.Shader(assets['sprite'])
+            .use()
+            .setUniform('uTexture', SQR.Texture(assets['play']));
+        sprite.position.set(w/6 * 2, h/2, 0);
+        sprite.setBlending(true);
+        root.add(sprite);
+
+        var sheet = SQR.SpriteSheet().layout(2, 100, 60).options({
+            webglFlipY: true
+        }).draw(function(ctx, i, t) {
+            var a = 0;
+            var ae = -Math.PI * 2 * (i / t * 2);
+            var s = 30, r = s - 8;
+
+            ctx.translate(s, s);
+
+            ctx.fillStyle = '#ff0000';
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = '#ff0000';
+            ctx.beginPath();
+
+            ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+            ctx.arc(0, 0, r, a, ae, i < t / 2);
+
+            ctx.stroke();
+        });
+
+        var animSprite = new SQR.Transform('anim-sprite');
+        animSprite.buffer = SQR.Primitives.create2DQuad(-30, -30, sheet.size, sheet.size).update();
+        animSprite.shader = SQR.Shader(assets['sprite-sheet']);
+
+        animSprite.shader.use()
+            .setUniform('uTexture', SQR.Texture(sheet.canvas))
+            .setUniform('uSize', [sheet.cols, sheet.rows]);
+
+        animSprite.position.set(w/6 * 3, h/2, 0);
+        animSprite.setBlending(true);
+        root.add(animSprite);
+
+        var f = 0, setFrame = function() {
+            animSprite.shader.use().setUniform('uFrame', f);
+            f++;
+            if(f > sheet.numFrames) f = 0;
+        }
+
+        setInterval(setFrame, 1000/30);
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+            quad.rotation.z += 0.1;
+            // particle.rotation.z += 0.1; // can't rotate a particle!
+            sprite.rotation.z -= 0.1;
+            // animSprite.rotation.z += 0.01;
+            renderer.render(root, camera);
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

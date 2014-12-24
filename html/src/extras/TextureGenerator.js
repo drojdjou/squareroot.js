@@ -1,11 +1,14 @@
 SQR.TextureGenerator = {
 
-	noise: function(w, h) {
+	noise: function(w, h, canvas, min, max) {
 
 		w = w || 512;
 		h = h || w;
 
-		var c = document.createElement('canvas')
+		min = min || 0;
+		max = max || 255;
+
+		var c = canvas || document.createElement('canvas')
 		c.width = w, c.height = h;
 
 		var cx = c.getContext('2d');
@@ -13,9 +16,9 @@ SQR.TextureGenerator = {
 		var p = d.data;
 
 		for (var i = 0, n = p.length; i < n; i += 4) {
-		    p[i+0] = (Math.random() * 255) | 0;
-		    p[i+1] = (Math.random() * 255) | 0; 
-		    p[i+2] = (Math.random() * 255) | 0;
+		    p[i+0] = min + (Math.random() * (max - min)) | 0;
+		    p[i+1] = min + (Math.random() * (max - min)) | 0; 
+		    p[i+2] = min + (Math.random() * (max - min)) | 0;
 		    p[i+3] = 255;
 		}
 
