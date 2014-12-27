@@ -13,7 +13,6 @@
  *	{@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}
  *	{@link http://paulbourke.net/papers/triangulate/}
  */
- */
 SQR.ConvexHull = (function() {
 
 
