@@ -2,16 +2,21 @@
  *  @class ConvexHull
  *  @memberof SQR
  *
- *  @description utility to compute a convex hull
+ *  @description utility to compute a convex hull. Based on algorithm from Chapter 1 in 
+ *	{@link http://www.amazon.com/dp/3540779736/?tag=stackoverfl08-20} and code from 
+ *	{@link http://blog.cedric.ws/draw-the-convex-hull-with-canvas-and-javascript} 
+ *	which is basically the implementation of the algorithm explained in the book.
+ *
+ *	Other links: 
+ *
+ *	{@link http://www.travellermap.com/tmp/delaunay.js}
+ *	{@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}
+ *	{@link http://paulbourke.net/papers/triangulate/}
+ */
  */
 SQR.ConvexHull = (function() {
 
-	// based on algorithm from Chapter 1 in 
-	// http://www.amazon.com/dp/3540779736/?tag=stackoverfl08-20
 
-	// and code from 
-	// http://blog.cedric.ws/draw-the-convex-hull-with-canvas-and-javascript
-	// (which is basically the implementation of the algorithm explained in the book above)
 
 	var upper = [], lower = [], hull = [];
 
@@ -79,6 +84,17 @@ SQR.ConvexHull = (function() {
 	}
 
 	return {
+		/** 
+		 *	@method compute
+		 *	@memberof SQR.ConvexHull
+		 *
+		 *	@desription computes the convexhull for a give set of points
+		 *	
+		 *	@param {Array} p - array of {SQR.V2} or any objects that have a `x` and `y` property.
+		 *	@param {Array} h - the array to store the result in. If omitted, new one is created.
+		 *
+		 *	@returns {Array} - array of {SQR.V2} containing ordered points that make the convexhull.
+		 */
 		compute: function(p, h) {
 
 			if(!h) h = hull;
@@ -98,15 +114,6 @@ SQR.ConvexHull = (function() {
 
 })();
 
-
-/* 
-
-Other links: 
-http://www.travellermap.com/tmp/delaunay.js
-https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
-http://paulbourke.net/papers/triangulate/
-
-*/
 
 
 
