@@ -89,10 +89,10 @@ SQR.ConvexHull = (function() {
 		 *
 		 *	@desription computes the convexhull for a give set of points
 		 *	
-		 *	@param {Array} p - array of {SQR.V2} or any objects that have a `x` and `y` property.
+		 *	@param {Array} p - array of {@link SQR.V2} or any objects that have a `x` and `y` property.
 		 *	@param {Array} h - the array to store the result in. If omitted, new one is created.
 		 *
-		 *	@returns {Array} - array of {SQR.V2} containing ordered points that make the convexhull.
+		 *	@returns {Array} array of {@link SQR.V2} containing ordered points that make the convexhull.
 		 */
 		compute: function(p, h) {
 
