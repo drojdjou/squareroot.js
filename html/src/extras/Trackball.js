@@ -1,19 +1,17 @@
-/* 
-
-Trackball controls for Three.js
-
-Usage: 
-
-
+/**
+ *  @class Trackball
+ *  @memberof SQR
+ *
+ *  @description Trackball controls. Usage:
+ *  @example
 var trackball = new SQR.Trackball();
-
+var t = new SQR.Transform();
 t.useQuaternion = true;
-
 // then, inside render function
 t.quaternion.copyFrom(trackball.rotation);
-// ...and apply to an object
-
-*/
+ *
+ *  @todo add destroy method to clear listeners
+ */
 SQR.Trackball = function() {
 
     var t = {};
@@ -21,11 +19,12 @@ SQR.Trackball = function() {
     t.rotation = new SQR.Quaternion();
 
     /**
-     * Based on http://www.math.tamu.edu/~romwell/arcball_js/arcball.pde
+     *  @private
+     *  @description Based on {@link http://www.math.tamu.edu/~romwell/arcball_js/arcball.pde}
      *
-     * @param mx mouse X position in range [ -1 , 1 ]
-     * @param my mouse Y position in range [ -1 , 1 ]
-     * @param radius of the arc ball for interaction. Default value: 0.5
+     *  @param mx mouse X position in range [ -1 , 1 ]
+     *  @param my mouse Y position in range [ -1 , 1 ]
+     *  @param radius of the arc ball for interaction. Default value: 0.5
      */
     var mouseToUnitSphereVector = function(mx, my, gr, v) {
         gr = gr || 0.5;

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: math/Interpolation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: math/Interpolation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @class Interpolation
+ *  @memberof SQR
+ *
+ *  @description A collection of interpolation functions.
+ */
+SQR.Interpolation = {
+
+    /**
+     *  Returns the position on a curve for a position (per axis)
+     *  @param {Number} t interpolation value [0-1]
+     *  @param {Number} p0 start position
+     *  @param {Number} c0 first control point
+     *  @param {Number} c1 second control point
+     *  @param {Number} p1 end position
+     */
+    bezierPosition: function(t, p0, c0, c1, p1) {
+        return p0 * (1 - t) * (1 - t) * (1 - t) +
+            c0 * 3 * t * (1 - t) * (1 - t) +
+            c1 * 3 * t * t * (1 - t) +
+            p1 * t * t * t;
+    },
+
+    /**
+     *  Returns the velocity on the curve for a position (per axis)
+     *  @param {Number} t interpolation value [0-1]
+     *  @param {Number} p0 start position
+     *  @param {Number} c0 first control point
+     *  @param {Number} c1 second control point
+     *  @param {Number} p1 end position
+     */
+    bezierVelocity: function(t, p0, c0, c1, p1) {
+        return (3 * c0 - 3 * p0)
+            + 2 * (3 * p0 - 6 * c0 + 3 * c1) * t
+            + 3 * (-p0 + 3 * c0 - 3 * c1 + p1) * t * t;
+    },
+
+    /**
+     *  Linear interpolation a between two values
+     *  @param {Number} e0 start value
+     *  @param {Number} e1 end value
+     *  @param {Number} t interpolation value [0-1]
+     */
+    linear: function(e0, e1, t) {
+        if(t &lt;= e0) return e0;
+        if(t >= e1) return e1;
+
+        t = (t - e0) / (e1 - e0);
+
+        return e0 + (e1 - e0) * t;
+    },
+    
+    /**
+     *  Smoothstep interpolation a between two values
+     *  @param {Number} e0 start value
+     *  @param {Number} e1 end value
+     *  @param {Number} t interpolation value [0-1]
+     */
+    smoothStep: function(e0, e1, t) {
+        if(t &lt;= e0) return e0;
+        if(t >= e1) return e1;
+
+        t = (t - e0) / (e1 - e0);
+
+        return e0 + (e1 - e0) * (3 * t * t - 2 * t * t * t);
+    },
+
+    /**
+     *  Quadratic ease in based on Penner equations
+     *  @param {Number} t interpolation value [0-1]
+     */
+    quadIn: function (t) {
+        return t * t;
+    },
+
+    /**
+     *  Quadratic ease out based on Penner equations
+     *  @param {Number} t interpolation value [0-1]
+     */
+    quadOut: function (t) {
+        return t * (2 - t);
+    },
+
+    /**
+     *  Quadratic ease in-out based on Penner equations
+     *  @param {Number} t interpolation value [0-1]
+     */
+    quadInOut: function (t) {
+        if (( t *= 2 ) &lt; 1)
+            return 0.5 * t * t;
+        else
+            return -0.5 * ( --t * ( t - 2 ) - 1 );
+    }
+
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PostEffect.html">PostEffect</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 21:30:21 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

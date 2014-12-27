@@ -1,7 +1,8 @@
 /**
- * @class
+ *  @class Matrix33
+ *  @memberof SQR
  *
- * A 3x3 matrix for used to hold rotations and normal matrices
+ *  @description A 3x3 matrix for used to hold rotations and normal matrices
  */
 SQR.Matrix33 = function() {
 

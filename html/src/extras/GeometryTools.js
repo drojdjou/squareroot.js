@@ -1,8 +1,29 @@
+/**
+ *  @namespace GeometryTools
+ *  @memberof SQR
+ *
+ *  @description Tools to work with geometries/buffers.
+ */
 SQR.GeometryTools = (function() {
 
 	var geoTools = {};
 	var MAX_BUFFER_SIZE = 65535;
 
+	/**
+	 *	@method batch
+	 *	@memberof SQR.GeometryTools
+	 *
+	 *	@description Combines all the geometries in a tree into one geometry. It assumes (but does not check) 
+	 *	that all the children can be rendered using the same shader and that all their buffers have the same
+	 *	layout. 
+	 *
+	 *	@param {SQR.Transform} container - the root of the tree to combine. 
+	 *	This object and all it's children will be combined. 
+	 *
+	 *	@returns {SQR.Transform} the same object as passed in the argument. It will have no children 
+	 *	and will have a buffer containing all the combine geometries. If the container shader was not set
+	 *	it will inherit the shader from the first child that had one.
+	 */
 	geoTools.batch = function(container) {
 		var batchObjects = [], size = 0;
 
@@ -25,7 +46,7 @@ SQR.GeometryTools = (function() {
 	        	}
 	        }
 
-	        if(t.shader) {
+	        if(t.shader && !container.shader) {
 	        	container.shader = t.shader;
 	        }
 		}
@@ -71,6 +92,8 @@ SQR.GeometryTools = (function() {
 
 		container.removeAll();
 		container.buffer = cb.update();
+
+		return container;
 	}
 
 	return geoTools;

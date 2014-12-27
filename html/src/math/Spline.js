@@ -1,3 +1,9 @@
+/**
+ *  @class Spline
+ *  @memberof SQR
+ *
+ *  @description Represents a spline composed of multiple cubic beziers
+ */
 SQR.Spline = function() {
 
 	var points = [];

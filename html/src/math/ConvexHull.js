@@ -1,3 +1,9 @@
+/**
+ *  @class ConvexHull
+ *  @memberof SQR
+ *
+ *  @description utility to compute a convex hull
+ */
 SQR.ConvexHull = (function() {
 
 	// based on algorithm from Chapter 1 in 

@@ -1,9 +1,11 @@
 /**
- * @class
+ *  @class Matrix2D
+ *  @memberof SQR
  *
- * A matrix that implements 2D affine transformations.
+ *  @description A matrix that implements 2D affine transformations. 
+ *  Most of the method return the current instance for chaining.
  *
- * @todo Make it column major
+ *  @todo Make it column major
  */
 SQR.Matrix2D = function() {
 
@@ -12,7 +14,9 @@ SQR.Matrix2D = function() {
     var a, b, d, x, y;
 
     /**
-     * Resets the matrix to identity values.
+     *  @method identity
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Resets the matrix to identity values.
      */
     this.identity = function(d) {
         d = d || this.data;
@@ -24,9 +28,11 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     * Multiplies the vector by the matrix
-     * @param v vector to multiply
-     * @returns the same vector as passed in the parameter, multiplied by this matrix
+     *  @method transformVector
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Multiplies the vector by the matrix
+     *  @param v vector to multiply
+     *  @returns the same vector as passed in the parameter, multiplied by this matrix
      */
     this.transformVector = function(v) {
         d = this.data;
@@ -37,7 +43,9 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Sets the translation values.
+     *  @method setTranslation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the translation values.
      *  @param tx x translation
      *  @param ty y translation
      *  @param m the matrix to set translation to, applies to this if ommited
@@ -51,9 +59,11 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Returns the translation value as 2d vector.
-     *  @param v {@link SQR.V2}, if ommited a new vector object is returned
-     *  @returns a {@link SQR.V2} with translation values
+     *  @method getTranslation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Returns the translation value as 2d vector.
+     *  @param {SQR.V2} v vector to use to return values in, if ommited a new vector object is returned
+     *  @returns {SQR.V2} 2d vector with translation values
      */
     this.getTranslation = function(v) {
         d = this.data;
@@ -64,10 +74,12 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Sets the scale values.
+     *  @method setScale
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the scale values.
      *  @param sx x scale
      *  @param sy y scale
-     *  @param m the matrix to set scale to, applies to this if ommited
+     *  @param m the matrix to set scale to, applies to `this` if ommited
      */
     this.setScale = function(sx, sy, m) {
         d = m || this.data;
@@ -77,6 +89,14 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setShear
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the scale values.
+     *  @param sx x shear
+     *  @param sy y shear
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setShear = function(sx, sy, m) {
         d = m || this.data;
         d[0] = 1, d[3] = sx,d[6] = 0;
@@ -85,6 +105,13 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setRotation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the rotation value.
+     *  @param a angle in radians
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setRotation = function(a, m) {
         d = m || this.data;
         var r0 = Math.cos(a);
@@ -95,6 +122,16 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setTRS
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the translation/rotation/scale values at once.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param a angle in radians
+     *  @param sx x scale
+     *  @param sy y scale
+     */
     this.setTRS = function(tx, ty, a, sx, sy) {
         d = this.data;
         var r0 = Math.cos(a);
@@ -105,24 +142,51 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /** 
+     *  @method translate
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Applies translation to matrix
+     *  @param tx x translation
+     *  @param ty y translation
+     */
     this.translate = function(tx, ty) {
         this.identity(SQR.Matrix2D.__temp);
         this.setTranslation(tx, ty, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method rotate
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param a angle in radians
+     *  @description Applies rotation to matrix
+     */
     this.rotate = function(a) {
         this.identity(SQR.Matrix2D.__temp);
         this.setRotation(a, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method scale
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @description Applies scale to matrix
+     */
     this.scale = function(sx, sy) {
         this.identity(SQR.Matrix2D.__temp);
         this.setScale(sx, sy, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method shear
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param sx x shear
+     *  @param sy y shear
+     *  @description Applies shear to matrix
+     */
     this.shear = function(sx, sy) {
         this.identity(SQR.Matrix2D.__temp);
         this.setRotation(sx, sy, SQR.Matrix2D.__temp);
@@ -132,6 +196,12 @@ SQR.Matrix2D = function() {
     var a11, a12, a13, a21, a22, a23, a31, a32, a33;
     var b11, b12, b13, b21, b22, b23, b31, b32, b33;
 
+    /** 
+     *  @method multiply
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to multiply the current matrix by
+     *  @description Multiples current matrix by m and stores result in current matrix.
+     */
     this.multiply = function(m) {
         a = this.data, b = m.data || m;
 
@@ -158,6 +228,12 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /** 
+     *  @method copyTo
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to copy values to. Can be {SQR.Matrix2D} or {Float32Array}
+     *  @description Copies current matrix values to m
+     */
     this.copyTo = function(m) {
         a = this.data,b = m.data || m;
 
@@ -168,6 +244,12 @@ SQR.Matrix2D = function() {
         return m;
     }
 
+    /** 
+     *  @method copyFrom
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to copy values from. Can be {SQR.Matrix2D} or {Float32Array}
+     *  @description Copies values from m into the current matrix
+     */
     this.copyFrom = function(m) {
         a = m.data || m,b = this.data;
 

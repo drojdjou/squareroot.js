@@ -1,7 +1,8 @@
 /**
- * @class 
+ *  @class ProjectionMatrix
+ *  @memberof SQR
  *
- * The 4x4 matrix is used mostly for perspective and orthographic projection.
+ *  @description The 4x4 matrix is a specialized 4x4 matrix used for perspective and orthographic projection.
  */
 SQR.ProjectionMatrix = function() {
     if (typeof Float32Array == 'undefined') Float32Array = Array;
@@ -32,7 +33,7 @@ SQR.ProjectionMatrix.prototype.identity = function() {
  *  Returns an orthographic projection matrix that is set in screen coordinates.
  */
 SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
-    this.orthographic(0, window.innerWidth, 0, window.innerHeight, 0, 1000);
+    this.orthographic(0, window.innerWidth, 0, window.innerHeight, -1, 1000);
     return this;
 }
 

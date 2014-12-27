@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>cube</title>
+<title>A square</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -10,7 +10,6 @@
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
 <script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
-<script type="text/javascript" src="../../src/math/Matrix2D.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
@@ -42,22 +41,21 @@ SQR.Loader.loadAssets(['shader.glsl'], function(assets) {
         .update();
 
     var shader = SQR.Shader(assets['shader.glsl'])
-        .use();
+        .use()
+        .attribPointers(geo);
 
-    var mat2 = new SQR.Matrix2D();
+
     var mat4 = new SQR.Matrix44();
     var proj = new SQR.ProjectionMatrix().screenPixels2d();
 
-    shader.setUniform('uColor', new Float32Array([1.0, 0.0, 0.0, 1.0]));
-    // shader.setUniform('uProjection', proj.data);
-    var concatMatrixUniform = shader.getUniform('uConcatMatrix');
+    shader.setUniform('uColor', [1, 0, 0, 1]);
 
     var r = 0, s = 0;
 
     var updateColor = function(i, data) {
         var r =  data[i+0], g =  data[i+1], b =  data[i+2];
 
-        r += 0.01, g += 0.01, b += 0.01;
+        r += 0.001, g += 0.001, b += 0.001;
 
         if(r > 1) r -= 1;
         if(g > 1) g -= 1;
@@ -74,7 +72,8 @@ SQR.Loader.loadAssets(['shader.glsl'], function(assets) {
         geo.update();
 
         mat4.identity().multiply(proj).translate(w/2, h/2, 0).rotate(0, 0, r);
-        shader.setUniform(concatMatrixUniform, mat4.data).attribPointers(geo);
+
+        shader.setUniform('uConcatMatrix', mat4.data);
 
         geo.draw();
         r += 0.01;

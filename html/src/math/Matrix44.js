@@ -1,7 +1,8 @@
 /**
- * @class
+ *  @class Matrix44
+ *  @memberof SQR
  *
- * A multi-purpose 4x4 matrix.
+ *  @description A multi-purpose 4x4 matrix.
  */
 SQR.Matrix44 = function(data) {
 

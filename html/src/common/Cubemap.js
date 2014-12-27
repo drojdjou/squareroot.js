@@ -1,8 +1,8 @@
 /**
- *  @class A cubemap texture is used for texturing reflections, skyboxes and similar effects. If your shader expects a cubemap uniform use this object to create one.
+ *  @class Cubemap
+ *  @memberof SQR
  *
- *  @see createCubemap in {@link SQR.SquarerootGL}
- *
+ *  @descrption A cubemap texture is used for texturing reflections, skyboxes and similar effects. If your shader expects a cubemap uniform use this object to create one.
  *  @param faces {Object} 6 paths to the textures for each face.
  *  @param faces.up {string} the path to the image for the face up
  *  @param faces.down {string} the path to the image for the face down

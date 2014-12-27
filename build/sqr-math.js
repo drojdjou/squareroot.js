@@ -1,9 +1,10 @@
 /* --- --- [math/Bezier.js] --- --- */
 
 /**
- *  @class
+ *  @class Bezier
+ *  @memberof SQR
  *
- *  Represents a cubic bezier curve. All paramaters can be either {@link SQR.V3} or {@link SQR.V2}.
+ *  @description Represents a cubic bezier curve. All paramaters can be either {@link SQR.V3} or {@link SQR.V2}.
  *
  *  @param _p0 start position
  *  @param _c0 first control point
@@ -115,6 +116,12 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
 
 /* --- --- [math/ConvexHull.js] --- --- */
 
+/**
+ *  @class ConvexHull
+ *  @memberof SQR
+ *
+ *  @description utility to compute a convex hull
+ */
 SQR.ConvexHull = (function() {
 
 	// based on algorithm from Chapter 1 in 
@@ -231,12 +238,16 @@ http://paulbourke.net/papers/triangulate/
 /* --- --- [math/Delaunay.js] --- --- */
 
 /**
-*  Based on: 
-*  
-*  http://paulbourke.net/papers/triangulate/
-*  http://www.travellermap.com/tmp/delaunay.htm (original code)
-*  https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
-*  http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816
+ *  
+ *	@class Delaunay
+ *  @memberof SQR
+ *
+ *  @description based on:<br> 
+ *  
+ *  {@link http://paulbourke.net/papers/triangulate/}<br>
+ *  {@link http://www.travellermap.com/tmp/delaunay.htm} (original code)<br> 
+ *  {@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}<br> 
+ *  {@link http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816}
 */
 SQR.Delaunay = (function() {
 
@@ -324,10 +335,15 @@ SQR.Delaunay = (function() {
 	}
 
 	/**
-	 *	Performs Delaunay triangulation.
+	 *	@method triangulate
+	 *	@memberof SQR.Delaunay
 	 *
-	 *	@param vertices - a list of 2d vertices (can be SQR.V2, SQR.V3 or any object that has x and y properties)
-	 *	@returns tirnalges - a list of SQR.Triangles
+	 *	@description Performs Delaunay triangulation.
+	 *
+	 *	@param vertices - a list of 2d vertices. 
+	 *	Can be {@link SQR.V2}, {@link SQR.V3} or any object that has `x` and `y` properties. 
+	 *	In case of a 3d vector, the `z` component is ignored.
+	 *	@returns a list of {@link SQR.Triangles}
 	 */
 	delaunay.triangulate = function(vertices) {
 		var triangles = [];
@@ -360,9 +376,10 @@ SQR.Delaunay = (function() {
 /* --- --- [math/Interpolation.js] --- --- */
 
 /**
- * @class
+ *  @class Interpolation
+ *  @memberof SQR
  *
- * A collection of interpolation functions.
+ *  @description A collection of interpolation functions.
  */
 SQR.Interpolation = {
 
@@ -457,11 +474,12 @@ SQR.Interpolation = {
 /* --- --- [math/Matrix2D.js] --- --- */
 
 /**
- * @class
+ *  @class Matrix2D
+ *  @memberof SQR
  *
- * A matrix that implements 2D affine transformations.
+ *  @description A matrix that implements 2D affine transformations.
  *
- * @todo Make it column major
+ *  @todo Make it column major
  */
 SQR.Matrix2D = function() {
 
@@ -659,9 +677,10 @@ SQR.Matrix2D.__temp = new Float32Array(9);
 /* --- --- [math/Matrix33.js] --- --- */
 
 /**
- * @class
+ *  @class Matrix33
+ *  @memberof SQR
  *
- * A 3x3 matrix for used to hold rotations and normal matrices
+ *  @description A 3x3 matrix for used to hold rotations and normal matrices
  */
 SQR.Matrix33 = function() {
 
@@ -756,9 +775,10 @@ SQR.Matrix33 = function() {
 /* --- --- [math/Matrix44.js] --- --- */
 
 /**
- * @class
+ *  @class Matrix44
+ *  @memberof SQR
  *
- * A multi-purpose 4x4 matrix.
+ *  @description A multi-purpose 4x4 matrix.
  */
 SQR.Matrix44 = function(data) {
 
@@ -1138,9 +1158,10 @@ SQR.Matrix44.__temp = new Float32Array(16);
 /* --- --- [math/ProjectionMatrix.js] --- --- */
 
 /**
- * @class 
+ *  @class ProjectionMatrix
+ *  @memberof SQR
  *
- * The 4x4 matrix is used mostly for perspective and orthographic projection.
+ *  @description The 4x4 matrix is a specialized 4x4 matrix used for perspective and orthographic projection.
  */
 SQR.ProjectionMatrix = function() {
     if (typeof Float32Array == 'undefined') Float32Array = Array;
@@ -1360,11 +1381,19 @@ SQR.ProjectionMatrix.prototype.inverse = function (m) {
 /* --- --- [math/Quaternion.js] --- --- */
 
 /**
- *  @class
+ *  @class Quaternion
+ *  @memberof SQR
  *
- *  Represents a quaternion with optionally setting the values directly.
+ *  @description Represents a quaternion with optionally setting the values directly.
  *
- *  Just as a reminder, this is what the values represent:
+ *  Just as a reminder, given an angle `a` and an axis `x,y,z` this is what the quaternion values re:
+ *  @example
+var q = new SQR.Quaternion();
+var s = Math.sin(a / 2);
+q.x = x * s;
+q.y = y * s;
+q.z = z * s;
+q.w = Math.cos(a / 2);
  */
 SQR.Quaternion = function(x, y, z, w) {
     this.set(w, x, y, z);
@@ -1569,6 +1598,12 @@ SQR.Quaternion.__tv3 = new SQR.Quaternion();
 
 /* --- --- [math/Spline.js] --- --- */
 
+/**
+ *  @class Spline
+ *  @memberof SQR
+ *
+ *  @description Represents a spline composed of multiple cubic beziers
+ */
 SQR.Spline = function() {
 
 	var points = [];
@@ -1692,6 +1727,16 @@ SQR.Spline = function() {
 
 /* --- --- [math/Triangle.js] --- --- */
 
+/**
+ *  @class Triangle
+ *  @memberof SQR
+ *
+ *  @description Represents a triangle composed on 3 vectors. 
+ *	Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.
+ *
+ *	@param v1 Vector {@link SQR.V2} or {@link SQR.V3}
+ *	
+ */
 SQR.Triangle = function(v0, v1, v2) {
 
 	this.v0 = v0;
@@ -1760,6 +1805,13 @@ SQR.Triangle = function(v0, v1, v2) {
 
 /* --- --- [math/Vector2.js] --- --- */
 
+/**
+ *  @class V2
+ *  @memberof SQR
+ *
+ *  @description A 2-dimensional vector
+ *
+ */
 SQR.V2 = function(x, y) {
     this.set(x, y);
     this.size = 2;
@@ -1870,9 +1922,10 @@ SQR.V2.prototype.toArray = function() {
 /* --- --- [math/Vector3.js] --- --- */
 
 /**
- * @class
+ *  @class V3
+ *  @memberof SQR
  *
- * A 3-dimensional vector
+ *  @descrption A 3-dimensional vector
  *
  */
 SQR.V3 = function(x, y, z, w, i) {

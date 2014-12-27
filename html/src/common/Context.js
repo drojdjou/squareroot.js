@@ -1,8 +1,15 @@
 /**
- *	When creating the Context object, a canvas element or a selector (ex. #gl-canvas) 
+ *	@class Context
+ *	@memberof SQR
+ *	
+ *	@description When creating the Context object, a canvas element or a selector (ex. #gl-canvas) 
  *	can be passed to this function. If omitted a new canvas element will be created
- *	and it will be available as the .canvas property of the object 
- *	returned by the SQR.Context functio.
+ *	and it will be available as the canvas property of the object 
+ *	returned by the SQR.Context functiom.
+ *
+ *	@example
+// the `new` keyword is optional, all methods are chainable
+var c = SQR.Context('#canvas').create();
  */
 SQR.Context = function(canvas) {
 
@@ -13,16 +20,31 @@ SQR.Context = function(canvas) {
 	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
 	if(!canvas.getContext) throw BADCTX;
 
-	var c = { canvas: canvas }, gl;
+	var c = { 
+
+		/**
+		 *	@var {HTMLCanvasElement} canvas - Represents the canvas used to get the webgl context from.
+		 *	@memberof SQR.Context.prototype
+		 */
+		canvas: canvas 
+	}, gl;
 
 	/**
-	 *	Creates the webgl context. 
-	 *	Options as defined in Specs, section 5.2 
-	 *	(https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2)
+	 *	@method create
+	 *	@memberof SQR.Context.prototype
+	 *	
+	 *	@description Creates the webgl context. 
+	 *	
+	 *	@param options Options as defined in Specs, section 5.2.
 	 *	Passing the options is not mandatory, if uses default values otherwise.
+	 *	@link https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
+	 *	
+	 *	@param onError callback in case WebGL is not supported
+	 *	if ommited, this function will throw (see below) a error if there are problems.
 	 *
-	 *	onError - specify a fallback funcion in case WebGL is not supported
-	 *	if ommited, this function will throw a error if there are problems.
+	 *	@throws error is webgl context cannot be created (ex. webgl is not supported)
+	 *
+	 *	@returns SQR.Context
 	 */
 	c.create = function(options, onError) {
 

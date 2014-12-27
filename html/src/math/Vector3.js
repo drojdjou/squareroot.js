@@ -1,7 +1,8 @@
 /**
- * @class
+ *  @class V3
+ *  @memberof SQR
  *
- * A 3-dimensional vector
+ *  @descrption A 3-dimensional vector
  *
  */
 SQR.V3 = function(x, y, z, w, i) {

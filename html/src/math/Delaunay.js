@@ -1,10 +1,14 @@
 /**
-*  Based on: 
-*  
-*  http://paulbourke.net/papers/triangulate/
-*  http://www.travellermap.com/tmp/delaunay.htm (original code)
-*  https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
-*  http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816
+ *  
+ *	@class Delaunay
+ *  @memberof SQR
+ *
+ *  @description based on:<br> 
+ *  
+ *  {@link http://paulbourke.net/papers/triangulate/}<br>
+ *  {@link http://www.travellermap.com/tmp/delaunay.htm} (original code)<br> 
+ *  {@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}<br> 
+ *  {@link http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816}
 */
 SQR.Delaunay = (function() {
 
@@ -92,10 +96,15 @@ SQR.Delaunay = (function() {
 	}
 
 	/**
-	 *	Performs Delaunay triangulation.
+	 *	@method triangulate
+	 *	@memberof SQR.Delaunay
 	 *
-	 *	@param vertices - a list of 2d vertices (can be SQR.V2, SQR.V3 or any object that has x and y properties)
-	 *	@returns tirnalges - a list of SQR.Triangles
+	 *	@description Performs Delaunay triangulation.
+	 *
+	 *	@param vertices - a list of 2d vertices. 
+	 *	Can be {@link SQR.V2}, {@link SQR.V3} or any object that has `x` and `y` properties. 
+	 *	In case of a 3d vector, the `z` component is ignored.
+	 *	@returns a list of {@link SQR.Triangles}
 	 */
 	delaunay.triangulate = function(vertices) {
 		var triangles = [];

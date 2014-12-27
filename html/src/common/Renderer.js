@@ -1,3 +1,9 @@
+/**
+ *	@class Renderer
+ *	@memberof SQR
+ *
+ *	@description Represents the rendering engine
+ */
 SQR.Renderer = function(context) {
 
 	var r = {};
@@ -86,7 +92,7 @@ SQR.Renderer = function(context) {
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
 				var p = (camera && camera.projection) || r.projection;
-				if(!p) throw "No projection defined on camera and no default projection on renderer.";
+				if(!p) throw "> SQR.Renderer - no projection defined on camera and no default projection on renderer.";
 				lastShader.setUniform('uProjection', p);
 				shaderChanged = true;
 			}

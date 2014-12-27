@@ -1,9 +1,17 @@
 /**
- *  @class
+ *  @class Quaternion
+ *  @memberof SQR
  *
- *  Represents a quaternion with optionally setting the values directly.
+ *  @description Represents a quaternion with optionally setting the values directly.
  *
- *  Just as a reminder, this is what the values represent:
+ *  Just as a reminder, given an angle `a` and an axis `x,y,z` this is what the quaternion values re:
+ *  @example
+var q = new SQR.Quaternion();
+var s = Math.sin(a / 2);
+q.x = x * s;
+q.y = y * s;
+q.z = z * s;
+q.w = Math.cos(a / 2);
  */
 SQR.Quaternion = function(x, y, z, w) {
     this.set(w, x, y, z);

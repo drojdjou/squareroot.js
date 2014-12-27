@@ -1,18 +1,48 @@
+/**
+ *	@namespace SQR
+ *	@description The global engine namesapce. All classes belong to this namespace.
+ */
 SQR = {
 
-	// Global vars
+	/**
+	 *	@property TWOPI - shorthand for `Math.PI * 2`
+	 */
 	TWOPI: Math.PI * 2,
+
+	/**
+	 *	@property TWOPI - shorthand for `Math.PI * 0.5`
+	 */
 	HALFPI: Math.PI * 0.5,
+
+	/**
+	 *	@property EPSILON - a very small number, used to prevent rounding errors
+	 */
 	EPSILON: 1.0e-6,
 
-	// Placeholder that holds current gl context. This is set in Context.create(), can be modified manually too
+	/**
+	 *	@property gl - Placeholder that holds current gl context. This is set in SQR.Context.create(), but can be modified manually too
+	 */
 	gl: null, 
-	// Placeholder that holdes a fullscreen geometry for post effects. Lazily created in PostEffect.js
+	
+	/** 
+	 *	@property fullScreenQuad - placeholder that holds a fullscreen geometry for post effects. Lazily created in PostEffect.js
+	 *	Typically not set manually.
+	 */
 	fullScreenQuad: null,
-	//
+
+	/**
+	 *	@property shaderPath - a path relative to the main HTML file where the src/glsl folder is located.
+	 *	Only necessary to if builtin shader code is loaded (using ~ paths).
+	 *
+	 *	@default .
+	 */
 	shaderPath: '.',
 
-	// Namespaces
+	/**
+	 *	@namespace Primitives
+	 *	@memberof SQR
+	 *	@description A collection of classes & functions and utilities to create geometries
+	 */
 	Primitives: {},
 
 	// Typical mesh layouts

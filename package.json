@@ -3,6 +3,7 @@
    "description": "GL, math, rendering, animation",
    "version": "0.0.0",
    "devDependencies": {
-      "uglify-js":"*"
+      "uglify-js":"*",
+      "jsdoc":"*"
    }
 }

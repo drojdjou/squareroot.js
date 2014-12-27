@@ -1,11 +1,11 @@
 /**
-    Creates a new FrameBuffer
-
-    @class A FrameBuffer is used in render-to-texture, image effects and other advances rendering schemes.
-
-    @params width The width of the frame buffer
-
-    @params height The width of the frame buffer
+ *  @class FrameBuffer
+ *  @memberof SQR
+ *  
+ *  @description A FrameBuffer is used in render-to-texture, image effects and other advances rendering schemes.
+ *
+ *  @params width The width of the frame buffer
+ *  @params height The height of the frame buffer
  */
 SQR.FrameBuffer = function(width, height, resolution, isCubemap) {
 

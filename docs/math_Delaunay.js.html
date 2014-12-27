@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: math/Delaunay.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: math/Delaunay.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  
+ *	@class Delaunay
+ *  @memberof SQR
+ *
+ *  @description based on:&lt;br> 
+ *  
+ *  {@link http://paulbourke.net/papers/triangulate/}&lt;br>
+ *  {@link http://www.travellermap.com/tmp/delaunay.htm} (original code)&lt;br> 
+ *  {@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}&lt;br> 
+ *  {@link http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816}
+*/
+SQR.Delaunay = (function() {
+
+	var delaunay = {};
+
+	var Edge = function(v0, v1) {
+		this.v0 = v0;
+		this.v1 = v1;
+	}
+
+	Edge.prototype.equals = function(other) {
+		return (this.v0 === other.v0 &amp;&amp; this.v1 === other.v1);
+	};
+
+	Edge.prototype.inverse = function() {
+		return new Edge(this.v1, this.v0);
+	};
+
+	var createSuperTriangle = function(vertices) {
+		// NOTE: There's a bit of a heuristic here. If the bounding triangle 
+		// is too large and you see overflow/underflow errors. If it is too small 
+		// you end up with a non-convex hull.
+
+		var minx, miny, maxx, maxy;
+		vertices.forEach(function(vertex) {
+			if (minx === undefined || vertex.x &lt; minx) { minx = vertex.x; }
+			if (miny === undefined || vertex.y &lt; miny) { miny = vertex.y; }
+			if (maxx === undefined || vertex.x > maxx) { maxx = vertex.x; }
+			if (maxy === undefined || vertex.y > maxy) { maxy = vertex.y; }
+		});
+
+		var dx = (maxx - minx) * 10;
+		var dy = (maxy - miny) * 10;
+
+		var stv0 = new SQR.V2(minx - dx, miny - dy * 3);
+		var stv1 = new SQR.V2(minx - dx, maxy + dy);
+		var stv2 = new SQR.V2(maxx + dx * 3, maxy + dy);
+
+		return new SQR.Triangle(stv0, stv1, stv2);
+	}
+
+	function addVertex(vertex, triangles) {
+		var edges = [];
+
+		triangles = triangles.filter(function(triangle) {
+			if (triangle.vertexInCircumcircle(vertex)) {
+				edges.push(new Edge(triangle.v0, triangle.v1));
+				edges.push(new Edge(triangle.v1, triangle.v2));
+				edges.push(new Edge(triangle.v2, triangle.v0));
+				return false;
+			}
+
+			return true;
+		});
+
+		edges = uniqueEdges(edges);
+
+		edges.forEach(function(edge) {
+			triangles.push(new SQR.Triangle(edge.v0, edge.v1, vertex));
+		});
+
+		return triangles;
+	}
+
+	var uniqueEdges = function(edges) {
+		var uniqueEdges = [];
+
+		for (var i = 0; i &lt; edges.length; ++i) {
+			var edge1 = edges[i];
+			var unique = true;
+
+			for (var j = 0; j &lt; edges.length; ++j) {
+				if (i === j) continue;
+				var edge2 = edges[j];
+				if (edge1.equals(edge2) || edge1.inverse().equals(edge2)) {
+					unique = false;
+					break;
+				}
+			}
+
+			if (unique) uniqueEdges.push(edge1);
+		}
+
+		return uniqueEdges;
+	}
+
+	/**
+	 *	@method triangulate
+	 *	@memberof SQR.Delaunay
+	 *
+	 *	@description Performs Delaunay triangulation.
+	 *
+	 *	@param vertices - a list of 2d vertices. 
+	 *	Can be {@link SQR.V2}, {@link SQR.V3} or any object that has `x` and `y` properties. 
+	 *	In case of a 3d vector, the `z` component is ignored.
+	 *	@returns a list of {@link SQR.Triangles}
+	 */
+	delaunay.triangulate = function(vertices) {
+		var triangles = [];
+
+		var st = createSuperTriangle(vertices);
+
+		triangles.push(st);
+
+		vertices.forEach(function(vertex) {
+			// NOTE: This is O(n^2) - can be optimized by sorting vertices
+			// along the x-axis and only considering triangles that have 
+			// potentially overlapping circumcircles
+			triangles = addVertex(vertex, triangles);
+		});
+
+		// Remove triangles that shared edges with "supertriangle"
+		triangles = triangles.filter(function(triangle) {
+			return !(triangle.v0 == st.v0 || triangle.v0 == st.v1 || triangle.v0 == st.v2 ||
+			triangle.v1 == st.v0 || triangle.v1 == st.v1 || triangle.v1 == st.v2 ||
+			triangle.v2 == st.v0 || triangle.v2 == st.v1 || triangle.v2 == st.v2);
+		});
+
+		return triangles;
+	}
+
+	return delaunay;
+
+})();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PostEffect.html">PostEffect</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 21:30:21 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 /**
- *  @class
+ *  @class Bezier
+ *  @memberof SQR
  *
- *  Represents a cubic bezier curve. All paramaters can be either {@link SQR.V3} or {@link SQR.V2}.
+ *  @description Represents a cubic bezier curve. All paramaters can be either {@link SQR.V3} or {@link SQR.V2}.
  *
  *  @param _p0 start position
  *  @param _c0 first control point
@@ -14,22 +15,30 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     var that = this;
 
     /**
-     *  Start position. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var p0 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton The start position, can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.p0 = _p0;
 
     /**
-     *  First control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var c0 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton First control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.c0 = _c0;
 
     /**
-     *  Second control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var c1 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton Second control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.c1 = _c1;
 
     /**
-     *  End position. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var p1 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton End position. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.p1 = _p1;
 
@@ -39,7 +48,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     var vfunc = SQR.Interpolation.bezierVelocity;
 
     /**
-     *  Returns the velocity on a curve. 
+     *  @method velocityAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the velocity on a curve. 
      *  @param t interpolation value [0-1]
      *  @param v vector to write the value to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.
      */
@@ -57,7 +68,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     }
 
     /**
-     *  Returns the position on a curve.
+     *  @method valueAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the position on a curve.
      *  @param t interpolation value [0-1]
      *  @param v vector to write the value to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.
      */
@@ -75,7 +88,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     }
 
     /** 
-     *  Returns the transformation matrix that can be used to align an object to the curve at a given point.
+     *  @method matrixAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the transformation matrix that can be used to align an object to the curve at a given point.
      *  Not tested in 2D but shoud work fine.
      *  @param t interpolation value [0-1]
      *  @param m {@link SQR.Matrix44} to write the matrix to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.

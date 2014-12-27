@@ -1,25 +1,104 @@
-// https://raw.githubusercontent.com/drojdjou/squareroot.js/gl/src/core/Transform.js
+/**
+ *  @class Transform
+ *  @memberof SQR
+ *
+ *  @description A transform is a basic building block for 3D scenes made with squareroot.js
+ * 
+ *  @param name {string} the name of the transform.
+ */
 SQR.Transform = function(name) {
 
 	var t = {};
 
 	var inverseWorldMatrix;
-
-    t.name = name || 'sqr.transform.' + SQR.TransformCount++;
-    t.active = true;
-
-	t.position = new SQR.V3();
-    t.globalPosition = new SQR.V3();
-	t.quaternion = new SQR.Quaternion();
-	t.rotation = new SQR.V3();
-	t.scale = new SQR.V3(1, 1, 1);
-	t.useQuaternion = false;
-
-    t.isStatic = false;
-    t.directMatrixMode = false;
     var transformState = 0;
 
-	t.matrix = new SQR.Matrix44();
+    /**
+     *  @var {string} name - a unique name of this transform, useful for debugging
+     *  @memberof SQR.Transform.prototype
+     *  @default `sqr.transform.` + a counter (ex. `sqr.transform.29)
+     */
+    t.name = name || 'sqr.transform.' + SQR.TransformCount++;
+
+    /** 
+     *  @var {boolean} active - is set to false, the transform and 
+     *  all it's children will not be rendered.
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+    t.active = true;
+
+    /**
+     *  @var {boolean} directMatrixMode - if set to true, position, rotation/quaternion and scale will be ignored
+     *  @memberof SQR.Transform.prototype
+     *
+     *  @description When set to true matrix value inside @this.matrix can be manipulated directly.
+     *
+     *  @default false
+     */
+    t.directMatrixMode = false;
+    
+
+    /** 
+     *  @var {SQR.Matrix44} matrix - object-to-parent transformation matrix
+     *  @memberof SQR.Transform.prototype
+     */
+    t.matrix = new SQR.Matrix44();
+    
+    /** 
+     *  @var {SQR.V3} position - the position of this transform relative to it's parent
+     *  @memberof SQR.Transform.prototype
+     */
+	t.position = new SQR.V3();
+
+    /** 
+     *  @readonly 
+     *  @var {SQR.V3} globalPosition - the global position of this transform (set automatically)
+     *  @memberof SQR.Transform.prototype
+     */
+    t.globalPosition = new SQR.V3();
+
+    /**
+     *  @var {SQR.Quaternion} quaternion - A Quaternion that describes the rotation of the transform, 
+     *  only active if `useQuaternion` is set to true.
+     *  @memberof SQR.Transform.prototype
+     */
+	t.quaternion = new SQR.Quaternion();
+
+    /**
+     *  @var {SQR.V3} rotation - A 3D vector the describes the rotation of the transform in Euler angles, 
+     *  disabled if `useQuaternion` is set to true.
+     *  @memberof SQR.Transform.prototype
+     */
+	t.rotation = new SQR.V3();
+
+    /**
+     *  @var {SQR.V3} scale
+     *  @memberof SQR.Transform.prototype
+     */
+	t.scale = new SQR.V3(1, 1, 1);
+
+    /**
+     *  @var {SQR.Quaternion} useQuaternion - if set to true, 
+     *  will use `quaternion` for rotation instead of the Euler angles in `rotation`
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+	t.useQuaternion = false;
+
+    /**
+     *  @var {boolean} isStatic
+     *  @description Any object can have two different positioning modes: dynamic or static.
+     *  If this value is set to false (dynamic) the matrices 
+     *  for this object will be recalculated at each frame.<br>
+     *  If this value is set to true (static) the matrices for 
+     *  this object will be recalculated only once.
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+    t.isStatic = false;
+
+    
 	t.normalMatrix = new SQR.Matrix33();
 	t.globalMatrix = new SQR.Matrix44();
     t.viewMatrix = new SQR.Matrix44();
@@ -41,11 +120,13 @@ SQR.Transform = function(name) {
 	t.children = [], t.numChildren = 0;
 
    /**
-     * Add a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform}
-     *
-     * It doesn't do any sort of type checking so if you add non object that are not {SQR.Transforms}
-     * it will result in errors when the scene is rendered.
-     */
+    *   @method add
+    *   @memberof SQR.Transform.prototype
+    *   
+    *   @description Add a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform}.
+    *   It doesn't do any sort of type checking so if you add non object that are not {SQR.Transforms} 
+    *   it will result in errors when the scene is rendered.
+    */
     t.add = function() {
         for (var i = 0; i < arguments.length; i++) {
             var c = arguments[i];
@@ -57,7 +138,11 @@ SQR.Transform = function(name) {
     }
 
     /**
-     * Remove a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform}
+     *  @method remove
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Removes a child transform. Accepts multiple arguments 
+     *  but all of them need to be of type {SQR.Transform}
      */
     t.remove = function() {
         for (var i = 0; i < arguments.length; i++) {
@@ -70,23 +155,40 @@ SQR.Transform = function(name) {
         t.numChildren = t.children.length;
         return t;
     }
-
+    
+    /**
+     *  @method removeAll
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Removes all children transform.
+     */
     t.removeAll = function() {
         t.children.length = 0;
         t.numChildren = 0;
     }
 
     /**
-     * Check if transform is child of this transfom
-     * @param t the {SQR.Transfom} to look for
+     *  @method contains
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Checks if transform is child of this transfom
+     *  @param {SQR.Transform} t the transform to look for
      */
     t.contains = function(c) {
         return t.children.indexOf(c) > -1;
     }
 
     /**
-     * Execute this function on all the child transforms including this current one
-     * @param f the function that will be called on each child. This function will receive the transform as argument.
+     *  @method recurse
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Execute this function on all the child transforms including this current one.
+     *
+     *  @param {function} f the function that will be called on each child. 
+     *  This function will receive the transform as argument.
+     *
+     *  @param {boolean} excludeSelf if set to true, the function will only be called for all 
+     *  the ancestors of the Transform.
      */
     t.recurse = function(f, excludeSelf) {
        if(!excludeSelf) f(t);
@@ -124,7 +226,6 @@ SQR.Transform = function(name) {
      * Sets up the local matrix and multiplies is by the parents globalMatrix.
      * This function is called in the rendering process, do not call directly.
      *
-     * @private
      */
     t.transformWorld = function() {
 
@@ -206,3 +307,9 @@ SQR.Transform = function(name) {
 }
 
 SQR.TransformCount = 0;
+
+
+
+
+
+

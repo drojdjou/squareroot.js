@@ -1,3 +1,10 @@
+/**
+ *  @class V2
+ *  @memberof SQR
+ *
+ *  @description A 2-dimensional vector
+ *
+ */
 SQR.V2 = function(x, y) {
     this.set(x, y);
     this.size = 2;

@@ -1,3 +1,9 @@
+/**
+ *  @class SpriteSheet
+ *  @memberof SQR
+ *
+ *  @description Utility to create sprite sheets for 2d animations
+ */
 SQR.SpriteSheet = function() {
 
 	var s = {};

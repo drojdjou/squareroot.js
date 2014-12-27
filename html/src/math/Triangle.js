@@ -1,3 +1,13 @@
+/**
+ *  @class Triangle
+ *  @memberof SQR
+ *
+ *  @description Represents a triangle composed on 3 vectors. 
+ *	Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.
+ *
+ *	@param v1 Vector {@link SQR.V2} or {@link SQR.V3}
+ *	
+ */
 SQR.Triangle = function(v0, v1, v2) {
 
 	this.v0 = v0;

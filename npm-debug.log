@@ -1,165 +1,170 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'jsdoc' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
-4 warn package.json squareroot.js@0.0.0 No repository field.
-5 warn package.json squareroot.js@0.0.0 No README data
-6 verbose readDependencies using package.json deps
-7 verbose install where, deps [ '/Users/bartekd/Documents/javascript/squareroot.js',
-7 verbose install   [ 'uglify-js' ] ]
-8 info preinstall squareroot.js@0.0.0
-9 verbose readDependencies using package.json deps
-10 verbose cache add [ 'uglify-js@*', null ]
-11 verbose cache add name=undefined spec="uglify-js@*" args=["uglify-js@*",null]
-12 verbose parsed url { protocol: null,
-12 verbose parsed url   slashes: null,
-12 verbose parsed url   auth: null,
-12 verbose parsed url   host: null,
-12 verbose parsed url   port: null,
-12 verbose parsed url   hostname: null,
-12 verbose parsed url   hash: null,
-12 verbose parsed url   search: null,
-12 verbose parsed url   query: null,
-12 verbose parsed url   pathname: 'uglify-js@*',
-12 verbose parsed url   path: 'uglify-js@*',
-12 verbose parsed url   href: 'uglify-js@*' }
-13 verbose cache add name="uglify-js" spec="*" args=["uglify-js","*"]
-14 verbose parsed url { protocol: null,
-14 verbose parsed url   slashes: null,
-14 verbose parsed url   auth: null,
-14 verbose parsed url   host: null,
-14 verbose parsed url   port: null,
-14 verbose parsed url   hostname: null,
-14 verbose parsed url   hash: null,
-14 verbose parsed url   search: null,
-14 verbose parsed url   query: null,
-14 verbose parsed url   pathname: '*',
-14 verbose parsed url   path: '*',
-14 verbose parsed url   href: '*' }
-15 verbose addNamed [ 'uglify-js', '*' ]
-16 verbose addNamed [ null, '*' ]
-17 silly lockFile fe1660fa-uglify-js uglify-js@*
-18 verbose lock uglify-js@* /Users/bartekd/.npm/fe1660fa-uglify-js.lock
-19 silly addNameRange { name: 'uglify-js', range: '*', hasData: false }
-20 verbose request where is /uglify-js
-21 verbose request registry https://registry.npmjs.org/
-22 verbose request id 44f0427e98ad94df
-23 verbose url raw /uglify-js
-24 verbose url resolving [ 'https://registry.npmjs.org/', './uglify-js' ]
-25 verbose url resolved https://registry.npmjs.org/uglify-js
-26 verbose request where is https://registry.npmjs.org/uglify-js
-27 info trying registry request attempt 1 at 20:38:13
-28 verbose etag "6SC7TUE0H00E79C9GO6D57TR9"
-29 http GET https://registry.npmjs.org/uglify-js
-30 http 200 https://registry.npmjs.org/uglify-js
-31 silly registry.get cb [ 200,
-31 silly registry.get   { date: 'Wed, 10 Dec 2014 04:38:13 GMT',
-31 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-31 silly registry.get     etag: '"ACPOIJEU7ACWUR3CT6F4EOD24"',
-31 silly registry.get     'content-type': 'application/json',
-31 silly registry.get     'cache-control': 'max-age=60',
-31 silly registry.get     'content-length': '84537',
-31 silly registry.get     'accept-ranges': 'bytes',
-31 silly registry.get     via: '1.1 varnish',
-31 silly registry.get     age: '12',
-31 silly registry.get     'x-served-by': 'cache-sjc3129-SJC',
-31 silly registry.get     'x-cache': 'HIT',
-31 silly registry.get     'x-cache-hits': '1',
-31 silly registry.get     'x-timer': 'S1418186293.282134,VS0,VE0',
-31 silly registry.get     vary: 'Accept',
-31 silly registry.get     'keep-alive': 'timeout=10, max=50',
-31 silly registry.get     connection: 'Keep-Alive' } ]
-32 silly addNameRange number 2 { name: 'uglify-js', range: '*', hasData: true }
-33 silly addNameRange versions [ 'uglify-js',
-33 silly addNameRange   [ '0.0.1',
-33 silly addNameRange     '0.0.2',
-33 silly addNameRange     '0.0.3',
-33 silly addNameRange     '0.0.4',
-33 silly addNameRange     '0.0.5',
-33 silly addNameRange     '1.0.1',
-33 silly addNameRange     '1.0.2',
-33 silly addNameRange     '1.0.3',
-33 silly addNameRange     '1.0.4',
-33 silly addNameRange     '1.0.5',
-33 silly addNameRange     '1.0.6',
-33 silly addNameRange     '1.0.7',
-33 silly addNameRange     '1.1.0',
-33 silly addNameRange     '1.1.1',
-33 silly addNameRange     '1.2.0',
-33 silly addNameRange     '1.2.1',
-33 silly addNameRange     '1.2.2',
-33 silly addNameRange     '1.2.3',
-33 silly addNameRange     '1.2.4',
-33 silly addNameRange     '1.2.5',
-33 silly addNameRange     '1.2.6',
-33 silly addNameRange     '1.3.0',
-33 silly addNameRange     '1.3.1',
-33 silly addNameRange     '1.3.2',
-33 silly addNameRange     '1.3.3',
-33 silly addNameRange     '1.3.4',
-33 silly addNameRange     '2.2.0',
-33 silly addNameRange     '2.2.1',
-33 silly addNameRange     '2.2.2',
-33 silly addNameRange     '2.2.3',
-33 silly addNameRange     '2.2.4',
-33 silly addNameRange     '2.2.5',
-33 silly addNameRange     '2.3.0',
-33 silly addNameRange     '2.3.1',
-33 silly addNameRange     '2.3.2',
-33 silly addNameRange     '2.3.3',
-33 silly addNameRange     '2.3.4',
-33 silly addNameRange     '2.3.5',
-33 silly addNameRange     '2.3.6',
-33 silly addNameRange     '1.3.5',
-33 silly addNameRange     '2.4.0',
-33 silly addNameRange     '2.4.1',
-33 silly addNameRange     '2.4.2',
-33 silly addNameRange     '2.4.3',
-33 silly addNameRange     '2.4.4',
-33 silly addNameRange     '2.4.5',
-33 silly addNameRange     '2.4.6',
-33 silly addNameRange     '2.4.7',
-33 silly addNameRange     '2.4.8',
-33 silly addNameRange     '2.4.9',
-33 silly addNameRange     '2.4.10',
-33 silly addNameRange     '2.4.11',
-33 silly addNameRange     '2.4.12',
-33 silly addNameRange     '2.4.13',
-33 silly addNameRange     '2.4.14',
-33 silly addNameRange     '2.4.15',
-33 silly addNameRange     '2.4.16' ] ]
-34 verbose addNamed [ 'uglify-js', '2.4.16' ]
-35 verbose addNamed [ '2.4.16', '2.4.16' ]
-36 silly lockFile 20fcf559-uglify-js-2-4-16 uglify-js@2.4.16
-37 verbose lock uglify-js@2.4.16 /Users/bartekd/.npm/20fcf559-uglify-js-2-4-16.lock
-38 silly lockFile 7dff44d4-g-uglify-js-uglify-js-2-4-16-tgz https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-39 verbose lock https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz /Users/bartekd/.npm/7dff44d4-g-uglify-js-uglify-js-2-4-16-tgz.lock
-40 verbose addRemoteTarball [ 'https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz',
-40 verbose addRemoteTarball   '84143487eb480efd7d0789c7ecfbd48a695839f9' ]
-41 info retry fetch attempt 1 at 20:38:14
-42 verbose fetch to= /var/folders/8z/kyqycb2x25q_tq54b44mz9jw0000gn/T/npm-50242-WAdSudZV/registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-43 http GET https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-44 http 200 https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-45 silly lockFile 7dff44d4-g-uglify-js-uglify-js-2-4-16-tgz https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-46 silly lockFile 7dff44d4-g-uglify-js-uglify-js-2-4-16-tgz https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.16.tgz
-47 silly lockFile 20fcf559-uglify-js-2-4-16 uglify-js@2.4.16
-48 silly lockFile 20fcf559-uglify-js-2-4-16 uglify-js@2.4.16
-49 silly lockFile fe1660fa-uglify-js uglify-js@*
-50 silly lockFile fe1660fa-uglify-js uglify-js@*
-51 error Error: EACCES, mkdir '/Users/bartekd/.npm/uglify-js/2.4.16'
-51 error  { [Error: EACCES, mkdir '/Users/bartekd/.npm/uglify-js/2.4.16']
-51 error   errno: 3,
-51 error   code: 'EACCES',
-51 error   path: '/Users/bartekd/.npm/uglify-js/2.4.16',
-51 error   parent: 'squareroot.js' }
-52 error Please try running this command again as root/Administrator.
-53 error System Darwin 14.0.0
-54 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install"
-55 error cwd /Users/bartekd/Documents/javascript/squareroot.js
-56 error node -v v0.10.33
-57 error npm -v 1.4.28
-58 error path /Users/bartekd/.npm/uglify-js/2.4.16
-59 error code EACCES
-60 error errno 3
-61 error stack Error: EACCES, mkdir '/Users/bartekd/.npm/uglify-js/2.4.16'
-62 verbose exit [ 3, true ]
+4 verbose cache add [ 'jsdoc', null ]
+5 verbose cache add name=undefined spec="jsdoc" args=["jsdoc",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'jsdoc',
+6 verbose parsed url   path: 'jsdoc',
+6 verbose parsed url   href: 'jsdoc' }
+7 silly lockFile 03633e6a-jsdoc jsdoc
+8 verbose lock jsdoc /Users/bartekd/.npm/03633e6a-jsdoc.lock
+9 silly lockFile 03633e6a-jsdoc jsdoc
+10 silly lockFile 03633e6a-jsdoc jsdoc
+11 verbose addNamed [ 'jsdoc', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile 5ca36d7c-jsdoc jsdoc@
+14 verbose lock jsdoc@ /Users/bartekd/.npm/5ca36d7c-jsdoc.lock
+15 silly addNameRange { name: 'jsdoc', range: '*', hasData: false }
+16 verbose request where is /jsdoc
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id 9cf01b63bdd16acb
+19 verbose url raw /jsdoc
+20 verbose url resolving [ 'https://registry.npmjs.org/', './jsdoc' ]
+21 verbose url resolved https://registry.npmjs.org/jsdoc
+22 verbose request where is https://registry.npmjs.org/jsdoc
+23 info trying registry request attempt 1 at 10:03:47
+24 verbose etag "2YHP7IIRX74G4PB4APW45AFQ5"
+25 http GET https://registry.npmjs.org/jsdoc
+26 http 304 https://registry.npmjs.org/jsdoc
+27 silly registry.get cb [ 304,
+27 silly registry.get   { date: 'Fri, 26 Dec 2014 18:03:47 GMT',
+27 silly registry.get     server: 'Apache',
+27 silly registry.get     via: '1.1 varnish',
+27 silly registry.get     'last-modified': 'Fri, 26 Dec 2014 18:02:48 GMT',
+27 silly registry.get     'cache-control': 'max-age=60',
+27 silly registry.get     etag: '"2YHP7IIRX74G4PB4APW45AFQ5"',
+27 silly registry.get     age: '59',
+27 silly registry.get     'x-served-by': 'cache-lax1432-LAX',
+27 silly registry.get     'x-cache': 'HIT',
+27 silly registry.get     'x-cache-hits': '2',
+27 silly registry.get     'x-timer': 'S1419617027.886978,VS0,VE0',
+27 silly registry.get     vary: 'Accept',
+27 silly registry.get     'content-length': '0',
+27 silly registry.get     'keep-alive': 'timeout=10, max=50',
+27 silly registry.get     connection: 'Keep-Alive' } ]
+28 verbose etag https://registry.npmjs.org/jsdoc from cache
+29 silly addNameRange number 2 { name: 'jsdoc', range: '*', hasData: true }
+30 silly addNameRange versions [ 'jsdoc',
+30 silly addNameRange   [ '0.0.0',
+30 silly addNameRange     '3.2.0-dev',
+30 silly addNameRange     '3.2.0',
+30 silly addNameRange     '3.2.1',
+30 silly addNameRange     '3.2.2',
+30 silly addNameRange     '3.3.0-alpha1',
+30 silly addNameRange     '3.3.0-alpha2',
+30 silly addNameRange     '3.3.0-alpha3',
+30 silly addNameRange     '3.3.0-alpha4',
+30 silly addNameRange     '3.3.0-alpha5',
+30 silly addNameRange     '3.3.0-alpha7',
+30 silly addNameRange     '3.3.0-alpha8',
+30 silly addNameRange     '3.3.0-alpha9',
+30 silly addNameRange     '3.3.0-alpha10',
+30 silly addNameRange     '3.3.0-alpha11',
+30 silly addNameRange     '3.3.0-alpha12',
+30 silly addNameRange     '3.3.0-alpha13' ] ]
+31 verbose addNamed [ 'jsdoc', '3.3.0-alpha13' ]
+32 verbose addNamed [ '3.3.0-alpha13', '3.3.0-alpha13' ]
+33 silly lockFile af369b9e-jsdoc-3-3-0-alpha13 jsdoc@3.3.0-alpha13
+34 verbose lock jsdoc@3.3.0-alpha13 /Users/bartekd/.npm/af369b9e-jsdoc-3-3-0-alpha13.lock
+35 silly lockFile af369b9e-jsdoc-3-3-0-alpha13 jsdoc@3.3.0-alpha13
+36 silly lockFile af369b9e-jsdoc-3-3-0-alpha13 jsdoc@3.3.0-alpha13
+37 silly lockFile 5ca36d7c-jsdoc jsdoc@
+38 silly lockFile 5ca36d7c-jsdoc jsdoc@
+39 silly resolved [ { name: 'jsdoc',
+39 silly resolved     version: '3.3.0-alpha13',
+39 silly resolved     revision: '1419376892674',
+39 silly resolved     description: 'An API documentation generator for JavaScript.',
+39 silly resolved     keywords: [ 'documentation', 'javascript' ],
+39 silly resolved     license: 'Apache-2.0',
+39 silly resolved     repository: { type: 'git', url: 'https://github.com/jsdoc3/jsdoc' },
+39 silly resolved     dependencies:
+39 silly resolved      { async: '~0.1.22',
+39 silly resolved        catharsis: '~0.8.5',
+39 silly resolved        'escape-string-regexp': '~1.0.0',
+39 silly resolved        esprima: 'https://github.com/ariya/esprima/tarball/49a2eccb243f29bd653b11e9419241a9d726af7c',
+39 silly resolved        js2xmlparser: '~0.1.0',
+39 silly resolved        marked: '~0.3.1',
+39 silly resolved        requizzle: '~0.2.0',
+39 silly resolved        'strip-json-comments': '~0.1.3',
+39 silly resolved        taffydb: 'https://github.com/hegemonic/taffydb/tarball/master',
+39 silly resolved        underscore: '~1.6.0',
+39 silly resolved        wrench: '~1.3.9' },
+39 silly resolved     devDependencies:
+39 silly resolved      { eslint: '~0.10.2',
+39 silly resolved        gulp: '~3.8.5',
+39 silly resolved        'gulp-eslint': '~0.1.7',
+39 silly resolved        'gulp-json-editor': '~2.0.2',
+39 silly resolved        istanbul: '~0.2.1',
+39 silly resolved        tv4: 'https://github.com/hegemonic/tv4/tarball/own-properties' },
+39 silly resolved     engines: { node: '>=0.10' },
+39 silly resolved     scripts: { test: 'gulp test' },
+39 silly resolved     bin: { jsdoc: './jsdoc.js' },
+39 silly resolved     bugs: { url: 'https://github.com/jsdoc3/jsdoc/issues' },
+39 silly resolved     author: { name: 'Michael Mathews', email: 'micmath@gmail.com' },
+39 silly resolved     contributors: [ [Object] ],
+39 silly resolved     maintainers: [ [Object], [Object] ],
+39 silly resolved     gitHead: '3d17a1642a105d854ffad9758d43661b3b6e17f2',
+39 silly resolved     homepage: 'https://github.com/jsdoc3/jsdoc',
+39 silly resolved     _id: 'jsdoc@3.3.0-alpha13',
+39 silly resolved     _shasum: 'ad64b989a4f6fbef3112ab1ee80908328a4ebfd2',
+39 silly resolved     _from: 'jsdoc@',
+39 silly resolved     _npmVersion: '1.4.28',
+39 silly resolved     _npmUser: { name: 'hegemonic', email: 'jeffrey.l.williams@gmail.com' },
+39 silly resolved     dist:
+39 silly resolved      { shasum: 'ad64b989a4f6fbef3112ab1ee80908328a4ebfd2',
+39 silly resolved        tarball: 'http://registry.npmjs.org/jsdoc/-/jsdoc-3.3.0-alpha13.tgz' },
+39 silly resolved     directories: {},
+39 silly resolved     _resolved: 'https://registry.npmjs.org/jsdoc/-/jsdoc-3.3.0-alpha13.tgz',
+39 silly resolved     readme: 'ERROR: No README data found!' } ]
+40 info install jsdoc@3.3.0-alpha13 into /usr/local/lib
+41 info installOne jsdoc@3.3.0-alpha13
+42 verbose lib/node_modules/jsdoc unbuild
+43 verbose tar unpack /Users/bartekd/.npm/jsdoc/3.3.0-alpha13/package.tgz
+44 silly lockFile 07026282-usr-local-lib-node-modules-jsdoc tar:///usr/local/lib/node_modules/jsdoc
+45 verbose lock tar:///usr/local/lib/node_modules/jsdoc /Users/bartekd/.npm/07026282-usr-local-lib-node-modules-jsdoc.lock
+46 silly lockFile 30252255--jsdoc-3-3-0-alpha13-package-tgz tar:///Users/bartekd/.npm/jsdoc/3.3.0-alpha13/package.tgz
+47 verbose lock tar:///Users/bartekd/.npm/jsdoc/3.3.0-alpha13/package.tgz /Users/bartekd/.npm/30252255--jsdoc-3-3-0-alpha13-package-tgz.lock
+48 silly gunzTarPerm modes [ '755', '644' ]
+49 error Error: EACCES, mkdir '/usr/local/lib/node_modules/jsdoc'
+49 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/jsdoc']
+49 error   errno: 3,
+49 error   code: 'EACCES',
+49 error   path: '/usr/local/lib/node_modules/jsdoc',
+49 error   fstream_type: 'Directory',
+49 error   fstream_path: '/usr/local/lib/node_modules/jsdoc',
+49 error   fstream_class: 'DirWriter',
+49 error   fstream_stack:
+49 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+49 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+49 error      'Object.oncomplete (fs.js:107:15)' ] }
+50 error Please try running this command again as root/Administrator.
+51 error System Darwin 14.0.0
+52 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "-g" "jsdoc"
+53 error cwd /Users/bartekd/Documents/javascript/squareroot.js
+54 error node -v v0.10.33
+55 error npm -v 1.4.28
+56 error path /usr/local/lib/node_modules/jsdoc
+57 error fstream_path /usr/local/lib/node_modules/jsdoc
+58 error fstream_type Directory
+59 error fstream_class DirWriter
+60 error code EACCES
+61 error errno 3
+62 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules/jsdoc'
+63 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+63 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+63 error fstream_stack Object.oncomplete (fs.js:107:15)
+64 verbose exit [ 3, true ]

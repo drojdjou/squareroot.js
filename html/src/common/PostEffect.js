@@ -1,3 +1,9 @@
+/**
+ *  @class PostEffect
+ *  @memberof SQR
+ *
+ *  @description Represents a post-processing effect (such as SAO or depth-of-field)
+ */
 SQR.PostEffect = function(shaderSource) {
     SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()
         .layout(SQR.v2u2(), 6)

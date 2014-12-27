@@ -1,11 +1,16 @@
 /**
- *	Utility to load different types of files 
- *	(and also some WebRTC related stuff, see below)
+ *	@namespace Loader
+ *	@memberof SQR
+ *
+ *	@description Utility to load different types of files (and also some WebRTC related stuff, see below)
  */
 SQR.Loader = {
 
 	/** 
-	 *	Load a text file and return it's contents in the callback.
+	 *	@method load
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load a text file and return it's contents in the callback.
 	 */
 	loadText: function(path, callback){
 		var request = new XMLHttpRequest();
@@ -24,7 +29,10 @@ SQR.Loader = {
 	},
 
 	/** 
-	 *	Load a JSON file and return it's contents in the callback.
+	 *	@method loadJSON
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load a JSON file and return it's contents in the callback.
 	 *	This function will parse the JSON data for you and return an Object.
 	 */
 	loadJSON: function(path, callback){
@@ -34,7 +42,10 @@ SQR.Loader = {
 	},
 
 	/** 
-	 *	Load an image file and return it's contents in the callback
+	 *	@method loadImage
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load an image file and return it's contents in the callback
 	 *	as Image object.
 	 */
 	loadImage: function(path, callback){
@@ -51,7 +62,10 @@ SQR.Loader = {
 	},
 
 	/** 
-	 *	Initiate user stream (webcam). 
+	 *	@method loadWebcam
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Initiate user stream (webcam). 
 	 */
 	loadWebcam: function(callback, options) {
 		navigator.getUserMedia  = navigator.getUserMedia ||
@@ -91,7 +105,10 @@ SQR.Loader = {
     },
 
     /**
-     *	Preload a video so that it can be used as a texture (typically)
+	 *	@method loadVideo
+	 *	@memberof SQR.Loader
+	 *
+     *	@description Preload a video so that it can be used as a texture (typically)
      */
     loadVideo: function(path, callback) {
     	var videoReady = function() {
@@ -113,13 +130,38 @@ SQR.Loader = {
     },
 
     /**
-     *	Load multiple assets of type:
+	 *	@method loadAssets
+	 *	@memberof SQR.Loader
+	 *
+     *	@description Load multiple assets of type:
+     *  <ul>
+     *		<li>text, including GLSL code</li>
+     *		<li>JSON, including model, geometry, scene. etc...</li>
+     *		<li>image (jpg, gif, png), video (mp4, webm)</li>
+     *		<li>webcam (it will initiate the webcam,
+     *		ask user for permisions, and return a ready to use stream)</li>
+     *	</ul>
+	 *	
+	 *	Each file will be availabke from the asset object passed to the callback
+	 *	under it's name, ex. assets['normal2color.glsl']
+	 *	It's also possible ot specify an alias. Instead of a String, 
+	 *	use an Array, where [0] is the path, and [1] is the alias.
      *
-     *	- text, including GLSL code
-     *	- JSON, including model, geometry, scene. etc..
-     *	- image (jpg, gif, png), video (mp4, webm)
-     *	- webcam (it will initiate the webcam, 
-     *			  ask user for permisions, and return a ready to use stream)
+     *	@example
+SQR.Loader.loadAssets([
+	['some-image.jpg', 'image'],
+	['some-video.mp4', 'video'],
+	['a-shader.glsl', 'shader'],
+	'another-shader.glsl',
+	'webcam' // special case, but useful :)
+], function(assets) {
+	var image = assets['image'];
+});
+	 *
+	 * 	@param {object} paths - list of file paths (with optinal aliases) to load, as in example below.
+	 *	@param {function} callback - called when all the files are loaded. 
+	 *	The assets are passed as argument as in the example below.
+	 *	@param {function} progressCallback - called each time when on of the files is loaded
      */
 	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;

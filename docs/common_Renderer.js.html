@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common/Renderer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common/Renderer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *	@class Renderer
+ *	@memberof SQR
+ *
+ *	@description Represents the rendering engine
+ */
+SQR.Renderer = function(context) {
+
+	var r = {};
+	var uniforms = {}, renderObjects = [], transparentObjects = [];
+
+	var updateTransform = function(t) {
+		if(!t.active) return;
+
+		t.transformWorld();
+		
+		if (t.numChildren > 0) {
+            for (var i = 0; i &lt; t.numChildren; i++) {
+                updateTransform(t.children[i]);
+            }
+        }
+
+        if(t.buffer &amp;&amp; t.shader) {
+        	if(t.transparent) transparentObjects.push(t);
+        	else renderObjects.push(t);
+        }
+	}
+
+	var lastBuffer, lastShader, shaderChanged, bufferChanged;
+
+	var defOpts = {};
+
+	r.render = function(root, camera, options) {
+		var gl = SQR.gl;
+
+		options = options || defOpts;
+
+		if(!options.dontClear) context.clear();
+
+		gl.disable(gl.BLEND);
+		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.CULL_FACE);
+        gl.frontFace(gl.CW);
+
+		renderObjects.length = 0;
+		transparentObjects.length = 0;
+		
+		updateTransform(root);
+
+		if(camera) {
+			camera.computeInverseMatrix();
+		}
+
+		renderObjects = renderObjects.concat(transparentObjects);
+
+		var objectsToRender = renderObjects.length, ro, 
+			lastBuffer = null, 
+			lastShader = null,
+			transparentRendering = false;
+		
+
+		var hasReplacementShader = options &amp;&amp; options.replacementShader;
+
+		if(hasReplacementShader) {
+			lastShader = options.replacementShader.use();
+		}
+
+		for(var i = 0; i &lt; objectsToRender; i++) {
+
+			shaderChanged = false, bufferChanged = false;
+
+			var ro = renderObjects[i];
+
+			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+
+			if(ro.transparent) {
+
+				if(!transparentRendering) {
+					gl.enable(gl.BLEND);
+					transparentRendering = true;
+				}
+				
+				gl.blendFunc(ro.srcFactor, ro.dstFactor);
+			}
+
+			if(lastBuffer != ro.buffer) {
+				lastBuffer = ro.buffer;
+				lastBuffer.bind();
+				bufferChanged = true;
+			}
+
+			if((lastShader != ro.shader) &amp;&amp; !hasReplacementShader) {
+				lastShader = ro.shader.use().updateTextures();
+				var p = (camera &amp;&amp; camera.projection) || r.projection;
+				if(!p) throw "> SQR.Renderer - no projection defined on camera and no default projection on renderer.";
+				lastShader.setUniform('uProjection', p);
+				shaderChanged = true;
+			}
+
+			if(shaderChanged || bufferChanged) {
+				lastShader.attribPointers(lastBuffer);
+			}
+
+			ro.draw(options);
+		}
+
+	}
+
+	r.renderToScreen = function() {
+		var gl = SQR.gl;
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	}
+
+	return r;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PostEffect.html">PostEffect</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 21:30:21 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

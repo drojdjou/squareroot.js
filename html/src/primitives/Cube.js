@@ -1,3 +1,10 @@
+/**
+ *  @method createCube
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a simple cube geometry, 1 quad per side, non-indexed
+ *	@returns {SQR.Buffer}
+ */
 SQR.Primitives.createCube = function(w, h, d) {
 
 	w = w || 1;

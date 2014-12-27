@@ -1,3 +1,44 @@
+/**
+ *	@class Shader
+ *	@memberof SQR
+ *
+ *	@description Represents a GLSL shader. The shader class takes the source GLSL code,
+ *	compiles it and extracts all the attributes and uniforms. It also exposes
+ *	methods to set the uniform values of this shader. A typical source can look like in the example below.
+ *
+ *	@example
+//#vertex
+attribute vec3 aNormal;
+attribute vec3 aPosition;
+
+uniform mat4 uMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uProjection;
+uniform mat3 uNormalMatrix;
+
+varying vec3 vNormal;
+     
+void main() {
+	vNormal = normalize(uNormalMatrix * aNormal);
+	gl_Position = uProjection * uMatrix * vec4(aPosition, 1.0);
+}
+
+//#fragment
+#ifdef GL_ES
+precision highp float;
+#endif
+               
+varying vec3 vNormal;
+           
+void main() {
+	gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);
+}
+ *
+ *	@param {string} source - the GLSL source code formatted 
+ *	in a way to include both vertex and fragment shaders.
+ *
+ *	@param {object} options - additional options, not required.
+ */
 SQR.Shader = function(source, options) {
 
 	var s = {}, program, gl;

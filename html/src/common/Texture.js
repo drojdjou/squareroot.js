@@ -1,3 +1,9 @@
+/**
+ *  @class Texture
+ *  @memberof SQR
+ *
+ *  @description Represents a WebGL texture created from an Image, Video or Canvas element.
+ */
 SQR.Texture = function(s, options) {
 
     options = options || {};

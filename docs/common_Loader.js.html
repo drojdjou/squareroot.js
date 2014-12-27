@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common/Loader.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common/Loader.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *	@namespace Loader
+ *	@memberof SQR
+ *
+ *	@description Utility to load different types of files (and also some WebRTC related stuff, see below)
+ */
+SQR.Loader = {
+
+	/** 
+	 *	@method load
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load a text file and return it's contents in the callback.
+	 */
+	loadText: function(path, callback){
+		var request = new XMLHttpRequest();
+		request.open("GET", path);
+
+		var onReadystatechange = function(){
+			if (request.readyState == 4) {
+				request.removeEventListener('readystatechange', onReadystatechange);
+				callback(request.responseText, path);
+			}
+		}
+
+		request.addEventListener('readystatechange', onReadystatechange);
+
+		request.send();
+	},
+
+	/** 
+	 *	@method loadJSON
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load a JSON file and return it's contents in the callback.
+	 *	This function will parse the JSON data for you and return an Object.
+	 */
+	loadJSON: function(path, callback){
+		SQR.Loader.loadText(path, function(text) {
+			callback(JSON.parse(text), path);
+		});
+	},
+
+	/** 
+	 *	@method loadImage
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Load an image file and return it's contents in the callback
+	 *	as Image object.
+	 */
+	loadImage: function(path, callback){
+		var img = new Image();
+		if(callback) {
+			var onload = function() {
+				img.removeEventListener('load', onload);
+				callback(img, path);
+			}
+			img.addEventListener('load', onload);
+		}
+		img.src = path;
+		return img;
+	},
+
+	/** 
+	 *	@method loadWebcam
+	 *	@memberof SQR.Loader
+	 *
+	 *	@description Initiate user stream (webcam). 
+	 */
+	loadWebcam: function(callback, options) {
+		navigator.getUserMedia  = navigator.getUserMedia ||
+                                navigator.webkitGetUserMedia ||
+                                navigator.mozGetUserMedia ||
+                                navigator.msGetUserMedia;
+
+        if(!navigator.getUserMedia) {
+        	console.error('> SQR.Loader - getUserMedia not supported');
+        	callback();
+        }
+
+        options = options || {
+        	audio: false,
+	        video: {
+	        	// mandatory: { minWidth: 1920, minHeight: 1080 }
+	        }
+	    };
+
+	    var onVideo = function(stream) {
+	    	video.stream = stream;
+			video.src = window.URL.createObjectURL(stream);
+	        video.play();
+	        video.addEventListener('canplaythrough', videoReady, false);
+	    }
+
+	    var videoReady = function() {
+	    	callback(video, 'webcam');
+	    }
+
+        var video = document.createElement('video');
+    	video.autoplay = true;
+
+		navigator.getUserMedia(options, onVideo, function(e) { 
+			console.error('> SQR.Loader - getUserMedia error ', e);
+		});
+    },
+
+    /**
+	 *	@method loadVideo
+	 *	@memberof SQR.Loader
+	 *
+     *	@description Preload a video so that it can be used as a texture (typically)
+     */
+    loadVideo: function(path, callback) {
+    	var videoReady = function() {
+	    	callback(video, path);
+	    }
+
+    	var video = document.createElement('video');
+    	video.autoplay = true;
+    	video.addEventListener('canplaythrough', videoReady, false);
+
+
+    	var p = path;
+
+    	if(!video.canPlayType('video/mp4')) {
+    		p = p.replace('mp4', 'webm');
+    	}
+
+    	video.src = p;
+    },
+
+    /**
+	 *	@method loadAssets
+	 *	@memberof SQR.Loader
+	 *
+     *	@description Load multiple assets of type:
+     *  &lt;ul>
+     *		&lt;li>text, including GLSL code&lt;/li>
+     *		&lt;li>JSON, including model, geometry, scene. etc...&lt;/li>
+     *		&lt;li>image (jpg, gif, png), video (mp4, webm)&lt;/li>
+     *		&lt;li>webcam (it will initiate the webcam,
+     *		ask user for permisions, and return a ready to use stream)&lt;/li>
+     *	&lt;/ul>
+	 *	
+	 *	Each file will be availabke from the asset object passed to the callback
+	 *	under it's name, ex. assets['normal2color.glsl']
+	 *	It's also possible ot specify an alias. Instead of a String, 
+	 *	use an Array, where [0] is the path, and [1] is the alias.
+     *
+     *	@example
+SQR.Loader.loadAssets([
+	['some-image.jpg', 'image'],
+	['some-video.mp4', 'video'],
+	['a-shader.glsl', 'shader'],
+	'another-shader.glsl',
+	'webcam' // special case, but useful :)
+], function(assets) {
+	var image = assets['image'];
+});
+	 *
+	 * 	@param {object} paths - list of file paths (with optinal aliases) to load, as in example below.
+	 *	@param {function} callback - called when all the files are loaded. 
+	 *	The assets are passed as argument as in the example below.
+	 *	@param {function} progressCallback - called each time when on of the files is loaded
+     */
+	loadAssets: function(paths, callback, progressCallback) {
+		var toLoad = paths.length;
+		SQR.Loader.assets = {};
+		var aliases = {};
+
+		var onAsset = function(asset, p) {
+			SQR.Loader.assets[aliases[p] || p] = asset;
+			toLoad--;
+
+			if(progressCallback) {
+				progressCallback(toLoad, paths.length);
+			}
+
+			if(toLoad == 0) {
+				callback(SQR.Loader.assets);
+			}
+		}
+		
+		for(var i = 0; i &lt; toLoad; i++) {
+			var p = paths[i];
+
+			if(typeof(p) != 'string') {
+				aliases[p[0]] = p[1];
+				p = p[0];
+			}
+
+			var e = p.substring(p.lastIndexOf('.') + 1);
+
+			if(p.indexOf('~') > -1) {
+				if(SQR.GLSL &amp;&amp; SQR.GLSL[p.substring(2)]) {
+					toLoad--;
+					continue;
+				} else {
+					p = p.replace('~', SQR.shaderPath);
+				}
+			}
+			
+			switch(e) {
+				case 'glsl':
+					SQR.Loader.loadText(p, onAsset);
+					break;
+				case 'png':
+				case 'jpg':
+				case 'gif':
+					SQR.Loader.loadImage(p, onAsset);
+					break;
+				case 'json':
+				case 'js':
+					SQR.Loader.loadJSON(p, onAsset);
+					break;
+				case 'mp4':
+				case 'webm':
+					SQR.Loader.loadVideo(p, onAsset);
+					break;
+				case 'webcam':
+					SQR.Loader.loadWebcam(onAsset);
+					break;
+			}
+		}
+	}
+};
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PostEffect.html">PostEffect</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 21:30:21 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
