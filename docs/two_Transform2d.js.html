@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: math/Matrix33.js</title>
+    <title>JSDoc: Source: two/Transform2d.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: math/Matrix33.js</h1>
+    <h1 class="page-title">Source: two/Transform2d.js</h1>
 
     
 
@@ -27,100 +27,88 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- *  @class Matrix33
+ *  @class Transform2d
  *  @memberof SQR
  *
- *  @description A 3x3 matrix for used to hold rotations and normal matrices
+ *  @description Similar to {SQR.Transform} but specialized to work with 2d rendeirng on a 2d canvas element.
+ *  
  */
-SQR.Matrix33 = function() {
+SQR.Transform2d = function() {
 
-    this.data = new Float32Array(9);
+	var t = {};
 
-    this.identity = function() {
-        var d = this.data;
-        d[0] = 1,d[3] = 0,d[6] = 0;
-        d[1] = 0,d[4] = 1,d[7] = 0;
-        d[2] = 0,d[5] = 0,d[8] = 1;
-        return this;
-    }
+	t.name = name || 'sqr.transform.' + SQR.Transform2dCount++;
 
-    this.transformVector = function (v, pv) {
-        var d = this.data;
-        var x = v.x, y = v.y, z = v.z;
-        pv = pv || v;
+	// z used az in z-ijndex
+	t.position = new SQR.V3(0, 0, 0);
+	t.rotation = 0
+	t.scale = new SQR.V2(1, 1);
 
-        pv.x = d[0] * x + d[3] * y + d[6] * z;
-        pv.y = d[1] * x + d[4] * y + d[7] * z;
-        pv.z = d[2] * x + d[5] * y + d[8] * z;
+	t.children = [], t.numChildren = 0;
 
-        return pv;
-    }
-
-    this.determinant = function() {
-        var d = this.data;
-
-        return d[0] * (d[4] * d[8] - d[7] * d[5]) +
-               d[3] * (d[7] * d[2] - d[1] * d[8]) +
-               d[6] * (d[1] * d[5] - d[4] * d[2]);
-    }
-
-    this.inverse = function(m) {
-        var d = this.data;
-        m = m || this.data;
-
-        var a00 = d[0], a01 = d[1], a02 = d[2],
-            a10 = d[3], a11 = d[4], a12 = d[5],
-            a20 = d[6], a21 = d[7], a22 = d[8],
-
-            b01 = a22 * a11 - a12 * a21,
-            b11 = -a22 * a10 + a12 * a20,
-            b21 = a21 * a10 - a11 * a20,
-
-            d = a00 * b01 + a01 * b11 + a02 * b21,
-            id;
-
-        if (!d) {
-            console.warn("Attempt to inverse a singular matrix33. ", this.data);
-            return m;
+    t.add = function() {
+        for (var i = 0; i &lt; arguments.length; i++) {
+            var c = arguments[i];
+            c.parent = t;
+            if (t.children.indexOf(c) == -1) t.children.push(c);
         }
-        
-        id = 1 / d;
-
-        m[0] = b01 * id;
-        m[1] = (-a22 * a01 + a02 * a21) * id;
-        m[2] = (a12 * a01 - a02 * a11) * id;
-        m[3] = b11 * id;
-        m[4] = (a22 * a00 - a02 * a20) * id;
-        m[5] = (-a12 * a00 + a02 * a10) * id;
-        m[6] = b21 * id;
-        m[7] = (-a21 * a00 + a01 * a20) * id;
-        m[8] = (a11 * a00 - a01 * a10) * id;
-
-        return m;
-
+        t.numChildren = t.children.length;
+        return t;
     }
 
-    this.transpose = function() {
-        var d = this.data;
-
-        var d0 = d[0], d3 = d[3], d6 = d[6],
-            d1 = d[1], d4 = d[4], d7 = d[7],
-            d2 = d[2], d5 = d[5], d8 = d[8];
-
-        d[0] = d0;
-        d[1] = d3;
-        d[2] = d6;
-
-        d[3] = d1;
-        d[4] = d4;
-        d[5] = d7;
-
-        d[6] = d2;
-        d[7] = d5;
-        d[8] = d8;
+    t.remove = function() {
+        for (var i = 0; i &lt; arguments.length; i++) {
+            var c = arguments[i];
+            var j = t.children.indexOf(c);
+            if (j == -1) return false;
+            c.parent = null;
+            t.children.splice(j, 1);
+        }
+        t.numChildren = t.children.length;
+        return t;
     }
 
-}</code></pre>
+    t.removeAll = function() {
+        t.children.length = 0;
+        t.numChildren = 0;
+    }
+
+    t.contains = function(c) {
+        return t.children.indexOf(c) > -1;
+    }
+
+    t.recurse = function(f, excludeSelf) {
+       if(!excludeSelf) f(t);
+        for (var i = 0; i &lt; t.numChildren; i++) {
+            t.children[i].recurse(f);
+        }
+    }
+
+    t.draw = function(context) {
+
+    	context.save();
+    	context.translate(t.position.x, t.position.y);
+    	context.rotate(t.rotation);
+    	context.scale(t.scale.x, t.scale.y);
+
+    	if(t.shape) t.shape(context);
+    	for(var i = 0; i &lt; t.numChildren; i++) t.children[i].draw(context);
+
+    	context.restore();
+	}
+
+	return t;
+}
+
+SQR.Transform2dCount = 0;
+
+
+
+
+
+
+
+</code></pre>
         </article>
     </section>
 

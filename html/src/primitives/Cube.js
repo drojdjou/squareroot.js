@@ -2,7 +2,12 @@
  *  @method createCube
  *  @memberof SQR.Primitives
  *
- *  @description Creates a simple cube geometry, 1 quad per side, non-indexed
+ *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
+ *
+ *	@param {Number} w - width of the cube
+ *	@param {Number} h - height of the cube
+ *	@param {Number} d - depth of the cube
+ *
  *	@returns {SQR.Buffer}
  */
 SQR.Primitives.createCube = function(w, h, d) {

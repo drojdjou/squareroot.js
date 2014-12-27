@@ -7,6 +7,21 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
         .update();
 }
 
+/**
+ *  @method createPlane
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a plane, by default on the X/Y plane
+ *
+ *  @param {Number} w - width of the plane
+ *  @param {Number} h - height of the plane
+ *  @param {Number} wd - number of segments along the width
+ *  @param {Number} hd - number of segments along the height
+ *  @param {Number} wo - horizontal offset
+ *  @param {Number} ho - vertical offset
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
 
     var faces = [], vCols = [], uvCols = [];

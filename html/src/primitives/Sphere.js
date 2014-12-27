@@ -1,3 +1,16 @@
+/**
+ *  @method createSphere
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
+ *
+ *  @param {Number} radius - radius of the sphere
+ *  @param {Number} sw - width (longitude) segments
+ *  @param {Number} sh - width (latitude) segments
+ *  @param {Number} options - additional settings
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.createSphere = function(radius, sw, sh, options) {
 
     var vertices = [];

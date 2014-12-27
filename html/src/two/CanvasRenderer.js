@@ -1,3 +1,10 @@
+/**
+ *  @class CanvasRenderer
+ *  @memberof SQR
+ *
+ *  @description Part of a minimal Canvas 2d rendering engine.
+ *	
+ */
 SQR.CanvasRenderer = function(canvas) {
 
 	var r = {};
