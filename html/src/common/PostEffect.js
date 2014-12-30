@@ -1,8 +1,14 @@
 /**
- *  @class PostEffect
+ *  @function PostEffect
  *  @memberof SQR
  *
- *  @description Represents a post-processing effect (such as SAO or depth-of-field)
+ *  @description Creates a post-processing effect (such as SAO or depth-of-field). It creares
+ *	an instance of SQR.Transform with a full screen quad buffer and the shader build from the provided source.
+ *	Please read the {@tutorial post-effects} tutorial to see how it works. 
+ *
+ *	@param {string} shaderSource - the source of the shader for this post effect
+ *
+ *	@returns {SQR.Transform} a transform representing this post effect
  */
 SQR.PostEffect = function(shaderSource) {
     SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()

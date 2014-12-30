@@ -11,7 +11,10 @@
  *	`vx, vy, vz, nx, ny, nz, u, v`<br>
  *	The creation of strides in handled internally by the Buffer class.
  *	<br><br>
- *	More info on strides can be found in the specs {@link https://www.khronos.org/registry/webgl/specs/latest/1.0/}
+ *	More info on strides can be found in the {@link https://www.khronos.org/registry/webgl/specs/latest/1.0/ specs}.
+ *	<br><br>
+ *	Please read the {@tutorial basic-setup} tutorial to see how to use a buffer  
+ *	and the {@tutorial understanding-buffers} tutorial  for an in depth discussion on buffers.
  */
 SQR.Buffer = function() {
 
@@ -22,6 +25,16 @@ SQR.Buffer = function() {
 
 	b.mode = SQR.gl.TRIANGLES;
 
+	/**
+	 *	@method setMode
+	 *	@memberof SQR.Buffer.prototype
+	 *
+	 *	@description set the drawing mode for this buffer. 
+	 *	Can be any one of the supported webgl drawing modes such as 
+	 *	`gl.POINTS`, `gl.LINES` or `gl.TRIANGLES` which is the default.
+	 *
+	 *	Reminder: all the gl constants are available through the `SQR.gl` property.
+	 */
 	b.setMode = function(m) {
 		b.mode = m
 		return b;
@@ -32,11 +45,15 @@ SQR.Buffer = function() {
 	 *	@memberof SQR.Buffer.prototype
 	 *	
 	 *	@description Sets the layout of the buffer. 
-	 *	A layout describes all the attributes of the geometry and their respective sizes. SQR has a few global functions that ar shorthands for typical layouts, like ex. {@link SQR.v2c3()}
+	 *	A layout describes all the attributes of the geometry and their respective sizes. 
+	 *	{@link SQR} has a few global functions that ar shorthands for typical layouts, like ex. {@link SQR.v2c3()}
 	 *	@example 
 var l = { aPosition: 3, aColor: 4, aUV: 2 };
 // the `new` keyword is optional, all methods are chainable
 var buffer = SQR.Buffer().layout(l, 100).update();
+	 *
+	 *	@param {object} layout - the layout of the buffer (see desc above) and {@tutorial understanding-buffers}
+	 *	@param {Number} size - the size of the buffer i.e. how many vertices it has
 	 *	
 	 */
 	b.layout = function(layout, size) {
@@ -60,7 +77,7 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method data
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description sets all the data for a given attribute
+	 *	@description Sets all the data for a given attribute.
 	 */
 	b.data = function(attribute, array) {
 
@@ -84,7 +101,17 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method set
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description sets a value for a single attribute
+	 *	@description Sets a value for an attribute at a defined position.
+	 *
+	 *	@param {string} attribute - name of the attribute (ex. `aPosition`)
+	 *	@param {Number} position - the index of this attrbute (related to the size of the buffer)
+	 *	@param {Array=} array - the data in form of an `Array` or as separate arguments 
+	 *	or an object that has a `toArray` attribute (see example to see all the possible options)
+	 *
+	 *	@example
+b.set('aPosition', 1, 	[3, 5, 6]);
+b.set('aPosition', 1, 	4, 8, 9);
+b.set('aPosition', 1, 	new SQR.V3(3, 5, 6));
 	 */
 	b.set = function(attribute, position, array) {
 		if(array.toArray) {
@@ -106,7 +133,14 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method iterate
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description interates over each value for a given attribute
+	 *	@description Iterates over each value for a given attribute. 
+	 *	See example to see how to move all the vertices by 4 on the Y axis.
+	 *
+	 *	@example
+b.iterate('aPosition', function(i, data, count)) {
+	// i = x, i+1 = y, i+2 = z
+	data[i + 1] += 4;
+});
 	 */
 	b.iterate = function(attribute, callback) {
 		var s = b.attributes[attribute];
@@ -123,7 +157,8 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method bind
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description bind the buffer in gl (does the same thing as calling directly gl.bindBuffer)
+	 *	@description Binds the buffer in gl, 
+	 *	which does the same thing as calling `gl.bindBuffer` directly.
 	 */
 	b.bind = function() {
 		SQR.gl.bindBuffer(SQR.gl.ARRAY_BUFFER, buffer);
@@ -134,8 +169,8 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method update
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description updates the gl buffer with the data from the array. 
-	 *	When called for the first time it creates the gl buffer.
+	 *	@description Updates the webgl buffer with the data from the internal array. 
+	 *	When called for the first time it lazily creates the webgl buffer.
 	 */
 	b.update = function() {
 		var gl = SQR.gl;
@@ -157,7 +192,10 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method index
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description sets index data. 
+	 *	@description Sets index data. 
+	 *
+	 *	@param {Array=} array either an array or argument list of all the indexes. 
+	 *	Used when setting up meshes imported as OBJ or JSON object from Unity, Blender or similar.
 	 */
 	b.index = function(array) {
 
@@ -186,7 +224,8 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method draw
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description used by the {SQR.Renderer}, called when this geometry is drawn
+	 *	@description used by the {SQR.Renderer}, called when this geometry is drawn. 
+	 *	Will call `gl.drawArrays` or `gl.drawElements` to draw the geometry using the current shader.
 	 */
 	b.draw = function() {
 		var gl = SQR.gl;
@@ -211,7 +250,10 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method getDataArray
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description returns the raw array data
+	 *	@description Returns the raw array data
+	 *	
+	 *	@data {Float32Array} - Array containing all the vertex attributes data organized in stride
+	 *	according to the layout.
 	 */
 	b.getDataArray = function() {
 		return data;
@@ -221,12 +263,16 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method destroy
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description destros the buffer and clears all data from the array
+	 *	@description Destroys the buffer and clears all data from the array.
 	 */
 	b.destroy  = function() {
 		data.length = 0;
 		SQR.gl.deleteBuffer(buffer);
-		if(hasIndex) SQR.gl.deleteBuffer(indexBuffer);
+
+		if(hasIndex) {
+			indices.length = 0;
+			SQR.gl.deleteBuffer(indexBuffer);
+		}
 	}
 
 	return b;

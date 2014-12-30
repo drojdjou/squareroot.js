@@ -4,7 +4,8 @@
  *
  *  @description Represents a quaternion with optionally setting the values directly.
  *
- *  Just as a reminder, given an angle `a` and an axis `x,y,z` this is what the quaternion values re:
+ *  Just as a reminder, given an angle `a` and an axis `x,y,z` 
+ *  this is what the quaternion values are:
  *  @example
 var q = new SQR.Quaternion();
 var s = Math.sin(a / 2);
@@ -148,7 +149,9 @@ SQR.Quaternion.prototype.normalize = function() {
 }
 
 /**
- *  That method doesn't do anything for now. Check {SQR.Matrix44.TQS()} to see how to turn a Quanternion into a matrix representation.
+ *  That method doesn't do anything. 
+ *  Check {SQR.Matrix44.TQS()} to see how to turn a 
+ *  Quanternion into a matrix representation.
  *
  *  @todo Implement (or not... not sure how much this is needed)
  */

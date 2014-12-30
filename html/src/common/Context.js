@@ -5,11 +5,12 @@
  *	@description When creating the Context object, a canvas element or a selector (ex. #gl-canvas) 
  *	can be passed to this function. If omitted a new canvas element will be created
  *	and it will be available as the canvas property of the object 
- *	returned by the SQR.Context functiom.
+ *	returned by the SQR.Context functiom. See quick example below or read more in {@tutorial basic-setup}.
  *
  *	@example
 // the `new` keyword is optional, all methods are chainable
-var c = SQR.Context('#canvas').create();
+var w = window.innerWidth, h = window.innerHeight;
+var c = SQR.Context('#canvas').create().size(w, h).clearColor(0, 0, 0, 1);
  */
 SQR.Context = function(canvas) {
 

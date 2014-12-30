@@ -33,54 +33,94 @@
  *  @descrption A 3-dimensional vector
  *
  */
-SQR.V3 = function(x, y, z, w, i) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
-    this.w = w || 1;
+SQR.V3 = function(x, y, z) {
+    this.set(x, y, z)
     this.size = 3;
 }
 
-SQR.V3.prototype.set = function(x, y, z, w) {
+/**
+ *  Sets the vector compoment to values. Note that this class has actually 4 not 3 compoments.
+ *  @param x - the value of the x compoment
+ *  @param y - the value of the y compoment
+ *  @param z - the value of the z compoment
+ */ 
+SQR.V3.prototype.set = function(x, y, z) {
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
-    this.w = w || 1;
     return this;
 }
 
+/**
+ *  Copies values from this vector into the p vector
+ *
+ *  @param {SQR.V2|SQR.V3} p - vector to copy the values to
+ */
 SQR.V3.prototype.copyTo = function(p) {
     p.x = this.x;
     p.y = this.y;
-    p.z = this.z;
-    p.w = this.w;
+    if(p.z != undefined) p.z = this.z;
     return p;
 }
 
+/**
+ *  Copies values from vector p into this vector
+ *
+ *  @param {SQR.V2|SQR.V3} p - vector to copy the values from
+ */
 SQR.V3.prototype.copyFrom = function(p) {
     this.x = p.x;
     this.y = p.y;
     this.z = p.z || 0; // in case p is SQR.V2
-    this.w = (p.w !== undefined) ? p.w : 1;
     return this;
 }
 
+/**
+ *  Creates and returns a copy of this vector. 
+ *  Be careful with this method, because it creates a new object. 
+ *  Calling this function repeatedly in a rendering loop can have an adverce impact on performance.
+ *
+ *  @returns {SQR.V3} a new vector that is a copy of this vector
+ */
 SQR.V3.prototype.clone = function() {
     return new SQR.V3(this.x, this.y, this.z);
 }
 
+/** 
+ *  Returns the squared length of this vector. This can be useful to optimize some calculations, since
+ *  the actual length requires a squareroot operation (`Math.sqrt()`) 
+ *  which can be slow if used on many vectors.
+ */
 SQR.V3.prototype.magsq = function() {
     return this.x * this.x + this.y * this.y + this.z * this.z;
 };
 
+/**
+ *  Return the length (magnitude) of this vector
+ *  @returns {Number} the length of this vector
+ */
 SQR.V3.prototype.mag = function() {
     return Math.sqrt(this.magsq());
 };
 
+/**
+ *  Shorthand to check if this vector is a zero vector 
+ *  (i.e. all compoments are very small or equal to 0) The values are compared against SQR.EPSILON
+ */
 SQR.V3.prototype.isZero = function() {
-    return this.x == 0 &amp;&amp; this.y == 0 &amp;&amp; this.z == 0;
+    return 
+        Math.abs(this.x) &lt; SQR.EPSILON &amp;&amp; 
+        Math.abs(this.y) &lt; SQR.EPSILON &amp;&amp; 
+        Math.abs(this.z) &lt; SQR.EPSILON;
 };
 
+/**
+ *  Multiples this vector by a scalar. 
+ *  This function can be used in conjunction with {@link SQR.V3#norm} 
+ *  to set the vector to a given length `v.norm().mul(10)1 yields a vector of length 10.
+ *
+ *  @param {Number} s - the value to multiply the the vector by.
+ */
 SQR.V3.prototype.mul = function(s) {
     this.x *= s;
     this.y *= s;
@@ -88,6 +128,9 @@ SQR.V3.prototype.mul = function(s) {
     return this;
 }
 
+/**
+ *  Negates this vector.
+ */
 SQR.V3.prototype.neg = function() {
     this.x = -this.x;
     this.y = -this.y;
@@ -95,6 +138,9 @@ SQR.V3.prototype.neg = function() {
     return this;
 }
 
+/**
+ *  Normalizes this vector, i.e. sets its length (magnitude) to 1.
+ */
 SQR.V3.prototype.norm = function() {
     var m = 1 / this.mag();
     this.set(this.x * m, this.y * m, this.z * m);
@@ -102,10 +148,15 @@ SQR.V3.prototype.norm = function() {
 }
 
 /**
- * a.add(a, b).add(a, c) -> a + b + c
+ *  Sets this vector to the sum of a and b. 
  *
- * @param a
- * @param b
+ *  @example
+a.add(b, c); // a = b + c
+a.add(a, b); // a += b
+a.add(a, b).add(a, c); // = a + b + c
+ *
+ *  @param {SQR.V3} a
+ *  @param {SQR.V3} b
  */
 SQR.V3.prototype.add = function(a, b) {
     this.x = a.x + b.x;
@@ -141,10 +192,17 @@ SQR.V3.prototype.random = function() {
     return this;
 }
 
+/**
+ *  Returns the dot product of a nd b (`a . b`).
+ *  @returns {Number} result of a . b
+ */
 SQR.V3.dot = function(a, b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+/**
+ *  Sets this vector to the result of a cross-product of a and b (`a x b`).
+ */
 SQR.V3.prototype.cross = function(a, b) {
     var x = a.y * b.z - a.z * b.y;
     var y = a.z * b.x - a.x * b.z;
@@ -153,10 +211,26 @@ SQR.V3.prototype.cross = function(a, b) {
     return this;
 }
 
+/**
+ *  @private
+ *  @description Alias for toArray
+ *
+ *  @returns {Float32Array} array - the array holding the values of this vector
+ */
 SQR.V3.prototype.toUniform = function() {
     return this.toArray();
 }
 
+/**
+ *  @private
+ *  @description Lazily creates a Float32Array and stores 
+ *  the components of this vector in the array.
+ *  This is mostly used when the value of this vector is 
+ *  passed as uniform to a shader
+ *  (this function is called internally by the renderer).
+ *
+ *  @returns {Float32Array} array - the array holding the values of this vector
+ */
 SQR.V3.prototype.toArray = function() {
     if(!this.array) this.array = new Float32Array(3);
     this.array[0] = this.x;
@@ -166,8 +240,11 @@ SQR.V3.prototype.toArray = function() {
 }
 
 /**
- *  Assuming the vector was projected using the SQR.ProjectionMatrix, use this
+ *  Assuming the vector was projected using the {@link SQR.ProjectionMatrix}, use this
  *  to calculate it's screen space. (useful for software rendering, ex. on canvas 2d)
+ *
+ *  @param {Number=} w - the width of the screen (defaults to `window.innerWidth`) 
+ *  @param {Number=} h - the height of the screen (defaults to `window.innerHeight`) 
  */
 SQR.V3.prototype.toScreenSpace = function(w, h) {
     w = w || window.innerWidth;
@@ -177,7 +254,11 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
 }
 
 /**
- *  Use this for caculating per-vertex normals
+ *  Use this for caculating per-vertex normals. 
+ *  A normal from each contributing face can be added here. 
+ *  When all the normals are added, a vector that is the sum of them all 
+ *  is available as `this.normal` property. The pre-vertex normal can be caluculated
+ *  but normalizing this vector.
  */
 SQR.V3.prototype.addNormal = function(_n) {
 
@@ -188,12 +269,30 @@ SQR.V3.prototype.addNormal = function(_n) {
     this.normal.add(this.normal, _n);
 }
 
+/** 
+ *  This is use to reset the normal to 0.
+ */
 SQR.V3.prototype.resetNormal = function(_n) {
     if(this.normal) this.normal.set();
 }
 
 
+/**
+ *  @const
+ *  @memberof SQR.V3
+ *  @description A constant the defines the up vector. 
+ *  WARNING: be extremly careful not to modify the values of this vector, because this will cause some
+ *  matrix functions, like {@link SQR.Matrix44#lookAt} to not fuction properly.
+ */
 SQR.V3.up = new SQR.V3(0,1,0);
+
+/**
+ *  @const
+ *  @memberof SQR.V3
+ *  @description A constant the defines the forward vector. 
+ *  WARNING: be extremly careful not to modify the values of this vector, because this will cause some
+ *  matrix functions to not fuction properly.
+ */
 SQR.V3.forward = new SQR.V3(0,0,1);
 
 SQR.V3.__tv1 = new SQR.V3();
@@ -208,13 +307,13 @@ SQR.V3.__tv3 = new SQR.V3();</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PostEffect.html">PostEffect</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 21:57:41 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 19:09:21 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

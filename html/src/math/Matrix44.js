@@ -17,6 +17,13 @@ SQR.Matrix44 = function(data) {
         return this;
     }
 
+    /**
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Multiplies the vector v by my this matrix and stores the result in the vector pv.
+     *
+     *  @param {SQR.V3} v - the vector to be multiplies by this matrix
+     *  @param {SQR.V3=} pv - the vector in which to store the result. If ommited, result is stored in v.
+     */
     this.transformVector = function (v, pv) {
         var d = this.data;
         var x = v.x, y = v.y, z = v.z, w = v.w;
@@ -30,6 +37,11 @@ SQR.Matrix44 = function(data) {
         return pv;
     }
 
+    /**
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Multiplies this matrix by m
+     *  @param {SQR.Matrix44} m - matrix to multiply this matrix by
+     */
     this.multiply = function(m) {
         var a = this.data, b = m.data || m;
 
@@ -69,6 +81,23 @@ SQR.Matrix44 = function(data) {
         return this;
     }
 
+    /**
+     *  @method setTQS
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation/rotation/scale values at once. 
+     *  Similar to setTRS but the rotation is defined as a quaternion.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz y translation
+     *  @param qw w compoment of the quaternion
+     *  @param qx x compoment of the quaternion
+     *  @param qx y compoment of the quaternion
+     *  @param qx z compoment of the quaternion
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setTQS = function(tx, ty, tz, qw, qx, qy, qz, sx, sy, sz, m) {
 
         var d = m || this.data;
@@ -97,6 +126,21 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /**
+     *  @method setTRS
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation/rotation/scale values at once.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz y translation
+     *  @param rx rotation angle in radians on the x axis
+     *  @param ry rotation angle in radians on the y axis
+     *  @param rz rotation angle in radians on the z axis
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setTRS = function(tx, ty, tz, rx, ry, rz, sx, sy, sz, m) {
 
         var d = m || this.data;
@@ -124,18 +168,45 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /**
+     *  @method setScale
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the scale values.
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setScale = function(sx, sy, sz, m) {
         var d = m || this.data;
         d[0] = sx,d[5] = sy,d[10] = sz;
         return m || this;
     }
 
+    /**
+     *  @method setTranslation
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation values.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz z translation
+     *  @param m the matrix to set translation to, applies to `this` if ommited
+     */
     this.setTranslation = function(tx, ty, tz, m) {
         var d = m || this.data;
         d[12] = tx, d[13] = ty, d[14] = tz;
         return m || this;
     }
 
+    /**
+     *  @method setRotation
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the rotation value.
+     *  @param rx angle in radians of the rotation on x axis
+     *  @param ry angle in radians of the rotation on y axis
+     *  @param rz angle in radians of the rotation on z axis
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setRotation = function(rx, ry, rz, m) {
         var d = m || this.data;
         var six = Math.sin(rx), cox = Math.cos(rx), 
@@ -157,30 +228,68 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /** 
+     *  @method translate
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Applies translation to matrix
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz z translation
+     */
     this.translate = function(tx, ty, tz) {
         this.identity(SQR.Matrix44.__temp);
         this.setTranslation(tx, ty, tz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method rotate
+     *  @memberof SQR.Matrix44.prototype
+     *  @param rx angle in radians of the rotation on x axis
+     *  @param ry angle in radians of the rotation on y axis
+     *  @param rz angle in radians of the rotation on z axis
+     *  @description Applies rotation to matrix
+     */
     this.rotate = function(rx, ry, rz) {
         this.identity(SQR.Matrix44.__temp);
         this.setRotation(rx, ry, rz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method scale
+     *  @memberof SQR.Matrix44.prototype
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @description Applies scale to matrix
+     */
     this.scale = function(sx, sy, sz) {
         this.identity(SQR.Matrix44.__temp);
         this.setScale(sx, sy, sz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method copyTo
+     *  @memberof SQR.Matrix44.prototype
+     *  Copies the values from this matrix into m
+     *
+     *  @param {SQR.Matrix44|Float32Array} m - the matrix or 16-compoment array to copy the values to
+     */
     this.copyTo = function(m) {
         var a = this.data, b = m.data || m;
         for (var i = 0; i < 16; i++) b[i] = a[i];
         return m;
     }
 
+    /** 
+     *  @method copyRotationTo
+     *  @memberof SQR.Matrix44.prototype
+     *  Copies only the rotation/scale portion of the matrix into m to the current matrix
+     *
+     *  @param {SQR.Matrix44|Float32Array} m - the matrix or 16-compoment array to copy the values to
+     */
     this.copyRotationTo = function(m) {
         var a = this.data, b = m.data || m;
 
@@ -199,6 +308,15 @@ SQR.Matrix44 = function(data) {
         return m;
     }
 
+    /** 
+     *  @method extractPosition
+     *  @memberof SQR.Matrix44.prototype
+     *  Sets v to the translation vakue of this matrix. Useful for extracting position of an element
+     *  based on it's transformation matrix, ex. this is how the the global position of a {@link SQR.Transform} 
+     *  is obtained.
+     *
+     *  @param {SQR.V3} v - the vector to copy the translation values to
+     */
     this.extractPosition = function(v) {
         var d = this.data;
         v.set(d[12], d[13], d[14]);
@@ -263,14 +381,15 @@ SQR.Matrix44 = function(data) {
         return m;
     };
 
-    // gl-Matrix.js
+    
     this.inverseMat3 = function(m) {
+        // adapted from gl-Matrix.js
         var d = this.data;
         var a = m.data;
         var det = this.determinant();
 
         if (Math.abs(det) < 0.0001) {
-            console.warn("Attempt to inverse a singular matrix44. ", this.data);
+            console.warn("> SQR.Matrix44 - Attempt to inverse a singular matrix44. ", this.data);
             console.trace();
             return m;
         }

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: primitives/Face.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: primitives/Face.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  Face is a triangle or a quad.
+ *  If the face is a quad, both triangles composin the quad,
+ *  shader the same normal - thanks to this flat shaded materials have quads shaded
+ *  the same way which is nicer than havong each triangle have a slightly different normal.
+ *
+ *  Currently it supports the following attributes: aPosition, aNormal, aUV.
+ *
+ *  @class Face
+ *  @memberof SQR
+ *
+ */
+SQR.Face = function() {
+
+    var t = {};
+
+    var ap = 'aPosition', an = 'aNormal', au = 'aUV';
+
+    /**
+     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad like this:
+     *
+     *  a  b
+     *  c  d  
+     *
+     *  With resulting trinagles:
+     *
+     *  abc, cbd  
+     *
+     *  @method setPosition
+     *  @memberof SQR.Face 
+     *
+     *  @param {SQR.V3} a - the first vertex position
+     *  @param {SQR.V3} b - the second vertex position
+     *  @param {SQR.V3} c - the thrid vertex position
+     *  @param {SQR.V3=} d - the optional fourth vertex position
+     */
+    t.setPosition = function(a, b, c, d) {
+        t.a = a; 
+        t.b = b; 
+        t.c = c;
+        t.d = d;
+        return t;
+    }
+
+    /**
+     *  Set the normal shared by all the vertices
+     *  @method setNormal
+     *  @memberof SQR.Face 
+     */
+    t.setNormal = function(n) {
+        t.normal = n;
+        return t;
+    }
+
+    /**
+     *  Set the texture coordinates for each vertex
+     *  @method setUV
+     *  @memberof SQR.Face 
+     */
+    t.setUV = function(uva, uvb, uvc, uvd) {
+        t.uva = uva;
+        t.uvb = uvb;
+        t.uvc = uvc;
+        t.uvd = uvd;
+        return t;
+    }
+
+    /**
+     *  WARNING! This is not implemented. 
+     *  Set the vertex color for each vertex
+     *  @method setColor
+     *  @memberof SQR.Face 
+     */
+    t.setColor = function(ca, cb, cc, cd) {
+        t.ca = ca;
+        t.cb = cb;
+        t.cc = cc;
+        t.cd = cd;
+        return t;
+    }
+
+    t.calculateNormal = function() {
+        var t1 = SQR.V3.__tv1;
+        var t2 = SQR.V3.__tv2;
+        t.normal = new SQR.V3();
+
+        t1.sub(t.a, t.b);
+        if(t1.isZero()) t1.sub(t.a, t.d);
+        t2.sub(t.c, t.a);
+        t.normal.cross(t1, t2);
+
+        return t;
+    }
+
+    t.addNormalToVertices = function() {
+        t.a.addNormal(t.normal);
+        t.b.addNormal(t.normal);
+        t.c.addNormal(t.normal);
+        if(t.d) t.d.addNormal(t.normal);
+        return t;
+    }
+
+    t.toBuffer = function(geo, position, perVertextNormal, preNormalizeNormal) {
+        var c = position;
+
+        if(geo.attributes[ap]) {
+            geo.set(ap, c+0, t.a).set(ap, c+1, t.b).set(ap, c+2, t.c);
+            if(t.d) geo.set(ap, c+3, t.c).set(ap, c+4, t.b).set(ap, c+5, t.d);
+        }
+
+        if(geo.attributes[an] &amp;&amp; (t.normal || perVertextNormal)) {
+            var v = perVertextNormal, n = t.normal;
+
+            if(preNormalizeNormal &amp;&amp; !v) t.normal.norm();
+
+            geo.set(an, c+0, v ? t.a.normal : n)
+               .set(an, c+1, v ? t.b.normal : n)
+               .set(an, c+2, v ? t.c.normal : n);
+
+            if(t.d) {
+                geo.set(an, c+3, v ? t.c.normal : n)
+                   .set(an, c+4, v ? t.b.normal : n)
+                   .set(an, c+5, v ? t.d.normal : n);
+            }
+        }
+
+        if(geo.attributes[au] &amp;&amp; t.uva) {
+            geo.set(au, c+0, t.uva).set(au, c+1, t.uvb).set(au, c+2, t.uvc);
+            if(t.d) geo.set(au, c+3, t.uvc).set(au, c+4, t.uvb).set(au, c+5, t.uvd);
+        }
+
+        return t.d ? 6 : 3;
+    }
+
+    return t;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 19:09:21 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

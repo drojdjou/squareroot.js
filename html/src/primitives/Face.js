@@ -1,17 +1,39 @@
+/**
+ *  Face is a triangle or a quad.
+ *  If the face is a quad, both triangles composin the quad,
+ *  shader the same normal - thanks to this flat shaded materials have quads shaded
+ *  the same way which is nicer than havong each triangle have a slightly different normal.
+ *
+ *  Currently it supports the following attributes: aPosition, aNormal, aUV.
+ *
+ *  @class Face
+ *  @memberof SQR
+ *
+ */
 SQR.Face = function() {
 
     var t = {};
 
     var ap = 'aPosition', an = 'aNormal', au = 'aUV';
 
-    /*
-     *   a  b
+    /**
+     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad like this:
      *
-     *   c  d  
+     *  a  b
+     *  c  d  
      *
-     *   abc, cbd   
+     *  With resulting trinagles:
+     *
+     *  abc, cbd  
+     *
+     *  @method setPosition
+     *  @memberof SQR.Face 
+     *
+     *  @param {SQR.V3} a - the first vertex position
+     *  @param {SQR.V3} b - the second vertex position
+     *  @param {SQR.V3} c - the thrid vertex position
+     *  @param {SQR.V3=} d - the optional fourth vertex position
      */
-    
     t.setPosition = function(a, b, c, d) {
         t.a = a; 
         t.b = b; 
@@ -20,11 +42,21 @@ SQR.Face = function() {
         return t;
     }
 
+    /**
+     *  Set the normal shared by all the vertices
+     *  @method setNormal
+     *  @memberof SQR.Face 
+     */
     t.setNormal = function(n) {
         t.normal = n;
         return t;
     }
 
+    /**
+     *  Set the texture coordinates for each vertex
+     *  @method setUV
+     *  @memberof SQR.Face 
+     */
     t.setUV = function(uva, uvb, uvc, uvd) {
         t.uva = uva;
         t.uvb = uvb;
@@ -33,6 +65,12 @@ SQR.Face = function() {
         return t;
     }
 
+    /**
+     *  WARNING! This is not implemented. 
+     *  Set the vertex color for each vertex
+     *  @method setColor
+     *  @memberof SQR.Face 
+     */
     t.setColor = function(ca, cb, cc, cd) {
         t.ca = ca;
         t.cb = cb;
