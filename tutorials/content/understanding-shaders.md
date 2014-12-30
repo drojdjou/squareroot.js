@@ -49,7 +49,11 @@ that marks the begining of the vertex shader and
 ```
 //#fragment
 ```
-that, as expected, marks the begining of the fragment shader code. By convention vertex shader code comes first, but it's not mandatory. Another special SQR instruction supported are includes:
+that, as expected, marks the begining of the fragment shader code. 
+
+*Mark that there is no space in those inscturtions. Inserting a space anywhere will make the compiler miss this instruction.*
+
+By convention vertex shader code comes first, but it's not mandatory. Another special SQR instruction supported are includes:
 ```
 //#include ~light/sphar.glsl
 ```
@@ -96,7 +100,7 @@ Varyings are variables passed from the vertex shader to the fragment shader. The
 ```
 varying vec3 vNormal;
 ```
-Notice that the same varying needs to be declared twice: in the vertex and in the fragment shader, otherwise the shader controler will throw an error.
+Notice that the same varying needs to be declared twice: in the vertex and in the fragment shader, otherwise the shader compiler will throw an error.
 
 ###Fragment color 
 

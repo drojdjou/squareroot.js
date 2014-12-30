@@ -11,13 +11,35 @@ SQR.Transform2d = function() {
 
 	t.name = name || 'sqr.transform.' + SQR.Transform2dCount++;
 
-	// z used az in z-ijndex
+    /** 
+     *  @var {SQR.V3} position - the position of this transform relative to it's parent.
+     *  It's a 3d vector, because z is used for depth indexing.
+     *  @memberof SQR.Transform2d.prototype
+     */
 	t.position = new SQR.V3(0, 0, 0);
-	t.rotation = 0
+
+    /**
+     *  @var {SQR.V3} rotation - the rotation of the transform in radians
+     *  @memberof SQR.Transform2d.prototype
+     */
+	t.rotation = 0;
+
+    /**
+     *  @var {SQR.V2} scale - the scale of the object on x and y axis
+     *  @memberof SQR.Transform2d.prototype
+     */
 	t.scale = new SQR.V2(1, 1);
 
 	t.children = [], t.numChildren = 0;
 
+   /**
+    *   @method add
+    *   @memberof SQR.Transform2d.prototype
+    *   
+    *   @description Add a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform2D}.
+    *   It doesn't do any sort of type checking so if you add non object that are not {SQR.Transform2D} 
+    *   it will result in errors when the scene is rendered.
+    */
     t.add = function() {
         for (var i = 0; i < arguments.length; i++) {
             var c = arguments[i];
@@ -28,6 +50,13 @@ SQR.Transform2d = function() {
         return t;
     }
 
+    /**
+     *  @method remove
+     *  @memberof SQR.Transform2d.prototype
+     *   
+     *  @description Removes a child transform. Accepts multiple arguments 
+     *  but all of them need to be of type {SQR.Transform2D}
+     */
     t.remove = function() {
         for (var i = 0; i < arguments.length; i++) {
             var c = arguments[i];
@@ -40,15 +69,40 @@ SQR.Transform2d = function() {
         return t;
     }
 
+    /**
+     *  @method removeAll
+     *  @memberof SQR.Transform2d.prototype
+     *   
+     *  @description Removes all children transform.
+     */
     t.removeAll = function() {
         t.children.length = 0;
         t.numChildren = 0;
     }
 
+    /**
+     *  @method contains
+     *  @memberof SQR.Transform2d.prototype
+     *   
+     *  @description Checks if transform is child of this transfom
+     *  @param {SQR.Transform2D} c the transform to look for
+     */
     t.contains = function(c) {
         return t.children.indexOf(c) > -1;
     }
 
+    /**
+     *  @method recurse
+     *  @memberof SQR.Transform2d.prototype
+     *   
+     *  @description Execute this function on all the child transforms including this current one.
+     *
+     *  @param {function} f the function that will be called on each child. 
+     *  This function will receive the transform as argument.
+     *
+     *  @param {boolean} excludeSelf if set to true, the function will only be called for all 
+     *  the ancestors of the Transform.
+     */
     t.recurse = function(f, excludeSelf) {
        if(!excludeSelf) f(t);
         for (var i = 0; i < t.numChildren; i++) {

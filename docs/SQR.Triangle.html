@@ -112,6 +112,106 @@
 
 
 
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>centroid</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the centroid, undef until `calculateCentroid` is called.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>circumRadius</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the  radius of the 
+		circum-circle, undef until `calculateCircumCircle` is called.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>circumCenter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the center of the cirsum-circle, 
+		undef until `calculateCircumCircle` is called.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
 <dl class="details">
 
     
@@ -183,6 +283,333 @@
     
 
     
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="calculateCentroid"><span class="type-signature"></span>calculateCentroid<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Calculates the centroid for this triangle. Only works with 2d coordinates for now.
+	The resulting centroid is stored in the `centroid` property.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Triangle.js.html">math/Triangle.js</a>, <a href="math_Triangle.js.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="calculateCircumCircle"><span class="type-signature"></span>calculateCircumCircle<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Calculates circumcircle, only works with 2d coordinates.
+	<br><br>
+	Based on 
+	<a href="http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm">this</a>
+	and
+	<a href="http://www.exaflop.org/docs/cgafaq/cga1.html">this</a>.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Triangle.js.html">math/Triangle.js</a>, <a href="math_Triangle.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="vertexInCircumcircle"><span class="type-signature"></span>vertexInCircumcircle<span class="signature">(v)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Test whether the point v is inside the triangles circumcircle. 
+	If circum-circle was not calculated, calculateCircumCircle will be called first
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">vertex to be checked</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Triangle.js.html">math/Triangle.js</a>, <a href="math_Triangle.js.html#line85">line 85</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true is vertex is in circumcircle
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
 
     
 
@@ -203,7 +630,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 19:09:21 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 23:02:14 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

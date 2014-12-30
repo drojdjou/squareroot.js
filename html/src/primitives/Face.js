@@ -17,22 +17,24 @@ SQR.Face = function() {
     var ap = 'aPosition', an = 'aNormal', au = 'aUV';
 
     /**
-     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad like this:
-     *
-     *  a  b
-     *  c  d  
-     *
-     *  With resulting trinagles:
-     *
-     *  abc, cbd  
+     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad as in the example below.
      *
      *  @method setPosition
-     *  @memberof SQR.Face 
+     *  @memberof SQR.Face.prototype
      *
      *  @param {SQR.V3} a - the first vertex position
      *  @param {SQR.V3} b - the second vertex position
      *  @param {SQR.V3} c - the thrid vertex position
      *  @param {SQR.V3=} d - the optional fourth vertex position
+     *
+     *  @example
+//
+// a - b
+// | / |
+// c - d  
+// 
+// resulting triangles: `abc, cbd`
+// 
      */
     t.setPosition = function(a, b, c, d) {
         t.a = a; 
@@ -45,7 +47,7 @@ SQR.Face = function() {
     /**
      *  Set the normal shared by all the vertices
      *  @method setNormal
-     *  @memberof SQR.Face 
+     *  @memberof SQR.Face.prototype 
      */
     t.setNormal = function(n) {
         t.normal = n;
@@ -54,8 +56,14 @@ SQR.Face = function() {
 
     /**
      *  Set the texture coordinates for each vertex
+     *
      *  @method setUV
-     *  @memberof SQR.Face 
+     *  @memberof SQR.Face.prototype 
+     *
+     *  @param {SQR.V2} a - the first vertex texture coordinate
+     *  @param {SQR.V2} b - the second vertex texture coordinate
+     *  @param {SQR.V2} c - the thrid vertex texture coordinate
+     *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
      */
     t.setUV = function(uva, uvb, uvc, uvd) {
         t.uva = uva;
@@ -65,11 +73,18 @@ SQR.Face = function() {
         return t;
     }
 
-    /**
-     *  WARNING! This is not implemented. 
+    /** 
      *  Set the vertex color for each vertex
+     *  <br><br>
+     *  <strong>WARNING! Colors are not passed to the buffer currently (will be added in the future).</strong>
+     *
      *  @method setColor
-     *  @memberof SQR.Face 
+     *  @memberof SQR.Face.prototype 
+     *
+     *  @param {SQR.V2} a - the first vertex color
+     *  @param {SQR.V2} b - the second vertex color
+     *  @param {SQR.V2} c - the thrid vertex color
+     *  @param {SQR.V2=} d - the optional fourth vertex color
      */
     t.setColor = function(ca, cb, cc, cd) {
         t.ca = ca;
@@ -79,6 +94,12 @@ SQR.Face = function() {
         return t;
     }
 
+    /**
+     *  Calculte the normal for this face. Regardless of whether there are 3 or 4 vertices
+     *  the normal is calculated for the frst 3 of them an applied to the entire face.
+     *  @method calculateNormal
+     *  @memberof SQR.Face.prototype
+     */
     t.calculateNormal = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;

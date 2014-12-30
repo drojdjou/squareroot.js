@@ -12,7 +12,6 @@
 <script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
@@ -22,6 +21,8 @@
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
 
@@ -105,8 +106,8 @@ SQR.Loader.loadAssets([
     var blurXFBO = SQR.FrameBuffer(w, h);   
     var blurYFBO = SQR.FrameBuffer(w, h);   
 
-    var blur = SQR.PostEffect(assets['blur.glsl']);
-    var bloom = SQR.PostEffect(assets['bloom.glsl']);
+    var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
+    var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
     var my = 0.4, mx = 0.4, tx = mx, ty = my;
 

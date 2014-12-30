@@ -12,7 +12,6 @@
 <script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
@@ -24,6 +23,8 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -106,7 +107,7 @@
 
         var rawFBO = SQR.FrameBuffer(w, h);    
 
-        var edge = SQR.PostEffect(assets['edge.glsl']);
+        var edge = SQR.Primitives.createPostEffect(assets['edge.glsl']);
 
         var my = 0.4, mx = 0.4, tx = mx, ty = my;
 

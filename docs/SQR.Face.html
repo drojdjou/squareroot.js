@@ -151,15 +151,15 @@
 
     
 
-    <h4 class="name" id=".setColor"><span class="type-signature">(static) </span>setColor<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="calculateNormal"><span class="type-signature"></span>calculateNormal<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    WARNING! This is not implemented. 
- Set the vertex color for each vertex
+    Calculte the normal for this face. Regardless of whether there are 3 or 4 vertices
+ the normal is calculated for the frst 3 of them an applied to the entire face.
 </div>
 
 
@@ -203,7 +203,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line68">line 68</a>
+        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -234,7 +234,244 @@
 
     
 
-    <h4 class="name" id=".setNormal"><span class="type-signature">(static) </span>setNormal<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setColor"><span class="type-signature"></span>setColor<span class="signature">(a, b, c, d<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Set the vertex color for each vertex
+ <br><br>
+ <strong>WARNING! Colors are not passed to the buffer currently (will be added in the future).</strong>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the first vertex color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the second vertex color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>c</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the thrid vertex color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>d</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the optional fourth vertex color</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setNormal"><span class="type-signature"></span>setNormal<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -285,7 +522,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line45">line 45</a>
+        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -316,21 +553,14 @@
 
     
 
-    <h4 class="name" id=".setPosition"><span class="type-signature">(static) </span>setPosition<span class="signature">(a, b, c, d<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setPosition"><span class="type-signature"></span>setPosition<span class="signature">(a, b, c, d<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Set the vertex positions. For vertices a, b, c, and d is creates a quad like this:
-
- a  b
- c  d  
-
- With resulting trinagles:
-
- abc, cbd
+    Set the vertex positions. For vertices a, b, c, and d is creates a quad as in the example below.
 </div>
 
 
@@ -552,13 +782,24 @@
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>//
+// a - b
+// | / |
+// c - d  
+// 
+// resulting triangles: `abc, cbd`
+// </code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id=".setUV"><span class="type-signature">(static) </span>setUV<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setUV"><span class="type-signature"></span>setUV<span class="signature">(a, b, c, d<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -575,6 +816,159 @@
 
 
 
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the first vertex texture coordinate</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the second vertex texture coordinate</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>c</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the thrid vertex texture coordinate</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>d</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SQR.V2.html">SQR.V2</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the optional fourth vertex texture coordinate</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -609,7 +1003,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line55">line 55</a>
+        <a href="primitives_Face.js.html">primitives/Face.js</a>, <a href="primitives_Face.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -657,7 +1051,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 19:09:21 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 23:02:14 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

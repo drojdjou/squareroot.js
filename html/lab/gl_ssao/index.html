@@ -12,7 +12,6 @@
 <script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
@@ -23,6 +22,8 @@
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
 
@@ -121,7 +122,7 @@ SQR.Loader.loadAssets([
     var inverseProj = new SQR.ProjectionMatrix();
     renderer.projection.inverse(inverseProj); 
 
-    var sao = SQR.PostEffect(assets['sao.glsl']);
+    var sao = SQR.Primitives.createPostEffect(assets['sao.glsl']);
 
     var my = 0.4, mx = 0.4, tx = mx, ty = my;
 

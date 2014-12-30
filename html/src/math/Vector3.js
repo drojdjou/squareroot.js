@@ -15,11 +15,14 @@ SQR.V3 = function(x, y, z) {
  *  @param x - the value of the x compoment
  *  @param y - the value of the y compoment
  *  @param z - the value of the z compoment
+ *  @param w - the value of the homogeneous coordinate, defaults to 1 
+ *      and leave it that way unless you really know what ypu are doing.
  */ 
-SQR.V3.prototype.set = function(x, y, z) {
+SQR.V3.prototype.set = function(x, y, z, w) {
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
+    this.w = w || 1;
     return this;
 }
 

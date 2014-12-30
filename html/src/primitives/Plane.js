@@ -1,5 +1,17 @@
+/**
+ *  @method create2DQuad
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a 2d quad
+ *
+ *  @param {Number} x - x position of the quad
+ *  @param {Number} y - y position of the quad
+ *  @param {Number} w - width of the quad
+ *  @param {Number} h - height of the quad
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.create2DQuad = function(x, y, w, h) {
-
 	return SQR.Buffer()
         .layout(SQR.v2u2(), 6)
         .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)

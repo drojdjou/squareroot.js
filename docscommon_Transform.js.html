@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common/Transform.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common/Transform.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @class Transform
+ *  @memberof SQR
+ *
+ *  @description A transform is a basic building block for 3D scenes made with squareroot.js
+ * 
+ *  @param name {string} the name of the transform.
+ */
+SQR.Transform = function(name) {
+
+	var t = {};
+
+	var inverseWorldMatrix;
+    var transformState = 0;
+
+    /**
+     *  @var {string} name - a unique name of this transform, useful for debugging
+     *  @memberof SQR.Transform.prototype
+     *  @default `sqr.transform.` + a counter (ex. `sqr.transform.29)
+     */
+    t.name = name || 'sqr.transform.' + SQR.TransformCount++;
+
+    /** 
+     *  @var {boolean} active - is set to false, the transform and 
+     *  all it's children will not be rendered.
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+    t.active = true;
+
+    /**
+     *  @var {boolean} directMatrixMode - if set to true, position, rotation/quaternion and scale will be ignored
+     *  @memberof SQR.Transform.prototype
+     *
+     *  @description When set to true matrix value inside @this.matrix can be manipulated directly.
+     *
+     *  @default false
+     */
+    t.directMatrixMode = false;
+    
+
+    /** 
+     *  @var {SQR.Matrix44} matrix - object-to-parent transformation matrix
+     *  @memberof SQR.Transform.prototype
+     */
+    t.matrix = new SQR.Matrix44();
+    
+    /** 
+     *  @var {SQR.V3} position - the position of this transform relative to it's parent
+     *  @memberof SQR.Transform.prototype
+     */
+	t.position = new SQR.V3();
+
+    /** 
+     *  @readonly 
+     *  @var {SQR.V3} globalPosition - the global position of this transform (set automatically)
+     *  @memberof SQR.Transform.prototype
+     */
+    t.globalPosition = new SQR.V3();
+
+    /**
+     *  @var {SQR.Quaternion} quaternion - A Quaternion that describes the rotation of the transform, 
+     *  only active if `useQuaternion` is set to true.
+     *  @memberof SQR.Transform.prototype
+     */
+	t.quaternion = new SQR.Quaternion();
+
+    /**
+     *  @var {SQR.V3} rotation - A 3D vector the describes the rotation of the transform in Euler angles, 
+     *  disabled if `useQuaternion` is set to true.
+     *  @memberof SQR.Transform.prototype
+     */
+	t.rotation = new SQR.V3();
+
+    /**
+     *  @var {SQR.V3} scale - the scale of the object on x, y and z axis
+     *  @memberof SQR.Transform.prototype
+     */
+	t.scale = new SQR.V3(1, 1, 1);
+
+    /**
+     *  @var {SQR.Quaternion} useQuaternion - if set to true, 
+     *  will use `quaternion` for rotation instead of the Euler angles in `rotation`
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+	t.useQuaternion = false;
+
+    /**
+     *  @var {boolean} isStatic
+     *  @description Any object can have two different positioning modes: dynamic or static.
+     *  If this value is set to false (dynamic) the matrices 
+     *  for this object will be recalculated at each frame.&lt;br>
+     *  If this value is set to true (static) the matrices for 
+     *  this object will be recalculated only once.
+     *  @memberof SQR.Transform.prototype
+     *  @default false
+     */
+    t.isStatic = false;
+
+    
+	t.normalMatrix = new SQR.Matrix33();
+	t.globalMatrix = new SQR.Matrix44();
+    t.viewMatrix = new SQR.Matrix44();
+    t.inverseWorldMatrix;
+
+    t.lookAt = null;
+
+    t.transparent = false;
+    t.srcFactor = null;
+    t.dstFactor = null;
+
+    t.setBlending = function(transparent, src, dst) {
+        t.transparent = transparent;
+        // By default blend the object on top with the object on the bottom
+        t.srcFactor = src || SQR.gl.SRC_ALPHA;
+        t.dstFactor = dst || SQR.gl.ONE_MINUS_SRC_ALPHA;
+    } 
+
+	t.children = [], t.numChildren = 0;
+
+   /**
+    *   @method add
+    *   @memberof SQR.Transform.prototype
+    *   
+    *   @description Add a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform}.
+    *   It doesn't do any sort of type checking so if you add non object that are not {SQR.Transform} 
+    *   it will result in errors when the scene is rendered.
+    */
+    t.add = function() {
+        for (var i = 0; i &lt; arguments.length; i++) {
+            var c = arguments[i];
+            c.parent = t;
+            if (t.children.indexOf(c) == -1) t.children.push(c);
+        }
+        t.numChildren = t.children.length;
+        return t;
+    }
+
+    /**
+     *  @method remove
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Removes a child transform. Accepts multiple arguments 
+     *  but all of them need to be of type {SQR.Transform}
+     */
+    t.remove = function() {
+        for (var i = 0; i &lt; arguments.length; i++) {
+            var c = arguments[i];
+            var j = t.children.indexOf(c);
+            if (j == -1) return false;
+            c.parent = null;
+            t.children.splice(j, 1);
+        }
+        t.numChildren = t.children.length;
+        return t;
+    }
+    
+    /**
+     *  @method removeAll
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Removes all children transform.
+     */
+    t.removeAll = function() {
+        t.children.length = 0;
+        t.numChildren = 0;
+    }
+
+    /**
+     *  @method contains
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Checks if transform is child of this transfom
+     *  @param {SQR.Transform} c the transform to look for
+     */
+    t.contains = function(c) {
+        return t.children.indexOf(c) > -1;
+    }
+
+    /**
+     *  @method recurse
+     *  @memberof SQR.Transform.prototype
+     *   
+     *  @description Execute this function on all the child transforms including this current one.
+     *
+     *  @param {function} f the function that will be called on each child. 
+     *  This function will receive the transform as argument.
+     *
+     *  @param {boolean} excludeSelf if set to true, the function will only be called for all 
+     *  the ancestors of the Transform.
+     */
+    t.recurse = function(f, excludeSelf) {
+       if(!excludeSelf) f(t);
+        for (var i = 0; i &lt; t.numChildren; i++) {
+            t.children[i].recurse(f);
+        }
+    }
+
+    t.draw = function(options) {
+        var isReplacementShader = options &amp;&amp; options.replacementShader;
+        var shader = isReplacementShader ? options.replacementShader : t.shader;
+
+        shader.setUniform('uMatrix', t.globalMatrix);
+        shader.setUniform('uViewMatrix', t.viewMatrix);
+        shader.setUniform('uNormalMatrix', t.normalMatrix);
+
+        if(!isReplacementShader &amp;&amp; shader.uniforms) {
+            var un = Object.keys(shader.uniforms);
+            for(var i = 0, l = un.length; i &lt; l; i++) {
+                shader.setUniform(un[i], shader.uniforms[un[i]]);
+            }
+        }
+
+        if(!isReplacementShader &amp;&amp; t.uniforms) {
+            var un = Object.keys(t.uniforms);
+            for(var i = 0, l = un.length; i &lt; l; i++) {
+                shader.setUniform(un[i], t.uniforms[un[i]]);
+            }
+        }
+
+    	t.buffer.draw();
+    }
+
+	/**
+     * Sets up the local matrix and multiplies is by the parents globalMatrix.
+     * This function is called in the rendering process, do not call directly.
+     *
+     */
+    t.transformWorld = function() {
+
+        if(transformState == 1) return;
+
+        if(!t.directMatrixMode) {
+        	var p = t.position;
+            var s = t.scale;
+            
+            if (t.useQuaternion) {
+                var q = t.quaternion;
+            	t.matrix.setTQS(p.x, p.y, p.z, q.w, q.x, q.y, q.z, s.x, s.y, s.z);
+           	} else {
+                var r = t.rotation;
+    			t.matrix.setTRS(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+            }
+        }
+
+        if(t.lookAt) {
+            t.matrix.lookAt(t.lookAt.position);
+        }
+
+        if (t.parent) {
+            t.parent.globalMatrix.copyTo(t.globalMatrix);
+            t.globalMatrix.multiply(t.matrix);
+        } else {
+            t.matrix.copyTo(t.globalMatrix);
+        }
+
+        t.globalMatrix.extractPosition(t.globalPosition);
+
+        if(t.isStatic) transformState = 1;
+    }
+
+    /** 
+     *  Used for sorting object in the rendering function
+     *  (not implemented yet)
+     */
+    t.viewDepth = function() {
+        return t.viewMatrix.data[14];
+    }
+
+    /**
+     * Calculate the view matrix.
+     *
+     * This function is called in the rendering process, do not call directly.
+     *
+     * @param inverseCamMatrix {SQR.Matrix44} the inverse matrix of the camera
+     */
+    t.transformView = function(inverseCamMatrix) {
+        if(inverseCamMatrix) {
+            inverseCamMatrix.copyTo(t.viewMatrix);
+            t.viewMatrix.multiply(t.globalMatrix);
+            t.viewMatrix.inverseMat3(t.normalMatrix);
+        } else {
+            t.globalMatrix.copyTo(t.viewMatrix);
+            t.viewMatrix.inverseMat3(t.normalMatrix);
+        }
+        
+    }
+
+	/**
+     * Calculate the camera inverse matrix.
+     *
+     * Used only if this transform is a camera.
+     *
+     * This function is called in the rendering process, do not call directly.
+     */
+    t.computeInverseMatrix = function() {
+    	if(!t.inverseWorldMatrix) {
+            t.inverseWorldMatrix = new SQR.Matrix44();
+        }
+        t.globalMatrix.inverse(t.inverseWorldMatrix);
+        return t.inverseWorldMatrix;
+    }
+
+	return t;
+
+}
+
+SQR.TransformCount = 0;
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Dec 29 2014 23:02:14 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

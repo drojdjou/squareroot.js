@@ -12,7 +12,6 @@
 <script type="text/javascript" src="../../src/common/Buffer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
@@ -116,7 +115,7 @@
                 .use()
                 .setUniform('uConcatMatrix', backgroundMatrix.data);
 
-        SQR.Debug.traceBuffer(backgroundBuffer, true);
+        // SQR.Debug.traceBuffer(backgroundBuffer, true);
 
         var my = 0, mx = 0, tx = mx, ty = my;
 

@@ -1,6 +1,6 @@
 /**
- *  @function PostEffect
- *  @memberof SQR
+ *  @function createPostEffect
+ *  @memberof SQR.Primitives
  *
  *  @description Creates a post-processing effect (such as SAO or depth-of-field). It creares
  *	an instance of SQR.Transform with a full screen quad buffer and the shader build from the provided source.
@@ -10,7 +10,7 @@
  *
  *	@returns {SQR.Transform} a transform representing this post effect
  */
-SQR.PostEffect = function(shaderSource) {
+SQR.Primitives.createPostEffect = function(shaderSource) {
     SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()
         .layout(SQR.v2u2(), 6)
         .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)

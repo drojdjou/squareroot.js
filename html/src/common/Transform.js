@@ -73,7 +73,7 @@ SQR.Transform = function(name) {
 	t.rotation = new SQR.V3();
 
     /**
-     *  @var {SQR.V3} scale
+     *  @var {SQR.V3} scale - the scale of the object on x, y and z axis
      *  @memberof SQR.Transform.prototype
      */
 	t.scale = new SQR.V3(1, 1, 1);
@@ -124,7 +124,7 @@ SQR.Transform = function(name) {
     *   @memberof SQR.Transform.prototype
     *   
     *   @description Add a child transform. Accepts multiple arguments but all of them need to be of type {SQR.Transform}.
-    *   It doesn't do any sort of type checking so if you add non object that are not {SQR.Transforms} 
+    *   It doesn't do any sort of type checking so if you add non object that are not {SQR.Transform} 
     *   it will result in errors when the scene is rendered.
     */
     t.add = function() {
@@ -172,7 +172,7 @@ SQR.Transform = function(name) {
      *  @memberof SQR.Transform.prototype
      *   
      *  @description Checks if transform is child of this transfom
-     *  @param {SQR.Transform} t the transform to look for
+     *  @param {SQR.Transform} c the transform to look for
      */
     t.contains = function(c) {
         return t.children.indexOf(c) > -1;

@@ -4,6 +4,7 @@ attribute vec3 aNormal;
 attribute vec3 aPosition;
 
 uniform mat4 uMatrix;
+uniform mat4 uViewMatrix;
 uniform mat3 uNormalMatrix;
 uniform mat4 uProjection;
 
@@ -11,7 +12,7 @@ varying vec3 vNormal;
      
 void main() {
 	vNormal = uNormalMatrix * normalize(aNormal);
-	gl_Position = uProjection * uMatrix * vec4(aPosition, 1.0);
+	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
 }
 
 //#fragment

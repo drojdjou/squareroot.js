@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../src/common/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -78,21 +78,17 @@ SQR.Loader.loadAssets([
         .addSegment(   0,  100,  200)
         .addSegment(-200,  150, -100)
         .create(0.5, true);
-    
 
-    
-
+    var curveResolution = 100;
     var curveBuffer = SQR.Buffer()
         .layout({ aPosition: 3 }, curveResolution+1)
         .setMode(SQR.gl.LINE_STRIP);
 
-        var curveResolution = 100;
         for(var i = 0; i <= curveResolution; i++) {
             curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
         }
 
         curveBuffer.update();
-
 
     var line = SQR.Transform();
     line.buffer = curveBuffer;
@@ -169,8 +165,8 @@ SQR.Loader.loadAssets([
     var blurXFBO = SQR.FrameBuffer(w, h);   
     var blurYFBO = SQR.FrameBuffer(w, h);   
 
-    var blur = SQR.PostEffect(assets['blur.glsl']);
-    var bloom = SQR.PostEffect(assets['bloom.glsl']);
+    var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
+    var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
     var renderBloom = false;
 

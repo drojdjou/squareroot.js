@@ -107,7 +107,6 @@ SQR.Extrude = function() {
 			for(var j = 0; j < shapeSize; j++) {
 				var v = vertices[i * shapeSize + j];
 				v.copyFrom(shape[j]);
-
 				if(scalingFunc) scalingFunc(tg, v);
 				m.transformVector(v);
 			}
