@@ -1,4 +1,4 @@
-Shaders are fundamental building blocks for WebGL rendering. SQR does not provide any functionality similar to materials in other engines by default. Anything that is rendered on screen requires a shader to be writtedn by the user. It does however include several features that make writing shaders easier, such as a rendering pipeline that sets up allt the buffers and some built-in uniforms.
+Shaders are fundamental building blocks for WebGL rendering. SQR does not provide any functionality similar to materials in other engines. Anything that is rendered on screen requires a custom shader. SQR does however include several features that make writing shaders easier, such as a rendering pipeline that sets up all the buffers and some built-in uniforms.
 
 ## Sample shader
 Let's take a simple shader and analyze it step by step.
