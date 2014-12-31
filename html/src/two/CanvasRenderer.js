@@ -42,7 +42,7 @@ SQR.CanvasRenderer = function(canvas) {
 	 *	@param {SQR.Transform2d} root - the root transform to render
 	 */
 	r.render = function(root) {
-		ctx.clearRect(0, 0, w, h)
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		root.draw(ctx);
 	}
 

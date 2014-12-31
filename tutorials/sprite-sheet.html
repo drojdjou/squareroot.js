@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sprite sheet</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../html/src/SQR.js"></script>
+
+<script type="text/javascript" src="../html/src/math/Vector3.js"></script>
+<script type="text/javascript" src="../html/src/math/Vector2.js"></script>
+<script type="text/javascript" src="../html/src/two/Transform2d.js"></script>
+<script type="text/javascript" src="../html/src/two/CanvasRenderer.js"></script>
+
+<script type="text/javascript" src="../html/src/extras/SpriteSheet.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../html/lab/base.css">
+
+</head>
+<body class="scrolldoc">
+
+<script type="text/javascript">
+
+var sheet = SQR.SpriteSheet().layout(10, 10, 60).options({
+    webglFlipY: false
+}).draw(function(ctx, i, t) {
+    var a = 0;
+    var ae = -Math.PI * 2 * (i / t * 2);
+    var s = 30, r = s - 8;
+
+    ctx.translate(s, s);
+
+    ctx.fillStyle = '#ff0000';
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = '#ff0000';
+    ctx.beginPath();
+    // ctx.moveTo(0, 0);
+    ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+    ctx.arc(0, 0, r, a, ae, i < t / 2);
+    // ctx.arc(0, 0, r, 0, 0.1); //Math.PI * 2 * a);
+    ctx.stroke();
+});
+
+var renderer = new SQR.CanvasRenderer();
+renderer.setSize(sheet.size, sheet.size);
+
+var sprite = new SQR.Transform2d();
+sprite.position.set(0, 0);
+sprite.shape = (function() {
+    var f = 0;
+
+    setInterval(function() {
+        f++;
+        if(f > sheet.numFrames) f = 0;
+    }, 1000/30);
+
+    return function(ctx) {
+        sheet.renderToCanvas(ctx, f);
+    }
+})();
+
+sheet.canvas.style.left = '100px';
+document.body.appendChild(sheet.canvas);
+document.body.appendChild(renderer.canvas);
+
+var run = function() {  
+    requestAnimationFrame(run);  
+    renderer.render(sprite);
+}
+run();
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

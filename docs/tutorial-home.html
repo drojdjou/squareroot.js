@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: SQR.js</title>
+    <title>JSDoc: Tutorial: home</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,91 +17,46 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: SQR.js</h1>
+    <h1 class="page-title">Tutorial: home</h1>
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- *	@namespace SQR
- *	@description The global engine namesapce. All classes belong to this namespace.
- */
-SQR = {
 
-	/**
-	 *	@property TWOPI - shorthand for `Math.PI * 2`
-	 */
-	TWOPI: Math.PI * 2,
+<header>
+    
 
-	/**
-	 *	@property TWOPI - shorthand for `Math.PI * 0.5`
-	 */
-	HALFPI: Math.PI * 0.5,
+    <h2>home</h2>
+</header>
 
-	/**
-	 *	@property EPSILON - a very small number, used to prevent rounding errors
-	 */
-	EPSILON: 1.0e-6,
+<article>
+    <h3>Squareroot.js</h3><p>A 2d/3d engine for WebGL and Canvas drawing and animation.</p>
+<ul>
+<li><a href="https://github.com/drojdjou/squareroot.js/tree/brandnew">Github repo</a></li>
+<li><a href="http://sqr.bartekdrozdz.com/docs/">API docs</a></li>
+<li>Getting Started tutorial <a href="tutorial-basic-setup.html">basic-setup</a></li>
+</ul>
+<p>Guide:</p>
+<h4>GL</h4><ul>
+<li><a href="SQR.Transform.html">SQR.Transform</a> - basic building block. A transform is a point in space that has rotation, position and scale.</li>
+<li><a href="SQR.Buffer.html">SQR.Buffer</a> - holds buffers &amp; geometries, see <a href="tutorial-understanding-buffers.html">understanding-buffers</a></li>
+<li><a href="SQR.Buffer.html">SQR.Buffer</a> - utility to compile and execute GLSL shaders, see <a href="tutorial-understanding-shaders.html">understanding-shaders</a></li>
+<li><a href="SQR.Texture.html">SQR.Texture</a> - create textures from images, vides and canvas elements</li>
+<li><a href="SQR.Cubemap.html">SQR.Cubemap</a> - similar functionality as the texture, but for cubemaps</li>
+<li><a href="SQR.Primitives.html">SQR.Primitives</a> - a collection of functions to create basic geometries like cube, sphere, etc...</li>
+</ul>
+<h4>Math</h4><ul>
+<li><a href="SQR.V2.html">SQR.V2</a> - a 2d vector</li>
+<li><a href="SQR.V3.html">SQR.V3</a> - a 3d vector</li>
+<li><a href="SQR.Quaternion.html">SQR.Quaternion</a> - a quaternion</li>
+<li><a href="SQR.Matrix2D.html">SQR.Matrix2D</a> - a 2d matrix</li>
+<li><a href="SQR.Matrix44.html">SQR.Matrix44</a> - a multipurpose 4x4 matrix</li>
+<li><a href="SQR.Matrix33.html">SQR.Matrix33</a> - a 3x3 matrix for rotations/normals</li>
+<li><a href="SQR.ProjectionMatrix.html">SQR.ProjectionMatrix</a> - a 4x4 matrix specialized for creating projection matrices</li>
+<li><a href="SQR.Bezier.html">SQR.Bezier</a> - a quadratic bezier implementations</li>
+<li><a href="SQR.Spline.html">SQR.Spline</a> - a spline: multiple line segments smoothed with bezier function</li>
+</ul>
+</article>
 
-	/**
-	 *	@property gl - Placeholder that holds current gl context. This is set in SQR.Context.create(), but can be modified manually too
-	 */
-	gl: null, 
-	
-	/** 
-	 *	@property fullScreenQuad - placeholder that holds a fullscreen geometry for post effects. Lazily created in PostEffect.js
-	 *	Typically not set manually.
-	 */
-	fullScreenQuad: null,
-
-	/**
-	 *	@property shaderPath - a path relative to the main HTML file where the src/glsl folder is located.
-	 *	Only necessary to if builtin shader code is loaded (using ~ paths).
-	 *
-	 *	@default .
-	 */
-	shaderPath: '.',
-
-	/**
-	 *	@namespace Primitives
-	 *	@memberof SQR
-	 *	@description A collection of classes &amp; functions and utilities to create geometries
-	 */
-	Primitives: {},
-
-	// Typical mesh layouts
-	// Commonly used attribute names are: aPosition, aColor, aNormal, aUV, aUV2...
-	v2: function() { return { aPosition: 2 }; },
-	v3: function() { return { aPosition: 3 }; },
-	v2u2: function() { return { aPosition: 2, aUV: 2 }; },
-	v2c3: function() { return { aPosition: 2, aColor: 3 }; },
-	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },
-	v3n3u2: function() { return { aPosition: 3, aNormal: 3, aUV: 2 }; },
-
-	// GL contstants (removed, because this stuff can be accessed via SQR.gl)
-	// POINTS          : 0x0000,
-	// LINES           : 0x0001,
-	// LINE_LOOP       : 0x0002,
-	// LINE_STRIP      : 0x0003,
-	// TRIANGLES       : 0x0004,
-	// TRIANGLE_STRIP  : 0x0005,
-	// TRIANGLE_FAN	   : 0x0006,
-
-    // Error reporting 
-
-    // Issues a console.warn() is user attempts to set a uniform that does not exist on the shader
-    WARN_UNIFORM_NOT_PRESENT : false 
-
-};</code></pre>
-        </article>
-    </section>
-
-
-
+</section>
 
 </div>
 
