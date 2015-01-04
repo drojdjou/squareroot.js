@@ -4,6 +4,7 @@ A 2d/3d engine for WebGL and Canvas drawing and animation.
 
 - [Github repo](https://github.com/drojdjou/squareroot.js/tree/brandnew)
 - [API docs](http://sqr.bartekdrozdz.com/docs/)
+- [Examples and tests](../html/lab/)
 - Getting Started tutorial {@tutorial basic-setup}
 
 Guide:
@@ -15,6 +16,10 @@ Guide:
 - {@link SQR.Texture} - create textures from images, vides and canvas elements
 - {@link SQR.Cubemap} - similar functionality as the texture, but for cubemaps
 - {@link SQR.Primitives} - a collection of functions to create basic geometries like cube, sphere, etc...
+
+####Canvas 2d
+- {@link SQR.Transform2d} - similar to the 3d transform above, but optimized for rendering on canvas and in 2d instead of webgl/3d
+- {@link SQR.CanvasRenderer} - a renderer to draw shapes on a 2d context. For a tutorial see {@tutorial canvas-rendering}
 
 ####Math
 - {@link SQR.V2} - a 2d vector

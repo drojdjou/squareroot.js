@@ -24,9 +24,19 @@ SQR.SpriteSheet = function() {
 	var ctx = cnv.getContext('2d');
 
 	s.canvas = cnv;
+	s.frame = 0;
 
 	/**
-	 *	Define the layout of the sprite sheet
+	 *	Define the layout of the sprite sheet. The number of rows and columns is
+	 *	arbitary, but it impacts the number of frames in the animaction, which is 
+	 *	equal to the number product of those values (cols x rows). Typically it's better 
+	 *	to create balanced sprite sheets that have roughly the same amount of rows as columns,
+	 *	and avoid creating very long sheets iwth ex lots of rows and only one column. Thanks to this
+	 *	you can avoid hitting the max canvas size limitation, esp on mobile.
+	 *
+	 *	Another limitations is that currently all cells need to be square and are defined by a single 
+	 *	size value below. Since it's not optimal for rectangular animations, future versions will 
+	 *	implement both width and height separately.
 	 *
 	 *	@param {Number} _rows - the number of rows in the spritesheet
 	 *	@param {Number} _cols - the number of columns in the spritesheet
@@ -62,40 +72,21 @@ SQR.SpriteSheet = function() {
 	}
 
 	/**
-	 *	Draws a single frame to a canvas element. 
-	 *	The below example presents a compact way to use this methoed together with a 
-	 *	{@link SQR.Transform2d} `shape` property.
+	 *	Draws a single frame to a canvas element. Can be used manually, but typically using
+	 *	`run` below is recommended. The `run` function returns this function but wraps it in a
+	 *	closure with a `setInterval` call for continous animated rendering.
 	 *
 	 *	@param {CanvasRenderingContext2D} context - context 2d of the canvas to draw the sprite to 
 	 *	@param {Number} frame - the frame number to draw
 	 *
 	 *	@method renderToCanvas
 	 *	@memberof SQR.SpriteSheet.prototype
-	 *
-	 *	@example
-var sprite = new SQR.Transform2d();
-
-// Assumes the sheet is draw and ready to use (see link to example above)
-var sheet = SQR.SpriteSheet();
-
-sprite.position.set(100, 100);
-
-sprite.shape = (function() {
-	var f = 0;
-
-	setInterval(function() {
-		f++;
-		if(f > sheet.numFrames) f = 0;
-	}, 1000/30);
-
-	return function(ctx) {
-		sheet.renderToCanvas(ctx, f);
-	}
-})();
 	 */
 	s.renderToCanvas = function(context, frame) {
 		var row = cols == 1 ? frame : Math.floor(frame / cols);
 		var col = frame % cols;
+
+		context.translate(size / -2, size / -2);
 
 		context.drawImage(cnv, 
 			col * size, row * size, size, size, 
@@ -105,11 +96,14 @@ sprite.shape = (function() {
 	/**
 	 *	The srite sheet drawing function. 
 	 *	The drawing function receives the following parameters:
+	 *
 	 *	<ul>
 	 *		<li>ctx - the context of the sprite sheet canvas to draw on</li>
 	 *		<li>frame - the number of the frame to draw</li>
-	 *		<li>totalFrames - the total number of frames</li>
 	 *	</ul>
+	 *
+	 *	On top of that 
+	 *
 	 *	The drawing is called for each frame of the sprite sheet and expects that the 
 	 *	implementing code will draw each consecivute frame at each call.
 	 *
@@ -117,7 +111,7 @@ sprite.shape = (function() {
 	 *	for the given frame, so just start drawing at 0,0. The center of the sprite
 	 *	is at size/2 x size/2.
 	 *
-	 *	@param {function} callback - the implementation of the drawin function
+	 *	@param {function} callback - the implementation of the drawing function
 	 *
 	 *	@method draw
 	 *	@memberof SQR.SpriteSheet.prototype
@@ -128,7 +122,7 @@ sprite.shape = (function() {
 			ctx.fillStyle = options.bgcolor;
 			ctx.fillRect(0, 0, cols * size, rows * size);
 		} else {
-			ctx.fillStyle = 'rgba(0, 0, 0, 0)'
+			ctx.fillStyle = 'rgba(0, 0, 0, 0)';
 			ctx.fillRect(0, 0, cols * size, rows * size);
 		}
 
@@ -138,12 +132,64 @@ sprite.shape = (function() {
 				ctx.save();
 				var yp = (options && options.webglFlipY) ? (rows-y-1) * size : y * size;
 				ctx.translate(x * size, yp);
-				callback(ctx, y * cols + x, s.numFrames);
+				callback.call(this, ctx, y * cols + x);
 				ctx.restore();
 			}
 		}
 
 		return s;
+	}
+
+	/**
+	 *	Assign the return value of this function to the {@link SQR.Transform2d} shape
+	 *	property for rendering. See {@tutorial canvas-rendering} for details.
+	 *
+	 *	@method run
+	 *	@memberof SQR.SpriteSheet.prototype
+	 *
+	 *	@param {Number} framerate - the frame rate of the animation in ms (default 1000/60, i.e. 60FPS)
+	 *	@param {Number} loop - number of times the animation should loop. (default -1, i.e. infinite) 
+	 *
+	 *	@return {Function} rendering function (renderToCanvas above) that can be used as shape property of {@link SQR.Transform2d} instance. 
+	 *	The function has a propeorty called 'stop' which is also a function and can be called anytime to halt the animation.
+	 *
+	 *	@example
+// Assumes the sheet is draw and ready to use (see link to example above)
+var sheet = SQR.SpriteSheet();
+
+// Create a host transform
+var sprite = new SQR.Transform2d();
+sprite.position.set(100, 100);
+
+// Run at 30fps, loop 10 times.
+sprite.shape = sheet.run(1000/30, 10);
+	 */
+	s.run = function(framerate, loop) {
+		var f = 0, l = loop || -1;
+		console.log(l);
+		framerate = framerate || 1000/60;
+
+		var runner = function(ctx) {
+			s.renderToCanvas(ctx, f);
+		}
+
+		var intervalId = setInterval(function() {
+			f++;
+			if(f >= sheet.numFrames) {
+				if(l != 0) {
+					f = 0;
+					l--;
+				} else {
+					runner.stop();
+				}
+			}
+		}, framerate);
+
+		runner.stop = function(runner) {
+			clearInterval(intervalId);
+		}
+
+		return runner;
 	}
 
 	return s;

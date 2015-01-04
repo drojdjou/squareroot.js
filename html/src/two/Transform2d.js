@@ -30,6 +30,12 @@ SQR.Transform2d = function() {
      */
 	t.scale = new SQR.V2(1, 1);
 
+    /**
+     *  @var {Number} alpha - the transparency of this element. 
+     *  0 = transparent, 1 = opaque, default 1
+     */
+    t.alpha = 1;
+
 	t.children = [], t.numChildren = 0;
 
    /**
@@ -111,16 +117,19 @@ SQR.Transform2d = function() {
     }
 
     t.draw = function(context) {
+        var c = context;
 
-    	context.save();
-    	context.translate(t.position.x, t.position.y);
-    	context.rotate(t.rotation);
-    	context.scale(t.scale.x, t.scale.y);
+    	c.save();
+    	c.translate(t.position.x, t.position.y);
+    	c.rotate(t.rotation);
+    	// First draw the children, then self, so that alpha/scale do not affect children
+    	for(var i = 0; i < t.numChildren; i++) t.children[i].draw(c);
 
-    	if(t.shape) t.shape(context);
-    	for(var i = 0; i < t.numChildren; i++) t.children[i].draw(context);
+        if(t.alpha < 1) c.globalAlpha = t.alpha;
+        c.scale(t.scale.x, t.scale.y);
+        if(t.shape) t.shape(c);
 
-    	context.restore();
+    	c.restore();
 	}
 
 	return t;

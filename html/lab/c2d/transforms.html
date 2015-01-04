@@ -92,7 +92,8 @@
 		i.src = '../../assets/play.png';
 
 		return function(ctx) {
-			ctx.drawImage(i, -60, -60, 120, 120);
+			var w = i.width, j = i.height;
+			ctx.drawImage(i, w/-2, h/-2, w, h);
 		}
 	})();
 	root.add(image);

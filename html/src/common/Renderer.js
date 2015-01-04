@@ -92,8 +92,7 @@ SQR.Renderer = function(context) {
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
 				var p = (camera && camera.projection) || r.projection;
-				if(!p) throw "> SQR.Renderer - no projection defined on camera and no default projection on renderer.";
-				lastShader.setUniform('uProjection', p);
+				if(p) lastShader.setUniform('uProjection', p);
 				shaderChanged = true;
 			}
 

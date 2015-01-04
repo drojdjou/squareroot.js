@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>transforms 2d</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../html/lab/base.css">
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript" src="../html/src/SQR.js"></script>
+<script type="text/javascript" src="../html/src/math/Vector3.js"></script>
+<script type="text/javascript" src="../html/src/math/Vector2.js"></script>
+<script type="text/javascript" src="../html/src/two/Transform2d.js"></script>
+<script type="text/javascript" src="../html/src/two/CanvasRenderer.js"></script>
+
+<script type="text/javascript" src="../html/src/extras/SpriteSheet.js"></script>
+
+<script type="text/javascript">
+
+	var w = window.innerWidth, h = window.innerHeight;
+
+	var renderer = new SQR.CanvasRenderer('canvas');
+	renderer.setSize(w, h);
+
+	var root = SQR.Transform2d();
+
+	var sun = SQR.Transform2d();
+	sun.position.set(w/2, h/2);
+	sun.shape = function(ctx) {
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+		ctx.beginPath();
+		ctx.arc(0, 0, 30, 0, SQR.TWOPI);
+		ctx.fill();
+
+		ctx.fillStyle = 'rgba(255, 228, 0, 1.0)';
+		ctx.beginPath();
+		ctx.arc(0, 0, 25, 0, SQR.TWOPI);
+		ctx.fill();
+	};
+	root.add(sun);
+
+	var earth = new SQR.Transform2d();
+	earth.position.set(200, 0);
+	earth.scale.set(0.4, 0.4);
+	earth.shape = (function() {
+		var i = new Image();
+		i.src = 'assets/earth-128.png';
+		return function(ctx) {
+			var w = i.width, h = i.height;
+			ctx.drawImage(i, w/-2, h/-2, w, h);
+		}
+	})();
+	sun.add(earth);
+
+	var moon = new SQR.Transform2d();
+	moon.position.set(50, 0);
+	moon.shape = function(ctx) {
+		ctx.fillStyle = 'rgb(128, 128, 128)';
+		ctx.beginPath();
+		ctx.arc(0, 0, 4, 0, SQR.TWOPI);
+		ctx.fill();
+	}
+	earth.add(moon);
+
+	var sheet = SQR.SpriteSheet()
+	.layout(10, 10, 60)
+	.draw(function(ctx, i) {
+	    var angle = -Math.PI * 2 * (i / this.numFrames * 2);
+	    var s = this.size / 2, radius = s - 8;
+
+	    ctx.translate(s, s);
+	    ctx.lineWidth = 10;
+	    ctx.strokeStyle = '#ff0000';
+	    ctx.beginPath();
+	    ctx.moveTo(Math.cos(0) * radius, Math.sin(0) * radius);
+	    ctx.arc(0, 0, radius, 0, angle, i < this.numFrames / 2);
+	    ctx.stroke();
+	});
+
+	var spinner = new SQR.Transform2d();
+	spinner.position.set(sheet.size / 2, sheet.size / 2);
+	spinner.shape = sheet.run();
+	root.add(spinner);
+
+	var run = function() {
+		sun.rotation += 0.01;
+		earth.rotation += 0.01;
+		requestAnimationFrame(run);
+		renderer.render(root);
+	}
+
+	run();
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
