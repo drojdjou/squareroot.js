@@ -1,5 +1,16 @@
 /* --- --- [primitives/Basic.js] --- --- */
 
+/**
+ *  @method createPoint
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a single 2d point
+ *
+ *	@param {Number} x - x position of the point
+ *	@param {Number} y - y position of the point
+ *
+ *	@returns {SQR.Buffer}
+ */
 SQR.Primitives.createPoint = function(x, y) {
 	return SQR.Buffer()
 		.layout(SQR.v2(), 1)
@@ -10,6 +21,18 @@ SQR.Primitives.createPoint = function(x, y) {
 
 /* --- --- [primitives/Cube.js] --- --- */
 
+/**
+ *  @method createCube
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
+ *
+ *	@param {Number} w - width of the cube
+ *	@param {Number} h - height of the cube
+ *	@param {Number} d - depth of the cube
+ *
+ *	@returns {SQR.Buffer}
+ */
 SQR.Primitives.createCube = function(w, h, d) {
 
 	w = w || 1;
@@ -55,6 +78,21 @@ SQR.Primitives.createCube = function(w, h, d) {
 
 /* --- --- [primitives/Cylinder.js] --- --- */
 
+/**
+ *  @method createCylinder
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a cylinder with UVs, non-indexed
+ *
+ *  @param {Number} height - height of the cylinder
+ *  @param {Number} radius - radius of the cylinder
+ *  @param {Number} segments - number of segments along the cylinder
+ *  @param {Object} optins - additional options
+ *
+ *  @todo document the options
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.createCylinder = function(height, radius, segments, options) {
 
     options = options || {};
@@ -264,7 +302,6 @@ SQR.Extrude = function() {
 			for(var j = 0; j < shapeSize; j++) {
 				var v = vertices[i * shapeSize + j];
 				v.copyFrom(shape[j]);
-
 				if(scalingFunc) scalingFunc(tg, v);
 				m.transformVector(v);
 			}
@@ -309,20 +346,44 @@ SQR.Extrude = function() {
 
 /* --- --- [primitives/Face.js] --- --- */
 
+/**
+ *  Face is a triangle or a quad.
+ *  If the face is a quad, both triangles composin the quad,
+ *  shader the same normal - thanks to this flat shaded materials have quads shaded
+ *  the same way which is nicer than havong each triangle have a slightly different normal.
+ *
+ *  Currently it supports the following attributes: aPosition, aNormal, aUV.
+ *
+ *  @class Face
+ *  @memberof SQR
+ *
+ */
 SQR.Face = function() {
 
     var t = {};
 
     var ap = 'aPosition', an = 'aNormal', au = 'aUV';
 
-    /*
-     *   a  b
+    /**
+     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad as in the example below.
      *
-     *   c  d  
+     *  @method setPosition
+     *  @memberof SQR.Face.prototype
      *
-     *   abc, cbd   
+     *  @param {SQR.V3} a - the first vertex position
+     *  @param {SQR.V3} b - the second vertex position
+     *  @param {SQR.V3} c - the thrid vertex position
+     *  @param {SQR.V3=} d - the optional fourth vertex position
+     *
+     *  @example
+//
+// a - b
+// | / |
+// c - d  
+// 
+// resulting triangles: `abc, cbd`
+// 
      */
-    
     t.setPosition = function(a, b, c, d) {
         t.a = a; 
         t.b = b; 
@@ -331,11 +392,27 @@ SQR.Face = function() {
         return t;
     }
 
+    /**
+     *  Set the normal shared by all the vertices
+     *  @method setNormal
+     *  @memberof SQR.Face.prototype 
+     */
     t.setNormal = function(n) {
         t.normal = n;
         return t;
     }
 
+    /**
+     *  Set the texture coordinates for each vertex
+     *
+     *  @method setUV
+     *  @memberof SQR.Face.prototype 
+     *
+     *  @param {SQR.V2} a - the first vertex texture coordinate
+     *  @param {SQR.V2} b - the second vertex texture coordinate
+     *  @param {SQR.V2} c - the thrid vertex texture coordinate
+     *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
+     */
     t.setUV = function(uva, uvb, uvc, uvd) {
         t.uva = uva;
         t.uvb = uvb;
@@ -344,6 +421,19 @@ SQR.Face = function() {
         return t;
     }
 
+    /** 
+     *  Set the vertex color for each vertex
+     *  <br><br>
+     *  <strong>WARNING! Colors are not passed to the buffer currently (will be added in the future).</strong>
+     *
+     *  @method setColor
+     *  @memberof SQR.Face.prototype 
+     *
+     *  @param {SQR.V2} a - the first vertex color
+     *  @param {SQR.V2} b - the second vertex color
+     *  @param {SQR.V2} c - the thrid vertex color
+     *  @param {SQR.V2=} d - the optional fourth vertex color
+     */
     t.setColor = function(ca, cb, cc, cd) {
         t.ca = ca;
         t.cb = cb;
@@ -352,6 +442,12 @@ SQR.Face = function() {
         return t;
     }
 
+    /**
+     *  Calculte the normal for this face. Regardless of whether there are 3 or 4 vertices
+     *  the normal is calculated for the frst 3 of them an applied to the entire face.
+     *  @method calculateNormal
+     *  @memberof SQR.Face.prototype
+     */
     t.calculateNormal = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;
@@ -616,8 +712,20 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
 
 /* --- --- [primitives/Plane.js] --- --- */
 
+/**
+ *  @method create2DQuad
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a 2d quad
+ *
+ *  @param {Number} x - x position of the quad
+ *  @param {Number} y - y position of the quad
+ *  @param {Number} w - width of the quad
+ *  @param {Number} h - height of the quad
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.create2DQuad = function(x, y, w, h) {
-
 	return SQR.Buffer()
         .layout(SQR.v2u2(), 6)
         .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
@@ -625,6 +733,21 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
         .update();
 }
 
+/**
+ *  @method createPlane
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a plane, by default on the X/Y plane
+ *
+ *  @param {Number} w - width of the plane
+ *  @param {Number} h - height of the plane
+ *  @param {Number} wd - number of segments along the width
+ *  @param {Number} hd - number of segments along the height
+ *  @param {Number} wo - horizontal offset
+ *  @param {Number} ho - vertical offset
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
 
     var faces = [], vCols = [], uvCols = [];
@@ -698,8 +821,49 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
     return geo;
 }
 
+/* --- --- [primitives/PostEffect.js] --- --- */
+
+/**
+ *  @function createPostEffect
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a post-processing effect (such as SAO or depth-of-field). It creares
+ *	an instance of SQR.Transform with a full screen quad buffer and the shader build from the provided source.
+ *	Please read the {@tutorial post-effects} tutorial to see how it works. 
+ *
+ *	@param {string} shaderSource - the source of the shader for this post effect
+ *
+ *	@returns {SQR.Transform} a transform representing this post effect
+ */
+SQR.Primitives.createPostEffect = function(shaderSource) {
+    SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()
+        .layout(SQR.v2u2(), 6)
+        .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
+        .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
+        .update();
+
+    var pe = new SQR.Transform();
+    pe.buffer = SQR.fullScreenQuad;
+    pe.shader = SQR.Shader(shaderSource);
+
+    return pe;
+}
+
 /* --- --- [primitives/Sphere.js] --- --- */
 
+/**
+ *  @method createSphere
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
+ *
+ *  @param {Number} radius - radius of the sphere
+ *  @param {Number} sw - width (longitude) segments
+ *  @param {Number} sh - width (latitude) segments
+ *  @param {Number} options - additional settings
+ *
+ *  @returns {SQR.Buffer}
+ */
 SQR.Primitives.createSphere = function(radius, sw, sh, options) {
 
     var vertices = [];

@@ -17,22 +17,30 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     var that = this;
 
     /**
-     *  Start position. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var p0 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton The start position, can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.p0 = _p0;
 
     /**
-     *  First control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var c0 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton First control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.c0 = _c0;
 
     /**
-     *  Second control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var c1 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton Second control point. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.c1 = _c1;
 
     /**
-     *  End position. Can be either {@link SQR.V3} or {@link SQR.V2}.
+     *  @var p1 
+     *  @memberof SQR.Bezier.prototype
+     *  @descripton End position. Can be either {@link SQR.V3} or {@link SQR.V2}.
      */
     this.p1 = _p1;
 
@@ -42,7 +50,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     var vfunc = SQR.Interpolation.bezierVelocity;
 
     /**
-     *  Returns the velocity on a curve. 
+     *  @method velocityAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the velocity on a curve. 
      *  @param t interpolation value [0-1]
      *  @param v vector to write the value to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.
      */
@@ -60,7 +70,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     }
 
     /**
-     *  Returns the position on a curve.
+     *  @method valueAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the position on a curve.
      *  @param t interpolation value [0-1]
      *  @param v vector to write the value to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.
      */
@@ -78,7 +90,9 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
     }
 
     /** 
-     *  Returns the transformation matrix that can be used to align an object to the curve at a given point.
+     *  @method matrixAt 
+     *  @memberof SQR.Bezier.prototype
+     *  @description Returns the transformation matrix that can be used to align an object to the curve at a given point.
      *  Not tested in 2D but shoud work fine.
      *  @param t interpolation value [0-1]
      *  @param m {@link SQR.Matrix44} to write the matrix to. If omitted, returns a temporary value, that will be overwritten on next call so do not store this object.
@@ -120,16 +134,20 @@ SQR.Bezier = function(_p0, _c0, _c1, _p1) {
  *  @class ConvexHull
  *  @memberof SQR
  *
- *  @description utility to compute a convex hull
+ *  @description utility to compute a convex hull. Based on algorithm from Chapter 1 in 
+ *	{@link http://www.amazon.com/dp/3540779736/?tag=stackoverfl08-20} and code from 
+ *	{@link http://blog.cedric.ws/draw-the-convex-hull-with-canvas-and-javascript} 
+ *	which is basically the implementation of the algorithm explained in the book.
+ *
+ *	Other links: 
+ *
+ *	{@link http://www.travellermap.com/tmp/delaunay.js}
+ *	{@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}
+ *	{@link http://paulbourke.net/papers/triangulate/}
  */
 SQR.ConvexHull = (function() {
 
-	// based on algorithm from Chapter 1 in 
-	// http://www.amazon.com/dp/3540779736/?tag=stackoverfl08-20
 
-	// and code from 
-	// http://blog.cedric.ws/draw-the-convex-hull-with-canvas-and-javascript
-	// (which is basically the implementation of the algorithm explained in the book above)
 
 	var upper = [], lower = [], hull = [];
 
@@ -197,6 +215,17 @@ SQR.ConvexHull = (function() {
 	}
 
 	return {
+		/** 
+		 *	@method compute
+		 *	@memberof SQR.ConvexHull
+		 *
+		 *	@desription computes the convexhull for a give set of points
+		 *	
+		 *	@param {Array} p - array of {@link SQR.V2} or any objects that have a `x` and `y` property.
+		 *	@param {Array} h - the array to store the result in. If omitted, new one is created.
+		 *
+		 *	@returns {Array} array of {@link SQR.V2} containing ordered points that make the convexhull.
+		 */
 		compute: function(p, h) {
 
 			if(!h) h = hull;
@@ -216,15 +245,6 @@ SQR.ConvexHull = (function() {
 
 })();
 
-
-/* 
-
-Other links: 
-http://www.travellermap.com/tmp/delaunay.js
-https://github.com/ironwallaby/delaunay/blob/master/delaunay.js
-http://paulbourke.net/papers/triangulate/
-
-*/
 
 
 
@@ -385,11 +405,11 @@ SQR.Interpolation = {
 
     /**
      *  Returns the position on a curve for a position (per axis)
-     *  @param t interpolation value [0-1]
-     *  @param p0 start position
-     *  @param c0 first control point
-     *  @param c1 second control point
-     *  @param p1 end position
+     *  @param {Number} t interpolation value [0-1]
+     *  @param {Number} p0 start position
+     *  @param {Number} c0 first control point
+     *  @param {Number} c1 second control point
+     *  @param {Number} p1 end position
      */
     bezierPosition: function(t, p0, c0, c1, p1) {
         return p0 * (1 - t) * (1 - t) * (1 - t) +
@@ -400,11 +420,11 @@ SQR.Interpolation = {
 
     /**
      *  Returns the velocity on the curve for a position (per axis)
-     *  @param t interpolation value [0-1]
-     *  @param p0 start position
-     *  @param c0 first control point
-     *  @param c1 second control point
-     *  @param p1 end position
+     *  @param {Number} t interpolation value [0-1]
+     *  @param {Number} p0 start position
+     *  @param {Number} c0 first control point
+     *  @param {Number} c1 second control point
+     *  @param {Number} p1 end position
      */
     bezierVelocity: function(t, p0, c0, c1, p1) {
         return (3 * c0 - 3 * p0)
@@ -414,9 +434,9 @@ SQR.Interpolation = {
 
     /**
      *  Linear interpolation a between two values
-     *  @param e0 start value
-     *  @param e1 end value
-     *  @param t interpolation value [0-1]
+     *  @param {Number} e0 start value
+     *  @param {Number} e1 end value
+     *  @param {Number} t interpolation value [0-1]
      */
     linear: function(e0, e1, t) {
         if(t <= e0) return e0;
@@ -429,9 +449,9 @@ SQR.Interpolation = {
     
     /**
      *  Smoothstep interpolation a between two values
-     *  @param e0 start value
-     *  @param e1 end value
-     *  @param t interpolation value [0-1]
+     *  @param {Number} e0 start value
+     *  @param {Number} e1 end value
+     *  @param {Number} t interpolation value [0-1]
      */
     smoothStep: function(e0, e1, t) {
         if(t <= e0) return e0;
@@ -444,7 +464,7 @@ SQR.Interpolation = {
 
     /**
      *  Quadratic ease in based on Penner equations
-     *  @param t interpolation value [0-1]
+     *  @param {Number} t interpolation value [0-1]
      */
     quadIn: function (t) {
         return t * t;
@@ -452,7 +472,7 @@ SQR.Interpolation = {
 
     /**
      *  Quadratic ease out based on Penner equations
-     *  @param t interpolation value [0-1]
+     *  @param {Number} t interpolation value [0-1]
      */
     quadOut: function (t) {
         return t * (2 - t);
@@ -460,7 +480,7 @@ SQR.Interpolation = {
 
     /**
      *  Quadratic ease in-out based on Penner equations
-     *  @param t interpolation value [0-1]
+     *  @param {Number} t interpolation value [0-1]
      */
     quadInOut: function (t) {
         if (( t *= 2 ) < 1)
@@ -477,7 +497,8 @@ SQR.Interpolation = {
  *  @class Matrix2D
  *  @memberof SQR
  *
- *  @description A matrix that implements 2D affine transformations.
+ *  @description A matrix that implements 2D affine transformations. 
+ *  Most of the method return the current instance for chaining.
  *
  *  @todo Make it column major
  */
@@ -488,7 +509,9 @@ SQR.Matrix2D = function() {
     var a, b, d, x, y;
 
     /**
-     * Resets the matrix to identity values.
+     *  @method identity
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Resets the matrix to identity values.
      */
     this.identity = function(d) {
         d = d || this.data;
@@ -500,9 +523,11 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     * Multiplies the vector by the matrix
-     * @param v vector to multiply
-     * @returns the same vector as passed in the parameter, multiplied by this matrix
+     *  @method transformVector
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Multiplies the vector by the matrix
+     *  @param v vector to multiply
+     *  @returns the same vector as passed in the parameter, multiplied by this matrix
      */
     this.transformVector = function(v) {
         d = this.data;
@@ -513,7 +538,9 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Sets the translation values.
+     *  @method setTranslation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the translation values.
      *  @param tx x translation
      *  @param ty y translation
      *  @param m the matrix to set translation to, applies to this if ommited
@@ -527,9 +554,11 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Returns the translation value as 2d vector.
-     *  @param v {@link SQR.V2}, if ommited a new vector object is returned
-     *  @returns a {@link SQR.V2} with translation values
+     *  @method getTranslation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Returns the translation value as 2d vector.
+     *  @param {SQR.V2} v vector to use to return values in, if ommited a new vector object is returned
+     *  @returns {SQR.V2} 2d vector with translation values
      */
     this.getTranslation = function(v) {
         d = this.data;
@@ -540,10 +569,12 @@ SQR.Matrix2D = function() {
     }
 
     /**
-     *  Sets the scale values.
+     *  @method setScale
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the scale values.
      *  @param sx x scale
      *  @param sy y scale
-     *  @param m the matrix to set scale to, applies to this if ommited
+     *  @param m the matrix to set scale to, applies to `this` if ommited
      */
     this.setScale = function(sx, sy, m) {
         d = m || this.data;
@@ -553,6 +584,14 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setShear
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the scale values.
+     *  @param sx x shear
+     *  @param sy y shear
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setShear = function(sx, sy, m) {
         d = m || this.data;
         d[0] = 1, d[3] = sx,d[6] = 0;
@@ -561,6 +600,13 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setRotation
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the rotation value.
+     *  @param a angle in radians
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setRotation = function(a, m) {
         d = m || this.data;
         var r0 = Math.cos(a);
@@ -571,6 +617,16 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /**
+     *  @method setTRS
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Sets the translation/rotation/scale values at once.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param a angle in radians
+     *  @param sx x scale
+     *  @param sy y scale
+     */
     this.setTRS = function(tx, ty, a, sx, sy) {
         d = this.data;
         var r0 = Math.cos(a);
@@ -581,24 +637,51 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /** 
+     *  @method translate
+     *  @memberof SQR.Matrix2D.prototype
+     *  @description Applies translation to matrix
+     *  @param tx x translation
+     *  @param ty y translation
+     */
     this.translate = function(tx, ty) {
         this.identity(SQR.Matrix2D.__temp);
         this.setTranslation(tx, ty, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method rotate
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param a angle in radians
+     *  @description Applies rotation to matrix
+     */
     this.rotate = function(a) {
         this.identity(SQR.Matrix2D.__temp);
         this.setRotation(a, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method scale
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @description Applies scale to matrix
+     */
     this.scale = function(sx, sy) {
         this.identity(SQR.Matrix2D.__temp);
         this.setScale(sx, sy, SQR.Matrix2D.__temp);
         return this.multiply(SQR.Matrix2D.__temp);
     }
 
+    /** 
+     *  @method shear
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param sx x shear
+     *  @param sy y shear
+     *  @description Applies shear to matrix
+     */
     this.shear = function(sx, sy) {
         this.identity(SQR.Matrix2D.__temp);
         this.setRotation(sx, sy, SQR.Matrix2D.__temp);
@@ -608,6 +691,12 @@ SQR.Matrix2D = function() {
     var a11, a12, a13, a21, a22, a23, a31, a32, a33;
     var b11, b12, b13, b21, b22, b23, b31, b32, b33;
 
+    /** 
+     *  @method multiply
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to multiply the current matrix by
+     *  @description Multiples current matrix by m and stores result in current matrix.
+     */
     this.multiply = function(m) {
         a = this.data, b = m.data || m;
 
@@ -634,6 +723,12 @@ SQR.Matrix2D = function() {
         return this;
     }
 
+    /** 
+     *  @method copyTo
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to copy values to. Can be {SQR.Matrix2D} or {Float32Array}
+     *  @description Copies current matrix values to m
+     */
     this.copyTo = function(m) {
         a = this.data,b = m.data || m;
 
@@ -644,6 +739,12 @@ SQR.Matrix2D = function() {
         return m;
     }
 
+    /** 
+     *  @method copyFrom
+     *  @memberof SQR.Matrix2D.prototype
+     *  @param m matrix to copy values from. Can be {SQR.Matrix2D} or {Float32Array}
+     *  @description Copies values from m into the current matrix
+     */
     this.copyFrom = function(m) {
         a = m.data || m,b = this.data;
 
@@ -793,6 +894,13 @@ SQR.Matrix44 = function(data) {
         return this;
     }
 
+    /**
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Multiplies the vector v by my this matrix and stores the result in the vector pv.
+     *
+     *  @param {SQR.V3} v - the vector to be multiplies by this matrix
+     *  @param {SQR.V3=} pv - the vector in which to store the result. If ommited, result is stored in v.
+     */
     this.transformVector = function (v, pv) {
         var d = this.data;
         var x = v.x, y = v.y, z = v.z, w = v.w;
@@ -806,6 +914,11 @@ SQR.Matrix44 = function(data) {
         return pv;
     }
 
+    /**
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Multiplies this matrix by m
+     *  @param {SQR.Matrix44} m - matrix to multiply this matrix by
+     */
     this.multiply = function(m) {
         var a = this.data, b = m.data || m;
 
@@ -845,6 +958,23 @@ SQR.Matrix44 = function(data) {
         return this;
     }
 
+    /**
+     *  @method setTQS
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation/rotation/scale values at once. 
+     *  Similar to setTRS but the rotation is defined as a quaternion.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz y translation
+     *  @param qw w compoment of the quaternion
+     *  @param qx x compoment of the quaternion
+     *  @param qx y compoment of the quaternion
+     *  @param qx z compoment of the quaternion
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setTQS = function(tx, ty, tz, qw, qx, qy, qz, sx, sy, sz, m) {
 
         var d = m || this.data;
@@ -873,6 +1003,21 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /**
+     *  @method setTRS
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation/rotation/scale values at once.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz y translation
+     *  @param rx rotation angle in radians on the x axis
+     *  @param ry rotation angle in radians on the y axis
+     *  @param rz rotation angle in radians on the z axis
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setTRS = function(tx, ty, tz, rx, ry, rz, sx, sy, sz, m) {
 
         var d = m || this.data;
@@ -900,18 +1045,45 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /**
+     *  @method setScale
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the scale values.
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @param m the matrix to set scale to, applies to `this` if ommited
+     */
     this.setScale = function(sx, sy, sz, m) {
         var d = m || this.data;
         d[0] = sx,d[5] = sy,d[10] = sz;
         return m || this;
     }
 
+    /**
+     *  @method setTranslation
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the translation values.
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz z translation
+     *  @param m the matrix to set translation to, applies to `this` if ommited
+     */
     this.setTranslation = function(tx, ty, tz, m) {
         var d = m || this.data;
         d[12] = tx, d[13] = ty, d[14] = tz;
         return m || this;
     }
 
+    /**
+     *  @method setRotation
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Sets the rotation value.
+     *  @param rx angle in radians of the rotation on x axis
+     *  @param ry angle in radians of the rotation on y axis
+     *  @param rz angle in radians of the rotation on z axis
+     *  @param m the matrix to set shear to, applies to `this` if ommited
+     */
     this.setRotation = function(rx, ry, rz, m) {
         var d = m || this.data;
         var six = Math.sin(rx), cox = Math.cos(rx), 
@@ -933,30 +1105,68 @@ SQR.Matrix44 = function(data) {
         return m || this;
     }
 
+    /** 
+     *  @method translate
+     *  @memberof SQR.Matrix44.prototype
+     *  @description Applies translation to matrix
+     *  @param tx x translation
+     *  @param ty y translation
+     *  @param tz z translation
+     */
     this.translate = function(tx, ty, tz) {
         this.identity(SQR.Matrix44.__temp);
         this.setTranslation(tx, ty, tz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method rotate
+     *  @memberof SQR.Matrix44.prototype
+     *  @param rx angle in radians of the rotation on x axis
+     *  @param ry angle in radians of the rotation on y axis
+     *  @param rz angle in radians of the rotation on z axis
+     *  @description Applies rotation to matrix
+     */
     this.rotate = function(rx, ry, rz) {
         this.identity(SQR.Matrix44.__temp);
         this.setRotation(rx, ry, rz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method scale
+     *  @memberof SQR.Matrix44.prototype
+     *  @param sx x scale
+     *  @param sy y scale
+     *  @param sz z scale
+     *  @description Applies scale to matrix
+     */
     this.scale = function(sx, sy, sz) {
         this.identity(SQR.Matrix44.__temp);
         this.setScale(sx, sy, sz, SQR.Matrix44.__temp);
         return this.multiply(SQR.Matrix44.__temp);
     }
 
+    /** 
+     *  @method copyTo
+     *  @memberof SQR.Matrix44.prototype
+     *  Copies the values from this matrix into m
+     *
+     *  @param {SQR.Matrix44|Float32Array} m - the matrix or 16-compoment array to copy the values to
+     */
     this.copyTo = function(m) {
         var a = this.data, b = m.data || m;
         for (var i = 0; i < 16; i++) b[i] = a[i];
         return m;
     }
 
+    /** 
+     *  @method copyRotationTo
+     *  @memberof SQR.Matrix44.prototype
+     *  Copies only the rotation/scale portion of the matrix into m to the current matrix
+     *
+     *  @param {SQR.Matrix44|Float32Array} m - the matrix or 16-compoment array to copy the values to
+     */
     this.copyRotationTo = function(m) {
         var a = this.data, b = m.data || m;
 
@@ -975,6 +1185,15 @@ SQR.Matrix44 = function(data) {
         return m;
     }
 
+    /** 
+     *  @method extractPosition
+     *  @memberof SQR.Matrix44.prototype
+     *  Sets v to the translation vakue of this matrix. Useful for extracting position of an element
+     *  based on it's transformation matrix, ex. this is how the the global position of a {@link SQR.Transform} 
+     *  is obtained.
+     *
+     *  @param {SQR.V3} v - the vector to copy the translation values to
+     */
     this.extractPosition = function(v) {
         var d = this.data;
         v.set(d[12], d[13], d[14]);
@@ -1039,14 +1258,15 @@ SQR.Matrix44 = function(data) {
         return m;
     };
 
-    // gl-Matrix.js
+    
     this.inverseMat3 = function(m) {
+        // adapted from gl-Matrix.js
         var d = this.data;
         var a = m.data;
         var det = this.determinant();
 
         if (Math.abs(det) < 0.0001) {
-            console.warn("Attempt to inverse a singular matrix44. ", this.data);
+            console.warn("> SQR.Matrix44 - Attempt to inverse a singular matrix44. ", this.data);
             console.trace();
             return m;
         }
@@ -1192,7 +1412,7 @@ SQR.ProjectionMatrix.prototype.identity = function() {
  *  Returns an orthographic projection matrix that is set in screen coordinates.
  */
 SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
-    this.orthographic(0, window.innerWidth, 0, window.innerHeight, 0, 1000);
+    this.orthographic(0, window.innerWidth, 0, window.innerHeight, -1, 1000);
     return this;
 }
 
@@ -1386,7 +1606,8 @@ SQR.ProjectionMatrix.prototype.inverse = function (m) {
  *
  *  @description Represents a quaternion with optionally setting the values directly.
  *
- *  Just as a reminder, given an angle `a` and an axis `x,y,z` this is what the quaternion values re:
+ *  Just as a reminder, given an angle `a` and an axis `x,y,z` 
+ *  this is what the quaternion values are:
  *  @example
 var q = new SQR.Quaternion();
 var s = Math.sin(a / 2);
@@ -1530,7 +1751,9 @@ SQR.Quaternion.prototype.normalize = function() {
 }
 
 /**
- *  That method doesn't do anything for now. Check {SQR.Matrix44.TQS()} to see how to turn a Quanternion into a matrix representation.
+ *  That method doesn't do anything. 
+ *  Check {SQR.Matrix44.TQS()} to see how to turn a 
+ *  Quanternion into a matrix representation.
  *
  *  @todo Implement (or not... not sure how much this is needed)
  */
@@ -1735,6 +1958,12 @@ SQR.Spline = function() {
  *	Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.
  *
  *	@param v1 Vector {@link SQR.V2} or {@link SQR.V3}
+ *
+ *	@property {SQR.V2} centroid - the centroid, undef until `calculateCentroid` is called.
+ *	@property {Number} circumRadius - the  radius of the 
+ *		circum-circle, undef until `calculateCircumCircle` is called.
+ *	@property {SQR.V2} circumCenter - the center of the cirsum-circle, 
+ *		undef until `calculateCircumCircle` is called.
  *	
  */
 SQR.Triangle = function(v0, v1, v2) {
@@ -1743,16 +1972,31 @@ SQR.Triangle = function(v0, v1, v2) {
 	this.v1 = v1;
 	this.v2 = v2;
 
+	/**
+	 *	Calculates the centroid for this triangle. Only works with 2d coordinates for now.
+	 *	The resulting centroid is stored in the `centroid` property.
+	 *
+	 *	@memberof SQR.Triangle.prototype
+	 *	@method calculateCentroid
+	 */
 	this.calculateCentroid = function() {
 		this.centroid = new SQR.V2();
 		this.centroid.x = (this.v0.x + this.v1.x + this.v2.x) / 3;
 		this.centroid.y = (this.v0.y + this.v1.y + this.v2.y) / 3;
 	}
 
-	// http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm
+	/**
+	 *	Calculates circumcircle, only works with 2d coordinates.
+	 *	<br><br>
+	 *	Based on 
+	 *	{@link http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm this}
+	 *	and
+	 *	{@link http://www.exaflop.org/docs/cgafaq/cga1.html this}.
+	 *
+	 *	@memberof SQR.Triangle.prototype
+	 *	@method calculateCircumCircle
+	 */
 	this.calculateCircumCircle = function() {
-
-		// From: http://www.exaflop.org/docs/cgafaq/cga1.html
 		var A = this.v1.x - this.v0.x;
 		var B = this.v1.y - this.v0.y;
 		var C = this.v2.x - this.v0.x;
@@ -1790,6 +2034,14 @@ SQR.Triangle = function(v0, v1, v2) {
 		this.circumRadius = Math.sqrt(this.circumRadiusSq);
 	}
 
+	/**
+	 *	Test whether the point v is inside the triangles circumcircle. 
+	 *	If circum-circle was not calculated, calculateCircumCircle will be called first
+	 *	@memberof SQR.Triangle.prototype
+	 *	@method vertexInCircumcircle
+	 *	@param {SQR.V2} v - vertex to be checked
+	 *	@returns {boolean} true is vertex is in circumcircle
+	 */
 	this.vertexInCircumcircle = function(v) {
 
 		if(!this.circumCenter) this.calculateCircumCircle();
@@ -1928,14 +2180,19 @@ SQR.V2.prototype.toArray = function() {
  *  @descrption A 3-dimensional vector
  *
  */
-SQR.V3 = function(x, y, z, w, i) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
-    this.w = w || 1;
+SQR.V3 = function(x, y, z) {
+    this.set(x, y, z)
     this.size = 3;
 }
 
+/**
+ *  Sets the vector compoment to values. Note that this class has actually 4 not 3 compoments.
+ *  @param x - the value of the x compoment
+ *  @param y - the value of the y compoment
+ *  @param z - the value of the z compoment
+ *  @param w - the value of the homogeneous coordinate, defaults to 1 
+ *      and leave it that way unless you really know what ypu are doing.
+ */ 
 SQR.V3.prototype.set = function(x, y, z, w) {
     this.x = x || 0;
     this.y = y || 0;
@@ -1944,38 +2201,76 @@ SQR.V3.prototype.set = function(x, y, z, w) {
     return this;
 }
 
+/**
+ *  Copies values from this vector into the p vector
+ *
+ *  @param {SQR.V2|SQR.V3} p - vector to copy the values to
+ */
 SQR.V3.prototype.copyTo = function(p) {
     p.x = this.x;
     p.y = this.y;
-    p.z = this.z;
-    p.w = this.w;
+    if(p.z != undefined) p.z = this.z;
     return p;
 }
 
+/**
+ *  Copies values from vector p into this vector
+ *
+ *  @param {SQR.V2|SQR.V3} p - vector to copy the values from
+ */
 SQR.V3.prototype.copyFrom = function(p) {
     this.x = p.x;
     this.y = p.y;
     this.z = p.z || 0; // in case p is SQR.V2
-    this.w = (p.w !== undefined) ? p.w : 1;
     return this;
 }
 
+/**
+ *  Creates and returns a copy of this vector. 
+ *  Be careful with this method, because it creates a new object. 
+ *  Calling this function repeatedly in a rendering loop can have an adverce impact on performance.
+ *
+ *  @returns {SQR.V3} a new vector that is a copy of this vector
+ */
 SQR.V3.prototype.clone = function() {
     return new SQR.V3(this.x, this.y, this.z);
 }
 
+/** 
+ *  Returns the squared length of this vector. This can be useful to optimize some calculations, since
+ *  the actual length requires a squareroot operation (`Math.sqrt()`) 
+ *  which can be slow if used on many vectors.
+ */
 SQR.V3.prototype.magsq = function() {
     return this.x * this.x + this.y * this.y + this.z * this.z;
 };
 
+/**
+ *  Return the length (magnitude) of this vector
+ *  @returns {Number} the length of this vector
+ */
 SQR.V3.prototype.mag = function() {
     return Math.sqrt(this.magsq());
 };
 
+/**
+ *  Shorthand to check if this vector is a zero vector 
+ *  (i.e. all compoments are very small or equal to 0) The values are compared against SQR.EPSILON
+ */
 SQR.V3.prototype.isZero = function() {
-    return this.x == 0 && this.y == 0 && this.z == 0;
+    return 
+        Math.abs(this.x) < SQR.EPSILON && 
+        Math.abs(this.y) < SQR.EPSILON && 
+        Math.abs(this.z) < SQR.EPSILON;
 };
 
+/**
+ *  Multiples this vector by a scalar. 
+ *  This function can be used in conjunction with {@link SQR.V3#norm} 
+ *  to set the vector to a given length `v.norm().mul(10)1 yields a vector of length 10.
+ *
+ *  @param {Number} s - the value to multiply the the vector by.
+ */
 SQR.V3.prototype.mul = function(s) {
     this.x *= s;
     this.y *= s;
@@ -1983,6 +2278,9 @@ SQR.V3.prototype.mul = function(s) {
     return this;
 }
 
+/**
+ *  Negates this vector.
+ */
 SQR.V3.prototype.neg = function() {
     this.x = -this.x;
     this.y = -this.y;
@@ -1990,6 +2288,9 @@ SQR.V3.prototype.neg = function() {
     return this;
 }
 
+/**
+ *  Normalizes this vector, i.e. sets its length (magnitude) to 1.
+ */
 SQR.V3.prototype.norm = function() {
     var m = 1 / this.mag();
     this.set(this.x * m, this.y * m, this.z * m);
@@ -1997,10 +2298,15 @@ SQR.V3.prototype.norm = function() {
 }
 
 /**
- * a.add(a, b).add(a, c) -> a + b + c
+ *  Sets this vector to the sum of a and b. 
  *
- * @param a
- * @param b
+ *  @example
+a.add(b, c); // a = b + c
+a.add(a, b); // a += b
+a.add(a, b).add(a, c); // = a + b + c
+ *
+ *  @param {SQR.V3} a
+ *  @param {SQR.V3} b
  */
 SQR.V3.prototype.add = function(a, b) {
     this.x = a.x + b.x;
@@ -2036,10 +2342,17 @@ SQR.V3.prototype.random = function() {
     return this;
 }
 
+/**
+ *  Returns the dot product of a nd b (`a . b`).
+ *  @returns {Number} result of a . b
+ */
 SQR.V3.dot = function(a, b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+/**
+ *  Sets this vector to the result of a cross-product of a and b (`a x b`).
+ */
 SQR.V3.prototype.cross = function(a, b) {
     var x = a.y * b.z - a.z * b.y;
     var y = a.z * b.x - a.x * b.z;
@@ -2048,10 +2361,26 @@ SQR.V3.prototype.cross = function(a, b) {
     return this;
 }
 
+/**
+ *  @private
+ *  @description Alias for toArray
+ *
+ *  @returns {Float32Array} array - the array holding the values of this vector
+ */
 SQR.V3.prototype.toUniform = function() {
     return this.toArray();
 }
 
+/**
+ *  @private
+ *  @description Lazily creates a Float32Array and stores 
+ *  the components of this vector in the array.
+ *  This is mostly used when the value of this vector is 
+ *  passed as uniform to a shader
+ *  (this function is called internally by the renderer).
+ *
+ *  @returns {Float32Array} array - the array holding the values of this vector
+ */
 SQR.V3.prototype.toArray = function() {
     if(!this.array) this.array = new Float32Array(3);
     this.array[0] = this.x;
@@ -2061,8 +2390,11 @@ SQR.V3.prototype.toArray = function() {
 }
 
 /**
- *  Assuming the vector was projected using the SQR.ProjectionMatrix, use this
+ *  Assuming the vector was projected using the {@link SQR.ProjectionMatrix}, use this
  *  to calculate it's screen space. (useful for software rendering, ex. on canvas 2d)
+ *
+ *  @param {Number=} w - the width of the screen (defaults to `window.innerWidth`) 
+ *  @param {Number=} h - the height of the screen (defaults to `window.innerHeight`) 
  */
 SQR.V3.prototype.toScreenSpace = function(w, h) {
     w = w || window.innerWidth;
@@ -2072,7 +2404,11 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
 }
 
 /**
- *  Use this for caculating per-vertex normals
+ *  Use this for caculating per-vertex normals. 
+ *  A normal from each contributing face can be added here. 
+ *  When all the normals are added, a vector that is the sum of them all 
+ *  is available as `this.normal` property. The pre-vertex normal can be caluculated
+ *  but normalizing this vector.
  */
 SQR.V3.prototype.addNormal = function(_n) {
 
@@ -2083,12 +2419,30 @@ SQR.V3.prototype.addNormal = function(_n) {
     this.normal.add(this.normal, _n);
 }
 
+/** 
+ *  This is use to reset the normal to 0.
+ */
 SQR.V3.prototype.resetNormal = function(_n) {
     if(this.normal) this.normal.set();
 }
 
 
+/**
+ *  @const
+ *  @memberof SQR.V3
+ *  @description A constant the defines the up vector. 
+ *  WARNING: be extremly careful not to modify the values of this vector, because this will cause some
+ *  matrix functions, like {@link SQR.Matrix44#lookAt} to not fuction properly.
+ */
 SQR.V3.up = new SQR.V3(0,1,0);
+
+/**
+ *  @const
+ *  @memberof SQR.V3
+ *  @description A constant the defines the forward vector. 
+ *  WARNING: be extremly careful not to modify the values of this vector, because this will cause some
+ *  matrix functions to not fuction properly.
+ */
 SQR.V3.forward = new SQR.V3(0,0,1);
 
 SQR.V3.__tv1 = new SQR.V3();
