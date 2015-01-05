@@ -52,17 +52,10 @@ SQR.Interpolation = {
     
     /**
      *  Smoothstep interpolation a between two values
-     *  @param {Number} e0 start value
-     *  @param {Number} e1 end value
      *  @param {Number} t interpolation value [0-1]
      */
-    smoothStep: function(e0, e1, t) {
-        if(t <= e0) return e0;
-        if(t >= e1) return e1;
-
-        t = (t - e0) / (e1 - e0);
-
-        return e0 + (e1 - e0) * (3 * t * t - 2 * t * t * t);
+    smoothStep: function(t) {
+        return (3 * t * t - 2 * t * t * t);
     },
 
     /**
