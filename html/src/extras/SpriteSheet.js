@@ -175,7 +175,7 @@ sprite.shape = sheet.run(1000/30, 10);
 
 		var intervalId = setInterval(function() {
 			f++;
-			if(f >= sheet.numFrames) {
+			if(f >= s.numFrames) {
 				if(l != 0) {
 					f = 0;
 					l--;
