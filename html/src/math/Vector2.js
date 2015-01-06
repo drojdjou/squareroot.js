@@ -102,7 +102,7 @@ SQR.V2.prototype.perp = function() {
 }
 
 SQR.V2.prototype.toUniform = function() {
-    return toArray();
+    return this.toArray();
 }
 
 SQR.V2.prototype.toArray = function() {
