@@ -22,18 +22,19 @@ SQR.Anm = (function() {
 	SQR.Tween = function() {
 
 		var me = this;
-		var obj, properties, from, to, duration, _delay, _durationWithDelay, _ease;
-		var localProps = [], numLocalProps;
+		var obj, properties, duration, _delay, _durationWithDelay, _ease;
+		var localProps = [], numLocalProps, t = 0;
 
-		me.setup = function(_obj, _properties, _from, _to, _duration, __delay, __durationWithDelay, __ease) {
+		me.setup = function(_obj, _properties, _duration, __delay, __ease) {
 			obj = _obj;
 			properties = _properties;
-			from = _from;
-			to = _to;
 			duration = _duration; 
 			_delay = __delay;
-			_durationWithDelay = __durationWithDelay;
+			_durationWithDelay = _duration + _delay;
 			_ease = __ease;
+			me._onUpdate = null;
+			me._onEnd = null;
+			setProperties();
 		}
 
 		var apply = function(v) {
@@ -43,19 +44,36 @@ SQR.Anm = (function() {
 			}
 		}
 
-		me.update = function(t) {
-			t = t - me.st;
+		var setProperties = function() {
+			localProps.length = 0;
 
-			if(t >= _durationWithDelay) {
-				if(properties) apply(to);
-				if(me._onUpdate) me._onUpdate(to);
+			if(properties && !(properties instanceof Array)) {
+				for(var pn in properties) {
+					var p = properties[pn];
+					if(p instanceof Array) {
+						localProps.push({ name:pn, from:p[0], to:p[1] });
+					} else {
+						localProps.push({ name:pn, from:obj[pn], to:p });
+					}
+				}
+
+				numLocalProps = localProps.length;
+			}
+		}
+
+		me.update = function(t) {
+			var tt = t - me.st;
+
+			if(tt >= _durationWithDelay) {
+				if(properties) apply(1);
+				if(me._onUpdate) me._onUpdate(1);
 				me.cancel();
 				if(me._onEnd) me._onEnd();
 			} else {
-				var inter = _ease((t - _delay) / duration);
+				var inter = _ease((tt - _delay) / duration);
 				inter = clamp01(inter);
 				if(properties) apply(inter);
-				if(me._onUpdate) me._onUpdate(from + (to - from) * inter);
+				if(me._onUpdate) me._onUpdate(inter);
 			}
 		}
 
@@ -82,43 +100,30 @@ SQR.Anm = (function() {
 		}
 
 		var _start = function() {
-			localProps.length = 0;
-
-			if(properties && !(properties instanceof Array)) {
-				for(var pn in properties) {
-					var p = properties[pn];
-					if(p instanceof Array) {
-						localProps.push({ name:pn, from:p[0], to:p[1] });
-					} else {
-						localProps.push({ name:pn, from:obj[pn], to:p });
-					}
-				}
-
-				numLocalProps = localProps.length;
-			}
-
+			t = 0;
 			me.st = now() - timePadding;
 			runners.push(me);
 			numRunners = runners.length;
 		};
 
 		me.start = function(st) {
-			if(properties) apply(from);
-			if(me._onUpdate) me._onUpdate(from);
+			setProperties();
+			if(properties) apply(0);
+			if(me._onUpdate) me._onUpdate(0);
 			(st) ? setTimeout(_start, st) : _start();
 			return me;
 		}
 	}
 
 	anm.create = function(duration, properties) {
-		var _delay = 0, _ease = defaultLinear, _durationWithDelay = duration;
+		var _delay = 0, _ease = defaultLinear;
 
-		var anim = {};
+		var anim = {
+			properties: properties,
+			duration: duration
+		};
 
 		var from = 0, to = 1;
-		if(properties instanceof Array) {
-			from = properties[0], to = properties[1];
-		}
 
 		anim.ease = function(func) {
 			_ease = func;
@@ -127,13 +132,12 @@ SQR.Anm = (function() {
 
 		anim.delay = function(d) {
 			_delay = d;
-			_durationWithDelay = duration + d;
 			return anim;
 		}
 
 		anim.applyTo = function(obj) {
 			var me = spareRunners.shift() || new SQR.Tween();
-			me.setup(obj, properties, from, to, duration, _delay, _durationWithDelay, _ease);
+			me.setup(obj, properties, anim.duration, _delay, _ease);
 			return me;
 		}
 	
