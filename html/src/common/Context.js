@@ -14,6 +14,11 @@ var c = SQR.Context('#canvas').create().size(w, h).clearColor(0, 0, 0, 1);
  */
 SQR.Context = function(canvas) {
 
+	if(!SQR._versionDisplayed && SQR.Version) {
+		console.log('Squareroot v' + SQR.Version.version + ' b' + SQR.Version.build);
+		SQR._versionDisplayed = true;
+	}
+ 
 	var NOGL = "> SQR.Context - Webgl is not supported.";
 	var BADCTX = "> SQR.Context - Invalid canvas reference.";
 
