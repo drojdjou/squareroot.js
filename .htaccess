@@ -7,3 +7,8 @@ AddType audio/webm .webm
 AddType video/mp4 .mp4 .m4v
 AddType video/ogg .ogv
 AddType video/webm .webm
+AddType application/vnd.ms-fontobject    .eot
+AddType application/x-font-opentype      .otf
+AddType image/svg+xml                    .svg
+AddType application/x-font-ttf           .ttf
+AddType application/font-woff            .woff
