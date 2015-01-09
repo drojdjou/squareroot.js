@@ -12,7 +12,7 @@ Guide:
 ####GL 
 - {@link SQR.Transform} - basic building block. A transform is a point in space that has rotation, position and scale.
 - {@link SQR.Buffer} - holds buffers & geometries, see {@tutorial understanding-buffers}
-- {@link SQR.Buffer} - utility to compile and execute GLSL shaders, see {@tutorial understanding-shaders}
+- {@link SQR.Shader} - utility to compile and execute GLSL shaders, see {@tutorial understanding-shaders}
 - {@link SQR.Texture} - create textures from images, vides and canvas elements
 - {@link SQR.Cubemap} - similar functionality as the texture, but for cubemaps
 - {@link SQR.Primitives} - a collection of functions to create basic geometries like cube, sphere, etc...

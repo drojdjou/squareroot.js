@@ -23,6 +23,9 @@ SQR.CanvasRenderer = function(canvas) {
 
 	var ctx = canvas.getContext('2d');
 
+	// Dash line shim
+	if(!ctx.setLineDash) ctx.setLineDash = function() {};
+
 	r.canvas = canvas;
 
 	/** 

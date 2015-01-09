@@ -17,8 +17,16 @@
  *
  *	@example
 {
+	// Do not compile 
+	// (most of the time this is not necessary)
 	doNotCompile: true,
 
+	// Preprocesor directives. 
+	// This object will create 
+	// the following directives, attached to both
+	// vertex and fragment shaders:
+	// #define COLOR_ONLY
+	// #define COLOR 1.0 0.0 0.0
 	directives: [
 	    { name: 'COLOR_ONLY' },
 	    { name: 'COLOR', value: '1.0, 0.0, 0.0' }
