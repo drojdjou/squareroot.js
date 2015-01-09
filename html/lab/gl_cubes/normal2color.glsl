@@ -16,12 +16,14 @@ void main() {
 }
 
 //#fragment
-#ifdef GL_ES
 precision highp float;
-#endif
                
 varying vec3 vNormal;
            
 void main() {
+	#ifdef COLOR_ONLY
+	gl_FragColor = vec4(COLOR, 1.0);
+	#else
 	gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);
+	#endif
 }

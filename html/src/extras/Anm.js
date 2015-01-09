@@ -89,7 +89,10 @@ SQR.Anm = (function() {
 
 		me.cancel = function() {
 
-			runners.splice(runners.indexOf(me), 1);
+			var i = runners.indexOf(me);
+			if(i == -1) return;
+
+			runners.splice(i, 1);
 			numRunners = runners.length;
 
 			if(spareRunners.indexOf(me) == -1) {

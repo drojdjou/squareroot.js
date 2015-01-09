@@ -13,7 +13,17 @@
  *	@param {string} source - the GLSL source code formatted 
  *	in a way to include both vertex and fragment shaders.
  *
- *	@param {object} options - additional options, not required.
+ *	@param {object} options - additional options, not required. Supported options in the code sample below.
+ *
+ *	@example
+{
+	doNotCompile: true,
+
+	directives: [
+	    { name: 'COLOR_ONLY' },
+	    { name: 'COLOR', value: '1.0, 0.0, 0.0' }
+	]
+}
  */
 SQR.Shader = function(source, options) {
 
@@ -25,7 +35,17 @@ SQR.Shader = function(source, options) {
 
 		if(!s) throw "> SQR.Shader.parseGLSL - Shader source code missing";
 
-		var vertex = "", fragment = "";
+		var pp = "", pv = options ? options.directives : null;
+
+		if(pv && pv instanceof Array) {
+			for(var i = 0; i < pv.length; i++) {
+				pp += "#define " + pv[i].name;
+				if(pv[i].value) pp += " " + pv[i].value;
+				pp += "\n";
+			}
+		} 
+
+		var vertex = pp, fragment = pp;
 		var isVertex = true;
 
 		var ls = s.split("\n");
