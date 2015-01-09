@@ -20,7 +20,7 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
 
     var pe = new SQR.Transform();
     pe.buffer = SQR.fullScreenQuad;
-    pe.shader = SQR.Shader(shaderSource);
+    pe.shader = SQR.Shader(shaderSource, shaderOptions);
 
     return pe;
 }
