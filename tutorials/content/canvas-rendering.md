@@ -5,18 +5,22 @@ SQR has a simple 2d rendering engine located in the solder `src/two`. It festure
 The working demo for the tutorial below is available [here](../tutorials/canvas-rendering.html).
 
 ### Setup
-
+First of all you need to import the necessary package files. From the build folder in the repository, you will need two of them:
+```
+<script type="text/javascript" src="build/sqr-common.js"></script>
+<script type="text/javascript" src="build/sqr-two.js"></script>
+```
 The setup of the 2d rendering engine is very simple. Just create a canvas element:
 ```
-<canvas></canvas>
+<canvas id='my-2d-canvas'></canvas>
 ```
 In the code, first create the renderer:
 ```
 var w = window.innerWidth, h = window.innerHeight;
-var renderer = new SQR.CanvasRenderer('canvas');
+var renderer = new SQR.CanvasRenderer('#my-2d-canvas');
 renderer.setSize(w, h); 
 ```
-This will grab the canvas element, create a context and get ready for rendering. Same as with 3d rendering, there is no scene, but the rendring is executed on a root object and all it's children. Let's create one and render the scene:
+This will grab the canvas element, create a context and get ready for rendering. Note that you can use any type of selector in the constructor function, not just id. Same as with 3d rendering, there is no scene, but the rendring is executed on a root object and all it's children. Let's create one and render the scene:
 ```
 var root = SQR.Transform2d();
 
@@ -27,7 +31,7 @@ var run = function() {
 
 run();
 ```
-Nothing will get rendered yet, because the root object is empty and it has no children. Let's add a object.
+Nothing will get rendered yet, because the root object is empty and it has no children. Let's add a object that has a shape.
 
 ### Transforms in 2D
 Objects in the canvas renderer are called transforms and are instances of the {@link Transform2d} class.
@@ -38,7 +42,7 @@ root.add(sun);
 ```
 This will and an object to the middle of the stage. The {@link SQR.Transform2d} has a number of typical properties to manipulate the position, scale, rotation and transparency of an object, see the API docs for all the details.
 
-A transform is just a point in space and it has no shape or color, so nothing will be rendered for now. What we need to do is it to define what the object looks like. 
+A transform is just a point in space and it has no shape or color, so still nothing will be rendered - but we're getting closer. What we need to do is it to define what the object looks like in terms of shape and color. 
 
 In 3d the object shape and color is defined by it's geometry and a shader. In 2d this is much simpler. All it needs is a property called `shape` which is a function that takes the `context` (2d rendering context) as argument and uses it to draw a shape. 
 ```
@@ -51,7 +55,7 @@ sun.shape = function(ctx) {
 ```
 If the renderer finds the property `shape` on an object it fill assume it's a function and call it, passing the context as argument. The context is already translated, rotated and scaled to the position of the transform, so all is left is to define a path and draw it. In the above case you should see a yellow circle with a radius of 25px in the middle of the screen.
 
-What is important to notice, is that this function will be called at each frame and the shape will be draw on the canvas from scratch each time. The shape is not pre-rendered or cached in any way. It is possible however to use and image instead, which is siginificanly faster if the shape is complex. Let's add an image now.
+What is important to notice, is that this function will be called at each frame and the shape will be draw on the canvas from scratch each time. The shape is not pre-rendered or cached in any way. It is possible however to use and image instead, which works siginificanly faster if the shape is complex. Let's add an image now.
 
 Since transforms can be nested, let's add a `earth` to the `sun`:
 ```

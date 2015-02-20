@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simples 3d rotating cube</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../html/src/SQR.js"></script>
+
+<script type="text/javascript" src="../../html/src/common/Context.js"></script>
+<script type="text/javascript" src="../../html/src/common/Loader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Shader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../html/src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../html/src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../html/src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../html/src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../html/src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../html/src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../html/lab/base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['point-circle-anim.glsl', 'shader'],
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0, 0, 1);
+
+        var r = function() { return Math.random() };
+
+
+        var radix = [], angles = [], speeds = [], numPoints = 20000;
+
+
+        for(var i = 0; i < numPoints; i++) {
+            radix.push(0.5 + Math.random() * 0.25);
+            angles.push(Math.random() * SQR.TWOPI);
+            speeds.push(0.5 + Math.random());
+        }
+
+        
+
+        var geo = SQR.Buffer()
+            .layout({ aRadius: 1, aAngle: 1, aSpeed: 1 }, numPoints)
+            .data('aRadius', radix)
+            .data('aAngle', angles)
+            .data('aSpeed', speeds)
+            .setMode(SQR.gl.POINTS)
+            .update();
+
+        var shader = SQR.Shader(assets['shader'])
+            .use()
+            .setUniform('uAspect', h/w)
+            .attribPointers(geo);
+
+        var st = new Date().getTime();
+
+        var draw = function() {
+            requestAnimationFrame(draw);
+            ctx.clear();
+            geo.draw();
+
+            var now = new Date().getTime() - st;
+            shader.setUniform('uTime', now);
+        }
+
+        draw();
+    });
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

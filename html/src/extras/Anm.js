@@ -96,7 +96,8 @@ SQR.Anm = (function() {
 			numRunners = runners.length;
 
 			if(spareRunners.indexOf(me) == -1) {
-				spareRunners.push(me);
+				// Causing some issues, so let's disable for now
+				// spareRunners.push(me);
 			}
 
 			return me;
@@ -151,7 +152,7 @@ SQR.Anm = (function() {
 		var t = now();
 		var i = numRunners;
 
-		if(lastTime && t - lastTime > 100) {
+		if(lastTime && t - lastTime > 1000/4) {
 			timePadding += t - lastTime;
 			lastTime = t;
 			return;

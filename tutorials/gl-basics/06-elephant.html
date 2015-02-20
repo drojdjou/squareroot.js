@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simples 3d rotating cube</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../html/src/SQR.js"></script>
+
+<script type="text/javascript" src="../../html/src/common/Context.js"></script>
+<script type="text/javascript" src="../../html/src/common/Loader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Shader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../html/src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../html/src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../html/src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../html/src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../html/src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../html/src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../html/lab/base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        // Load all the files you need here
+        // Each file will be availabke below from the asset object
+        // under it's name, ex. assets['normal2color.glsl']
+        // It's also possible ot specify an alias. Instead of a String, 
+        // use an Array, where [0] is the path, and [1] is the alias.
+        ['../normal2color.glsl', 'n2c'],
+        ['../assets/elephant.json', 'elephant'],
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+        // Create the context based on the #id of the canvas element
+        // (there are more options for hw to do that - check the docs)
+        // Use chaining to create the GL context and set it's clear color (r,g,b,a)
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+        // Create a renderer, pass the context to it
+        var renderer = new SQR.Renderer(ctx);
+
+        // There is no scene in SQR, a scene is basically just a transform 
+        // that holds the entire scene
+        var root = new SQR.Transform();
+
+        // Create a camera, make sure to add it to the root (or any if it's children)
+        var camera = new SQR.Transform();
+        camera.position.z = 10;
+        root.add(camera);
+
+        // Create a resize handler and call it once to set the size of the viewport 
+        // and the correct projection matrix
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var model = assets['elephant'];
+
+        var buffer = SQR.Buffer()
+            .layout(SQR.v3n3u2(), model.vertices.length / 3)
+            .data('aPosition', model.vertices)
+            .data('aNormal',  model.normals)
+            // .data('aUV',  model.uv1)
+            .index(model.tris)
+            .update();
+
+        console.log(model.tris.length / 3);
+
+        // Create an object
+        var cube = new SQR.Transform();
+        cube.position.y = 1.2;
+        cube.buffer = buffer;
+        cube.shader = SQR.Shader(assets['n2c']);
+        root.add(cube);
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+            cube.rotation.y += 0.01;
+            renderer.render(root, camera);
+        }
+
+        render();
+    });
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

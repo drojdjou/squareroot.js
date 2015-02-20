@@ -88,8 +88,8 @@
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.02;
+            cube.rotation.x += 0.005;
+            cube.rotation.y += 0.01;
             // Render the scene from the root transform up, directly to screen
             renderer.render(root, camera);
         }

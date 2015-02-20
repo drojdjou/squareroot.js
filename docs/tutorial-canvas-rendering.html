@@ -30,11 +30,13 @@
 <article>
     <h3>2d rendering on canvas</h3><p>SQR has a simple 2d rendering engine located in the solder <code>src/two</code>. It festures functionality to render shapes and animations on the 2D Rendering Context of the <code>&lt;canvas&gt;</code> element, including support for rendering sprite-sheets.</p>
 <p>The working demo for the tutorial below is available <a href="../tutorials/canvas-rendering.html">here</a>.</p>
-<h3>Setup</h3><p>The setup of the 2d rendering engine is very simple. Just create a canvas element:</p>
-<pre class="prettyprint source"><code>&lt;canvas>&lt;/canvas></code></pre><p>In the code, first create the renderer:</p>
+<h3>Setup</h3><p>First of all you need to import the necessary package files. From the build folder in the repository, you will need two of them:</p>
+<pre class="prettyprint source"><code>&lt;script type=&quot;text/javascript&quot; src=&quot;build/sqr-common.js&quot;>&lt;/script>
+&lt;script type=&quot;text/javascript&quot; src=&quot;build/sqr-two.js&quot;>&lt;/script></code></pre><p>The setup of the 2d rendering engine is very simple. Just create a canvas element:</p>
+<pre class="prettyprint source"><code>&lt;canvas id='my-2d-canvas'>&lt;/canvas></code></pre><p>In the code, first create the renderer:</p>
 <pre class="prettyprint source"><code>var w = window.innerWidth, h = window.innerHeight;
-var renderer = new SQR.CanvasRenderer('canvas');
-renderer.setSize(w, h);</code></pre><p>This will grab the canvas element, create a context and get ready for rendering. Same as with 3d rendering, there is no scene, but the rendring is executed on a root object and all it's children. Let's create one and render the scene:</p>
+var renderer = new SQR.CanvasRenderer('#my-2d-canvas');
+renderer.setSize(w, h);</code></pre><p>This will grab the canvas element, create a context and get ready for rendering. Note that you can use any type of selector in the constructor function, not just id. Same as with 3d rendering, there is no scene, but the rendring is executed on a root object and all it's children. Let's create one and render the scene:</p>
 <pre class="prettyprint source"><code>var root = SQR.Transform2d();
 
 var run = function() {
@@ -42,12 +44,12 @@ var run = function() {
     renderer.render(root);
 }
 
-run();</code></pre><p>Nothing will get rendered yet, because the root object is empty and it has no children. Let's add a object.</p>
+run();</code></pre><p>Nothing will get rendered yet, because the root object is empty and it has no children. Let's add a object that has a shape.</p>
 <h3>Transforms in 2D</h3><p>Objects in the canvas renderer are called transforms and are instances of the Transform2d class.</p>
 <pre class="prettyprint source"><code>var sun = SQR.Transform2d();
 sun.position.set(w/2, h/2);
 root.add(sun);</code></pre><p>This will and an object to the middle of the stage. The <a href="SQR.Transform2d.html">SQR.Transform2d</a> has a number of typical properties to manipulate the position, scale, rotation and transparency of an object, see the API docs for all the details.</p>
-<p>A transform is just a point in space and it has no shape or color, so nothing will be rendered for now. What we need to do is it to define what the object looks like. </p>
+<p>A transform is just a point in space and it has no shape or color, so still nothing will be rendered - but we're getting closer. What we need to do is it to define what the object looks like in terms of shape and color. </p>
 <p>In 3d the object shape and color is defined by it's geometry and a shader. In 2d this is much simpler. All it needs is a property called <code>shape</code> which is a function that takes the <code>context</code> (2d rendering context) as argument and uses it to draw a shape. </p>
 <pre class="prettyprint source"><code>sun.shape = function(ctx) {
     ctx.fillStyle = 'rgb(255, 228, 0)';
@@ -55,7 +57,7 @@ root.add(sun);</code></pre><p>This will and an object to the middle of the stage
     ctx.arc(0, 0, 25, 0, SQR.TWOPI);
     ctx.fill();
 };</code></pre><p>If the renderer finds the property <code>shape</code> on an object it fill assume it's a function and call it, passing the context as argument. The context is already translated, rotated and scaled to the position of the transform, so all is left is to define a path and draw it. In the above case you should see a yellow circle with a radius of 25px in the middle of the screen.</p>
-<p>What is important to notice, is that this function will be called at each frame and the shape will be draw on the canvas from scratch each time. The shape is not pre-rendered or cached in any way. It is possible however to use and image instead, which is siginificanly faster if the shape is complex. Let's add an image now.</p>
+<p>What is important to notice, is that this function will be called at each frame and the shape will be draw on the canvas from scratch each time. The shape is not pre-rendered or cached in any way. It is possible however to use and image instead, which works siginificanly faster if the shape is complex. Let's add an image now.</p>
 <p>Since transforms can be nested, let's add a <code>earth</code> to the <code>sun</code>:</p>
 <pre class="prettyprint source"><code>var earth = new SQR.Transform2d();
 earth.scale.set(0.4, 0.4);
@@ -113,7 +115,7 @@ sprite.shape = sheet.run(1000/60, -1);</code></pre><p>See API docs for <a href="
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Jan 08 2015 18:11:33 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Feb 20 2015 14:36:13 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
