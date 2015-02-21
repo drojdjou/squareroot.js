@@ -1,39 +1,6 @@
-/**
- *	@class Shader
- *	@memberof SQR
- *
- *	@description Represents a GLSL shader. The shader class takes the source GLSL code,
- *	compiles it and extracts all the attributes and uniforms. It also exposes
- *	methods to set the uniform values of this shader.
- *
- *	Please read the {@tutorial basic-setup} tutorial to see how to use a shader  
- *	and the {@tutorial understanding-shaders} tutorial for an in depth discussion on shaders.
- *
- *
- *	@param {string} source - the GLSL source code formatted 
- *	in a way to include both vertex and fragment shaders.
- *
- *	@param {object} options - additional options, not required. Supported options in the code sample below.
- *
- *	@example
-{
-	// Do not compile 
-	// (most of the time this is not necessary)
-	doNotCompile: true,
+import SQR from 'SQR';
 
-	// Preprocesor directives. 
-	// This object will create 
-	// the following directives, attached to both
-	// vertex and fragment shaders:
-	// #define COLOR_ONLY
-	// #define COLOR 1.0 0.0 0.0
-	directives: [
-	    { name: 'COLOR_ONLY' },
-	    { name: 'COLOR', value: '1.0, 0.0, 0.0' }
-	]
-}
- */
-SQR.Shader = function(source, options) {
+export default Shader = function(source, options) {
 
 	var s = {}, program, gl;
 	var attributes = {}, attrList = [];

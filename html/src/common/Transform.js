@@ -1,12 +1,6 @@
-/**
- *  @class Transform
- *  @memberof SQR
- *
- *  @description A transform is a basic building block for 3D scenes made with squareroot.js
- * 
- *  @param name {string} the name of the transform.
- */
-SQR.Transform = function(name) {
+import SQR from 'SQR';
+
+export default Transform = function(name) {
 
 	var t = {};
 

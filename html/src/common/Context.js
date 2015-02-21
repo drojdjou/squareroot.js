@@ -1,3 +1,4 @@
+import SQR from 'SQR';
 /**
  *	@class Context
  *	@memberof SQR
@@ -12,7 +13,7 @@
 var w = window.innerWidth, h = window.innerHeight;
 var c = SQR.Context('#canvas').create().size(w, h).clearColor(0, 0, 0, 1);
  */
-SQR.Context = function(canvas) {
+var Context = function(canvas) {
 
 	if(!SQR._versionDisplayed && SQR.Version) {
 		console.log('Squareroot v' + SQR.Version.version + ' b' + SQR.Version.build);
@@ -113,3 +114,5 @@ SQR.Context = function(canvas) {
 
 	return c;
 }
+
+export default Context;

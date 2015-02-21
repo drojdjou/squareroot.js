@@ -1,22 +1,6 @@
-/**
- *	@class Buffer
- *	@memberof SQR
- *
- *	@description A buffer represents a 2d or 3d geometry and an attribute buffer.
- *	A buffer is internally composed of a Float32Array array and a WebGL buffer object.
- *	Squareroot does rely on strides, so each geometry is only composed of one array/buffer.
- *	A stride is a portion of the array that holds data for all attributes in a specific order.
- *	For example if the geometry is composed of 3D vertices, normals and 2D UV coordinates, 
- *	the stride look like this<br>
- *	`vx, vy, vz, nx, ny, nz, u, v`<br>
- *	The creation of strides in handled internally by the Buffer class.
- *	<br><br>
- *	More info on strides can be found in the {@link https://www.khronos.org/registry/webgl/specs/latest/1.0/ specs}.
- *	<br><br>
- *	Please read the {@tutorial basic-setup} tutorial to see how to use a buffer  
- *	and the {@tutorial understanding-buffers} tutorial  for an in depth discussion on buffers.
- */
-SQR.Buffer = function() {
+import SQR from 'SQR';
+
+export default Buffer = function() {
 
 	var b = {};
 	var hasIndex = false;

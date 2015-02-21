@@ -1,10 +1,11 @@
+import SQR from 'SQR';
 /**
  *	@class Renderer
  *	@memberof SQR
  *
  *	@description Represents the rendering engine
  */
-SQR.Renderer = function(context) {
+export default Renderer = function(context) {
 
 	var r = {};
 	var uniforms = {}, renderObjects = [], transparentObjects = [];

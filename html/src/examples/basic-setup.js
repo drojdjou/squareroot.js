@@ -31,7 +31,7 @@ export function main() {
         // Create the context based on the #id of the canvas element
         // (there are more options for hw to do that - check the docs)
         // Use chaining to create the GL context and set it's clear color (r,g,b,a)
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+        var ctx = Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
         // Create a renderer, pass the context to it
         var renderer = new SQR.Renderer(ctx);

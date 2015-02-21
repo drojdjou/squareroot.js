@@ -99,3 +99,5 @@ var SQR = {
     WARN_UNIFORM_NOT_PRESENT : false 
 
 };
+
+export default SQR;
