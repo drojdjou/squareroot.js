@@ -71,7 +71,14 @@ var concat = function(set) {
 var createBucket = function(folder, files) {
 
 	files = files || [];
-	files = files.concat(walk(baseUrl + folder + '/'));
+	
+	if(folder instanceof Array) {
+		folder.forEach(function(f) {
+			files = files.concat(walk(baseUrl + f + '/'));
+		});
+	} else {
+		files = files.concat(walk(baseUrl + folder + '/'));
+	}
 
 	var result = {};
 	
@@ -84,7 +91,7 @@ var createBucket = function(folder, files) {
 var saveBucket = function(bucket, fileBase) {
 
 	var cf = outputUrl + fileBase + '.js';
-	var mf = outputUrl + 'mini/' + fileBase + '.min.js';
+	var mf = outputUrl + fileBase + '.min.js';
 
 	fs.writeFileSync(cf, bucket.concat);
 	fs.writeFileSync(mf, bucket.mini);
@@ -137,15 +144,11 @@ var jsifyShaders = function(folder) {
 updateVersion();
 
 
-var common = createBucket('common', [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
-saveBucket(common, 'sqr-common');
-
+var core = createBucket(['common', 'math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
+saveBucket(core, 'sqr');
 saveBucket(jsifyShaders('glsl'), 'sqr-glsl');
-saveBucket(createBucket('math'), 'sqr-math');
-saveBucket(createBucket('dev'), 'sqr-dev');
-// saveBucket(createBucket('extras'), 'sqr-extras');
 saveBucket(createBucket('primitives'), 'sqr-primitives');
-saveBucket(createBucket('two'), 'sqr-two');
+saveBucket(createBucket('extras'), 'sqr-extras');
 
 
 
