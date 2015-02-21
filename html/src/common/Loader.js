@@ -4,7 +4,7 @@
  *
  *	@description Utility to load different types of files (and also some WebRTC related stuff, see below)
  */
-SQR.Loader = {
+var Loader = {
 
 	/** 
 	 *	@method load
@@ -36,7 +36,7 @@ SQR.Loader = {
 	 *	This function will parse the JSON data for you and return an Object.
 	 */
 	loadJSON: function(path, callback){
-		SQR.Loader.loadText(path, function(text) {
+		Loader.loadText(path, function(text) {
 			callback(JSON.parse(text), path);
 		});
 	},
@@ -165,11 +165,11 @@ SQR.Loader.loadAssets([
      */
 	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;
-		SQR.Loader.assets = {};
+		Loader.assets = {};
 		var aliases = {};
 
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[aliases[p] || p] = asset;
+			Loader.assets[aliases[p] || p] = asset;
 			toLoad--;
 
 			if(progressCallback) {
@@ -177,7 +177,7 @@ SQR.Loader.loadAssets([
 			}
 
 			if(toLoad == 0) {
-				callback(SQR.Loader.assets);
+				callback(Loader.assets);
 			}
 		}
 		
@@ -202,28 +202,30 @@ SQR.Loader.loadAssets([
 			
 			switch(e) {
 				case 'glsl':
-					SQR.Loader.loadText(p, onAsset);
+					Loader.loadText(p, onAsset);
 					break;
 				case 'png':
 				case 'jpg':
 				case 'gif':
-					SQR.Loader.loadImage(p, onAsset);
+					Loader.loadImage(p, onAsset);
 					break;
 				case 'json':
 				case 'js':
-					SQR.Loader.loadJSON(p, onAsset);
+					Loader.loadJSON(p, onAsset);
 					break;
 				case 'mp4':
 				case 'webm':
-					SQR.Loader.loadVideo(p, onAsset);
+					Loader.loadVideo(p, onAsset);
 					break;
 				case 'webcam':
-					SQR.Loader.loadWebcam(onAsset);
+					Loader.loadWebcam(onAsset);
 					break;
 			}
 		}
 	}
 };
+
+export default Loader;
 
 
 

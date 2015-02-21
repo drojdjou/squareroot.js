@@ -2,7 +2,7 @@
  *	@namespace SQR
  *	@description The global engine namesapce. All classes belong to this namespace.
  */
-SQR = {
+var SQR = {
 
 	/**
 	 *	@property TWOPI - shorthand for `Math.PI * 2`

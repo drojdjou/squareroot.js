@@ -32,3 +32,8 @@ Guide:
 - {@link SQR.Bezier} - a quadratic bezier implementations
 - {@link SQR.Spline} - a spline: multiple line segments smoothed with bezier function
 
+####Animation
+- {@link SQR.Anm} - a tiny animation/tweening enging
+- {@link SQR.Animation} - a class that represetns an animation
+- {@link SQR.Tween} - a tween is an animation applied to an object
+

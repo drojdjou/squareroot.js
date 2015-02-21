@@ -102,9 +102,35 @@ SQR.ProjectionMatrix.prototype.perspective2 = function (fov, aspect, near, far) 
 
 }
 
+<<<<<<< Updated upstream:html/src/math/ProjectionMatrix.js
 /**
  *  Returns a perspective projection matrix.
  */
+=======
+SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
+    this.orthographic(0, window.innerWidth, 0, window.innerHeight, 0, 1000);
+}
+
+SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom, near, far) {
+
+    var te = this.data;
+    
+    var w = right - left;
+    var h = top - bottom;
+    var p = far - near;
+
+    var x = ( right + left ) / w;
+    var y = ( top + bottom ) / h;
+    var z = ( far + near ) / p;
+
+    te[0] = 2 / w;    te[4] = 0;        te[8] = 0;        te[12] = -x;
+    te[1] = 0;        te[5] = 2 / h;    te[9] = 0;        te[13] = -y;
+    te[2] = 0;        te[6] = 0;        te[10] = -2/p;    te[14] = -z;
+    te[3] = 0;        te[7] = 0;        te[11] = 0;       te[15] = 1;
+
+}
+
+>>>>>>> Stashed changes:src/sqr/math/ProjectionMatrix.js
 SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
 
     /**
