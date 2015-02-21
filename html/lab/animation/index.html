@@ -5,22 +5,22 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-<link rel="stylesheet" type="text/css" href="../html/lab/base.css">
+<link rel="stylesheet" type="text/css" href="../base.css">
 
 </head>
 <body>
 
 <canvas></canvas>
 
-<script type="text/javascript" src="../html/src/SQR.js"></script>
-<script type="text/javascript" src="../html/src/math/Vector3.js"></script>
-<script type="text/javascript" src="../html/src/math/Vector2.js"></script>
-<script type="text/javascript" src="../html/src/math/Interpolation.js"></script>
-<script type="text/javascript" src="../html/src/two/Transform2d.js"></script>
-<script type="text/javascript" src="../html/src/two/CanvasRenderer.js"></script>
-<script type="text/javascript" src="../html/src/two/Shapes.js"></script>
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/extras/Shapes2d.js"></script>
 
-<script type="text/javascript" src="../html/src/extras/Anm.js"></script>
+<script type="text/javascript" src="../../src/common/Anm.js"></script>
 
 <script type="text/javascript">
 
@@ -35,7 +35,7 @@
 
 	var tri = SQR.Transform2d();
 	tri.position.set(w/2, h/2);
-	tri.shape = SQR.Shapes.triangleEq(40, 'rgb(255, 0, 0)');
+	tri.shape = SQR.Shapes2d.triangleEq(40, 'rgb(255, 0, 0)');
 	root.add(tri);
 
 	var rotate180 = SQR.Anm.create(1000, { rotation: [ Math.PI ] });

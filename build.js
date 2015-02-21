@@ -19,7 +19,7 @@ var updateVersion = function() {
 	jsHeader += "// DO NOT EDIT. Updated from version.json\nSQR.Version = ";
 
 	fs.writeFileSync("./version.json", JSON.stringify(version));
-	fs.writeFileSync(baseUrl  + "Version.js", jsHeader + JSON.stringify(version));
+	fs.writeFileSync(baseUrl  + "Version.js", jsHeader + JSON.stringify(version) +";");
 
 	console.log('[ Squareroot.js v' + version.version + ' build ' + version.build + ' ]');	
 }
@@ -33,7 +33,7 @@ var walk = function(dir, filelist) {
 		if (fs.statSync(dir + file).isDirectory()) {
 			filelist = walk(dir + file + '/', filelist);
 		} else {
-			filelist.push(dir + file);
+			if(file.indexOf('.') != 0) filelist.push(dir + file);
 		}
 	});
 
@@ -48,7 +48,15 @@ var minify = function(set) {
 		includes.push(set[i]);
 	}
 
-	var result = UglifyJS.minify(includes);
+	var result = "";
+
+	try {
+		result = UglifyJS.minify(includes);
+	} catch(e) {
+		console.log(e);
+	}
+
+	 
 
 	return result.code;
 }

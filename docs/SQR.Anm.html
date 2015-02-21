@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Delaunay</title>
+    <title>JSDoc: Namespace: Anm</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Delaunay</h1>
+    <h1 class="page-title">Namespace: Anm</h1>
 
     
 
@@ -31,7 +31,7 @@
         <h2>
             <span class="ancestors"><a href="SQR.html">SQR</a>.</span>
         
-        Delaunay
+        Anm
         </h2>
         
     
@@ -41,36 +41,10 @@
     <div class="container-overview">
     
         
+            <div class="description">A tiny Javascript based animation engine.</div>
+        
 
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="Delaunay"><span class="type-signature"></span>new Delaunay<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    based on:<br> 
- 
- <a href="http://paulbourke.net/papers/triangulate/">http://paulbourke.net/papers/triangulate/</a><br>
- <a href="http://www.travellermap.com/tmp/delaunay.htm">http://www.travellermap.com/tmp/delaunay.htm</a> (original code)<br> 
- <a href="https://github.com/ironwallaby/delaunay/blob/master/delaunay.js">https://github.com/ironwallaby/delaunay/blob/master/delaunay.js</a><br> 
- <a href="http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816">http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816</a>
-</div>
-
-
-
-
-
-
-
-
-
-
-
+        
 
 
 <dl class="details">
@@ -102,7 +76,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Delaunay.js.html">math/Delaunay.js</a>, <a href="math_Delaunay.js.html#line1">line 1</a>
+        <a href="extras_Anm.js.html">extras/Anm.js</a>, <a href="extras_Anm.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -114,20 +88,7 @@
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -151,14 +112,14 @@
 
     
 
-    <h4 class="name" id=".triangulate"><span class="type-signature">(static) </span>triangulate<span class="signature">(vertices)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(duration, properties)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    Performs Delaunay triangulation.
+    Creates an animation
 </div>
 
 
@@ -194,10 +155,15 @@
 
         <tr>
             
-                <td class="name"><code>vertices</code></td>
+                <td class="name"><code>duration</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
             
             </td>
 
@@ -205,9 +171,33 @@
 
             
 
-            <td class="description last">a list of 2d vertices. 
-	Can be <a href="SQR.V2.html">SQR.V2</a>, <a href="SQR.V3.html">SQR.V3</a> or any object that has `x` and `y` properties. 
-	In case of a 3d vector, the `z` component is ignored.</td>
+            <td class="description last">duration of the animation in millis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the properties being animated. 
+	The properties contains a list of properties of the animated object 
+	along with optional start value and an end value. The example below
+	shows three possible ways of defining the start and end values.</td>
         </tr>
 
     
@@ -247,7 +237,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Delaunay.js.html">math/Delaunay.js</a>, <a href="math_Delaunay.js.html#line98">line 98</a>
+        <a href="extras_Anm.js.html">extras/Anm.js</a>, <a href="extras_Anm.js.html#line140">line 140</a>
     </li></ul></dd>
     
 
@@ -274,12 +264,214 @@
 
         
 <div class="param-desc">
-    a list of SQR.Triangles
+    An object representing the animation
 </div>
 
 
 
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
     
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var animation = SQR.Anm.create(1000, { 
+	// option A: just a value, no array
+	// scale from current value to 1
+	scale: 1,
+	// option B: 1 element array
+	// rotate from current value by Math.PI 
+	// i.e. end value = current value + Math.PI
+	rotation: [Math.PI],
+	// option C: 2 element array
+	// move from 0 to 100
+	position: [0, 100]
+});
+
+	</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".run"><span class="type-signature">(static) </span>run<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Starts a loop that runs the animation engine. Once started, it cannot be stopped. 
+	This function doesn't need to be called, SQR.Anm.update() can be invoked manually each frame instead.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extras_Anm.js.html">extras/Anm.js</a>, <a href="extras_Anm.js.html#line245">line 245</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>Add a method to stop the loop.</li>
+        </ul>
+    </dd>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update"><span class="type-signature">(static) </span>update<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Updates the animation state. Should be called at each frame, typically inside a rAF loop.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extras_Anm.js.html">extras/Anm.js</a>, <a href="extras_Anm.js.html#line221">line 221</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

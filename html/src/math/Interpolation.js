@@ -1,5 +1,5 @@
 /**
- *  @class Interpolation
+ *  @namespace Interpolation
  *  @memberof SQR
  *
  *  @description A collection of interpolation functions.

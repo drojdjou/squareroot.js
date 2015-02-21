@@ -12,8 +12,8 @@
  	 *	@param {Number} w - the width of the texture, default 512
  	 *	@param {Number} h - the height of the texture, default 512
  	 *	@param {HTMLCanvasElement} canvas - a canvas to draw the texture on, if omitted a new one is created
- 	 *	@param {Number} min - minimum color valu for r,g,b channels [0-255], alpha is always 255
- 	 *	@param {Number} max - maximum color valu for r,g,b channels [0-255], alpha is always 255
+ 	 *	@param {Number} min - minimum color value for r,g,b channels [0-255], alpha is always 255
+ 	 *	@param {Number} max - maximum color value for r,g,b channels [0-255], alpha is always 255
  	 */
 	noise: function(w, h, canvas, min, max) {
 

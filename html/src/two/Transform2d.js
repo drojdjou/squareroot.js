@@ -32,6 +32,7 @@ SQR.Transform2d = function() {
 
     /**
      *  @var {Number} alpha - the transparency of this element. 
+     *  @memberof SQR.Transform2d.prototype
      *  0 = transparent, 1 = opaque, default 1
      */
     t.alpha = 1;

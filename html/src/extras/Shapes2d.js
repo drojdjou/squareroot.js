@@ -1,4 +1,4 @@
-SQR.Shapes = {
+SQR.Shapes2d = {
 
 	circle: function(radius, color) {
 		return function(ctx) {
