@@ -42,6 +42,7 @@
         // It's also possible ot specify an alias. Instead of a String, 
         // use an Array, where [0] is the path, and [1] is the alias.
         ['../normal2color.glsl', 'n2c'],
+        ['color.glsl', 'col'],
         ['../assets/elephant.json', 'elephant'],
     ], function(assets) {
 
@@ -91,7 +92,7 @@
         var cube = new SQR.Transform();
         cube.position.y = 1.2;
         cube.buffer = buffer;
-        cube.shader = SQR.Shader(assets['n2c']);
+        cube.shader = SQR.Shader(assets['col']);
         root.add(cube);
 
         var render = function() {

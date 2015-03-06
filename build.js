@@ -131,7 +131,7 @@ var jsifyShaders = function(folder) {
 
 		for(var j = 0; j < file.length; j++) {
 			var l = file[j];
-			if(l.indexOf("//") > -1) l = l.substring(0, l.indexOf("//"));
+			if(l.indexOf("//") > -1 && l.indexOf("//#") == -1) l = l.substring(0, l.indexOf("//"));
 			if(l.match(/^([\s\t]*)$/)) continue;
 			concatFile += l + '\\n';
 		}

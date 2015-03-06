@@ -33,7 +33,7 @@ SQR.Primitives.createPoint = function(x, y) {
  *
  *	@returns {SQR.Buffer}
  */
-SQR.Primitives.createCube = function(w, h, d) {
+SQR.Primitives.createCube = function(w, h, d, options) {
 
 	w = w || 1;
 	h = h || 1;
@@ -66,15 +66,67 @@ SQR.Primitives.createCube = function(w, h, d) {
 	faces.push(SQR.Face().setPosition(v4, v5, v0, v1).setUV(u0, u1, u2, u3));
 	faces.push(SQR.Face().setPosition(v2, v3, v6, v7).setUV(u0, u1, u2, u3));
 	
-	var c = 0, t;
+	var c = 0;
 	faces.forEach(function(t) {
-		c += t.calculateNormal().toBuffer(geo, c);
+		if(options && options.reverseNormals) t.flip();
+		t.calculateNormal();
+		c += t.toBuffer(geo, c);
 	});
 
 	// SQR.Debug.traceBuffer(geo, true);
 	
 	return geo;
 }
+
+SQR.Primitives.createSkybox = function(faces, glsl, size) {
+
+	if(!glsl && SQR.GLSL) glsl = SQR.GLSL['shaders/skybox.glsl'];
+
+	if(!glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl to use the default one.";
+
+	var skybox = new SQR.Transform();
+
+	size = size || 5;
+
+    skybox.shader = SQR.Shader(glsl);
+    skybox.buffer = SQR.Primitives.createCube(size, size, size, { reverseNormals: true }).update();
+
+	skybox.addCubemap = function(fs) {
+		if(!fs) return;
+		// TODO: delete previous cubemaps if any
+		skybox.cubemap = SQR.Cubemap(fs);
+    	skybox.shader.use().setUniform('uCubemap', skybox.cubemap);
+	}
+
+	skybox.addCubemap(faces);
+
+    skybox.useDepth = false;
+
+    return skybox;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* --- --- [primitives/Cylinder.js] --- --- */
 
@@ -390,6 +442,12 @@ SQR.Face = function() {
         t.c = c;
         t.d = d;
         return t;
+    }
+
+    t.flip = function() {
+        var tmp = t.b;
+        t.b = t.c;
+        t.c = tmp;
     }
 
     /**
@@ -827,7 +885,7 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
  *  @function createPostEffect
  *  @memberof SQR.Primitives
  *
- *  @description Creates a post-processing effect (such as SAO or depth-of-field). It creares
+ *  @description Creates a post-processing effect (such as SAO or depth-of-field). It creates
  *	an instance of SQR.Transform with a full screen quad buffer and the shader build from the provided source.
  *	Please read the {@tutorial post-effects} tutorial to see how it works. 
  *
@@ -849,6 +907,87 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
 
     return pe;
 }
+
+
+SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
+
+	if(!shaderSource && !SQR.GLSL) throw '> SQR.Primitives.createImage > sqr-glsl.js package is required to use this feature.';
+    shaderSource = shaderSource || SQR.GLSL['post/image.glsl'];
+
+	var pe = new SQR.Transform();
+
+    pe.buffer = SQR.Buffer()
+        .layout(SQR.v2u2(), 6)
+        .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
+        .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
+        .update();
+
+    var image = img;
+    var texture = SQR.Texture(image);
+    pe.shader = SQR.Shader(shaderSource, shaderOptions);
+
+    pe.setImage = function(img) {
+        image = img;
+        texture.setSource(img).update();
+        pe.shader.use().setUniform('uTexture', texture);
+    }
+
+    pe.setImage(image);
+
+    pe.size = function(w, h) {
+
+        var xl = -1, yt = 1, xr = 1, yb = -1;
+        var iw = image.width, ih = image.height;
+
+        var fw = iw / ih * h;
+        var fh = ih / iw * w;
+
+        if(mode == 'fit') {
+            if(fw > w) {
+                yb = -(fh / h);
+                yt =  (fh / h);
+            }
+
+            if(fh > h) {
+                xl = -(fw / w);
+                xr =  (fw / w);
+            }
+        } else if(mode == 'cover') {    
+            if(fw > w) {
+                xl = -(fw / w);
+                xr =  (fw / w);
+            }
+
+            if(fh > h) {
+                yb = -(fh / h);
+                yt =  (fh / h);
+            }
+        }
+
+        pe.buffer.data('aPosition', 
+            xl, yt,
+            xr, yt,
+            xr, yb,
+
+            xl, yt,
+            xr, yb,
+            xl, yb
+        ).update();
+
+        return pe;
+    }
+
+	return pe;
+}
+
+
+
+
+
+
+
+
+
 
 /* --- --- [primitives/Sphere.js] --- --- */
 

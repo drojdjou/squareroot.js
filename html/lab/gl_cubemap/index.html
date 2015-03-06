@@ -161,7 +161,7 @@
                 break;
             }
 
-            renderer.render(root, cubemapCamera, { dontCalculateTransforms: (name == 'front') });
+            renderer.render(root, cubemapCamera);//, { dontCalculateTransforms: (name == 'front') });
         }
 
         var render = function() {

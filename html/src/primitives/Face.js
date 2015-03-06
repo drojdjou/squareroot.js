@@ -44,6 +44,12 @@ SQR.Face = function() {
         return t;
     }
 
+    t.flip = function() {
+        var tmp = t.b;
+        t.b = t.c;
+        t.c = tmp;
+    }
+
     /**
      *  Set the normal shared by all the vertices
      *  @method setNormal

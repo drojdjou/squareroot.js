@@ -22,6 +22,7 @@ SQR.Renderer = function(context) {
 
         if(t.buffer && t.shader) {
         	if(t.transparent) transparentObjects.push(t);
+        	else if(!t.useDepth) renderObjects.unshift(t);
         	else renderObjects.push(t);
         }
 	}
@@ -91,8 +92,12 @@ SQR.Renderer = function(context) {
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
+
+				if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
+
 				var p = (camera && camera.projection) || r.projection;
 				if(p) lastShader.setUniform('uProjection', p);
+
 				shaderChanged = true;
 			}
 

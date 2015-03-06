@@ -10,7 +10,7 @@
  *
  *	@returns {SQR.Buffer}
  */
-SQR.Primitives.createCube = function(w, h, d) {
+SQR.Primitives.createCube = function(w, h, d, options) {
 
 	w = w || 1;
 	h = h || 1;
@@ -43,12 +43,63 @@ SQR.Primitives.createCube = function(w, h, d) {
 	faces.push(SQR.Face().setPosition(v4, v5, v0, v1).setUV(u0, u1, u2, u3));
 	faces.push(SQR.Face().setPosition(v2, v3, v6, v7).setUV(u0, u1, u2, u3));
 	
-	var c = 0, t;
+	var c = 0;
 	faces.forEach(function(t) {
-		c += t.calculateNormal().toBuffer(geo, c);
+		if(options && options.reverseNormals) t.flip();
+		t.calculateNormal();
+		c += t.toBuffer(geo, c);
 	});
 
 	// SQR.Debug.traceBuffer(geo, true);
 	
 	return geo;
 }
+
+SQR.Primitives.createSkybox = function(faces, glsl, size) {
+
+	if(!glsl && SQR.GLSL) glsl = SQR.GLSL['shaders/skybox.glsl'];
+
+	if(!glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl to use the default one.";
+
+	var skybox = new SQR.Transform();
+
+	size = size || 5;
+
+    skybox.shader = SQR.Shader(glsl);
+    skybox.buffer = SQR.Primitives.createCube(size, size, size, { reverseNormals: true }).update();
+
+	skybox.addCubemap = function(fs) {
+		if(!fs) return;
+		// TODO: delete previous cubemaps if any
+		skybox.cubemap = SQR.Cubemap(fs);
+    	skybox.shader.use().setUniform('uCubemap', skybox.cubemap);
+	}
+
+	skybox.addCubemap(faces);
+
+    skybox.useDepth = false;
+
+    return skybox;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

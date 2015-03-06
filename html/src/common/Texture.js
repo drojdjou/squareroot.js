@@ -4,21 +4,36 @@
  *
  *  @description Represents a WebGL texture created from an Image, Video or Canvas element.
  */
-SQR.Texture = function(s, options) {
+SQR.Texture = function(_source, options) {
 
     options = options || {};
 
-    if(!(s instanceof HTMLVideoElement || s instanceof Image || s instanceof HTMLCanvasElement)) {
-        console.error('Invalid source: ' + s);
-        throw 'SQR.Texture > provided source is not a valid source for texture';
-    }
+    
 
 	var t = {};
 	var gl = SQR.gl;
-	var source = s;
+
+	var source;
+
+    t.setSource = function(_source) {
+
+        if(!(_source instanceof HTMLVideoElement || _source instanceof Image || _source instanceof HTMLCanvasElement)) {
+            console.error('Invalid source: ' + s);
+            throw 'SQR.Texture > provided source is not a valid source for texture';
+        }
+
+        source = _source;
+
+        t.isAnimated = (options && options.isAnimated) || (_source instanceof HTMLVideoElement);
+        
+        return t;
+    }
+
+    t.setSource(_source);
+
 	var texture = gl.createTexture();
 
-	t.isAnimated = (options && options.isAnimated) || (s instanceof HTMLVideoElement);
+	
 
 	var isPowerOfTwo = function() {
         var x = source.width, y = source.height;
@@ -27,9 +42,12 @@ SQR.Texture = function(s, options) {
 
 	t.update = function() {
 		var gl = SQR.gl;
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
         return t;
 	}
+
+    
 
     var wrapS = options.wrapS || options.wrap || gl.CLAMP_TO_EDGE;
     var wrapT = options.wrapT || options.wrap || gl.CLAMP_TO_EDGE;

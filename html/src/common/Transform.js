@@ -109,6 +109,7 @@ SQR.Transform = function(name) {
     t.transparent = false;
     t.srcFactor = null;
     t.dstFactor = null;
+    t.useDepth = true;
 
     t.setBlending = function(transparent, src, dst) {
         t.transparent = transparent;
@@ -148,7 +149,7 @@ SQR.Transform = function(name) {
         for (var i = 0; i < arguments.length; i++) {
             var c = arguments[i];
             var j = t.children.indexOf(c);
-            if (j == -1) return false;
+            if (j == -1) continue;
             c.parent = null;
             t.children.splice(j, 1);
         }
@@ -219,13 +220,17 @@ SQR.Transform = function(name) {
             }
         }
 
+        // This works, but this is much better:
+        // http://stackoverflow.com/questions/2859722/opengl-how-can-i-put-the-skybox-in-the-infinity (implement globally)
+        var gl = SQR.gl;
+        // gl.depthMask(t.depthMask);
+        t.useDepth ? gl.enable(gl.DEPTH_TEST): gl.disable(gl.DEPTH_TEST);
     	t.buffer.draw();
     }
 
 	/**
      * Sets up the local matrix and multiplies is by the parents globalMatrix.
      * This function is called in the rendering process, do not call directly.
-     *
      */
     t.transformWorld = function() {
 
@@ -256,6 +261,8 @@ SQR.Transform = function(name) {
         }
 
         t.globalMatrix.extractPosition(t.globalPosition);
+
+        // d = globalMatrix.data, d[8], d[9], d[10] = forward vector
 
         if(t.isStatic) transformState = 1;
     }

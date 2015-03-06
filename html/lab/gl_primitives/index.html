@@ -53,21 +53,19 @@
         var ctx = SQR.Context('#gl-canvas')
             .create()
             .size(w, h).
-            clearColor(1, 1, 1, 1);
+            clearColor(0, 0, 0, 1);
 
         var renderer = new SQR.Renderer(ctx);
         renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
 
         var camera = new SQR.Transform();
-        camera.position.z = 20;
-
-        var numSquares = parseInt(document.location.search.substring(1)) || 12000;
-        document.querySelector('.num').innerHTML = numSquares;
-
         var root = new SQR.Transform();
         var camRoot = new SQR.Transform();
         root.add(camRoot);
         camRoot.add(camera);
+
+        camRoot.position.z = 40;
+        camera.position.z = 40;
 
 
         var shader = SQR.Shader(assets['tex.glsl']);
@@ -111,12 +109,13 @@
         root.add(icosphere);
 
 
-        cube.position.set(-5, -5, 0);
-        plane.position.set( 0, -5, 0);
-        plane2.position.set(0, -5, 0);
-        sphere.position.set(6, -5, 0);
-        cylinder.position.set(-2.5, 5, 0);
-        icosphere.position.set(5, 5, 0);
+        cube.position.set(0, 0, -10);
+        // cube.position.set(-5, -5, 0);
+        // plane.position.set( 0, -5, 0);
+        // plane2.position.set(0, -5, 0);
+        // sphere.position.set(6, -5, 0);
+        // cylinder.position.set(-2.5, 5, 0);
+        // icosphere.position.set(5, 5, 0);
 
 
         var my = 0, mx = 0, tx = 0, ty = 0;
@@ -132,10 +131,9 @@
 
         var render = function() {
             requestAnimationFrame(render);
-            ctx.clear();
 
-            camRoot.rotation.y += 0.005;
-            camRoot.rotation.x += 0.01;
+            // camRoot.rotation.y += 0.005;
+            // camRoot.rotation.x += 0.01;
 
             // camRoot.rotation.x = Math.PI * -0.5;
             // camRoot.rotation.y = Math.PI * -0.5;

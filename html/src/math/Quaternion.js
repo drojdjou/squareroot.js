@@ -77,6 +77,10 @@ SQR.Quaternion.prototype.mul = function(q, rq) {
     return rq;
 }
 
+SQR.Quaternion.prototype.dot = function(q) {
+    return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
+}
+
 /**
  *  Sets the quaternion to point in the given direction.
  *  @param _dir the direction to look at
@@ -128,6 +132,7 @@ SQR.Quaternion.prototype.fromAngleAxis = function(a, x, y, z) {
     this.y = y * s;
     this.z = z * s;
     this.w = Math.cos(a / 2);
+    return this;
 }
 
 /**
@@ -166,7 +171,7 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
  *  @param t interpolation value [0-1]
  *  @param qr the quaterion to store the results in and return. If omitted results are returned in a new quaternion object.
  */
-SQR.Quaternion.slerp = function(qb, qa, t, qr) {
+SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr = qr || new SQR.Quaternion();
 
     var cha = qa.w * qb.w + qa.x * qb.x + qa.y * qb.y + qa.z * qb.z;
@@ -196,6 +201,7 @@ SQR.Quaternion.slerp = function(qb, qa, t, qr) {
 
 SQR.Quaternion.prototype.slerp = function(qa, qb, t) {
     SQR.Quaternion.slerp(qa, qb, t, this);
+    return this;
 }
 
 SQR.Quaternion.__tv1 = new SQR.Quaternion();

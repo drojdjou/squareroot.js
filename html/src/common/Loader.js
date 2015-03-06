@@ -166,11 +166,17 @@ SQR.Loader.loadAssets([
 	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;
 		SQR.Loader.assets = {};
-		var aliases = {};
+		var aliases = {}, includes = {};
 
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[aliases[p] || p] = asset;
+			SQR.Loader.assets[aliases[p]] = asset;
 			toLoad--;
+
+			// if(includes[p]) {
+			// 	console.log(includes[p].substring(1));
+			// 	if(!SQR.GLSL) SQR.GLSL = {};
+			// 	SQR.GLSL[includes[p].substring(1)] = asset;
+			// }
 
 			if(progressCallback) {
 				progressCallback(toLoad, paths.length);
@@ -184,38 +190,40 @@ SQR.Loader.loadAssets([
 		for(var i = 0; i < toLoad; i++) {
 			var p = paths[i];
 
-			if(typeof(p) != 'string') {
-				aliases[p[0]] = p[1];
-				p = p[0];
-			}
+			var hasAlias = typeof(p) != 'string';
+			var file = hasAlias ? p[0] : p;
+			var alias = hasAlias ? p[1] : p;
+			var fileType = file.substring(file.lastIndexOf('.') + 1);
 
-			var e = p.substring(p.lastIndexOf('.') + 1);
-
-			if(p.indexOf('~') > -1) {
-				if(SQR.GLSL && SQR.GLSL[p.substring(2)]) {
+			if(file.indexOf('~') > -1) {
+				if(SQR.GLSL && SQR.GLSL[file.substring(2)]) {
 					toLoad--;
 					continue;
 				} else {
-					p = p.replace('~', SQR.shaderPath);
+					var f = file.replace('~', SQR.shaderPath);
+					includes[f] = file;
+					file = f;
 				}
 			}
+
+			aliases[file] = alias;
 			
-			switch(e) {
+			switch(fileType) {
 				case 'glsl':
-					SQR.Loader.loadText(p, onAsset);
+					SQR.Loader.loadText(file, onAsset);
 					break;
 				case 'png':
 				case 'jpg':
 				case 'gif':
-					SQR.Loader.loadImage(p, onAsset);
+					SQR.Loader.loadImage(file, onAsset);
 					break;
 				case 'json':
 				case 'js':
-					SQR.Loader.loadJSON(p, onAsset);
+					SQR.Loader.loadJSON(file, onAsset);
 					break;
 				case 'mp4':
 				case 'webm':
-					SQR.Loader.loadVideo(p, onAsset);
+					SQR.Loader.loadVideo(file, onAsset);
 					break;
 				case 'webcam':
 					SQR.Loader.loadWebcam(onAsset);

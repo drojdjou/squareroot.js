@@ -67,7 +67,7 @@ SQR.Shader = function(source, options) {
 				if(SQR.GLSL && SQR.GLSL[p.substring(1)]) {
 					inc = SQR.GLSL[p.substring(1)];
 				} else {
-					inc = SQR.Loader.assets[p.replace('~', SQR.shaderPath)];
+					inc = SQR.Loader.assets[p];
 				}
 
 				if(!inc) throw "> SQR.Shader.parseGLSL - Include not found " + p;

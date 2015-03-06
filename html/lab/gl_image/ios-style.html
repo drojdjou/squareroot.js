@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GL Image</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+.dialog {
+
+    font-family: 'Open Sans';
+    font-weight: 300;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
+    height: 100px;
+    border-radius: 16px;
+    width: 100%;
+    /*border: 1px solid rgba(255, 255, 255, 0.5);*/
+    -webkit-box-sizing: border-box;
+    /*box-shadow: 0px 0px 20px black;*/
+}
+
+.dialog li {
+    width: 33%;
+    line-height: 100px;
+    float: left;
+    font-size: 25px;
+    padding: 0 20px 0 20px;
+    -webkit-box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.dialog li:hover {
+    text-decoration: underline;
+}
+
+</style>
+
+</head>
+<body>
+
+<ul class="dialog">
+    <li id='img-a'>times square</li>
+    <li id='img-b'>golden gate bridge</li>
+    <li id='img-c'>hollywood sign</li>
+</ul>
+
+<script type="text/javascript">
+
+    SQR.shaderPath = '../../src/glsl/'
+
+    SQR.Loader.loadAssets([
+        ['~post/image.glsl', 'image-shader'],
+        ['~post/blur.glsl', 'blur-shader'],
+        ['mask.glsl', 'ui-shader'],
+        ['../../assets/times-square.jpg', 'image-a'],
+        ['../../assets/golden-gate.jpg', 'image-b'],
+        ['../../assets/hollywood.jpg', 'image-c']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context().create().clearColor(0, 0, 0, 1);
+        document.body.appendChild(ctx.canvas);
+
+        var two = SQR.CanvasRenderer().setClearColor('white');
+        document.body.appendChild(two.canvas);
+        two.canvas.style.display = 'none';
+
+        var uiTex = SQR.Texture(two.canvas);
+
+        var renderer = new SQR.Renderer(ctx);
+        var image = SQR.Primitives.createImage(assets['image-a'], 'cover', assets['image-shader']);
+
+        var rawFBO = SQR.FrameBuffer(w, h);    
+        var blurXFBO = SQR.FrameBuffer(w, h);
+        var blurYFBO = SQR.FrameBuffer(w, h);
+
+        var ui = SQR.Primitives.createPostEffect(assets['ui-shader']);
+        var blur = SQR.Primitives.createPostEffect(assets['blur-shader'], { directives: [ { name: 'ITE', value: '12.0' } ] });
+
+        var blurForceStatic = 0.07;
+
+
+
+        var mask = new SQR.Transform2d();
+
+        document.querySelector('#img-a').addEventListener('click', function() {
+            image.setImage(assets['image-a']);
+            resize();
+        });
+
+        document.querySelector('#img-b').addEventListener('click', function() {
+            image.setImage(assets['image-b']);
+            resize();
+        });
+
+        document.querySelector('#img-c').addEventListener('click', function() {
+            image.setImage(assets['image-c']);
+            resize();
+        });
+
+
+        mask.shape = function(ctx) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, window.innerWidth, 100);
+        };
+
+        var resize = function() {
+            var w = window.innerWidth, h = window.innerHeight;
+            ctx.size(w, h);
+            image.size(w, h);
+            rawFBO.resize(w, h);
+            blurXFBO.resize(w, h);
+            blurYFBO.resize(w, h);
+            two.setSize(w, h);
+            mask.position.set(0, h - 100);
+        }
+
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+
+            rawFBO.bind();
+            renderer.render(image);
+
+            blurXFBO.bind();
+            blur.shader.use();
+            blur.shader.setUniform('uDelta', [blurForceStatic, 0.0]);
+            blur.shader.setUniform('uTexture', rawFBO.texture);
+            renderer.render(blur);
+
+            blurYFBO.bind();
+            blur.shader.setUniform('uDelta', [0.0, blurForceStatic]);
+            blur.shader.setUniform('uTexture', blurXFBO.texture);
+            renderer.render(blur);
+
+            renderer.renderToScreen();
+            ui.shader.use();
+            ui.shader.setUniform('uTexture', rawFBO.texture);
+            ui.shader.setUniform('uBlurTexture', blurYFBO.texture);
+            ui.shader.setUniform('uMaskTexture', uiTex.update());
+            renderer.render(ui);
+            
+            two.render(mask);
+        }
+
+
+        window.addEventListener('resize', resize);
+        resize();
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

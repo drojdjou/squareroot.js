@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GL Image</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<script type="text/javascript">
+
+    SQR.shaderPath = '../../src/glsl/'
+
+    SQR.Loader.loadAssets([
+        ['~post/image.glsl', 'image-shader'],
+        ['~post/blur.glsl', 'blur-shader'],
+        ['vignette.glsl', 'vignette-shader'],
+        ['../../assets/times-square.jpg', 'image']
+        // ['../../assets/golden-gate.jpg', 'image']
+        // ['../../assets/empire.jpg', 'image']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context().create().clearColor(0, 0, 0, 1);
+
+        document.body.appendChild(ctx.canvas);
+
+        var renderer = new SQR.Renderer(ctx);
+        var image = SQR.Primitives.createImage(assets['image'], 'cover', assets['image-shader']);
+
+        var rawFBO = SQR.FrameBuffer(w, h);    
+        var blurXFBO = SQR.FrameBuffer(w, h);
+        var blurYFBO = SQR.FrameBuffer(w, h);
+
+        var vignette = SQR.Primitives.createPostEffect(assets['vignette-shader']);
+        var blur = SQR.Primitives.createPostEffect(assets['blur-shader'], { directives: [ { name: 'ITE', value: '12.0' } ] });
+
+        var blurForce = 0.01;
+        var blurForceStatic = 0.02;
+
+        var resize = function() {
+            var w = window.innerWidth, h = window.innerHeight;
+            ctx.size(w, h);
+            image.size(w, h);
+            rawFBO.resize(w, h);
+            blurXFBO.resize(w, h);
+            blurYFBO.resize(w, h);
+        }
+
+        var mode = document.location.search.substring(1);
+
+        document.addEventListener('mousemove', function(e) {
+            blurForce = e.pageY / window.innerHeight * 0.01;
+        });
+
+        document.addEventListener('click', function(e) {
+            mode = mode == 1 ? 4 : 1;
+        });
+
+        var render = function() {
+            requestAnimationFrame(render);
+            ctx.clear();
+
+            switch(mode) {
+                case '1':
+
+                    renderer.render(image);
+
+                    break;
+
+                case '2':
+
+                    rawFBO.bind();
+                    renderer.render(image);
+
+                    renderer.renderToScreen();
+                    blur.shader.use();
+                    blur.shader.setUniform('uDelta', [blurForceStatic, 0.0]);
+                    blur.shader.setUniform('uTexture', rawFBO.texture);
+                    renderer.render(blur);
+
+                    break;
+
+                case '3':
+
+                    rawFBO.bind();
+                    renderer.render(image);
+
+                    blurXFBO.bind();
+                    blur.shader.use();
+                    blur.shader.setUniform('uDelta', [blurForceStatic, 0.0]);
+                    blur.shader.setUniform('uTexture', rawFBO.texture);
+                    renderer.render(blur);
+
+                    renderer.renderToScreen();
+                    blur.shader.setUniform('uDelta', [0.0, blurForce]);
+                    blur.shader.setUniform('uTexture', blurXFBO.texture);
+                    renderer.render(blur);
+
+                    break;
+
+                default:
+
+                    rawFBO.bind();
+                    renderer.render(image);
+
+                    blurXFBO.bind();
+                    blur.shader.use();
+                    blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+                    blur.shader.setUniform('uTexture', rawFBO.texture);
+                    renderer.render(blur);
+
+                    blurYFBO.bind();
+                    blur.shader.setUniform('uDelta', [0.0, blurForce]);
+                    blur.shader.setUniform('uTexture', blurXFBO.texture);
+                    renderer.render(blur);
+
+                    renderer.renderToScreen();
+                    vignette.shader.use();
+                    vignette.shader.setUniform('uTexture', rawFBO.texture);
+                    vignette.shader.setUniform('uBlurTexture', blurYFBO.texture);
+                    renderer.render(vignette);
+
+                    break;
+            }
+
+            return;
+
+            
+        }
+
+
+        window.addEventListener('resize', resize);
+        resize();
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

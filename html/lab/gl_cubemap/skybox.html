@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Skybox</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Cubemap.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+
+<script type="text/javascript" src="../../../build/sqr-glsl.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['../../assets/skybox/skybox-up.jpg', 'up'],
+        ['../../assets/skybox/skybox-down.jpg', 'down'],
+        ['../../assets/skybox/skybox-right.jpg', 'right'],
+        ['../../assets/skybox/skybox-back.jpg', 'back'],
+        ['../../assets/skybox/skybox-front.jpg', 'front'],
+        ['../../assets/skybox/skybox-left.jpg', 'left'],
+        ['normal2color.glsl', 'n2c'],
+        ['../../src/glsl/shaders/skybox.glsl', 'skybox']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0.5, 0.5, 0.5, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        // camera.position.z = 10;
+        root.add(camera);
+
+        var skybox = SQR.Primitives.createSkybox({
+            'up': assets['up'],
+            'down': assets['down'],
+            'left': assets['left'],
+            'right': assets['right'],
+            'front': assets['front'],
+            'back': assets['back']
+        }, assets['skybox']);
+
+
+
+        var cube = new SQR.Transform();
+        cube.shader = SQR.Shader(assets['n2c']);
+        cube.buffer = SQR.Primitives.createCube(10, 1, 1).update();
+        cube.position.z = -10;
+
+        root.add(skybox);
+        root.add(cube);
+
+       
+        
+        var render = function() {
+
+            cube.rotation.x += 0.02;
+            cube.rotation.y += 0.01;
+
+            // skybox.rotation.y += 0.001;
+
+            // camera.rotation.y += 0.01;
+            camera.position.x += 0.01;
+
+            requestAnimationFrame(render);
+            renderer.render(root, camera);
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

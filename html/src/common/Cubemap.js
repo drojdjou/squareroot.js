@@ -30,7 +30,7 @@ SQR.Cubemap = function(faces, params) {
 
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, c.tex);
 
-        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, c.flip);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
         gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.right);
         gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, faceImages.left);
@@ -78,7 +78,7 @@ SQR.Cubemap = function(faces, params) {
         load("down", faces.down);
         load("back", faces.back);
         load("front", faces.front);
-    } else {
+    } else if(faces) {
         load("left", faces);
         load("right", faces);
         load("up", faces);

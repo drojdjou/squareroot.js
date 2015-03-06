@@ -11,7 +11,7 @@
  */
 SQR.CanvasRenderer = function(canvas) {
 
-	var r = {};
+	var r = {}, clearColor = null;
 
 	var BADCTX = "> SQR.Context - Invalid canvas reference.";
 
@@ -36,6 +36,12 @@ SQR.CanvasRenderer = function(canvas) {
 	r.setSize = function(w, h) {
 		canvas.width = w;
 		canvas.height = h;
+		return r;
+	}
+
+	r.setClearColor = function(c) {
+		clearColor = c;
+		return r;
 	}
 
 	/**
@@ -45,7 +51,14 @@ SQR.CanvasRenderer = function(canvas) {
 	 *	@param {SQR.Transform2d} root - the root transform to render
 	 */
 	r.render = function(root) {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if(clearColor) {
+			ctx.fillStyle = clearColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		} else {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		}
+		
+
 		root.draw(ctx);
 	}
 

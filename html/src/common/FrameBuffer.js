@@ -100,6 +100,9 @@ SQR.FrameBuffer = function(width, height, resolution, isCubemap) {
 
         gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
     }
 
     return f;

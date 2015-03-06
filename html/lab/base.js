@@ -83,18 +83,25 @@ CodeColor.colorize = function(query) {
 var article = document.querySelector('header article');
 var button = document.querySelector('header button');
 var code = document.querySelector('header article code');
-var src = document.querySelector('#gl-script')
+var src = document.querySelector('#gl-script');
 
 var articleVisible = false;
 
-button.addEventListener('click', function(e) {
-	articleVisible = !articleVisible;
-	article.style.display = articleVisible ? 'block' : 'none';
-	if(window.innerWidth > 900) {
-		code.innerHTML = src.innerHTML;
-		CodeColor.colorize("code");
-	} else {
-		code.innerHTML = "";
-		code.style.display = 'none';
-	}
-});
+if(button) {
+	button.addEventListener('click', function(e) {
+		articleVisible = !articleVisible;
+		article.style.display = articleVisible ? 'block' : 'none';
+		if(window.innerWidth > 900) {
+			code.innerHTML = src.innerHTML;
+			CodeColor.colorize("code");
+		} else {
+			code.innerHTML = "";
+			code.style.display = 'none';
+		}
+	});
+};
+
+
+
+
+
