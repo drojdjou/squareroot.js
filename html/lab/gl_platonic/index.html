@@ -31,12 +31,13 @@
 
 <script type="text/javascript" src="../../src/extras/WirePlatonic.js"></script>
 <script type="text/javascript" src="../../src/extras/DiscoBall.js"></script>
+<script type="text/javascript" src="../../src/extras/ParticleStream.js"></script>
 
-<link rel="stylesheet" type="text/css" href="../base.css">
+<!-- <link rel="stylesheet" type="text/css" href="../base.css"> -->
 
 <style type="text/css">
 
-.bg {
+canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -60,10 +61,11 @@
 		['disco.glsl', 'disco-shader'],
 		['blur.glsl', 'blur-shader'],
 		['bloom.glsl', 'bloom-shader'],
+		['stream.glsl', 'stream-shader'],
 		['dot.jpg', 'dot-tex']
 	], function(assets) {
 
-		
+		var isTouch = ('ontouchstart' in document);
 
 		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 		var renderer = new SQR.Renderer(ctx);
@@ -71,7 +73,7 @@
 		var root = SQR.Transform('root');
 		var camera = SQR.Transform('camera');
 
-		camera.position.z = 50;
+		camera.position.z = 200;
 		root.add(camera);
 
 		var resize =function() {
@@ -84,7 +86,7 @@
 			ctx.canvas.style.height = '100%';
 			ctx.size(w, h);
 
-			camera.projection = new SQR.ProjectionMatrix().perspective(40, aspect, 1, 1000);
+			camera.projection = new SQR.ProjectionMatrix().perspective(10, aspect, 1, 1000);
 
 			rawFBO.resize(w, h);    
 			blurXFBO.resize(w, h);   
@@ -95,13 +97,13 @@
 		var wireShader = SQR.Shader(assets['wire-shader']);
 
 		dotShader.use()    
-			.setUniform('uDotSize', 10)
+			.setUniform('uDotSize', isTouch ? 12 : 8)
 			.setUniform('uDotTexture', SQR.Texture(assets['dot-tex']));
 
 		wireShader.use()
 			.setUniform('uAlpha', 1);
 
-		SQR.gl.lineWidth(2);
+		SQR.gl.lineWidth(isTouch ? 4 : 2);
 
 		var blue = SQR.Color().setRGB(0.25, 0.33, 0.5);
 		var purple = SQR.Color().setRGB(0.4, 0.2, 0.3);
@@ -152,17 +154,30 @@
 		}
 
 
-		var addPiece = function(shape, size, color, x, y) {
-			var dot = createObject(shape, 'dot', size, color);
-			var wire = createObject(shape, 'wire', size, color);
+		var addPiece = function(shape, size, color, x, y, fastRotate) {
+
+			var c = color.clone();
+			if(fastRotate) c.mul(2);
+
+			var dot = createObject(shape, 'dot', size, c);
+			var wire = createObject(shape, 'wire', size, c);
 			var piece = SQR.Transform(shape);
 
-			// piece.add(dot, wire);
-			piece.add(wire);
+			if(fastRotate) piece.add(dot, wire);
+			else piece.add(wire);
 			piece.position.set(x, y, 0);
 
 			var rx = (Math.random() * 0.01) - 0.005;
 			var ry = (Math.random() * 0.01) - 0.005;
+
+			if(fastRotate) {
+				rx *= 2;
+				ry += 0.1;
+				piece.scale.set(1.2, 1.2, 1.2);
+			} else {
+				// rx = 0;
+				// ry = 0;
+			}
 
 			// piece.rotation.x = Math.random() * Math.PI;
 			// piece.rotation.y = Math.random() * Math.PI;
@@ -178,17 +193,17 @@
 
 
 		addPiece('pyramid', 1.5, orange,    3, 0);
-		addPiece('octahedron', 2, red,   -3, 0);
+		addPiece('octahedron', 2, red,     -3, 0);
 		addPiece('icosahedron', 2, blue,    6, 0);
 		addPiece('dodecahedron', 1, green, -6, 0);
 		addPiece('cube', 1.33, purple,     -9, 0);
 		addPiece('cube', 1.33, purple,      9, 0);
 
 		addPiece('pyramid', 1.5, orange,   -3, 3);
-		addPiece('octahedron', 2, red,   -6, 3);
+		addPiece('octahedron', 2, red,     -6, 3);
 		addPiece('icosahedron', 2, blue,    9, 3);
 		addPiece('icosahedron', 2, blue,   -9, 3);
-		addPiece('dodecahedron', 1, green,  3, 3);
+		addPiece('dodecahedron', 1, green,  3, 3, true); // ----
 		addPiece('cube', 1.33, purple,      6, 3);
 		addPiece('cube', 1.33, purple,      0, 3);
 
@@ -212,7 +227,7 @@
 		addPiece('octahedron', 2, red,   -9,  6);
 		addPiece('icosahedron', 2, blue,    0,  6);
 		addPiece('icosahedron', 2, blue,   -6,  6);
-		addPiece('dodecahedron', 1, green,  3,  6);
+		addPiece('dodecahedron', 1, green,  3,  6, true); // ----
 		addPiece('cube', 1.33, purple,      9,  6);
 		addPiece('cube', 1.33, purple,      6,  6);
 
@@ -225,10 +240,10 @@
 		addPiece('cube', 1.33, purple,     -9, -9);
 
 		addPiece('pyramid', 1.5, orange,   -6,  9);
-		addPiece('octahedron', 2, red,    9,  9);
+		addPiece('octahedron', 2, red,      9,  9);
 		addPiece('icosahedron', 2, blue,    0,  9);
 		addPiece('icosahedron', 2, blue,   -3,  9);
-		addPiece('dodecahedron', 1, green,  3,  9);
+		addPiece('dodecahedron', 1, green,  3,  9, true); // ----
 		addPiece('octahedron', 1.8, red,    6,  9);
 		addPiece('cube', 1.33, purple,     -9,  9);
 
@@ -289,7 +304,27 @@
 		root.add(disco);
 
 		
+		var addStream = function(start, end, color) {
+
+			var stream = SQR.ParticleStream({
+				shader: SQR.Shader(assets['stream-shader']),
+				size: 100
+			});
+
+			stream.shader.use()
+				.setUniform('uDotSize', isTouch ? 5 : 3)
+				.setUniform('uStart', start)
+				.setUniform('uEnd',   end)
+				.setUniform('uOffset',new SQR.V3(0.33, 0, 0))
+				.setUniform('uColor', color);
+
+			root.add(stream);
+		}
+
+		addStream(new SQR.V3(3, 9, 0), new SQR.V3(3, 6, 0), green);
+		addStream(new SQR.V3(3, 6, 0), new SQR.V3(3, 3, 0), green);
 		
+
 		var rawFBO = SQR.FrameBuffer();    
 		var blurXFBO = SQR.FrameBuffer();   
 		var blurYFBO = SQR.FrameBuffer();   
@@ -297,9 +332,7 @@
 		var blur = SQR.Primitives.createPostEffect(assets['blur-shader']);
 		var bloom = SQR.Primitives.createPostEffect(assets['bloom-shader']);
 
-		bloom.shader.use().setUniform('uBloomMult', 3.0);
-
-		var POST = !('ontouchstart' in document);
+		bloom.shader.use().setUniform('uBloomMult', 2.0);
 
 		window.addEventListener('resize', resize);
 		resize();
@@ -308,16 +341,16 @@
 			requestAnimationFrame(render);
 			ctx.clear();
 
-			disco.rotation.x += 0.005;
+			disco.rotation.x += 0.015;
 			disco.rotation.y += 0.0075;
 
 			// Render the scene from the root transform up, directly to screen
-			if(POST) rawFBO.bind();
+			if(!isTouch) rawFBO.bind();
 			renderer.render(root, camera);
 
-			if(POST) {
+			if(!isTouch) {
 				// blurForce = 0.01;
-				blurForce = 0.01;
+				blurForce = 0.015;
 
 				blurXFBO.bind();
 				blur.shader.use();
