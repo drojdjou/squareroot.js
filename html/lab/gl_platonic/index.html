@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>A study in wire/dot platonic shapes rendering</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
+
+<script type="text/javascript" src="../../src/extras/WirePlatonic.js"></script>
+<script type="text/javascript" src="../../src/extras/DiscoBall.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+.bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #808080;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['wire.glsl', 'wire-shader'],
+		['dot.glsl', 'dot-shader'],
+		['disco.glsl', 'disco-shader'],
+		['blur.glsl', 'blur-shader'],
+		['bloom.glsl', 'bloom-shader'],
+		['dot.jpg', 'dot-tex']
+	], function(assets) {
+
+		
+
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		var root = SQR.Transform('root');
+		var camera = SQR.Transform('camera');
+
+		camera.position.z = 50;
+		root.add(camera);
+
+		var resize =function() {
+
+			var w = window.innerWidth * window.devicePixelRatio; 
+			var h = window.innerHeight * window.devicePixelRatio; 
+			var aspect = w/h;
+
+			ctx.canvas.style.width = '100%';
+			ctx.canvas.style.height = '100%';
+			ctx.size(w, h);
+
+			camera.projection = new SQR.ProjectionMatrix().perspective(40, aspect, 1, 1000);
+
+			rawFBO.resize(w, h);    
+			blurXFBO.resize(w, h);   
+			blurYFBO.resize(w, h); 
+		}
+
+		var dotShader = SQR.Shader(assets['dot-shader']);
+		var wireShader = SQR.Shader(assets['wire-shader']);
+
+		dotShader.use()    
+			.setUniform('uDotSize', 10)
+			.setUniform('uDotTexture', SQR.Texture(assets['dot-tex']));
+
+		wireShader.use()
+			.setUniform('uAlpha', 1);
+
+		SQR.gl.lineWidth(2);
+
+		var blue = SQR.Color().setRGB(0.25, 0.33, 0.5);
+		var purple = SQR.Color().setRGB(0.4, 0.2, 0.3);
+		var green = SQR.Color().setRGB(0.1, 0.3, 0.1);
+		var red = SQR.Color().setRGB(0.5, 0.1, 0.2);
+		var orange = SQR.Color().setRGB(0.5, 0.25, 0.1);
+		var white = SQR.Color().setRGB(1, 1, 1);
+
+		var createObject = function(shape, type, size, color) {
+			var o = new SQR.Transform();
+
+			switch(shape) {
+				case 'icosahedron':
+					o.buffer = SQR.WirePlatonic.icosahedron(size, type == 'dot').update();
+					break;
+				case 'dodecahedron':
+					o.buffer = SQR.WirePlatonic.dodecahedron(size, type == 'dot').update();
+					break;
+				case 'octahedron':
+					o.buffer = SQR.WirePlatonic.octahedron(size, type == 'dot').update();
+					break;
+				case 'pyramid':
+					o.buffer = SQR.WirePlatonic.pyramid(size, type == 'dot').update();
+					break;
+				case 'cube':
+					o.buffer = SQR.WirePlatonic.cube(size, type == 'dot').update();
+					break;
+				default:
+					throw('Unknown shape', shape);
+					break;
+			}
+			
+			if(type == 'dot') {
+				o.shader = dotShader;
+				o.buffer.setMode(SQR.gl.POINTS);
+			} else {
+				o.shader = wireShader;
+				o.buffer.setMode(SQR.gl.LINES);
+			}
+
+			o.setBlending(true);
+			
+			o.uniforms = {
+				uColor: color
+			};
+
+			return o;
+		}
+
+
+		var addPiece = function(shape, size, color, x, y) {
+			var dot = createObject(shape, 'dot', size, color);
+			var wire = createObject(shape, 'wire', size, color);
+			var piece = SQR.Transform(shape);
+
+			// piece.add(dot, wire);
+			piece.add(wire);
+			piece.position.set(x, y, 0);
+
+			var rx = (Math.random() * 0.01) - 0.005;
+			var ry = (Math.random() * 0.01) - 0.005;
+
+			// piece.rotation.x = Math.random() * Math.PI;
+			// piece.rotation.y = Math.random() * Math.PI;
+
+			piece.beforeDraw = function() {
+				piece.rotation.x += rx;
+				piece.rotation.y -= ry;
+			};
+
+			root.add(piece);
+		}
+
+
+
+		addPiece('pyramid', 1.5, orange,    3, 0);
+		addPiece('octahedron', 2, red,   -3, 0);
+		addPiece('icosahedron', 2, blue,    6, 0);
+		addPiece('dodecahedron', 1, green, -6, 0);
+		addPiece('cube', 1.33, purple,     -9, 0);
+		addPiece('cube', 1.33, purple,      9, 0);
+
+		addPiece('pyramid', 1.5, orange,   -3, 3);
+		addPiece('octahedron', 2, red,   -6, 3);
+		addPiece('icosahedron', 2, blue,    9, 3);
+		addPiece('icosahedron', 2, blue,   -9, 3);
+		addPiece('dodecahedron', 1, green,  3, 3);
+		addPiece('cube', 1.33, purple,      6, 3);
+		addPiece('cube', 1.33, purple,      0, 3);
+
+		addPiece('pyramid', 1.5, orange,   -6, -3);
+		addPiece('octahedron', 2, red,   -9, -3);
+		addPiece('icosahedron', 2, blue,    9, -3);
+		addPiece('icosahedron', 2, blue,   -3, -3);
+		addPiece('dodecahedron', 1, green,  3, -3);
+		addPiece('cube', 1.33, purple,      6, -3);
+		addPiece('cube', 1.33, purple,      0, -3);
+
+		addPiece('pyramid', 1.5, orange,    0, -6);
+		addPiece('octahedron', 2, red,   -9, -6);
+		addPiece('icosahedron', 2, blue,   -6, -6);
+		addPiece('icosahedron', 2, blue,   -3, -6);
+		addPiece('dodecahedron', 1, green,  3, -6);
+		addPiece('cube', 1.33, purple,      6, -6);
+		addPiece('cube', 1.33, purple,      9, -6);
+
+		addPiece('pyramid', 1.5, orange,   -3,  6);
+		addPiece('octahedron', 2, red,   -9,  6);
+		addPiece('icosahedron', 2, blue,    0,  6);
+		addPiece('icosahedron', 2, blue,   -6,  6);
+		addPiece('dodecahedron', 1, green,  3,  6);
+		addPiece('cube', 1.33, purple,      9,  6);
+		addPiece('cube', 1.33, purple,      6,  6);
+
+		addPiece('pyramid', 1.5, orange,   -6, -9);
+		addPiece('octahedron', 2, red,    9, -9);
+		addPiece('icosahedron', 2, blue,    0, -9);
+		addPiece('icosahedron', 2, blue,   -3, -9);
+		addPiece('dodecahedron', 1, green,  3, -9);
+		addPiece('octahedron', 1.8, red,    6, -9);
+		addPiece('cube', 1.33, purple,     -9, -9);
+
+		addPiece('pyramid', 1.5, orange,   -6,  9);
+		addPiece('octahedron', 2, red,    9,  9);
+		addPiece('icosahedron', 2, blue,    0,  9);
+		addPiece('icosahedron', 2, blue,   -3,  9);
+		addPiece('dodecahedron', 1, green,  3,  9);
+		addPiece('octahedron', 1.8, red,    6,  9);
+		addPiece('cube', 1.33, purple,     -9,  9);
+
+		// var pyrDot = createObject('pyramid', 'dot', 1.5, orange);
+		// var pyrWire = createObject('pyramid', 'wire', 1.5, orange);
+		// var pyr = new SQR.Transform();
+		// pyr.add(pyrDot, pyrWire);				
+
+		// var octaDot = createObject('octahedron', 'dot', 2, red);
+		// var octaWire = createObject('octahedron', 'wire', 2, red);
+		// var octa = new SQR.Transform();
+		// octa.add(octaDot, octaWire);
+
+		// var cubeDot = createObject('cube', 'dot', 1.33, blue);
+		// var cubeWire = createObject('cube', 'wire', 1.33, blue);
+		// var cube = new SQR.Transform();
+		// cube.add(cubeDot, cubeWire);
+
+		// var dodeDot = createObject('dodecahedron', 'dot', 1, green);
+		// var dodeWire = createObject('dodecahedron', 'wire', 1, green);
+		// var dode = new SQR.Transform();
+		// dode.add(dodeDot, dodeWire);
+
+		// var icoDot = createObject('icosahedron', 'dot', 2, purple);
+		// var icoWire = createObject('icosahedron', 'wire', 2, purple);
+		// var ico = new SQR.Transform();
+		// ico.add(icoDot, icoWire);
+
+		// root.add(pyr);
+		// root.add(octa);
+		// root.add(cube);
+		// root.add(dode);
+		// root.add(ico);
+		// var r = 4;
+		// pyr.position.set(Math.cos(Math.PI / 5 * 2) * r, Math.sin(Math.PI / 5 * 2) * r, 0);
+		// octa.position.set(Math.cos(Math.PI / 5 * 4) * r, Math.sin(Math.PI / 5 * 4) * r, 0);
+		// cube.position.set(Math.cos(Math.PI / 5 * 6) * r, Math.sin(Math.PI / 5 * 6) * r, 0);
+		// dode.position.set(Math.cos(Math.PI / 5 * 8) * r, Math.sin(Math.PI / 5 * 8) * r, 0);
+		// ico.position.set(Math.cos(Math.PI / 5 * 10) * r, Math.sin(Math.PI / 5 * 10) * r, 0);
+
+
+		var disco = SQR.DiscoBall({
+			shader: SQR.Shader(assets['disco-shader']),
+			size: 550, 
+			thickness: 0.4,
+			colors: [red, purple, green, orange, blue, white]
+		});
+
+		disco.uniforms = {
+			uColor: purple,
+			uAlpha: 0.5,
+			uRadius: 1
+		};
+
+		disco.buffer.setMode(SQR.gl.LINES);
+		disco.setBlending(true);
+		
+		root.add(disco);
+
+		
+		
+		var rawFBO = SQR.FrameBuffer();    
+		var blurXFBO = SQR.FrameBuffer();   
+		var blurYFBO = SQR.FrameBuffer();   
+
+		var blur = SQR.Primitives.createPostEffect(assets['blur-shader']);
+		var bloom = SQR.Primitives.createPostEffect(assets['bloom-shader']);
+
+		bloom.shader.use().setUniform('uBloomMult', 3.0);
+
+		var POST = !('ontouchstart' in document);
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var render = function() {
+			requestAnimationFrame(render);
+			ctx.clear();
+
+			disco.rotation.x += 0.005;
+			disco.rotation.y += 0.0075;
+
+			// Render the scene from the root transform up, directly to screen
+			if(POST) rawFBO.bind();
+			renderer.render(root, camera);
+
+			if(POST) {
+				// blurForce = 0.01;
+				blurForce = 0.01;
+
+				blurXFBO.bind();
+				blur.shader.use();
+				blur.shader.setUniform('uDelta', [0.0, blurForce]);
+				blur.shader.setUniform('uTexture', rawFBO.texture);
+				renderer.render(blur);
+
+				var aspect = window.innerHeight / window.innerWidth;
+
+				blurYFBO.bind();
+				blur.shader.setUniform('uDelta', [blurForce * aspect, 0.0]);
+				blur.shader.setUniform('uTexture', blurXFBO.texture);
+				renderer.render(blur);
+
+				renderer.renderToScreen();
+				bloom.shader.use();
+				bloom.shader.setUniform('uTexture', rawFBO.texture);
+				bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+				renderer.render(bloom);
+			}
+		}
+
+		render();
+	});
+
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

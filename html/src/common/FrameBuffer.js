@@ -10,6 +10,8 @@
 SQR.FrameBuffer = function(width, height, resolution, isCubemap) {
 
     resolution = resolution || 1;
+    width = width || window.innerWidth;
+    height = height || window.innerHeight;
 
     var f = {}, gl = SQR.gl;
 

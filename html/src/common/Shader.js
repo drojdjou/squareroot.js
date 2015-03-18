@@ -144,12 +144,31 @@ SQR.Shader = function(source, options) {
 
 	    for (var i = 0; i < numUni; i++) {
 	        var u = gl.getActiveUniform(program, i);
-	        u.location = gl.getUniformLocation(program, u.name);
+	        
 
 	        if(u.type == gl.SAMPLER_2D || u.type == gl.SAMPLER_CUBE) {
 	        	u.texId = id++;
 	        	uniformTextures.push(u);
 	        }
+
+	        // Special case for arrays
+	        if(u.name.indexOf('[') > -1) {
+	        	var n = u.name.substring(0, u.name.indexOf('['));
+
+	        	for(var j = 1; j < u.size; j++) {
+	        		var ni = n + '[' + j + ']';
+	        		var ui = {
+	        			name: ni,
+	        			location: gl.getUniformLocation(program, ni),
+	        			type: u.type
+	        		}
+
+	        		uniforms[ui.name] = ui;
+	        		uniformList.push(ui);
+	        	}
+	        }
+
+	        u.location = gl.getUniformLocation(program, u.name);
 
 	        uniforms[u.name] = u;
 	        uniformList.push(u);
@@ -174,11 +193,21 @@ SQR.Shader = function(source, options) {
 		var v = value;
 
 		if(!n) {
+
+			var f = uniforms[uniform + '[0]'];
+
+			if(f) {
+				for(var i = 0; i < f.size; i++) {
+					if(value[i]) s.setUniform(uniform + '[' + i + ']', value[i]);
+				}
+				return;
+			}
+
 			if(SQR.WARN_UNIFORM_NOT_PRESENT) {
 				console.warn("> SQR.Shader attempt to set uniform that does not exist: " + uniform);
 				console.trace();
 			}
-			return s;
+			return false;
 		}
 
 		if(v.toUniform) v = v.toUniform(n.type);

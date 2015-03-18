@@ -33,14 +33,11 @@ uniform sampler2D uTexture;
 void main() {
 
 	vec3 c = texture2D(uTexture, vUV).rgb;
-
-	// c = vec3((c.r + c.g + c.b) * 0.33);
-
-	vec3 l = 0.6 + 0.4 * sphericalHarmonics(vNormal);
+	vec3 sh = sphericalHarmonics(vNormal);
+	vec3 l = 0.6 + 0.4 * sh;
 
     gl_FragColor = vec4(c * l, 1.0);
-
-    // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    // gl_FragColor = vec4(sh, 1.0);
 }
 
 

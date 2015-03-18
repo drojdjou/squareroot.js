@@ -219,20 +219,48 @@ SQR.Primitives.createCylinder = function(height, radius, segments, options) {
         var t1uv = topUV[n];
         var b1uv = bottomUV[n];
 
-        addFace(t0, b0, t1, b1, t0uv, b0uv, t1uv, b1uv);           
+        options.heightSegments = options.heightSegments || options.hs || 0;
 
-        if(options.noCaps) {
-            if(options.insideFaces) {
-                addFace(t0._inside, t1._inside, b0._inside, b1._inside, t0uv, b0uv, t1uv, b1uv);           
+        if(!options.heightSegments) {
+
+            addFace(t0, b0, t1, b1, t0uv, b0uv, t1uv, b1uv);           
+
+            if(options.noCaps && options.insideFaces) {
+                addFace(t0._inside, t1._inside, b0._inside, b1._inside, t0uv, b0uv, t1uv, b1uv);
             }
         } else {
+            var t0b0 = new SQR.V3().sub(b0, t0);
+            var t1b1 = new SQR.V3().sub(b1, t1);
+
+            var t0l = new SQR.V3().copyFrom(t0);
+            var t1l = new SQR.V3().copyFrom(t1);
+
+            var t0c = new SQR.V3();
+            var t1c = new SQR.V3();
+
+            var n = options.heightSegments;
+
+            for(var hs = 0; hs < n + 1; hs++) {
+                t0c.copyFrom(t0b0).mul(1/n * hs).add(t0, t0c);
+                t1c.copyFrom(t1b1).mul(1/n * hs).add(t1, t1c);
+
+                addFace(t0l.clone(), t0c.clone(), t1l.clone(), t1c.clone(), t0uv, b0uv, t1uv, b1uv);  
+
+                t0l.copyFrom(t0c);
+                t1l.copyFrom(t1c);
+            }
+        }
+
+        if(!options.noCaps) {
             addFace(t0, t1, topMiddle, null, b0uv, b1uv, t1uv);
             addFace(b1, b0, bottomMiddle, null, b1uv, b0uv, t1uv);
         }         
     }
 
+    var l = options.layout || {'aPosition': 3, 'aNormal': 3, 'aUV': 2 };
+
     var geo = SQR.Buffer()
-        .layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, faces.length * 6);
+        .layout( l, faces.length * 6);
 
     var c = 0, t;
     faces.forEach(function(t) {

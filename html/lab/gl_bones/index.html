@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Some sort of manual bone system</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cylinder.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['bones.glsl', 'shader'],
+        // ['normal2color.glsl', 'shader'],
+        ['bone.png', 'boneTex']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+        var renderer = new SQR.Renderer(ctx);
+
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        camera.position.x = 2;
+        camera.position.z = 9;
+        root.add(camera);
+
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var cube = new SQR.Transform();
+
+        cube.buffer = SQR.Primitives.createCylinder(6, 0.5, 6, { 
+            hs: 26,
+            layout: { 'aPosition': 3, 'aNormal': 3, 'aUV': 2, 'aIndex': 2, 'aWeight': 2 }
+        }).update();
+
+        cube.buffer.iterate('aPosition', function(i, d, c) {
+            // d[i+0] += 2;
+        }).iterate('aIndex', function(i, d, c) {
+            var x = d[i-(2+3+3)];
+
+            d[i+0] = ((x+3)/3) | 0;
+            if(d[i+0] == 3) d[i+0] = 2;
+
+            d[i+1] = d[i+0] + 1;
+            if(d[i+1] == 3) d[i+1] = 2;
+
+        }).iterate('aWeight', function(i, d, c) {
+            var x = d[i-(2+3+3+2)];
+
+            var w = ((x+3) % 3) / 3;
+
+            d[i+0] = 1 - w * w;// : 1 - w;
+            d[i+1] = w * w;// : w;
+        }).update();
+
+        cube.shader = SQR.Shader(assets['shader']);
+
+        var b1 = new SQR.Transform();
+        var b2 = new SQR.Transform();
+        var b3 = new SQR.Transform();
+
+        b1.position.x = -3;
+        b2.position.x =  3;
+        b3.position.x =  3;
+
+        cube.add(b1);
+        b1.add(b2);
+        b2.add(b3);
+
+        b1.setAsBoneRoot();
+
+        // cube.position.x = 2;
+
+        // cube.position.x = -2;
+        // cube.position.z = -2;
+        // cube.rotation.z = 0.2;
+
+        // cube.buffer.mode = SQR.gl.POINTS;
+        root.add(cube);
+
+        var r = Math.PI * 0.8;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            b1.rotation.z = Math.sin(r/ 4) * 0.6;
+            b2.rotation.z = Math.sin(r/-3) * 0.4;
+            b3.rotation.z = Math.sin(r/ 2) * 0.6;
+
+
+            renderer.render(root, camera);
+
+            cube.shader.use().setUniform('uBones', [
+                b1.computeBoneMatrix(), 
+                b2.computeBoneMatrix(),
+                b3.computeBoneMatrix(),
+            ]);
+
+            // SQR.Debug.traceMat(b1.poseMatrix);
+            // SQR.Debug.traceMat(b2.poseMatrix);
+            // SQR.Debug.traceMat(b3.poseMatrix);
+            // console.log(b1.position);
+            // console.log(b2.position);
+            // SQR.Debug.traceMat(b1.boneMatrix);
+            // SQR.Debug.traceMat(b2.boneMatrix);
+
+            // cube.shader.use().setUniform('uOffset', [
+            //     b1.position,
+            //     b2.position
+            // ]);
+
+            cube.rotation.z += 0.01;
+            cube.rotation.y += 0.01;
+
+            r += 0.15;
+
+            renderer.render(root, camera);
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

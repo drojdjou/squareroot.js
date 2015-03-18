@@ -162,6 +162,7 @@ b.iterate('aPosition', function(i, data, count)) {
 	 */
 	b.bind = function() {
 		SQR.gl.bindBuffer(SQR.gl.ARRAY_BUFFER, buffer);
+		if(hasIndex)SQR.gl.bindBuffer(SQR.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 		return b;
 	}
 

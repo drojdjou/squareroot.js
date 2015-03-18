@@ -88,6 +88,8 @@ SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
      */
     this.far = far;
 
+    this.fov = fov;
+
     var m = this.data;
     var t = near * Math.tan(fov * Math.PI / 360);
     var n = far - near;

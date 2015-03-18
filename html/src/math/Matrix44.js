@@ -37,6 +37,19 @@ SQR.Matrix44 = function(data) {
         return pv;
     }
 
+    this.rotateVector = function (v, pv) {
+        var d = this.data;
+        var x = v.x, y = v.y, z = v.z, w = v.w;
+        pv = pv || v;
+        
+        pv.x = d[0] * x + d[4] * y + d[8] * z;
+        pv.y = d[1] * x + d[5] * y + d[9] * z;
+        pv.z = d[2] * x + d[6] * y + d[10] * z;
+        // pv.w = d[3] * x + d[7] * y + d[11] * z + d[15] * w;
+
+        return pv;
+    }
+
     /**
      *  @memberof SQR.Matrix44.prototype
      *  @description Multiplies this matrix by m

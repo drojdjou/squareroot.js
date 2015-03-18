@@ -8,6 +8,7 @@ SQR.Renderer = function(context) {
 
 	var r = {};
 	var uniforms = {}, renderObjects = [], transparentObjects = [];
+	var startTime, time;
 
 	var updateTransform = function(t) {
 		if(!t.active) return;
@@ -33,6 +34,9 @@ SQR.Renderer = function(context) {
 
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
+
+		if(!startTime) startTime = new Date().getTime();
+		time = new Date().getTime() - startTime;
 
 		options = options || defOpts;
 
@@ -97,6 +101,8 @@ SQR.Renderer = function(context) {
 
 				var p = (camera && camera.projection) || r.projection;
 				if(p) lastShader.setUniform('uProjection', p);
+
+				lastShader.setUniform('uTime', time);
 
 				shaderChanged = true;
 			}

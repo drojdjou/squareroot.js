@@ -91,9 +91,17 @@ SQR.Loader.loadAssets([
     // t.scale.set(2, 2, 2);
     hero.add(t);
 
+    var mx = 0, tx = 0;
+
+    document.addEventListener('mousemove', function(e) {
+        tx = (e.pageX / window.innerWidth);
+    });
+
     var render = function() {
 
-        hero.rotation.y += 0.01;// Math.PI;
+        mx += (tx - mx) * 0.1;
+
+        hero.rotation.y = Math.PI + mx * Math.PI;
 
         requestAnimationFrame(render);
         renderer.render(root, camera);

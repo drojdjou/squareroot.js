@@ -1,0 +1,7 @@
+#### Export bone indices, weights
+### Export bones
+    - need to figure out formatting of strings in template
+Separate the bone system from Transform
+Import scene format to SQR
+Setup bones and shaders
+Animate

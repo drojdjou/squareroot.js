@@ -104,12 +104,42 @@ SQR.Transform = function(name) {
     t.viewMatrix = new SQR.Matrix44();
     t.inverseWorldMatrix;
 
+    t.boneMatrix = new SQR.Matrix44();
+    t.poseMatrix = new SQR.Matrix44();
+    t.inversePoseMatrix = new SQR.Matrix44();
+
     t.lookAt = null;
 
     t.transparent = false;
     t.srcFactor = null;
     t.dstFactor = null;
     t.useDepth = true;
+
+    t.setAsBoneRoot = function() {
+        t.computePoseMatrix();
+    }
+
+    t.computePoseMatrix = function() {
+
+        t.bone = true;
+        t.transformWorld();
+
+        if(!(t.parent && t.parent.bone)) {
+            t.matrix.copyTo(t.poseMatrix);
+        } else {
+            t.parent.poseMatrix.copyTo(t.poseMatrix);
+            t.poseMatrix.multiply(t.matrix);
+        }
+
+        for(var i = 0; i < t.numChildren; i++) {
+            var c = t.children[i];
+            c.computePoseMatrix();
+        }
+
+        t.poseMatrix.inverse(t.inversePoseMatrix);
+
+        return t;
+    }
 
     t.setBlending = function(transparent, src, dst) {
         t.transparent = transparent;
@@ -199,6 +229,7 @@ SQR.Transform = function(name) {
     }
 
     t.draw = function(options) {
+
         var isReplacementShader = options && options.replacementShader;
         var shader = isReplacementShader ? options.replacementShader : t.shader;
 
@@ -256,8 +287,15 @@ SQR.Transform = function(name) {
         if (t.parent) {
             t.parent.globalMatrix.copyTo(t.globalMatrix);
             t.globalMatrix.multiply(t.matrix);
+
+            if(t.bone) {
+                t.parent.boneMatrix.copyTo(t.boneMatrix);
+                t.boneMatrix.multiply(t.matrix);
+            }
+
         } else {
             t.matrix.copyTo(t.globalMatrix);
+            if(t.bone) t.matrix.copyTo(t.boneMatrix);
         }
 
         t.globalMatrix.extractPosition(t.globalPosition);
@@ -265,6 +303,7 @@ SQR.Transform = function(name) {
         // d = globalMatrix.data, d[8], d[9], d[10] = forward vector
 
         if(t.isStatic) transformState = 1;
+        if(t.beforeDraw) t.beforeDraw();
     }
 
     /** 
@@ -307,6 +346,11 @@ SQR.Transform = function(name) {
         }
         t.globalMatrix.inverse(t.inverseWorldMatrix);
         return t.inverseWorldMatrix;
+    }
+
+    t.computeBoneMatrix = function() {
+        t.boneMatrix.multiply(t.inversePoseMatrix);
+        return t.boneMatrix;
     }
 
 	return t;

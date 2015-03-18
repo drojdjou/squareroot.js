@@ -18,7 +18,7 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
         .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
         .update();
 
-    var pe = new SQR.Transform();
+    var pe = new SQR.Transform('post-effect');
     pe.buffer = SQR.fullScreenQuad;
     pe.shader = SQR.Shader(shaderSource, shaderOptions);
 

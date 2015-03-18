@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Particle system - smoke</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['particle.glsl', 'shader'],
+        ['smoke1.jpg', 'texture']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight;
+
+        var ctx = SQR.Context('#gl-canvas')
+            .create()
+            .size(w, h).
+            clearColor(0, 0, 0, 1);
+
+        var renderer = SQR.Renderer(ctx);
+
+        var root = new SQR.Transform();
+
+        var camera = new SQR.Transform();
+        camera.position.z = 20;
+        root.add(camera);
+
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var r = function(m) { 
+            m = m || 1; 
+            return Math.random() * m; 
+        };
+
+        var smoke = new SQR.Transform();
+
+        smoke.buffer = SQR.Buffer()
+            .layout({ aRotation: 1, aSpeed: 1, aLifetime: 1 }, 256)
+            .setMode(SQR.gl.POINTS)
+            .update();
+
+        smoke.buffer.iterate('aRotation', function(i, data) {
+            data[i] = r(Math.PI * 2);
+        });
+
+        smoke.buffer.iterate('aSpeed', function(i, data) {
+            data[i] = r() * 2 - 1;
+        });
+
+        smoke.buffer.iterate('aLifetime', function(i, data) {
+            data[i] = r();
+        });
+
+        smoke.buffer.update();
+
+        smoke.useDepth = false;
+        smoke.setBlending(true);
+
+        smoke.shader = SQR.Shader(assets['shader'])
+            .use()
+            .setUniform('uParticleTexture', SQR.Texture(assets['texture']));
+
+        root.add(smoke);
+
+        var render = function() {
+            requestAnimationFrame(render);
+            renderer.render(root, camera);
+
+            camera.position.y = -10;
+            // smoke.rotation.x = 1.2;
+            smoke.rotation.y += 0.02;
+            // smoke.rotation.z += 0.03;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
