@@ -287,15 +287,16 @@ canvas {
 
 		var disco = SQR.DiscoBall({
 			shader: SQR.Shader(assets['disco-shader']),
-			size: 550, 
-			thickness: 0.4,
+			size: 400, 
+			thickness: 0.8,
 			colors: [red, purple, green, orange, blue, white]
+			//colors: [green.clone().mul(2)]
 		});
 
 		disco.uniforms = {
 			uColor: purple,
 			uAlpha: 0.5,
-			uRadius: 1
+			uRadius: 0.8
 		};
 
 		disco.buffer.setMode(SQR.gl.LINES);
