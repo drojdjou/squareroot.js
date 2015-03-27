@@ -8,3 +8,5 @@ demo/ig-*
 **/*.mp4
 **/*.mp3
 **/*.webm
+npm-debug.log
+qit.sh

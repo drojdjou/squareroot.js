@@ -2,7 +2,7 @@
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-./build
+./build $1
 git add -u .
 git add .
 git status
