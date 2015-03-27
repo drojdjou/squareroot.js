@@ -78,8 +78,11 @@
         root.add(cube);
 
         var plane = new SQR.Transform();
-        plane.buffer = SQR.Primitives.createPlane(5, 5, 10, 10).update();
+        plane.buffer = SQR.Primitives
+            .createPlane(5, 5, 100, 100)
+            .update();
         // plane.buffer.mode = SQR.gl.POINT;
+        plane.rotation.x = Math.PI / 2 +  Math.PI / 4;
         plane.shader = shader;
         root.add(plane);
 
@@ -109,9 +112,9 @@
         root.add(icosphere);
 
 
-        cube.position.set(0, 0, -10);
+        // cube.position.set(0, 0, -10);
         // cube.position.set(-5, -5, 0);
-        // plane.position.set( 0, -5, 0);
+        plane.position.set( 0, 0, -5);
         // plane2.position.set(0, -5, 0);
         // sphere.position.set(6, -5, 0);
         // cylinder.position.set(-2.5, 5, 0);
@@ -129,11 +132,20 @@
             ty = e.pageY / window.innerHeight;
         });
 
+        var startTime = new Date().getTime();
+
         var render = function() {
             requestAnimationFrame(render);
 
             // camRoot.rotation.y += 0.005;
             // camRoot.rotation.x += 0.01;
+
+            var now = (new Date().getTime() - startTime) * 0.01;
+            plane.buffer.iterate('aPosition', function(i, data, c) {
+                data[i+1] = Math.sin(now + (data[i+0] * data[i+2])) * 0.25;
+            }).update();
+
+            plane.rotation.y += 0.01;
 
             // camRoot.rotation.x = Math.PI * -0.5;
             // camRoot.rotation.y = Math.PI * -0.5;

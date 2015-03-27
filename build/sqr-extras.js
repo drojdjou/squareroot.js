@@ -125,143 +125,47 @@ SQR.ConvexHull = (function() {
 
 
 
-/* --- --- [extras/Delaunay.js] --- --- */
+/* --- --- [extras/DiscoBall.js] --- --- */
 
-/**
- *  
- *	@class Delaunay
- *  @memberof SQR
- *
- *  @description based on:<br> 
- *  
- *  {@link http://paulbourke.net/papers/triangulate/}<br>
- *  {@link http://www.travellermap.com/tmp/delaunay.htm} (original code)<br> 
- *  {@link https://github.com/ironwallaby/delaunay/blob/master/delaunay.js}<br> 
- *  {@link http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816}
-*/
-SQR.Delaunay = (function() {
+// as in http://bartekdrozdz.com/project/soundviz (spherical lines)
 
-	var delaunay = {};
+SQR.DiscoBall = function(params) {
+	if(!params) throw('> SQR.DiscoBall > Please provide paramerters for construction');
 
-	var Edge = function(v0, v1) {
-		this.v0 = v0;
-		this.v1 = v1;
-	}
+	var d = new SQR.Transform('disco-ball');
 
-	Edge.prototype.equals = function(other) {
-		return (this.v0 === other.v0 && this.v1 === other.v1);
-	};
+	d.shader = params.shader;
 
-	Edge.prototype.inverse = function() {
-		return new Edge(this.v1, this.v0);
-	};
+	var v;
 
-	var createSuperTriangle = function(vertices) {
-		// NOTE: There's a bit of a heuristic here. If the bounding triangle 
-		// is too large and you see overflow/underflow errors. If it is too small 
-		// you end up with a non-convex hull.
+	d.buffer = SQR.Buffer()
+		.layout({ aPosition: 3, aMul: 1, aPhase: 1, aColor: 3 }, params.size * 2)
+		.iterate('aPosition', function(i, data, c) {
 
-		var minx, miny, maxx, maxy;
-		vertices.forEach(function(vertex) {
-			if (minx === undefined || vertex.x < minx) { minx = vertex.x; }
-			if (miny === undefined || vertex.y < miny) { miny = vertex.y; }
-			if (maxx === undefined || vertex.x > maxx) { maxx = vertex.x; }
-			if (maxy === undefined || vertex.y > maxy) { maxy = vertex.y; }
-		});
+			var inner = (c % 2 == 1);
+			if(!inner) v = new SQR.V3().random().norm();
 
-		var dx = (maxx - minx) * 10;
-		var dy = (maxy - miny) * 10;
+			data[i + 0] = v.x;
+			data[i + 1] = v.y;
+			data[i + 2] = v.z;
+		})
+		.iterate('aMul', function(i, data, c) {
+			var inner = (c % 2 == 1);
+			data[i] = (inner) ? 0 : params.thickness;
+		})
+		.iterate('aPhase', function(i, data, c) {
+			data[i] = Math.random() * 10;
+		})
+		.iterate('aColor', function(i, data, c) {
+			var col = params.colors[c % params.colors.length];
+			data[i + 0] = col.r;
+			data[i + 1] = col.g;
+			data[i + 2] = col.b;
+		})
+		.update();
 
-		var stv0 = new SQR.V2(minx - dx, miny - dy * 3);
-		var stv1 = new SQR.V2(minx - dx, maxy + dy);
-		var stv2 = new SQR.V2(maxx + dx * 3, maxy + dy);
-
-		return new SQR.Triangle(stv0, stv1, stv2);
-	}
-
-	function addVertex(vertex, triangles) {
-		var edges = [];
-
-		triangles = triangles.filter(function(triangle) {
-			if (triangle.vertexInCircumcircle(vertex)) {
-				edges.push(new Edge(triangle.v0, triangle.v1));
-				edges.push(new Edge(triangle.v1, triangle.v2));
-				edges.push(new Edge(triangle.v2, triangle.v0));
-				return false;
-			}
-
-			return true;
-		});
-
-		edges = uniqueEdges(edges);
-
-		edges.forEach(function(edge) {
-			triangles.push(new SQR.Triangle(edge.v0, edge.v1, vertex));
-		});
-
-		return triangles;
-	}
-
-	var uniqueEdges = function(edges) {
-		var uniqueEdges = [];
-
-		for (var i = 0; i < edges.length; ++i) {
-			var edge1 = edges[i];
-			var unique = true;
-
-			for (var j = 0; j < edges.length; ++j) {
-				if (i === j) continue;
-				var edge2 = edges[j];
-				if (edge1.equals(edge2) || edge1.inverse().equals(edge2)) {
-					unique = false;
-					break;
-				}
-			}
-
-			if (unique) uniqueEdges.push(edge1);
-		}
-
-		return uniqueEdges;
-	}
-
-	/**
-	 *	@method triangulate
-	 *	@memberof SQR.Delaunay
-	 *
-	 *	@description Performs Delaunay triangulation.
-	 *
-	 *	@param vertices - a list of 2d vertices. 
-	 *	Can be {@link SQR.V2}, {@link SQR.V3} or any object that has `x` and `y` properties. 
-	 *	In case of a 3d vector, the `z` component is ignored.
-	 *	@returns a list of {@link SQR.Triangles}
-	 */
-	delaunay.triangulate = function(vertices) {
-		var triangles = [];
-
-		var st = createSuperTriangle(vertices);
-
-		triangles.push(st);
-
-		vertices.forEach(function(vertex) {
-			// NOTE: This is O(n^2) - can be optimized by sorting vertices
-			// along the x-axis and only considering triangles that have 
-			// potentially overlapping circumcircles
-			triangles = addVertex(vertex, triangles);
-		});
-
-		// Remove triangles that shared edges with "supertriangle"
-		triangles = triangles.filter(function(triangle) {
-			return !(triangle.v0 == st.v0 || triangle.v0 == st.v1 || triangle.v0 == st.v2 ||
-			triangle.v1 == st.v0 || triangle.v1 == st.v1 || triangle.v1 == st.v2 ||
-			triangle.v2 == st.v0 || triangle.v2 == st.v1 || triangle.v2 == st.v2);
-		});
-
-		return triangles;
-	}
-
-	return delaunay;
-
-})();
+	return d;
+}
 
 /* --- --- [extras/GeometryTools.js] --- --- */
 
@@ -366,6 +270,34 @@ SQR.GeometryTools = (function() {
 	return geoTools;
 
 })();
+
+/* --- --- [extras/ParticleStream.js] --- --- */
+
+SQR.ParticleStream = function(params) {
+
+	if(!SQR.ParticleStream.buffer) {
+		SQR.ParticleStream.buffer = SQR.Buffer()
+		.layout({ aPhase: 1, aOffset: 1, aSpeed: 1 }, params.size)
+		.iterate('aPhase' ,function(i, data) {
+			data[i] = Math.random();
+		})
+		.iterate('aSpeed' ,function(i, data) {
+			// data[i] = 1.0 + Math.random();
+			data[i] = 0.5 + 0.5 * Math.random();
+		})
+		.iterate('aOffset' ,function(i, data) {
+			data[i] = Math.random() * 2 - 1;
+		})
+		.update();
+	}
+
+	var p = SQR.Transform();
+	p.shader = params.shader;
+	p.buffer = SQR.ParticleStream.buffer;
+	p.buffer.setMode(SQR.gl.POINTS);
+	return p;
+
+}
 
 /* --- --- [extras/Shapes2d.js] --- --- */
 
@@ -753,110 +685,200 @@ SQR.Trackball = function() {
 
 
 
-/* --- --- [extras/Triangle.js] --- --- */
+/* --- --- [extras/WirePlatonic.js] --- --- */
 
-/**
- *  @class Triangle
- *  @memberof SQR
- *
- *  @description Represents a triangle composed on 3 vectors. 
- *	Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.
- *
- *	@param v1 Vector {@link SQR.V2} or {@link SQR.V3}
- *
- *	@property {SQR.V2} centroid - the centroid, undef until `calculateCentroid` is called.
- *	@property {Number} circumRadius - the  radius of the 
- *		circum-circle, undef until `calculateCircumCircle` is called.
- *	@property {SQR.V2} circumCenter - the center of the cirsum-circle, 
- *		undef until `calculateCircumCircle` is called.
- *	
- */
-SQR.Triangle = function(v0, v1, v2) {
+// https://api.tinkercad.com/libraries/1vxKXGNaLtr/0/docs/topic/Platonic+Solid+Generator+-+Part+1.html
+// https://api.tinkercad.com/libraries/1vxKXGNaLtr/0/docs/topic/Platonic+Solid+Generator+-+Part+2.html
 
-	this.v0 = v0;
-	this.v1 = v1;
-	this.v2 = v2;
+SQR.WirePlatonic = {
 
-	/**
-	 *	Calculates the centroid for this triangle. Only works with 2d coordinates for now.
-	 *	The resulting centroid is stored in the `centroid` property.
-	 *
-	 *	@memberof SQR.Triangle.prototype
-	 *	@method calculateCentroid
-	 */
-	this.calculateCentroid = function() {
-		this.centroid = new SQR.V2();
-		this.centroid.x = (this.v0.x + this.v1.x + this.v2.x) / 3;
-		this.centroid.y = (this.v0.y + this.v1.y + this.v2.y) / 3;
-	}
+	pyramid: function(size, dotsOnly) {
 
-	/**
-	 *	Calculates circumcircle, only works with 2d coordinates.
-	 *	<br><br>
-	 *	Based on 
-	 *	{@link http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm this}
-	 *	and
-	 *	{@link http://www.exaflop.org/docs/cgafaq/cga1.html this}.
-	 *
-	 *	@memberof SQR.Triangle.prototype
-	 *	@method calculateCircumCircle
-	 */
-	this.calculateCircumCircle = function() {
-		var A = this.v1.x - this.v0.x;
-		var B = this.v1.y - this.v0.y;
-		var C = this.v2.x - this.v0.x;
-		var D = this.v2.y - this.v0.y;
+		var s = size * 0.5;
+		var h = size * 0.5;
 
-		var E = A * (this.v0.x + this.v1.x) + B * (this.v0.y + this.v1.y);
-		var F = C * (this.v0.x + this.v2.x) + D * (this.v0.y + this.v2.y);
+		var b = SQR.Buffer()
+			.layout(SQR.v3(), 5)
+			.data('aPosition', 
+				 0,	 h,  0,	// 0 tip
+				-s, -h,  s, // 1 front bottom left
+				 s, -h,  s, // 2 front bottom right
+				-s, -h, -s,	// 3 back bottom left
+				 s, -h, -s  // 4 back bottom right
+			);
 
-		var G = 2.0 * (A * (this.v2.y - this.v1.y) - B * (this.v2.x - this.v1.x));
+		if(!dotsOnly) {
+			b.index(
+				0, 1, 0, 2, 0, 3, 0, 4, // tip to base
+				1, 3, 2, 4, 1, 2, 3, 4  // sides
+			);
+		}
+			
+		return b;
+	},
 
-		var dx, dy;
+	octahedron: function(diameter, dotsOnly) {
+		var r = diameter * 0.5;
+		var a = Math.PI / 2;
 
-		if (Math.abs(G) < SQR.EPSILON) {
-			// Collinear - find extremes and use the midpoint
-			var minx = Math.min(this.v0.x, this.v1.x, this.v2.x);
-			var miny = Math.min(this.v0.y, this.v1.y, this.v2.y);
-			var maxx = Math.max(this.v0.x, this.v1.x, this.v2.x);
-			var maxy = Math.max(this.v0.y, this.v1.y, this.v2.y);
+		var ps = [];
 
-			this.circumCenter = new SQR.V2((minx + maxx) / 2, (miny + maxy) / 2);
-
-			dx = this.circumCenter.x - minx;
-			dy = this.circumCenter.y - miny;
-		} else {
-			var cx = (D * E - B * F) / G;
-			var cy = (A * F - C * E) / G;
-
-			this.circumCenter = new SQR.V2(cx, cy);
-
-			dx = this.circumCenter.x - this.v0.x;
-			dy = this.circumCenter.y - this.v0.y;
+		for (var i = 0; i < 4; i++) {
+			var x = r * Math.cos(i * a);
+			var y = r * Math.sin(i * a);
+			ps.push(x, y, 0);
 		}
 
-		this.circumRadiusSq = dx * dx + dy * dy;
-		this.circumRadius = Math.sqrt(this.circumRadiusSq);
+		ps.push(0, 0,  r);
+		ps.push(0, 0, -r);
+
+		var b = SQR.Buffer()
+			.layout(SQR.v3(), 6)
+			.data('aPosition', ps);
+
+		if(!dotsOnly) {
+			b.index(
+				0, 1, 1, 2, 2, 3, 3, 0, // base
+				4, 0, 4, 1, 4, 2, 4, 3, // top to base
+				5, 0, 5, 1, 5, 2, 5, 3  // bottom to base
+			);
+		}
+			
+		return b;
+	},
+
+	cube: function(size, dotsOnly) {
+
+		var s = size * 0.5;
+
+		var b = SQR.Buffer()
+			.layout(SQR.v3(), 8)
+			.data('aPosition', 
+				-s,  s,  s, // 0 front top left
+				 s,  s,  s, // 1 front top right
+				-s, -s,  s, // 2 front bottom left
+				 s, -s,  s, // 3 front bottom right
+				-s,  s, -s,	// 4 back top left
+				 s,  s, -s, // 5 back top right
+				-s, -s, -s,	// 6 back bottom left
+				 s, -s, -s  // 7 back bottom right
+			);
+
+		if(!dotsOnly) {
+			b.index(
+				0, 1, 0, 2, 1, 3, 2, 3, // front
+				4, 5, 4, 6, 5, 7, 6, 7, // back
+				0, 4, 1, 5, 2, 6, 3, 7  // sides
+			);
+		}
+			
+		return b;
+	},
+
+	dodecahedron: function(size, dotsOnly) {
+
+		var s = size * 0.5;
+		var phi = (1 + Math.sqrt(5)) / 2;  // The golden ratio, ~1.618
+		var p = s * phi;
+		var ip = s * (1 / phi);
+
+		var b = SQR.Buffer()
+			.layout(SQR.v3(), 20)
+			.data('aPosition', 
+				-s,  s,  s,  // 0 front top left
+				 s,  s,  s,  // 1 front top right
+
+				-s, -s,  s,  // 2 front bottom left
+				 s, -s,  s,  // 3 front bottom right
+
+				-s,  s, -s,	 // 4 back top left
+				 s,  s, -s,  // 5 back top right
+
+				-s, -s, -s,	 // 6 back bottom left
+				 s, -s, -s,  // 7 back bottom right
+
+				 0,  ip,  p, // 8 y-z plane (green)
+				 0, -ip,  p, // 9
+				 0,  ip, -p, // 10
+				 0, -ip, -p, // 11
+
+			    -p,  0,  ip, // 12 x-z plane (pink)
+				-p,  0, -ip, // 13
+				 p,  0,  ip, // 14
+				 p,  0, -ip, // 15
+
+				-ip,  p,  0, // 16 x-y plane (blue)
+				 ip,  p,  0, // 17
+				 ip, -p,  0, // 18
+				-ip, -p,  0  // 19
+
+			);
+
+		if(!dotsOnly) {
+			b.index(
+				8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, // phi rects edges
+
+				8,  0,  8,  1,  9,  2,  9,  3,
+				10, 4,  10, 5, 11,  6, 11,  7,
+
+				12, 0, 12, 2, 13, 4, 13, 6,
+				14, 1, 14, 3, 15, 5, 15, 7,
+
+				16, 0, 16, 4, 17, 1, 17, 5,
+				18, 3, 18, 7, 19, 2, 19, 6
+
+			);
+		}
+			
+		return b;
+	},
+
+	icosahedron: function(size, dotsOnly) {
+
+		var r = size * 0.5;
+		var t = (1.0 + Math.sqrt(5.0)) * 0.5 * r;
+		var ps = [];
+
+		var av = function(x, y, z) {
+		    var v = new SQR.V3(x, y, z).norm().mul(r);
+		    ps.push(v.x, v.y, v.z);
+		}
+
+		av(-r,  t,  0); // 0
+		av( r,  t,  0); // 1
+		av(-r, -t,  0); // 2
+		av( r, -t,  0); // 3
+
+		av( 0, -r,  t); // 4
+		av( 0,  r,  t); // 5
+		av( 0, -r, -t); // 6
+		av( 0,  r, -t); // 7
+
+		av( t,  0, -r); // 8
+		av( t,  0,  r); // 9
+		av(-t,  0, -r); // 10
+		av(-t,  0,  r); // 11
+
+		var b = SQR.Buffer()
+			.layout(SQR.v3(), 12)
+			.data('aPosition', ps);
+
+		if(!dotsOnly) {
+			b.index(
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+
+				0, 5, 1, 5, 0, 7, 1, 7,
+				2, 6, 3, 6, 2, 4, 3, 4,
+
+				8, 1, 8, 3, 10, 0, 10, 2,
+				9, 1, 9, 3, 11, 0, 11, 2,
+				
+				8, 6, 8, 7, 10, 6, 10, 7,
+				9, 4, 9, 5, 11, 4, 11, 5
+			);
+		}
+			
+		return b; 
 	}
-
-	/**
-	 *	Test whether the point v is inside the triangles circumcircle. 
-	 *	If circum-circle was not calculated, calculateCircumCircle will be called first
-	 *	@memberof SQR.Triangle.prototype
-	 *	@method vertexInCircumcircle
-	 *	@param {SQR.V2} v - vertex to be checked
-	 *	@returns {boolean} true is vertex is in circumcircle
-	 */
-	this.vertexInCircumcircle = function(v) {
-
-		if(!this.circumCenter) this.calculateCircumCircle();
-
-		var dx = this.circumCenter.x - v.x;
-		var dy = this.circumCenter.y - v.y;
-		var sq = dx * dx + dy * dy;
-		return (sq <= this.circumRadiusSq);
-
-	}
-
 };
 

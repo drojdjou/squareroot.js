@@ -144,10 +144,11 @@ b.iterate('aPosition', function(i, data, count)) {
 	 */
 	b.iterate = function(attribute, callback) {
 		var s = b.attributes[attribute];
+		var o = attribute ? s.offset : 0;
 		var c = 0;
 
 		for(var i = 0; i < data.length; i += b.strideSize) {
-			callback(i + s.offset, data, c);
+			callback(i + o, data, c);
 			c++;
 		}
 		return b;
@@ -258,6 +259,10 @@ b.iterate('aPosition', function(i, data, count)) {
 	 */
 	b.getDataArray = function() {
 		return data;
+	}
+
+	b.getIndexArray = function() {
+		return indices;
 	}
 
 	/**

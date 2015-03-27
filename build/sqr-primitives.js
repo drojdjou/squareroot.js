@@ -75,34 +75,96 @@ SQR.Primitives.createCube = function(w, h, d, options) {
 
 	// SQR.Debug.traceBuffer(geo, true);
 	
-	return geo;
+	return geo.update();
 }
 
-SQR.Primitives.createSkybox = function(faces, glsl, size) {
+SQR.Primitives.createSkybox = function(options) {
 
-	if(!glsl && SQR.GLSL) glsl = SQR.GLSL['shaders/skybox.glsl'];
+	options = options || {};
+	options.size = options.size || 5;
+	options.useDepth = (options.useDepth === undefined) ? true : options.useDepth;
 
-	if(!glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl to use the default one.";
+	if(!options.glsl && SQR.GLSL) {
+		if(options.use2dTextures) 
+			options.glsl = SQR.GLSL['shaders/skybox-2d.glsl'];
+		else 
+			options.glsl = SQR.GLSL['shaders/skybox-cube.glsl'];
+	}
+
+	if(!options.glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl.js to use the default one.";
 
 	var skybox = new SQR.Transform();
 
-	size = size || 5;
+	
 
-    skybox.shader = SQR.Shader(glsl);
-    skybox.buffer = SQR.Primitives.createCube(size, size, size, { reverseNormals: true }).update();
+	var shader = SQR.Shader(options.glsl);
 
-	skybox.addCubemap = function(fs) {
-		if(!fs) return;
-		// TODO: delete previous cubemaps if any
-		skybox.cubemap = SQR.Cubemap(fs);
-    	skybox.shader.use().setUniform('uCubemap', skybox.cubemap);
-	}
+	
+	if(options.use2dTextures) {
 
-	skybox.addCubemap(faces);
+		var planeOptions = { zUp: true };
+		var s = options.size;
 
-    skybox.useDepth = false;
+		var side = function(name, o) {
+			var f = new SQR.Transform('front');
+			f.shader = shader;
+			f.useDepth = options.useDepth;
+			f.buffer = SQR.Primitives.createPlane(s, s, 1, 1, 0, 0, o);
+			return f;
+		}
 
-    return skybox;
+		var front = side('front', planeOptions);
+		front.position.z = s * -0.5;
+
+		var back = side('back', planeOptions);
+		back.position.z = s * 0.5;
+		back.rotation.y = Math.PI;
+
+		var left = side('left', planeOptions);
+		left.position.x = s * -0.5;
+		left.rotation.y = Math.PI * -0.5;
+
+		var right = side('right', planeOptions);
+		right.position.x = s * 0.5;
+		right.rotation.y = Math.PI * 0.5;
+
+		var up = side('up');
+		up.position.y = s * 0.5;
+
+		var down = side('down');
+		down.position.y = s * -0.5;
+		down.rotation.x = Math.PI;
+
+		skybox.add(front, back, left, right, up, down);
+
+		skybox.setTexture = function(f) {
+			if(!f) return;
+			front.uniforms = { uTexture: SQR.Texture(f.front) };
+			back.uniforms = { uTexture: SQR.Texture(f.back) };
+			left.uniforms = { uTexture: SQR.Texture(f.left) };
+			right.uniforms = { uTexture: SQR.Texture(f.right) };
+			up.uniforms = { uTexture: SQR.Texture(f.up) };
+			down.uniforms = { uTexture: SQR.Texture(f.down) };
+		}
+
+	} else {
+
+		var s = options.size;
+
+		skybox.buffer = SQR.Primitives.createCube(s, s, s, { reverseNormals: true });
+		skybox.shader = shader;
+		skybox.useDepth = options.useDepth;
+
+		skybox.setTexture = function(f) {
+			if(!f) return;
+			skybox.cubemap = SQR.Cubemap(f);
+			skybox.shader.use().setUniform('uCubemap', skybox.cubemap);
+		}
+	} 
+
+	if(options.faces) skybox.setTexture(options.faces);
+
+	return skybox;
 }
 
 
@@ -441,7 +503,7 @@ SQR.Extrude = function() {
 SQR.Face = function() {
 
     var t = {};
-
+    var indexed = false, vertexArray;
     var ap = 'aPosition', an = 'aNormal', au = 'aUV';
 
     /**
@@ -465,10 +527,20 @@ SQR.Face = function() {
 // 
      */
     t.setPosition = function(a, b, c, d) {
-        t.a = a; 
-        t.b = b; 
-        t.c = c;
+        t.a = a || new SQR.V3(); 
+        t.b = b || new SQR.V3(); 
+        t.c = c || new SQR.V3();
         t.d = d;
+        return t;
+    }
+
+    t.setIndex = function(va, ia, ib, ic, id) {
+        indexed = true;
+        t.ia = ia;
+        t.ib = ib;
+        t.ic = ic;
+        t.id = id;
+        vertexArray = va;
         return t;
     }
 
@@ -539,19 +611,32 @@ SQR.Face = function() {
         var t2 = SQR.V3.__tv2;
         t.normal = new SQR.V3();
 
-        t1.sub(t.a, t.b);
-        if(t1.isZero()) t1.sub(t.a, t.d);
-        t2.sub(t.c, t.a);
+        if(indexed) {
+            t1.sub(vertexArray[t.ia], vertexArray[t.ib]);
+            if(t1.isZero()) t1.sub(vertexArray[t.ia], vertexArray[t.id]);
+            t2.sub(vertexArray[t.ic], vertexArray[t.ia]);
+        } else {
+            t1.sub(t.a, t.b);
+            if(t1.isZero()) t1.sub(t.a, t.d);
+            t2.sub(t.c, t.a);
+        }
+
+
         t.normal.cross(t1, t2);
 
         return t;
     }
 
     t.addNormalToVertices = function() {
-        t.a.addNormal(t.normal);
-        t.b.addNormal(t.normal);
-        t.c.addNormal(t.normal);
-        if(t.d) t.d.addNormal(t.normal);
+        var a = indexed ? vertexArray[t.ia] : t.a;
+        var b = indexed ? vertexArray[t.ib] : t.b;
+        var c = indexed ? vertexArray[t.ic] : t.c;
+        var d = indexed ? vertexArray[t.id] : t.d;
+
+        a.addNormal(t.normal);
+        b.addNormal(t.normal);
+        c.addNormal(t.normal);
+        if(d) d.addNormal(t.normal);
         return t;
     }
 
@@ -796,6 +881,122 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
     return geo;
 }
 
+/* --- --- [primitives/Mesh.js] --- --- */
+
+SQR.Mesh = {
+
+	fromJSON: function(data, name, options) {
+
+		var geo;
+
+		options = options || {};
+
+		if(name) {
+			geo = data[name];
+		} else if(data.vertices) {
+			geo = data;
+		} else {
+			// Unity exported mesh files can have one or more meshes. 
+			// Even if there's only one mesh, it is stored as property
+			// where the key is the mesh uuid. This code will attempt
+			// to find the first mesh, so that on JS side we don't have to 
+			// pass the uuid in the constructor
+			for(var d in data) {
+				geo = data[d];
+				break;
+			}
+		}
+
+		if(!geo) throw "> SQR.Mesh - mesh not found in data (name: " + name + ")";
+	
+		var legacyAttribute = {
+			aPosition: 'vertices',
+			aNormal: 'normals',
+			aColor: 'colors',
+			aUV: 'uv1',
+			aUV2: 'uv2',
+			aTangent: 'tangent',
+			indices: 'tris'
+		};
+
+		var getAttributeData = function(n) {
+			var d = geo[n] || geo[legacyAttribute[n]];
+			if(d && d.length > 0) return d;
+			else return null; 
+		}
+
+		var layout = options.layout || data.layout || SQR.v3n3u2();
+		var vs = options.vertexSize || layout.aPosition;
+		var size = (geo.vertices || geo.aPosition).length / vs;
+
+
+		var buffer = SQR.Buffer().layout(layout, size);
+
+		for(var a in layout) {
+			if(a == 'aNormal' && options.skipNormals) continue;
+			var d = getAttributeData(a);
+			if(d) buffer.data(a, d);
+		}
+
+		var i = getAttributeData('indices');
+		if(i) buffer.index(i);
+
+        return buffer.update();
+	},
+
+	calculateNormals: function(buffer) {
+
+		var index = buffer.getIndexArray();
+		var data = buffer.getDataArray();
+
+		var f = new SQR.Face().setPosition(new SQR.V3(), new SQR.V3(), new SQR.V3());
+		f.a.normal = new SQR.V3();
+		f.b.normal = new SQR.V3();
+		f.c.normal = new SQR.V3();
+		var n = new SQR.V3();
+
+		for(var i = 0; i < buffer.indexSize; i += 3) {
+			var o0 = index[i+0] * buffer.strideSize;
+			var o1 = index[i+1] * buffer.strideSize;
+			var o2 = index[i+2] * buffer.strideSize;
+
+			f.a.set(data[o0+0], data[o0+1], data[o0+2]);
+			f.b.set(data[o1+0], data[o1+1], data[o1+2]);
+			f.c.set(data[o2+0], data[o2+1], data[o2+2]);
+
+			f.a.normal.set(data[o0+3], data[o0+4], data[o0+5]);
+			f.b.normal.set(data[o1+3], data[o1+4], data[o1+5]);
+			f.c.normal.set(data[o2+3], data[o2+4], data[o2+5]);
+
+			f.calculateNormal();
+			f.normal.norm();
+			f.addNormalToVertices();
+
+			data[o0+3] = f.a.normal.x;
+			data[o0+4] = f.a.normal.y;
+			data[o0+5] = f.a.normal.z;
+
+			data[o1+3] = f.b.normal.x;
+			data[o1+4] = f.b.normal.y;
+			data[o1+5] = f.b.normal.z;
+
+			data[o2+3] = f.c.normal.x;
+			data[o2+4] = f.c.normal.y;
+			data[o2+5] = f.c.normal.z;
+		}
+
+		buffer.iterate('aNormal', function(i, data, c) {
+			n.set(data[i+0], data[i+1], data[i+2]).norm();
+
+			data[i+0] = n.x;
+			data[i+1] = n.y;
+			data[i+2] = n.z;
+		});
+
+		buffer.update();
+	} 
+}
+
 /* --- --- [primitives/Plane.js] --- --- */
 
 /**
@@ -834,9 +1035,9 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
+SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 
-    var faces = [], vCols = [], uvCols = [];
+    var faces = [], indices = [];
 
     var geo = new SQR.Buffer();
     var options = options || {};
@@ -862,21 +1063,20 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
     var hb = geo.height / hd;
 
     var i, j;
+    var vertices = [], uvs = [];
 
     for (i = 0; i < wd+1; i++) {
-        vCols[i] = [];
-        uvCols[i] = [];
-
         for (j = 0; j < hd+1; j++) {
             var bvStart = wStart + i * wb;
             var bhStart = hStart + j * hb;
+            var ij = i * (hd+1) + j;
 
-            uvCols[i][j] = new SQR.V2(i/wd, j/hd);
+            uvs[ij] = new SQR.V2(i/wd, j/hd);
 
             if (!options.zUp) {
-                vCols[i][j] = new SQR.V3(bvStart, 0, bhStart);
+                vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
             } else {
-                vCols[i][j] = new SQR.V3(bvStart, bhStart, 0);
+                vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
             }
         }
     }
@@ -889,23 +1089,70 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho) {
             var bhStart = hStart + j * hb;
             var bhEnd = bhStart + hb;
 
-            var va = vCols[i][j], vb = vCols[i][j+1], vc = vCols[i+1][j], vd = vCols[i+1][j+1];
-            var uva = uvCols[i][j], uvb = uvCols[i][j+1], uvc = uvCols[i+1][j], uvd = uvCols[i+1][j+1];
+            var ij = i * (hd+1) + j;
+            var ij2 = (i+1) * (hd+1) + j;
 
-            var q = new SQR.Face().setPosition(va, vb, vc, vd).setUV(uva, uvb, uvc, uvd);
+            var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
             faces.push(q);
+            indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
         }
     }
 
-    geo.layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, wd * hd * 6);
 
-    var c = 0, t;
-	faces.forEach(function(t) {
-		c += t.calculateNormal().toBuffer(geo, c);
+    layout = (options && options.layout) ? options.layout : {};
+
+    layout.aPosition = 3;
+    layout.aNormal = 3;
+    layout.aUV = 2;
+
+    geo.layout(layout, vertices.length);
+
+
+	faces.forEach(function(f) {
+		f.calculateNormal();
+        f.addNormalToVertices();
 	});
 
-    return geo;
+    geo.iterate('aPosition', function(i, data, c) {
+        var v = vertices[c];
+        data[i+0] = v.x;
+        data[i+1] = v.y;
+        data[i+2] = v.z;
+    });
+
+    geo.iterate('aNormal', function(i, data, c) {
+        var v = vertices[c];
+        v.normal.norm();
+        data[i+0] = v.normal.x;
+        data[i+1] = v.normal.y;
+        data[i+2] = v.normal.z;
+    });
+
+    geo.iterate('aUV', function(i, data, c) {
+        var v = uvs[c];
+        data[i+0] = v.x;
+        data[i+1] = v.y;
+    });
+
+    geo.index(indices);
+
+    return geo.update();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* --- --- [primitives/PostEffect.js] --- --- */
 
@@ -929,7 +1176,7 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
         .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
         .update();
 
-    var pe = new SQR.Transform();
+    var pe = new SQR.Transform('post-effect');
     pe.buffer = SQR.fullScreenQuad;
     pe.shader = SQR.Shader(shaderSource, shaderOptions);
 

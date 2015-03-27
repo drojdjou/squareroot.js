@@ -1,15 +1,20 @@
 {
-   "name": "squareroot.js",
-   "description": "GL, math, rendering, animation",
-   "version": "0.0.0",
-   "jspm": {
-     "main": "build/sqr",
-     "format": "global"
-  },
-  "main": "build/sqr",
-  "format": "global",
-   "devDependencies": {
-      "uglify-js":"*",
-      "jsdoc":"*"
-   }
+	"name": "squareroot.js",
+	"description": "GL, math, rendering, animation",
+	"repository": "https://github.com/drojdjou/squareroot.js/",
+	"version": "3.0.0",
+
+	"jspm": {
+		"main": "build/sqr",
+		"format": "global"
+	},
+
+	"main": "build/sqr",
+	"format": "global",
+
+	"devDependencies": {
+	  "uglify-js":"*",
+	  "jsdoc":"*",
+	  "moment":"*"
+	}
 }

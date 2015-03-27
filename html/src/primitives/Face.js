@@ -13,7 +13,7 @@
 SQR.Face = function() {
 
     var t = {};
-
+    var indexed = false, vertexArray;
     var ap = 'aPosition', an = 'aNormal', au = 'aUV';
 
     /**
@@ -37,10 +37,20 @@ SQR.Face = function() {
 // 
      */
     t.setPosition = function(a, b, c, d) {
-        t.a = a; 
-        t.b = b; 
-        t.c = c;
+        t.a = a || new SQR.V3(); 
+        t.b = b || new SQR.V3(); 
+        t.c = c || new SQR.V3();
         t.d = d;
+        return t;
+    }
+
+    t.setIndex = function(va, ia, ib, ic, id) {
+        indexed = true;
+        t.ia = ia;
+        t.ib = ib;
+        t.ic = ic;
+        t.id = id;
+        vertexArray = va;
         return t;
     }
 
@@ -111,19 +121,32 @@ SQR.Face = function() {
         var t2 = SQR.V3.__tv2;
         t.normal = new SQR.V3();
 
-        t1.sub(t.a, t.b);
-        if(t1.isZero()) t1.sub(t.a, t.d);
-        t2.sub(t.c, t.a);
+        if(indexed) {
+            t1.sub(vertexArray[t.ia], vertexArray[t.ib]);
+            if(t1.isZero()) t1.sub(vertexArray[t.ia], vertexArray[t.id]);
+            t2.sub(vertexArray[t.ic], vertexArray[t.ia]);
+        } else {
+            t1.sub(t.a, t.b);
+            if(t1.isZero()) t1.sub(t.a, t.d);
+            t2.sub(t.c, t.a);
+        }
+
+
         t.normal.cross(t1, t2);
 
         return t;
     }
 
     t.addNormalToVertices = function() {
-        t.a.addNormal(t.normal);
-        t.b.addNormal(t.normal);
-        t.c.addNormal(t.normal);
-        if(t.d) t.d.addNormal(t.normal);
+        var a = indexed ? vertexArray[t.ia] : t.a;
+        var b = indexed ? vertexArray[t.ib] : t.b;
+        var c = indexed ? vertexArray[t.ic] : t.c;
+        var d = indexed ? vertexArray[t.id] : t.d;
+
+        a.addNormal(t.normal);
+        b.addNormal(t.normal);
+        c.addNormal(t.normal);
+        if(d) d.addNormal(t.normal);
         return t;
     }
 

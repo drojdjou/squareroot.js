@@ -21,11 +21,9 @@ SQR.Renderer = function(context) {
             }
         }
 
-        if(t.buffer && t.shader) {
-        	if(t.transparent) transparentObjects.push(t);
-        	else if(!t.useDepth) renderObjects.unshift(t);
-        	else renderObjects.push(t);
-        }
+        if(t.transparent) transparentObjects.push(t);
+        else if(!t.useDepth) renderObjects.unshift(t);
+        else renderObjects.push(t);
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
@@ -77,6 +75,8 @@ SQR.Renderer = function(context) {
 			var ro = renderObjects[i];
 
 			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+
+			if(!ro.buffer) continue;
 
 			if(ro.transparent) {
 

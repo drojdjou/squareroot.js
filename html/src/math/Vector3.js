@@ -233,7 +233,7 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
  *  A normal from each contributing face can be added here. 
  *  When all the normals are added, a vector that is the sum of them all 
  *  is available as `this.normal` property. The pre-vertex normal can be caluculated
- *  but normalizing this vector.
+ *  by normalizing this vector.
  */
 SQR.V3.prototype.addNormal = function(_n) {
 

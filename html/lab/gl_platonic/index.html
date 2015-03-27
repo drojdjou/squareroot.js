@@ -66,6 +66,7 @@ canvas {
 	], function(assets) {
 
 		var isTouch = ('ontouchstart' in document);
+		var isRetina = window.devicePixelRatio > 1;
 
 		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 		var renderer = new SQR.Renderer(ctx);
@@ -247,44 +248,6 @@ canvas {
 		addPiece('octahedron', 1.8, red,    6,  9);
 		addPiece('cube', 1.33, purple,     -9,  9);
 
-		// var pyrDot = createObject('pyramid', 'dot', 1.5, orange);
-		// var pyrWire = createObject('pyramid', 'wire', 1.5, orange);
-		// var pyr = new SQR.Transform();
-		// pyr.add(pyrDot, pyrWire);				
-
-		// var octaDot = createObject('octahedron', 'dot', 2, red);
-		// var octaWire = createObject('octahedron', 'wire', 2, red);
-		// var octa = new SQR.Transform();
-		// octa.add(octaDot, octaWire);
-
-		// var cubeDot = createObject('cube', 'dot', 1.33, blue);
-		// var cubeWire = createObject('cube', 'wire', 1.33, blue);
-		// var cube = new SQR.Transform();
-		// cube.add(cubeDot, cubeWire);
-
-		// var dodeDot = createObject('dodecahedron', 'dot', 1, green);
-		// var dodeWire = createObject('dodecahedron', 'wire', 1, green);
-		// var dode = new SQR.Transform();
-		// dode.add(dodeDot, dodeWire);
-
-		// var icoDot = createObject('icosahedron', 'dot', 2, purple);
-		// var icoWire = createObject('icosahedron', 'wire', 2, purple);
-		// var ico = new SQR.Transform();
-		// ico.add(icoDot, icoWire);
-
-		// root.add(pyr);
-		// root.add(octa);
-		// root.add(cube);
-		// root.add(dode);
-		// root.add(ico);
-		// var r = 4;
-		// pyr.position.set(Math.cos(Math.PI / 5 * 2) * r, Math.sin(Math.PI / 5 * 2) * r, 0);
-		// octa.position.set(Math.cos(Math.PI / 5 * 4) * r, Math.sin(Math.PI / 5 * 4) * r, 0);
-		// cube.position.set(Math.cos(Math.PI / 5 * 6) * r, Math.sin(Math.PI / 5 * 6) * r, 0);
-		// dode.position.set(Math.cos(Math.PI / 5 * 8) * r, Math.sin(Math.PI / 5 * 8) * r, 0);
-		// ico.position.set(Math.cos(Math.PI / 5 * 10) * r, Math.sin(Math.PI / 5 * 10) * r, 0);
-
-
 		var disco = SQR.DiscoBall({
 			shader: SQR.Shader(assets['disco-shader']),
 			size: 400, 
@@ -346,10 +309,10 @@ canvas {
 			disco.rotation.y += 0.0075;
 
 			// Render the scene from the root transform up, directly to screen
-			if(!isTouch) rawFBO.bind();
+			if(!isTouch && isRetina) rawFBO.bind();
 			renderer.render(root, camera);
 
-			if(!isTouch) {
+			if(!isTouch && isRetina) {
 				// blurForce = 0.01;
 				blurForce = 0.015;
 

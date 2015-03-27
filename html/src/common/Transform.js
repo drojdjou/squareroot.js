@@ -114,6 +114,7 @@ SQR.Transform = function(name) {
     t.srcFactor = null;
     t.dstFactor = null;
     t.useDepth = true;
+    t.lineWidth = 1;
 
     t.setAsBoneRoot = function() {
         t.computePoseMatrix();
@@ -256,6 +257,7 @@ SQR.Transform = function(name) {
         var gl = SQR.gl;
         // gl.depthMask(t.depthMask);
         t.useDepth ? gl.enable(gl.DEPTH_TEST): gl.disable(gl.DEPTH_TEST);
+        gl.lineWidth(t.lineWidth);
     	t.buffer.draw();
     }
 
