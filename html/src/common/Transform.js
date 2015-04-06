@@ -58,6 +58,13 @@ SQR.Transform = function(name) {
      */
     t.globalPosition = new SQR.V3();
 
+    /** 
+     *  @readonly 
+     *  @var {SQR.V3} forward - the forward vector 
+     *  @memberof SQR.Transform.prototype
+     */
+    t.forward = new SQR.V3();
+
     /**
      *  @var {SQR.Quaternion} quaternion - A Quaternion that describes the rotation of the transform, 
      *  only active if `useQuaternion` is set to true.
@@ -300,9 +307,10 @@ SQR.Transform = function(name) {
             if(t.bone) t.matrix.copyTo(t.boneMatrix);
         }
 
-        t.globalMatrix.extractPosition(t.globalPosition);
+        var g = t.globalMatrix;
 
-        // d = globalMatrix.data, d[8], d[9], d[10] = forward vector
+        g.extractPosition(t.globalPosition);
+        t.forward.set(g.data[8], g.data[9], g.data[10]);
 
         if(t.isStatic) transformState = 1;
         if(t.beforeDraw) t.beforeDraw();

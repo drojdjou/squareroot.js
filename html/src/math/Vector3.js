@@ -226,6 +226,9 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
     h = h || window.innerHeight;
     this.x = (this.x / this.z) * w/2 + w/2;
     this.y = (this.y / this.z) * h/2 + h/2;
+
+    // TODO: make sure this is ok to be here in any case
+    this.y = h - this.y;
 }
 
 /**
@@ -245,7 +248,7 @@ SQR.V3.prototype.addNormal = function(_n) {
 }
 
 /** 
- *  This is use to reset the normal to 0.
+ *  This is used to reset the normal to 0,0,0.
  */
 SQR.V3.prototype.resetNormal = function(_n) {
     if(this.normal) this.normal.set();

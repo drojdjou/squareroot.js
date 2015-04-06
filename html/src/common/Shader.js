@@ -207,7 +207,7 @@ SQR.Shader = function(source, options) {
 				console.warn("> SQR.Shader attempt to set uniform that does not exist: " + uniform);
 				console.trace();
 			}
-			return false;
+			return s;
 		}
 
 		if(v.toUniform) v = v.toUniform(n.type);
