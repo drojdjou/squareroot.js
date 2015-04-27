@@ -79,7 +79,12 @@ SQR.Context = function(canvas) {
 	c.size = function(w, h) {
 		canvas.width = w;
 		canvas.height = h;
-		gl.viewport(0, 0, w, h);
+		c.viewport(0, 0, w, h);
+		return c;
+	}
+
+	c.viewport = function(x, y, w, h) {
+		gl.viewport(x, y, w, h);
 		return c;
 	}
 

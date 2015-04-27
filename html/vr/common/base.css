@@ -1,0 +1,55 @@
+body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	color: #ffffff;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 14px;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+ul {
+	list-style-type: none;
+	padding: 10px;
+	margin:  10px;
+}
+
+.start, canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.start {
+	z-index: 100;
+	text-transform: uppercase;
+	font-size: 12px;
+	width: 120px;
+	height: 40px;
+	border: 1px solid white;
+	letter-spacing: 0.1em;
+	text-align: center;
+	line-height: 40px;
+
+	top: 50%;
+	left: 50%;
+	margin: -20px 0 0 -60px;
+	font-weight: 800;
+
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.start:hover {
+	background-color: #aaaaaa;
+	color: #000000;
+}

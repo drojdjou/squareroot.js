@@ -151,6 +151,19 @@ SQR.Quaternion.prototype.normalize = function() {
     this.y /= n;
     this.z /= n;
     this.w /= n;
+    return this;
+}
+
+
+/**
+ *  Inverses the quaternion.
+ */
+SQR.Quaternion.prototype.neg = function() {
+    this.x *= -1;
+    this.y *= -1;
+    this.z *= -1;
+    this.w *= -1;
+    return this;
 }
 
 /**
@@ -164,6 +177,62 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
     throw "SQR.Quaternion.toMatrix() is not implemented. Check SQR.Matrix44.TQS()"; 
 }
 
+
+// This one is from three.js (used for reference )
+// SQR.Quaternion.slerp2 = function(qa, qb, t, qr) {
+
+//     qr = qr || new SQR.Quaternion();
+
+
+//     if ( t === 0 ) return qr.copyFrom(qa);
+//     if ( t === 1 ) return qr.copyFrom(qb);
+
+//     var x = qa.x, y = qa.y, z = qa.z, w = qa.w;
+
+//     // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
+//     var cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
+
+//     if (cosHalfTheta < 0) {
+//         qr.w = - qb.w;
+//         qr.x = - qb.x;
+//         qr.y = - qb.y;
+//         qr.z = - qb.z;
+//         cosHalfTheta = - cosHalfTheta;
+//     } else {
+//         qr.copyFrom( qb );
+//     }
+
+//     if (cosHalfTheta >= 1.0) {
+//         qr.w = w;
+//         qr.x = x;
+//         qr.y = y;
+//         qr.z = z;
+//         return qr;
+//     }
+
+//     var halfTheta = Math.acos( cosHalfTheta );
+//     var sinHalfTheta = Math.sqrt( 1.0 - cosHalfTheta * cosHalfTheta );
+
+//     if (Math.abs( sinHalfTheta ) < 0.001) {
+//         qr.w = 0.5 * (w + qr.w);
+//         qr.x = 0.5 * (x + qr.x);
+//         qr.y = 0.5 * (y + qr.y);
+//         qr.z = 0.5 * (z + qr.z);
+//         return qr;
+//     }
+
+//     var ratioA = Math.sin( ( 1 - t ) * halfTheta ) / sinHalfTheta,
+//     ratioB = Math.sin( t * halfTheta ) / sinHalfTheta;
+
+//     qr.w = (w * ratioA + qr.w * ratioB);
+//     qr.x = (x * ratioA + qr.x * ratioB);
+//     qr.y = (y * ratioA + qr.y * ratioB);
+//     qr.z = (z * ratioA + qr.z * ratioB);
+
+//     return qr;
+
+// }
+
 /**
  *  Returns a spherical linear interpolation between two quaternions.
  *  @param qa first quaternion
@@ -174,7 +243,23 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
 SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr = qr || new SQR.Quaternion();
 
-    var cha = qa.w * qb.w + qa.x * qb.x + qa.y * qb.y + qa.z * qb.z;
+    if (t === 0) return qr.copyFrom(qa);
+    if (t === 1) return qr.copyFrom(qb);
+
+    // Try taking the dot product of your two quaternions (i.e., the 4-D dot product), 
+    // and if the dot product is negative, replace your quaterions q1 and q2 with -q1 and q2 before performing Slerp.
+    // http://stackoverflow.com/questions/2886606/flipping-issue-when-interpolating-rotations-using-quaternions
+
+    // (This is not working for me)
+
+
+    var cha = SQR.Quaternion.dot(qa, qb);
+
+    if(cha < 0) {
+        qa.neg();
+        cha = SQR.Quaternion.dot(qa, qb);
+    }
+
     var ha = Math.acos(cha);
     var sha = Math.sqrt(1 - cha * cha);
     var ra = Math.sin((1 - t) * ha) / sha;
@@ -197,6 +282,10 @@ SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr.y = (qa.y * ra + qb.y * rb);
     qr.z = (qa.z * ra + qb.z * rb);
     return qr;
+}
+
+SQR.Quaternion.dot = function(qa, qb) {
+    return qa.x * qb.x + qa.y * qb.y + qa.z * qb.z + qa.w * qb.w;
 }
 
 SQR.Quaternion.prototype.slerp = function(qa, qb, t) {

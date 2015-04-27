@@ -30,6 +30,8 @@ SQR.Renderer = function(context) {
 
 	var defOpts = {};
 
+	r.autoClear = true;
+
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
 
@@ -38,7 +40,7 @@ SQR.Renderer = function(context) {
 
 		options = options || defOpts;
 
-		if(!options.dontClear) context.clear();
+		if(!options.dontClear && r.autoClear) context.clear();
 
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);

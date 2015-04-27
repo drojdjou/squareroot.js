@@ -59,8 +59,9 @@ SQR.Texture = function(_source, options) {
     var mif, mgf;
 
     if(isPowerOfTwo()) {
-        gl.generateMipmap(gl.TEXTURE_2D);
-        mif = gl.LINEAR_MIPMAP_LINEAR, mgf = gl.LINEAR;
+        if(options.mipmap) gl.generateMipmap(gl.TEXTURE_2D);
+        mif = options.mipmap ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR;
+        mgf = gl.LINEAR;
     } else {
         mif = mgf = gl.LINEAR;
     }

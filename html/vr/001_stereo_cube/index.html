@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simples 3d rotating cube</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../common/base.css">
+
+</head>
+<body>
+
+
+<div class="start">Start</div>
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	var startBtn = document.querySelector('.start');
+
+	var runapp = function() {
+
+		if(startBtn) startBtn.style.display = 'none';
+
+		SQR.Loader.loadAssets([
+			['../common/normal2color.glsl', 'n2c'],
+		], function(assets) {
+
+			var w, h, aspect;
+			var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+			var renderer = new SQR.Renderer(ctx);
+			renderer.autoClear = false;
+
+			var root = new SQR.Transform();
+
+			var cameraLeft = new SQR.Transform();
+			var cameraRight = new SQR.Transform();
+
+			cameraLeft.position.x =  -0.2;
+			cameraRight.position.x =  0.2;
+
+			root.add(cameraLeft, cameraRight);
+
+			var resize =function() {
+				w = window.innerWidth, h = window.innerHeight, aspect = (w/2)/h;
+				ctx.size(w, h);
+				p = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+				cameraLeft.projection = p;
+				cameraRight.projection = p;
+			}
+
+			window.addEventListener('resize', resize);
+			resize();
+
+			var cube = new SQR.Transform();
+			cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+			cube.shader = SQR.Shader(assets['n2c']);
+			cube.position.z = -5;
+			root.add(cube);
+
+			var render = function() {
+				requestAnimationFrame(render);
+				cube.rotation.x += 0.004;
+				cube.rotation.y += 0.008;
+
+				var w2 = w/2;
+
+				ctx.viewport(0, 0, w, h);
+				ctx.clear();
+
+				// renderer.setViewport( 0, 0, _width, _height );
+				// renderer.setViewport( _width, 0, _width, _height );
+
+				ctx.viewport(0, 0, w2, h);
+				renderer.render(root, cameraLeft);
+
+				ctx.viewport(w2, 0, w2, h);
+				renderer.render(root, cameraRight);
+			}
+
+			render();
+		});
+	}
+
+	var fullscreen = function(c) {
+		if (c.requestFullscreen) {
+			c.requestFullscreen();
+		} else if (c.msRequestFullscreen) {
+			c.msRequestFullscreen();
+		} else if (c.mozRequestFullScreen) {
+			c.mozRequestFullScreen();
+		} else if (c.webkitRequestFullscreen) {
+			c.webkitRequestFullscreen();
+		}
+	}
+
+	
+	startBtn.addEventListener('click', runapp);
+	// runapp();
+
+</script>
+
+<script type="text/javascript">
+
+	if(location.host.indexOf('localhost') > -1 || 
+		location.host.indexOf('192.168') > -1 || 
+		location.host.indexOf('10.0') > -1 || 
+		location.host.indexOf('27ebc825') > -1) {
+			var LR_PORT = 35729;
+			document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':' + LR_PORT + '/livereload.js?snipver=1"></' + 'script>');
+	}
+
+</script>
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

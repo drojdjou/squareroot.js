@@ -40,3 +40,40 @@ Adding option to slightly oversize skyboxes - maybe will help with seams on vide
 
 The previous update was a bad idea...
 
+
+##### v3.0 b 106
+*Apr 17th 2015*
+
+Adding Quaternion.dot (static), quaternion.neg and a trick in slerp to make it always choose the shortest distance
+
+
+##### v3.0 b 107
+*Apr 17th 2015*
+
+Typo fixes
+
+
+##### v3.0 b 108
+*Apr 17th 2015*
+
+Unroll previous trick in Quaternion.slerp
+
+
+##### v3.0 b 109
+*Apr 17th 2015*
+
+Texture does not generate mipmaps by default now, option.mipmap=true needs to be specified
+
+
+##### v3.0 b 110
+*Apr 17th 2015*
+
+Fix on Texture filtering related to mimpap setting above
+
+
+##### v3.0 b 111
+*Apr 18th 2015*
+
+Adding that Quaternion.slerp trick, with a fix. This time hopefully it works
+
+
