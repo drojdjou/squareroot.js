@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Simples 3d rotating cube</title>
+<title>Universal VR Rotating Cubes</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../common/base.css">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/Version.js"></script>
@@ -14,6 +16,9 @@
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/Cubemap.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -23,27 +28,42 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
-<link rel="stylesheet" type="text/css" href="../common/base.css">
+<script type="text/javascript" src="../../src/vr/VRApp.js"></script>
+<script type="text/javascript" src="../../src/vr/VRPost.js"></script>
+<script type="text/javascript" src="../../src/vr/Gyro.js"></script>
+
+<script type="text/javascript" src="../../../build/sqr-glsl.js"></script>
 
 </head>
 <body>
 
-
-<div class="start">Start</div>
 <canvas id="gl-canvas"></canvas>
+
 
 <script type="text/javascript">
 
-	var startBtn = document.querySelector('.start');
+	console.log('Universal VR | b1');
+	
+	SQR.VRApp(function(options) {
 
-	var runapp = function() {
-
-		if(startBtn) startBtn.style.display = 'none';
+		var skyboxPath = '../../assets/skybox/skybox-';
 
 		SQR.Loader.loadAssets([
 			['../common/normal2color.glsl', 'n2c'],
+
+			[skyboxPath + 'front.jpg',  'front'],
+			[skyboxPath + 'back.jpg',   'back'],
+			[skyboxPath + 'left.jpg',   'left'],
+			[skyboxPath + 'right.jpg',  'right'],
+			[skyboxPath + 'up.jpg',     'up'],
+			[skyboxPath + 'down.jpg',   'down'],
+
+			['../../src/glsl/post/vr.glsl',   'vrShader'],
+
 		], function(assets) {
 
 			var w, h, aspect;
@@ -53,80 +73,91 @@
 			renderer.autoClear = false;
 
 			var root = new SQR.Transform();
+			var camera = new SQR.Transform();
+			root.add(camera);
 
-			var cameraLeft = new SQR.Transform();
-			var cameraRight = new SQR.Transform();
+			options.customShader = assets.vrShader;
+			var vr = SQR.VRPost(camera, renderer, ctx, options);
+			window.addEventListener('resize', vr.size);
+			vr.size();
 
-			cameraLeft.position.x =  -0.2;
-			cameraRight.position.x =  0.2;
+			var cubeGeo = SQR.Primitives.createCube(2, 2, 2).update();
+			var cubeShader = SQR.Shader(assets['n2c']);
 
-			root.add(cameraLeft, cameraRight);
+			var dist = 10;
 
-			var resize =function() {
-				w = window.innerWidth, h = window.innerHeight, aspect = (w/2)/h;
-				ctx.size(w, h);
-				p = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-				cameraLeft.projection = p;
-				cameraRight.projection = p;
-			}
+			var cubeFront = new SQR.Transform();
+			cubeFront.buffer = cubeGeo;
+			cubeFront.shader = cubeShader;
+			cubeFront.uniforms = { uColor: [1.0, 0.0, 0.0] };
+			cubeFront.position.z = -dist;
 
-			window.addEventListener('resize', resize);
-			resize();
+			var cubeBack = new SQR.Transform();
+			cubeBack.buffer = cubeGeo;
+			cubeBack.shader = cubeShader;
+			cubeBack.uniforms = { uColor: [1.0, 0.0, 1.0] };
+			cubeBack.position.z =  dist;
 
-			var cube = new SQR.Transform();
-			cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-			cube.shader = SQR.Shader(assets['n2c']);
-			cube.position.z = -5;
-			root.add(cube);
+			var cubeLeft = new SQR.Transform();
+			cubeLeft.buffer = cubeGeo;
+			cubeLeft.shader = cubeShader;
+			cubeLeft.uniforms = { uColor: [0.0, 0.66, 0.0] };
+			cubeLeft.position.x = -dist;
+
+			var cubeRight = new SQR.Transform();
+			cubeRight.buffer = cubeGeo;
+			cubeRight.shader = cubeShader;
+			cubeRight.uniforms = { uColor: [0.0, 0.0, 0.66] };
+			cubeRight.position.x =  dist;
+
+			var skybox = SQR.Primitives.createSkybox({ 
+				use2dTextures: false, 
+				useDepth: false, 
+				faces: {
+					front: assets.front,
+					back: assets.back,
+					left: assets.left,
+					right: assets.right,
+					up: assets.up,
+					down: assets.down
+				}
+			});
+
+			root.add(cubeFront, cubeLeft, cubeRight, cubeBack);
+			root.add(skybox);
 
 			var render = function() {
 				requestAnimationFrame(render);
-				cube.rotation.x += 0.004;
-				cube.rotation.y += 0.008;
 
-				var w2 = w/2;
+				cubeFront.rotation.x += 0.004;
+				cubeFront.rotation.y += 0.008;
 
-				ctx.viewport(0, 0, w, h);
-				ctx.clear();
+				cubeBack.rotation.x += 0.004;
+				cubeBack.rotation.y += 0.008;
 
-				// renderer.setViewport( 0, 0, _width, _height );
-				// renderer.setViewport( _width, 0, _width, _height );
+				cubeLeft.rotation.x += 0.004;
+				cubeLeft.rotation.y += 0.008;
 
-				ctx.viewport(0, 0, w2, h);
-				renderer.render(root, cameraLeft);
+				cubeRight.rotation.x += 0.004;
+				cubeRight.rotation.y += 0.008;
 
-				ctx.viewport(w2, 0, w2, h);
-				renderer.render(root, cameraRight);
+				vr.render(root);
 			}
 
 			render();
 		});
-	}
 
-	var fullscreen = function(c) {
-		if (c.requestFullscreen) {
-			c.requestFullscreen();
-		} else if (c.msRequestFullscreen) {
-			c.msRequestFullscreen();
-		} else if (c.mozRequestFullScreen) {
-			c.mozRequestFullScreen();
-		} else if (c.webkitRequestFullscreen) {
-			c.webkitRequestFullscreen();
-		}
-	}
-
-	
-	startBtn.addEventListener('click', runapp);
-	// runapp();
+	}, { 
+		debug: true
+	});
 
 </script>
 
 <script type="text/javascript">
 
 	if(location.host.indexOf('localhost') > -1 || 
-		location.host.indexOf('192.168') > -1 || 
-		location.host.indexOf('10.0') > -1 || 
-		location.host.indexOf('27ebc825') > -1) {
+	   location.host.indexOf('192.168') > -1 || 
+	   location.host.indexOf('10.0') > -1) {
 			var LR_PORT = 35729;
 			document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':' + LR_PORT + '/livereload.js?snipver=1"></' + 'script>');
 	}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cardboard VR rotating cubes</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+
+<link rel="stylesheet" type="text/css" href="../common/base.css">
+
+<style type="text/css">
+
+.left, .right {
+	position: absolute;
+	top: 0px;
+	width: 50%;
+	height: 100%;
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.left {
+	left: 0;
+	background-image: url(c1.jpg);
+}
+
+.right {
+	left: 50%;
+	background-image: url(c2.jpg);
+}
+
+</style>
+
+</head>
+<body>
+
+<div class='left'></div>
+<div class='right'></div>
+
+<script type="text/javascript">
+
+document.addEventListener('click', function(e) {
+	var c = document.body;
+	if (c.requestFullscreen) {
+		c.requestFullscreen();
+	} else if (c.msRequestFullscreen) {
+		c.msRequestFullscreen();
+	} else if (c.mozRequestFullScreen) {
+		c.mozRequestFullScreen();
+	} else if (c.webkitRequestFullscreen) {
+		c.webkitRequestFullscreen();
+	}
+});
+
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

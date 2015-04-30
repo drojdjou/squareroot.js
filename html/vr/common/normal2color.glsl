@@ -19,11 +19,9 @@ void main() {
 precision highp float;
                
 varying vec3 vNormal;
+
+uniform vec3 uColor;
            
 void main() {
-	#ifdef COLOR_ONLY
-	gl_FragColor = vec4(COLOR, 1.0);
-	#else
-	gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);
-	#endif
+	gl_FragColor = vec4(uColor * 0.75 + vNormal * 0.25, 1.0);
 }

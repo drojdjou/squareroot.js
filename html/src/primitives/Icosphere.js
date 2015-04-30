@@ -32,40 +32,9 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
     }
 
     var addFace = function(a, b, c, ca, cb, cc) {
-
         var ta = getTexCoord(a);
         var tb = getTexCoord(b);
         var tc = getTexCoord(c);
-
-        // var ab = Math.abs(ta.x - tb.x);
-        // var bc = Math.abs(tb.x - tc.x);
-        // var ca = Math.abs(tc.x - ta.x);
-
-        // if(ab + bc + ca > 0.8) {
-
-        //     // console.log("<o bef: ", ta.x, tb.x, tc.x);
-
-        //     if(ta.x >= 0.8) ta.x -= 1;
-        //     if(tb.x >= 0.8) tb.x -= 1;
-        //     if(tc.x >= 0.8) tc.x -= 1;
-        //     // console.log(" >o aft: ", ta.x, tb.x, tc.x);
-
-        //     var ab = Math.abs(ta.x - tb.x);
-        //     var bc = Math.abs(tb.x - tc.x);
-        //     var ca = Math.abs(tc.x - ta.x);
-
-        //     if(ab + bc + ca > 0.5) {
-
-        //         // console.log(" >>> rec: ", ta.x, tb.x, tc.x);
-
-        //         if(ta.x >= 0.5) ta.x = 0;
-        //         if(tb.x >= 0.5) tb.x = 0;
-        //         if(tc.x >= 0.5) tc.x = 0;
-
-        //         // console.log(" >>>>>> pos: ", ta.x, tb.x, tc.x)
-        //     }
-        // }
-
         var f = new SQR.Face().setPosition(a, b, c).setUV(ta, tb, tc).setColor(ca, cb, cc);
         faces.push(f);
     }

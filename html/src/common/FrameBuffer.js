@@ -92,6 +92,10 @@ SQR.FrameBuffer = function(width, height, resolution, isCubemap) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     }
 
+    f.unbind = function() {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
     f.resize = function(w, h) {
         width = (w * resolution) | 0;
         height = (h * resolution) | 0;

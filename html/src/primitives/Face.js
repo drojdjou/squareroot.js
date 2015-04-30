@@ -36,7 +36,7 @@ SQR.Face = function() {
 // resulting triangles: `abc, cbd`
 // 
      */
-    t.setPosition = function(a, b, c, d) {
+    t.setPosition = t.v = function(a, b, c, d) {
         t.a = a || new SQR.V3(); 
         t.b = b || new SQR.V3(); 
         t.c = c || new SQR.V3();
@@ -44,7 +44,7 @@ SQR.Face = function() {
         return t;
     }
 
-    t.setIndex = function(va, ia, ib, ic, id) {
+    t.setIndex = t.i = function(va, ia, ib, ic, id) {
         indexed = true;
         t.ia = ia;
         t.ib = ib;
@@ -65,7 +65,7 @@ SQR.Face = function() {
      *  @method setNormal
      *  @memberof SQR.Face.prototype 
      */
-    t.setNormal = function(n) {
+    t.setNormal = t.n = function(n) {
         t.normal = n;
         return t;
     }
@@ -81,7 +81,7 @@ SQR.Face = function() {
      *  @param {SQR.V2} c - the thrid vertex texture coordinate
      *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
      */
-    t.setUV = function(uva, uvb, uvc, uvd) {
+    t.setUV = t.uv = function(uva, uvb, uvc, uvd) {
         t.uva = uva;
         t.uvb = uvb;
         t.uvc = uvc;
@@ -102,7 +102,7 @@ SQR.Face = function() {
      *  @param {SQR.V2} c - the thrid vertex color
      *  @param {SQR.V2=} d - the optional fourth vertex color
      */
-    t.setColor = function(ca, cb, cc, cd) {
+    t.setColor =  t.cl = function(ca, cb, cc, cd) {
         t.ca = ca;
         t.cb = cb;
         t.cc = cc;
@@ -116,7 +116,7 @@ SQR.Face = function() {
      *  @method calculateNormal
      *  @memberof SQR.Face.prototype
      */
-    t.calculateNormal = function() {
+    t.calculateNormal = t.cn = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;
         t.normal = new SQR.V3();

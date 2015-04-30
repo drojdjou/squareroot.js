@@ -23,6 +23,12 @@ var SQR = {
 	 *	@property gl - Placeholder that holds current gl context. This is set in SQR.Context.create(), but can be modified manually too
 	 */
 	gl: null, 
+
+	/** 
+	 *	Setting this value to true will use the old matrix calculation. 
+	 *	Best to keep it false, but for now it's true by default for backwards compatibility.
+	 */
+	flipMatrix: true,
 	
 	/** 
 	 *	@property fullScreenQuad - placeholder that holds a fullscreen geometry for post effects. Lazily created in PostEffect.js
@@ -38,12 +44,42 @@ var SQR = {
 	 */
 	shaderPath: '.',
 
+
 	/**
 	 *	@namespace Primitives
 	 *	@memberof SQR
 	 *	@description A collection of classes & functions and utilities to create geometries
 	 */
-	Primitives: {},
+	Primitives: {
+
+		V2: function(x, y) { return new SQR.V2(x, y); },
+		V3: function(x, y, z) { return new SQR.V3(x, y, z); },
+		Q:  function(x, y, z, w) { return new SQR.Quaternion(x, y, z, w); },
+		M4: function() { return new SQR.Matrix44(); },
+
+		F: 	function(options) { 
+
+			var f = function(a, b, c, d) {
+				var fc = SQR.Face().v(a, b, c, d);
+				f.faces.push(fc);
+				return fc; 
+			};
+
+			f.faces = [];
+
+			f.toBuffer = function(geo) {
+				var c = 0;
+				f.faces.forEach(function(fc) {
+					if(options && options.reverseNormals) fc.flip();
+					fc.calculateNormal();
+					c += fc.toBuffer(geo, c);
+				});
+				return c;
+			}
+
+			return f;
+		}
+	},
 
 	/**
 	 *	@method v2
