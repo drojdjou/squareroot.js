@@ -52,6 +52,13 @@
 
 		var skyboxPath = '../../assets/skybox/skybox-';
 
+		var mx = 0, my = 0, tx = 0, ty = 0;
+
+		document.addEventListener('mousemove', function(e) {
+			ty = (e.pageX / window.innerWidth) * 2 - 1;
+			tx = (e.pageY / window.innerHeight) * 2 - 1;
+		});
+
 		SQR.Loader.loadAssets([
 			['../common/normal2color.glsl', 'n2c'],
 
@@ -73,10 +80,20 @@
 			renderer.autoClear = false;
 
 			var root = new SQR.Transform();
+			var camRoot = new SQR.Transform();
 			var camera = new SQR.Transform();
-			root.add(camera);
+			camRoot.add(camera);
+			root.add(camRoot);
 
 			options.customShader = assets.vrShader;
+
+			options.customCameraAnimation = function() {
+				mx += (tx - mx) * 0.02;
+				my += (ty - my) * 0.1;
+				camRoot.rotation.y += my * 0.02;
+				camera.rotation.x = mx;
+			}
+
 			var vr = SQR.VRPost(camera, renderer, ctx, options);
 			window.addEventListener('resize', vr.size);
 			vr.size();

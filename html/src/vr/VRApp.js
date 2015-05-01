@@ -5,28 +5,29 @@ SQR.VRApp = function(appFunc, options) {
 	options.vrInput = null;
 	options.vrData = {};
 
-	SQR.flipMatrix = options.flipMatrix || false;
-
 	var startBtn, startInstr;
+	var fsopt = {};
+	
 
-	var INSTR_COPY = '<span>Put on your head set and press space when ready.</span>';
-	var BTN_COPY   = 'Start';
+	var INSTR_COPY 			= '<span>Put on your head set and press space when ready.</span>';
+	var BTN_COPY   			= 'Start';
+	var PORT_WARN_COPY   	= 'Please rotate your screen to landscape mode';
 
 	var fullscreen = function(c) {
 		if (c.requestFullscreen) {
-			c.requestFullscreen();
+			c.requestFullscreen(fsopt);
 		} else if (c.msRequestFullscreen) {
-			c.msRequestFullscreen();
+			c.msRequestFullscreen(fsopt);
 		} else if (c.mozRequestFullScreen) {
-			c.mozRequestFullScreen();
+			c.mozRequestFullScreen(fsopt);
 		} else if (c.webkitRequestFullscreen) {
-			c.webkitRequestFullscreen();
+			c.webkitRequestFullscreen(fsopt);
 		}
 	}
 
 	var tryVR = function(onDone) {
 
-		var vrHMD;
+		var vrHMD;		
 
 		var onVRError = function(e) {
 			console.log('Error in navigator.getVRDevices()');
@@ -35,12 +36,14 @@ SQR.VRApp = function(appFunc, options) {
 		}
 
 		var onVRDevices = function(devices) {
+
+			SQR.flipMatrix = false;
+
 			for(var i = 0; i < devices.length; i++) {
 				var d = devices[i];
-
 				if(!options.vrInput && d instanceof PositionSensorVRDevice) options.vrInput = d;
-
 				if(!vrHMD && d instanceof HMDVRDevice) vrHMD = d;
+				fsopt.vrDisplay = vrHMD;
 			}
 
 			// console.log(options.vrInput);
@@ -74,12 +77,12 @@ SQR.VRApp = function(appFunc, options) {
 	var startApp = function(e) {
 		if(startBtn) document.body.removeChild(startBtn);
 		if(startInstr) document.body.removeChild(startInstr);
-		if((options.isTouch || options.vrInput) && !options.debug) fullscreen(document.body);
+		if(options.isTouch || (options.vrInput && !options.debug)) fullscreen(document.body);
 		if(appFunc) appFunc(options);
 	}
 
 	var prepare = function() {
-		if(options.debug) {
+		if(options.debug && !options.isTouch) {
 			startApp();
 		} else if(options.vrInput) {
 			startInstr = document.createElement('div');
@@ -88,10 +91,18 @@ SQR.VRApp = function(appFunc, options) {
 			document.body.appendChild(startInstr);
 			document.addEventListener('keydown', onKeyDown);
 		} else if(options.isTouch) {
+
 			startBtn = document.createElement('div');
 			startBtn.setAttribute('class', 'start');
 			startBtn.innerHTML = BTN_COPY;
+
+			portWarn = document.createElement('div');
+			portWarn.setAttribute('class', 'portrait-warning');
+			portWarn.innerHTML = PORT_WARN_COPY;
+
 			document.body.appendChild(startBtn);
+			document.body.appendChild(portWarn);
+
 			startBtn.addEventListener('click', startApp);
 			document.addEventListener('keydown', onKeyDown);
 		} else {

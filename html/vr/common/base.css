@@ -54,6 +54,18 @@ canvas {
 	transition: all 0.3s ease;
 }
 
+.portrait-warning {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0%;
+	left: 0%;
+	margin-top: -5px;
+	line-height: 100vh;
+	text-align: center;
+	background-color: #000;
+}
+
 .start:hover {
 	background-color: #aaaaaa;
 	color: #000000;
@@ -73,6 +85,18 @@ canvas {
 
 .instr span:nth-of-type(2) {
 	left: 75%;
+}
+
+@media (orientation:portrait) {
+	.start {
+		display: none;
+	}
+}
+
+@media (orientation:landscape) {
+	.portrait-warning {
+		display: none;
+	}
 }
 
 

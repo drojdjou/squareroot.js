@@ -4,7 +4,7 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 	var fbo, post;
 
-	var isStereo = options.vrInput || (options.isTouch && SQR.Gyro.hasGyro()) || options.debug;
+	var isStereo = options.vrInput || (options.isTouch && SQR.Gyro.hasGyro());
 
 	var left = new SQR.Transform();
 	var right = new SQR.Transform();
@@ -63,16 +63,23 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 				}
 			} else if(options.isTouch && SQR.Gyro.hasGyro()) {
 				camera.quaternion.copyFrom(SQR.Gyro.getOrientation());
-			} else {
-				//
-				camera.rotation.y += 0.003;
+			} else if(options.customCameraAnimation) {
+				options.customCameraAnimation();
 			}
 
-			if(isStereo) {
+			ctx.viewport(0, 0, width, height);
+			ctx.clear();
 
-				ctx.viewport(0, 0, width, height);
-				ctx.clear();
-	
+			if(options.vrInput) {
+
+				ctx.viewport(0, 0, halfWidth, height);
+				renderer.render(root, left);
+
+				ctx.viewport(halfWidth, 0, halfWidth, height);
+				renderer.render(root, right);
+
+			} else if(options.isTouch) {
+
 				fbo.bind();
 				ctx.clear();
 				renderer.render(root, left);
@@ -90,6 +97,7 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 				renderer.render(post);
 
 			} else {
+
 				renderer.render(root, camera);
 			}
 		}
