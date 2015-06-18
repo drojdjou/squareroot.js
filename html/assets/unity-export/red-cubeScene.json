@@ -1,0 +1,91 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0, "g":0, "b":0, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"red": { 
+		"type": "Phong",
+		"color": { "r":1, "g":0, "b":0, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+},
+
+"cameras": {
+	
+	"camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t9678",
+        "name": "cube",
+		"position": [ 0,0,6.42 ],
+		"rotation": [ -0.21707,0.2371952,-0.147327,0.9353683 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0,0 ],
+		    "size": [ 1,1,1 ]
+		},
+		"renderer": "red",
+		"mesh": "cube",
+		"meshId": "m-282"
+	},
+	
+	{
+		"uid": "t-48770",
+        "name": "sphere",
+		"position": [ -2.24,0,6.42 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "red",
+		"mesh": "sphere",
+		"meshId": "m-286"
+	},
+	
+	{
+		"uid": "t9690",
+        "name": "camera",
+		"position": [ 3.95,3.21,10.95 ],
+		"rotation": [ -0.2266434,0.2623835,-0.4993202,0.7940195 ],
+		"camera": "camera"
+	},
+	
+	{
+		"uid": "t-53468",
+        "name": "cylinder",
+		"position": [ 2.22,1.85,6.42 ],
+		"rotation": [ 0.3104502,0.07704187,-0.2281235,0.9195895 ],
+		"renderer": "red",
+		"mesh": "cylinder",
+		"meshId": "m-284"
+	}
+
+]
+}
+
+
+
+

@@ -77,3 +77,33 @@ Fix on Texture filtering related to mimpap setting above
 Adding that Quaternion.slerp trick, with a fix. This time hopefully it works
 
 
+
+##### v3.0 b 112
+*May 6th 2015*
+
+Creating a separate build for two+math
+
+
+##### v3.0 b 113
+*May 6th 2015*
+
+CanvasRenderer can now be called without root (will just clear the canvas)
+
+
+##### v3.0 b 114
+*May 12th 2015*
+
+CanvasRenderer will now clear correctly even with alpha in background
+
+
+##### v3.0 b 115
+*May 15th 2015*
+
+Adding reversing normals option to icosphere
+
+
+##### v3.0 b 116
+*May 29th 2015*
+
+name parameter was missing in Transform2d
+

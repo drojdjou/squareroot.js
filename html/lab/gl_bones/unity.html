@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Skinned mesh made in C4D and imported via Unity</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['bones4.glsl', 'shader'],
+        // ['normal2color.glsl', 'shader'],
+        ['../../assets/unity-export/handScene.json', 'scene'],
+        ['../../assets/unity-export/hand.json', 'meshes'],
+        // ['../../assets/unity-export/red-cubeScene.json', 'scene'],
+        // ['../../assets/unity-export/red-cube.json', 'meshes'],
+    ], function(assets) {
+
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+        var renderer = new SQR.Renderer(ctx);
+        
+        var scene = SQR.SceneParser.parse(assets.scene, assets.meshes, { shader: assets['shader'] });
+
+        var resize = function() {
+            var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var queryBone = function(name) {
+            var b = scene.root.findByName(name);
+            b.useQuaternion = false;
+            return b;
+        }
+
+        // var arm = scene.root.findByName('arm');
+        // arm.useQuaternion = false;
+
+        // var wrist = scene.root.findByName('wrist');
+        // wrist.useQuaternion = false;
+        
+        // var elbow = scene.root.findByName('elbow');
+        // elbow.useQuaternion = false;
+
+        // arm.rotation.x = 0.7;
+        // elbow.rotation.x = 0.5;
+        // wrist.rotation.x = 1.1;
+
+        var base = queryBone('base');
+
+        queryBone('f1a').rotation.x = 1.2;
+        queryBone('f1a').rotation.y = 0.3;
+
+        queryBone('f1b').rotation.x = 1.5;
+        queryBone('f1b').rotation.y = 0.2;
+
+        queryBone('f1c').rotation.x = 1.8;
+        queryBone('f1c').rotation.y = 0.8;
+
+
+        queryBone('f2a').rotation.x = 1.3;
+        queryBone('f2a').rotation.y = 0.3;
+
+        queryBone('f2b').rotation.x = 1.5;
+        queryBone('f2b').rotation.y = 0.2;
+
+        queryBone('f2c').rotation.x = 1.8;
+        queryBone('f2c').rotation.y = 0.8;
+
+
+        queryBone('f4a').rotation.x = 1.3;
+        queryBone('f4a').rotation.y = -0.3;
+
+        queryBone('f4b').rotation.x = 1.5;
+        queryBone('f4b').rotation.y = -0.2;
+
+        queryBone('f4c').rotation.x = 1.8;
+        queryBone('f4c').rotation.y = -0.8;
+
+
+        queryBone('f5a').rotation.y = 0.2;
+        queryBone('f5b').rotation.y = 0.8;
+
+        var a = 0;
+
+        var render = function() {
+            requestAnimationFrame(render);
+
+            // arm.rotation.z =   Math.sin(a * 1.0) * 0.3;
+            // elbow.rotation.z = Math.sin(a * 1.5) * 0.3;
+            // wrist.rotation.z = Math.sin(a * 2.0) * 0.5;
+
+            queryBone('f3a').rotation.x = 0.7 + Math.sin(a) * 0.7;
+            queryBone('f3b').rotation.x = 0.7 + Math.sin(a) * 0.7;
+            queryBone('f3c').rotation.x = 0.7 + Math.sin(a) * 0.7;
+
+            a += 0.1;
+
+            base.rotation.z += 0.01;
+
+            renderer.render(scene.root, scene.camera);
+        }
+
+        render();
+
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

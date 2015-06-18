@@ -171,6 +171,10 @@ updateVersionFile();
 
 var core = createBucket(['common', 'math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
 saveBucket(core, 'sqr');
+
+var two = createBucket(['math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
+saveBucket(two, 'sqr-two');
+
 saveBucket(jsifyShaders('glsl'), 'sqr-glsl');
 saveBucket(createBucket('primitives'), 'sqr-primitives');
 saveBucket(createBucket('extras'), 'sqr-extras');

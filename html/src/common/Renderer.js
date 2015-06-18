@@ -101,7 +101,7 @@ SQR.Renderer = function(context) {
 
 				if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
 
-				var p = (camera && camera.projection) || r.projection;
+				var p = (camera && camera.projection) ? camera.projection : r.projection;
 				if(p) lastShader.setUniform('uProjection', p);
 
 				lastShader.setUniform('uTime', time);

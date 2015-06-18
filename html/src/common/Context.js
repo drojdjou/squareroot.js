@@ -76,10 +76,17 @@ SQR.Context = function(canvas) {
 	/** 
 	 *	Sets the canvas and the viewport size to the given values.
 	 */
-	c.size = function(w, h) {
-		canvas.width = w;
-		canvas.height = h;
-		c.viewport(0, 0, w, h);
+	c.size = function(w, h, res) {
+		res = res || 1;
+		
+		canvas.width = w * res;
+		canvas.height = h * res;
+
+		c.viewport(0, 0, w * res, h * res);
+
+		canvas.style.width =  w + 'px';
+		canvas.style.height = h + 'px';
+
 		return c;
 	}
 

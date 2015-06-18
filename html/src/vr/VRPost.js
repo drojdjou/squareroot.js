@@ -80,21 +80,29 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 			} else if(options.isTouch) {
 
-				fbo.bind();
-				ctx.clear();
-				renderer.render(root, left);
-				renderer.renderToScreen();
 				ctx.viewport(0, 0, halfWidth, height);
-				post.shader.use().setUniform('uTexture', fbo.texture);
-				renderer.render(post);
+				renderer.render(root, left);
 
-				fbo.bind();
-				ctx.clear();
-				renderer.render(root, right);
-				renderer.renderToScreen();
 				ctx.viewport(halfWidth, 0, halfWidth, height);
-				post.shader.use().setUniform('uTexture', fbo.texture);
-				renderer.render(post);
+				renderer.render(root, right);
+
+				// Turning the distortion off for mobile
+
+				// 	fbo.bind();
+				// 	ctx.clear();
+				// 	renderer.render(root, left);
+				// 	renderer.renderToScreen();
+				// 	ctx.viewport(0, 0, halfWidth, height);
+				// 	post.shader.use().setUniform('uTexture', fbo.texture);
+				// 	renderer.render(post);
+
+				// 	fbo.bind();
+				// 	ctx.clear();
+				// 	renderer.render(root, right);
+				// 	renderer.renderToScreen();
+				// 	ctx.viewport(halfWidth, 0, halfWidth, height);
+				// 	post.shader.use().setUniform('uTexture', fbo.texture);
+				// 	renderer.render(post);
 
 			} else {
 

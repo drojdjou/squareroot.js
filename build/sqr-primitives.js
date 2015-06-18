@@ -35,43 +35,39 @@ SQR.Primitives.createPoint = function(x, y) {
  */
 SQR.Primitives.createCube = function(w, h, d, options) {
 
+
+	var V2 = this.V2, V3 = this.V3, F = this.F(options);
+
 	w = w || 1;
 	h = h || 1;
 	d = d || 1;
 
-	var geo = SQR.Buffer()
-		.layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
+	var geo = SQR.Buffer().layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
 	
-	var v0 = new SQR.V3(w * -0.5,   h *  0.5,   d *  0.5); // Top left
-	var v1 = new SQR.V3(w *  0.5,   h *  0.5,   d *  0.5); // Top right 
-	var v2 = new SQR.V3(w * -0.5,   h * -0.5,   d *  0.5); // Bottom left 
-	var v3 = new SQR.V3(w *  0.5,   h * -0.5,   d *  0.5); // Bottom right
+	var 
+		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+		v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+		v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+		v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
 
-	var v4 = new SQR.V3(w * -0.5,   h *  0.5,   d * -0.5); // Top left
-	var v5 = new SQR.V3(w *  0.5,   h *  0.5,   d * -0.5); // Top right
-	var v6 = new SQR.V3(w * -0.5,   h * -0.5,   d * -0.5); // Bottom left
-	var v7 = new SQR.V3(w *  0.5,   h * -0.5,   d * -0.5); // Bottom right
+		v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+		v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+		v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+		v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
 
-	var u0 = new SQR.V2(0, 1);
-	var u1 = new SQR.V2(1, 1);
-	var u2 = new SQR.V2(0, 0);
-	var u3 = new SQR.V2(1, 0);
+		u0 = V2(0, 1),
+		u1 = V2(1, 1),
+		u2 = V2(0, 0),
+		u3 = V2(1, 0);
 
-	var faces = [];
-
-	faces.push(SQR.Face().setPosition(v0, v1, v2, v3).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v5, v4, v7, v6).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v4, v0, v6, v2).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v1, v5, v3, v7).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v4, v5, v0, v1).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v2, v3, v6, v7).setUV(u0, u1, u2, u3));
+	F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
+	F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
+	F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
+	F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
+	F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
+	F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
 	
-	var c = 0;
-	faces.forEach(function(t) {
-		if(options && options.reverseNormals) t.flip();
-		t.calculateNormal();
-		c += t.toBuffer(geo, c);
-	});
+	F.toBuffer(geo);
 
 	// SQR.Debug.traceBuffer(geo, true);
 	
@@ -94,22 +90,19 @@ SQR.Primitives.createSkybox = function(options) {
 	if(!options.glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl.js to use the default one.";
 
 	var skybox = new SQR.Transform();
-
-	
-
 	var shader = SQR.Shader(options.glsl);
 
-	
 	if(options.use2dTextures) {
 
 		var planeOptions = { zUp: true };
 		var s = options.size;
+		var buffer = SQR.Primitives.createPlane(s, s, 1, 1, 0, 0, planeOptions);
 
-		var side = function(name, o) {
-			var f = new SQR.Transform('front');
+		var side = function(name) {
+			var f = new SQR.Transform(name);
 			f.shader = shader;
 			f.useDepth = options.useDepth;
-			f.buffer = SQR.Primitives.createPlane(s, s, 1, 1, 0, 0, o);
+			f.buffer = buffer;
 			return f;
 		}
 
@@ -139,6 +132,9 @@ SQR.Primitives.createSkybox = function(options) {
 
 		skybox.setTexture = function(f) {
 			if(!f) return;
+
+			console.log(f);
+
 			front.uniforms = { uTexture: SQR.Texture(f.front) };
 			back.uniforms = { uTexture: SQR.Texture(f.back) };
 			left.uniforms = { uTexture: SQR.Texture(f.left) };
@@ -526,7 +522,7 @@ SQR.Face = function() {
 // resulting triangles: `abc, cbd`
 // 
      */
-    t.setPosition = function(a, b, c, d) {
+    t.setPosition = t.v = function(a, b, c, d) {
         t.a = a || new SQR.V3(); 
         t.b = b || new SQR.V3(); 
         t.c = c || new SQR.V3();
@@ -534,7 +530,7 @@ SQR.Face = function() {
         return t;
     }
 
-    t.setIndex = function(va, ia, ib, ic, id) {
+    t.setIndex = t.i = function(va, ia, ib, ic, id) {
         indexed = true;
         t.ia = ia;
         t.ib = ib;
@@ -555,7 +551,7 @@ SQR.Face = function() {
      *  @method setNormal
      *  @memberof SQR.Face.prototype 
      */
-    t.setNormal = function(n) {
+    t.setNormal = t.n = function(n) {
         t.normal = n;
         return t;
     }
@@ -571,7 +567,7 @@ SQR.Face = function() {
      *  @param {SQR.V2} c - the thrid vertex texture coordinate
      *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
      */
-    t.setUV = function(uva, uvb, uvc, uvd) {
+    t.setUV = t.uv = function(uva, uvb, uvc, uvd) {
         t.uva = uva;
         t.uvb = uvb;
         t.uvc = uvc;
@@ -592,7 +588,7 @@ SQR.Face = function() {
      *  @param {SQR.V2} c - the thrid vertex color
      *  @param {SQR.V2=} d - the optional fourth vertex color
      */
-    t.setColor = function(ca, cb, cc, cd) {
+    t.setColor =  t.cl = function(ca, cb, cc, cd) {
         t.ca = ca;
         t.cb = cb;
         t.cc = cc;
@@ -606,7 +602,7 @@ SQR.Face = function() {
      *  @method calculateNormal
      *  @memberof SQR.Face.prototype
      */
-    t.calculateNormal = function() {
+    t.calculateNormal = t.cn = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;
         t.normal = new SQR.V3();
@@ -711,40 +707,9 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
     }
 
     var addFace = function(a, b, c, ca, cb, cc) {
-
         var ta = getTexCoord(a);
         var tb = getTexCoord(b);
         var tc = getTexCoord(c);
-
-        // var ab = Math.abs(ta.x - tb.x);
-        // var bc = Math.abs(tb.x - tc.x);
-        // var ca = Math.abs(tc.x - ta.x);
-
-        // if(ab + bc + ca > 0.8) {
-
-        //     // console.log("<o bef: ", ta.x, tb.x, tc.x);
-
-        //     if(ta.x >= 0.8) ta.x -= 1;
-        //     if(tb.x >= 0.8) tb.x -= 1;
-        //     if(tc.x >= 0.8) tc.x -= 1;
-        //     // console.log(" >o aft: ", ta.x, tb.x, tc.x);
-
-        //     var ab = Math.abs(ta.x - tb.x);
-        //     var bc = Math.abs(tb.x - tc.x);
-        //     var ca = Math.abs(tc.x - ta.x);
-
-        //     if(ab + bc + ca > 0.5) {
-
-        //         // console.log(" >>> rec: ", ta.x, tb.x, tc.x);
-
-        //         if(ta.x >= 0.5) ta.x = 0;
-        //         if(tb.x >= 0.5) tb.x = 0;
-        //         if(tc.x >= 0.5) tc.x = 0;
-
-        //         // console.log(" >>>>>> pos: ", ta.x, tb.x, tc.x)
-        //     }
-        // }
-
         var f = new SQR.Face().setPosition(a, b, c).setUV(ta, tb, tc).setColor(ca, cb, cc);
         faces.push(f);
     }
@@ -815,6 +780,7 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
     var av = function(x, y, z) {
         var v = new SQR.V3(x, y, z).norm();
         v.normal = v.clone();
+        if(options.reverseNormals) v.normal.neg();
         v.mul(radius);
         vectors.push(v);
     }

@@ -52,6 +52,11 @@ SQR.CanvasRenderer = function(canvas) {
 	 */
 	r.render = function(root) {
 		if(clearColor) {
+			
+			if(clearColor.indexOf('rgba') > -1) {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			}
+
 			ctx.fillStyle = clearColor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		} else {
@@ -59,7 +64,7 @@ SQR.CanvasRenderer = function(canvas) {
 		}
 		
 
-		root.draw(ctx);
+		if(root) root.draw(ctx);
 	}
 
 	return r;

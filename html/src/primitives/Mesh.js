@@ -31,6 +31,8 @@ SQR.Mesh = {
 			aUV: 'uv1',
 			aUV2: 'uv2',
 			aTangent: 'tangent',
+			aWeight: 'boneWeights',
+			aIndex: 'boneIndices',
 			indices: 'tris'
 		};
 
@@ -43,7 +45,6 @@ SQR.Mesh = {
 		var layout = options.layout || data.layout || SQR.v3n3u2();
 		var vs = options.vertexSize || layout.aPosition;
 		var size = (geo.vertices || geo.aPosition).length / vs;
-
 
 		var buffer = SQR.Buffer().layout(layout, size);
 

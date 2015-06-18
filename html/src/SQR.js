@@ -122,7 +122,7 @@ var SQR = {
 	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },
 
 	/**
-	 *	@method v2
+	 *	@method v3n3u2
 	 *	@memberof SQR
 	 *
 	 *	Shorthand for { aPosition: 3, aNormal: 3, aUV: 2 }

@@ -1,0 +1,93 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0, "g":0, "b":0, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"red": { 
+		"type": "Phong",
+		"color": { "r":1, "g":0, "b":0, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+},
+
+"cameras": {
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-359116",
+        "name": "joint",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t-359120",
+        "name": "base",
+		"parent": "t-359116",
+		"position": [ 0,-1,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-359124",
+        "name": "mid",
+		"parent": "t-359120",
+		"position": [ 0,1,0 ],
+		"rotation": [ -0.005086084,0.0000000867,-0.0000001506,0.9999871 ]
+	},
+	
+	{
+		"uid": "t-359132",
+        "name": "top",
+		"parent": "t-359124",
+		"position": [ 0,1,0.0000000009 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-359122",
+        "name": "leg",
+		"parent": "t-359116",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"bones": ["t-359120","t-359124","t-359132"],
+		"bindposes": [ [0,0,0,1],[0,0,0,1],[0,0,0,1] ],
+		"renderer": "red",
+		"mesh": "leg",
+		"meshId": "m-9616"
+	},
+	
+	{
+		"uid": "t-359126",
+        "name": "null_object",
+		"parent": "t-359122",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	}
+
+]
+}
+
+
+
+

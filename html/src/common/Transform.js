@@ -6,12 +6,14 @@
  * 
  *  @param name {string} the name of the transform.
  */
-SQR.Transform = function(name) {
+SQR.Transform = function(name, uid) {
 
 	var t = {};
 
 	var inverseWorldMatrix;
     var transformState = 0;
+
+    t.uid = uid;
 
     /**
      *  @var {string} name - a unique name of this transform, useful for debugging
@@ -234,6 +236,28 @@ SQR.Transform = function(name) {
         for (var i = 0; i < t.numChildren; i++) {
             t.children[i].recurse(f);
         }
+    }
+
+    t.findByName = function(name) {
+        var found;
+        t.recurse(function(c) {
+            if(c.name == name) {
+                found = c;
+                return;
+            }
+        });
+        return found;
+    }
+
+    t.findById = function(id) {
+        var found;
+        t.recurse(function(c) {
+            if(c.uid && c.uid == id) {
+                found = c;
+                return;
+            }
+        });
+        return found;
     }
 
     t.draw = function(options) {

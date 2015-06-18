@@ -105,6 +105,7 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
     var av = function(x, y, z) {
         var v = new SQR.V3(x, y, z).norm();
         v.normal = v.clone();
+        if(options.reverseNormals) v.normal.neg();
         v.mul(radius);
         vectors.push(v);
     }

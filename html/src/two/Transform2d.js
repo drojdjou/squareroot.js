@@ -5,7 +5,7 @@
  *  @description Similar to {SQR.Transform} but specialized to work with 2d rendeirng on a 2d canvas element.
  *  
  */
-SQR.Transform2d = function() {
+SQR.Transform2d = function(name) {
 
 	var t = {};
 
