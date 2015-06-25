@@ -1,0 +1,3 @@
+var Dot = function(config) {
+
+}

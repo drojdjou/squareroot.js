@@ -27,7 +27,7 @@ SQR.Spline = function() {
 	s.addSegment = function(p) {
 		var v;
 
-		if(p.x) {
+		if(p.x !== undefined) {
 			v = p;
 		} else {
 			var a = arguments, l = a.length;

@@ -18,7 +18,7 @@
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Interpolation.js"></script>
-<script type="text/javascript" src="../../src/math/QuadraticBezier.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
 
 <script type="text/javascript">
 
@@ -29,7 +29,7 @@ cnv.width = s * 2;
 cnv.height = s;
 
 var ctx = cnv.getContext('2d');
-var curve = new SQR.QuadraticBezier(
+var curve = new SQR.Bezier(
 
 	new SQR.V2(0, 0),
 	new SQR.V2(0, 160),

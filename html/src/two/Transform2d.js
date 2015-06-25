@@ -123,11 +123,16 @@ SQR.Transform2d = function(name) {
     	c.save();
     	c.translate(t.position.x, t.position.y);
     	c.rotate(t.rotation);
+
+        c.scale(t.scale.x, t.scale.y);
+
     	// First draw the children, then self, so that alpha/scale do not affect children
+        // * Not sure why scale should not affect children, so moving this before drawing children (check again)
+
     	for(var i = 0; i < t.numChildren; i++) t.children[i].draw(c);
 
         if(t.alpha < 1) c.globalAlpha = t.alpha;
-        c.scale(t.scale.x, t.scale.y);
+        // c.scale(t.scale.x, t.scale.y);
         if(t.shape) t.shape(c);
 
     	c.restore();
