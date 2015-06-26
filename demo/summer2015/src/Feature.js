@@ -91,6 +91,8 @@ var Feature = (function() {
 		DEBUG_COLOR_2: '#00ff00',
 		DEBUG_COLOR_3: '#00ffff',
 
+		paths: paths,
+
 		registerActions: function(config, data) {
 			if(config.actions) {
 				document.addEventListener('keydown', function(e) {
@@ -113,6 +115,14 @@ var Feature = (function() {
 			v.set(x, y);
 
 			return v;
+		},
+
+		wrap: function(position, tolerance) {
+			while(position.x - tolerance > window.innerWidth) position.x -= (window.innerWidth + tolerance * 2);
+			while(position.x + tolerance  < 0) position.x += (window.innerWidth + tolerance * 2);
+
+			while(position.y - tolerance > window.innerHeight) position.y -= (window.innerHeight + tolerance * 2);
+			while(position.y + tolerance < 0) position.y += (window.innerHeight + tolerance * 2);
 		},
 
 		create: function(config) {

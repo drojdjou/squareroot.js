@@ -59,7 +59,32 @@ for(var i = 0; i < numRings; i++) {
 		}
 	}
 
+	var loopFunc = function() {
+		
+		var os = s;
+		var ro = Math.PI * 1.25;
+		var t = 400;
+		var nt = (numRings - i) * 80;
+		var d =  (numRings - i) * 60;
+		var sc = 1 - (numRings - i) * 0.01;
+
+		return function(obj) {
+			// obj.size.x = os;
+			// obj.size.y = os;
+			obj.rotation = Math.PI * 0.25;
+
+			var a = SQR.Anm.create(t * 1.00, { x: os * sc, y: os * sc }).setEase(SQR.Interpolation.quadIn);
+			var c = SQR.Anm.create(t * 1.00, { x: os, y: os }).setEase(SQR.Interpolation.quadOut);
+			var b = SQR.Anm.create(t * 2.50, { rotation: ro }).setEase(SQR.Interpolation.quadInOut);
+
+			var runC = function() { c.run(obj.size); };
+			a.run(obj.size, d).onEnd(runC);
+			b.run(obj, d);
+		}
+	}
+
 	r.actions = {
+		w: loopFunc(),
 		e: inFunc(),
 		r: outFunc(),
 	}

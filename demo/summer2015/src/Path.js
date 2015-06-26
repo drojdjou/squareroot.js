@@ -37,7 +37,7 @@ var Path = function(config, paths) {
 			var v = new SQR.V2();
 			Feature.toScreen(config.coords[i], config.coords[i+1], v);
 
-			var cb = (i == 0) ? function() { curve.create(0.5, false); } : null;
+			var cb = (i == 0) ? function() { curve.create(0.5, config.closed); } : null;
 			var en = EditableNode(v, null, cb);
 
 			nodes.push(en);
@@ -45,7 +45,7 @@ var Path = function(config, paths) {
 		}
 	}
 
-	curve.create(0.5, false);
+	curve.create(0.5, config.closed);
 
 	l.curve = curve;
 	l.nodes = nodes;
@@ -103,7 +103,7 @@ var Path = function(config, paths) {
 
 		} else if(config.isPath && nodes[0].debug) {
 
-			curve.create(0.5, false);
+			curve.create(0.5, config.closed);
 
 			ctx.lineWidth = 1;
 			ctx.strokeStyle = Feature.DEBUG_COLOR;
@@ -114,7 +114,9 @@ var Path = function(config, paths) {
 				var v = nodes[i].vector;
 				if(i == 0) ctx.moveTo(v.x, v.y);
 				else ctx.lineTo(v.x, v.y);
-				if(nodes[i].hover) ctx.strokeRect(v.x - 5, v.y - 5, 10, 10);
+				if(nodes[i].hover) {
+					ctx.fillRect(v.x - 10, v.y - 10, 20, 20);
+				}
 			}
 
 			ctx.stroke();
