@@ -20,14 +20,16 @@
 
 
 var lines = [];
-var numLines = 80;
-var spacing = 100 / numLines;
-var random = spacing * 0.5;
+var numLines = 16;
+var spacing = 10;//100 / numLines;
+var random = 0;//spacing * 0.1;
+var lineWidth = 40;
+var color = ['#ffffff'];//, '#ff0000'];
+var alpha = 0.9;
+
+
 var incline = [-spacing * 0, spacing * 0];
 
-var color = '#ffffff';
-var lineWidth = 2;
-var alpha = 0.9;
 
 for(var i = 0; i < numLines; i++) {
 
@@ -35,9 +37,14 @@ for(var i = 0; i < numLines; i++) {
 	var r = Math.random() * 2 - 1;
 	var si = i * spacing, sr = r * random, sc = incline[0] + Math.random() * incline[1];
 
+	console.log(si, sr, sc);
+
 	l.type = 'Line';
 	l.coords = [0, (si+sr) + '%', '100%', (si+sr+sc) + '%'];
-	l.color = color;
+
+	l.color = (color instanceof Array) ? 
+		color[(color.length * Math.random()) | 0] : color;
+
 	l.width = lineWidth;
 	l.alpha = alpha;
 

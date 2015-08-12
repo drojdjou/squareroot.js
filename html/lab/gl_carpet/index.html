@@ -55,7 +55,6 @@
 		var renderer = new SQR.Renderer(ctx);
 		var root = new SQR.Transform();
 		var camera = new SQR.Transform();
-		camera.position.z = 5;
 		root.add(camera);
 
 		var resize = function() {
@@ -74,14 +73,14 @@
 
 		var t = new SQR.Transform();
 
-
-		var heightMap = new AnimatedTexture(256, 10, 200, 5 / 256);
+		// size, speed, baseOffset, scale
+		var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
 
 		// document.body.appendChild(heightMap.canvas);
 		var s = 10, sd = 16;
 
 		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0, {
-
+			perQuadUV: true
 		});
 
 		t.buffer.cull = false;
@@ -89,30 +88,27 @@
 		var animate = function() {
 
 			// Faster, no lighting
-			// t.buffer.iterate('aPosition', function(i, data, c) {
-			// 	var x = (data[i+0] + s/2) / s; 
-			// 	var y = (data[i+2] + s/2) / s;
-			// 	data[i+1] = heightMap.getPixel(x, y) / 255 * 1;
-			// });
-
+			t.buffer.iterate('aPosition', function(i, data, c) {
+				var x = (data[i+0] + s/2) / s; 
+				var y = (data[i+2] + s/2) / s;
+				data[i+1] = heightMap.getPixel(x, y) / 255 * 0.75;
+			});
 			t.buffer.update();
 
 			// Slower, with lighting
-			t.buffer.vertices.forEach(function(f) {
-				var x = (f.x + s/2) / s, y = (f.z + s/2) / s;
-				f.y = heightMap.getPixel(x, y) / 255 * 1;
-			});
-
-			t.buffer.recalculateNormals().updateFromFaces().update();
+			// t.buffer.vertices.forEach(function(f) {
+			// 	var x = (f.x + s/2) / s, y = (f.z + s/2) / s;
+			// 	f.y = heightMap.getPixel(x, y) / 255 * 1;
+			// });
+			// t.buffer.recalculateNormals().updateFromFaces().update();
 
 			heightMap.move(1);
 		}
 
-		t.rotation.x = -0.5;
-		t.rotation.y = Math.PI / 4 + Math.PI;
+		
 
 		var grid = document.createElement('canvas');
-		var gs = 256, ls = 2;
+		var gs = 256, ls = 1;
 		grid.width = gs;
 		grid.height = gs;
 		var gtx = grid.getContext('2d');
@@ -136,6 +132,15 @@
 			}));
 
 		root.add(t);
+
+
+		// 
+		// camera.position.z = 5;
+		// t.rotation.x = -0.5;
+		// t.rotation.y = Math.PI / 4 + Math.PI;
+
+		camera.position.y = 2;
+		camera.rotation.x = Math.PI * 0.3;		
 
 		var render = function() {
 			requestAnimationFrame(render);

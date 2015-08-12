@@ -70,8 +70,11 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 			var bhStart = hStart + j * hb;
 			var ij = i * (hd+1) + j;
 
-			// uvs[ij] = new SQR.V2(i/wd, j/hd);
-			uvs[ij] = new SQR.V2(i % 2, j % 2);
+			if(options.perQuadUV) {
+				uvs[ij] = new SQR.V2(i % 2, j % 2);
+			} else {
+				uvs[ij] = new SQR.V2(i/wd, j/hd);
+			}
 
 			if (!options.zUp) {
 				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
@@ -99,7 +102,7 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 	}
 
 
-	layout = (options && options.layout) ? options.layout : {};
+	layout = (options.layout) ? options.layout : {};
 
 	layout.aPosition = 3;
 	layout.aNormal = 3;

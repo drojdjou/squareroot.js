@@ -1,5 +1,12 @@
 var numDots = 250;
 var minRadius = 5, maxRadius = 15;
+var offset = -100;
+var speedBase = 0.002;
+var speedMult = 0.002;
+var rotationSpeed = 0.2;
+var colFunc = function() {
+	return Math.random() > 0.95 ? '#ff0000' : '#ffffff';
+}
 
 var dots = [];
 
@@ -12,13 +19,15 @@ for(var i = 0; i < numDots; i++) {
 		position: new SQR.V2().set(window.innerWidth * Math.random(), window.innerHeight * Math.random()),
 		radius: minRadius + (maxRadius - minRadius) * f * f,
 		alpha: 0.5 + 0.5 * (1 - f),
-		color: Math.random() > 0.95 ? '#ff0000' : '#ffffff',
+
+		color: colFunc(),
+
 		wrap: false,
 		move: (function() {
 			var t = Math.random();
-			var o = -30 + 60 * Math.random();
+			var o = offset * -0.5 + offset * Math.random();
 			var ob = Math.PI * Math.random();
-			var speed = 0.002 + 0.002 * Math.random();
+			var speed = speedBase + speedMult * Math.random();
 			var tmp = new SQR.V2();
 			var wn = i % 2 == 0 ? 'wave' : 'wave2';
 			return function(p) {
@@ -30,7 +39,7 @@ for(var i = 0; i < numDots; i++) {
 				tmp.norm().mul(Math.sin(ob) * o);
 				p.x += tmp.y;
 				p.y -= tmp.x;
-				ob += 0.1;
+				ob += rotationSpeed;
 
 			} 
 		})()

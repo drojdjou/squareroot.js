@@ -28,13 +28,11 @@ uniform sampler2D uTexture;
 
 const vec3 cLight = vec3(1.0, -0.1, 0.0);
 const vec3 cHi = vec3(0.8, 0.9, 1.0);
+const float spec = 0.0;
            
 void main() {
-
 	float l = abs(0.5 + 0.5 * dot(vNormal, cLight));
 	vec3 c = texture2D(uTexture, vUV).rgb;
-
-	float ll = smoothstep(0.6, 0.9, l);
-
+	float ll = smoothstep(0.6, 0.9, l) * spec;
 	gl_FragColor = vec4(cHi * ll + c * l, 1.0);
 }

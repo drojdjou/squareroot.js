@@ -107,3 +107,22 @@ Adding reversing normals option to icosphere
 
 name parameter was missing in Transform2d
 
+
+##### v3.0 b 117
+*Aug 8th 2015*
+
+Adding SceneParser to primitives"
+
+
+
+##### v3.0 b 118
+*Aug 8th 2015*
+
+Adding perQuadUV option to plane contructor in primitives
+
+
+##### v3.0 b 119
+*Aug 12th 2015*
+
+Adding small settings to Renderer and Plane + new demo
+

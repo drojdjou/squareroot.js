@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Particle system - smoke</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+	* {cursor: none;}
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['dot.glsl', 'dotShader'],
+		['line.glsl', 'lineShader']
+	], function(assets) {
+
+		var w, h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+		var renderer = SQR.Renderer(ctx);
+		var root = new SQR.Transform();
+
+		var resize = function() {
+			w = window.innerWidth, h = window.innerHeight;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var r = function(m) { 
+			m = m || 1; 
+			return Math.random() * m; 
+		};
+
+		var mouse = new SQR.V2();
+		document.addEventListener('mousemove', function(e) {
+			mouse.x = e.pageX;
+			mouse.y = e.pageY;
+		});
+
+
+		var _tmpV2 = new SQR.V2();
+		var render = function() {
+
+			requestAnimationFrame(render);
+
+			for(var i = 0; i < numDots; i++) {
+				var v = dotCoords[i];
+
+				_tmpV2.sub(mouse, v);
+
+				var r = 20000;
+
+				var d = _tmpV2.magsq();
+				d = Math.min(r, d);
+				d = d / r;
+				d = 1 - d;
+				d *= 0.33;
+
+				v.speed.x += v.basespeed.x * 0.01 + d * v.basespeed.x;
+				v.speed.y += v.basespeed.y * 0.01 + d * v.basespeed.y;
+	
+				v.speed.mul(0.98);
+				v.x += v.speed.x;
+				v.y += v.speed.y;
+
+				if(v.x > w) v.x = 0;
+				if(v.x < 0) v.x = w;
+
+				if(v.y > h) v.y = 0;
+				if(v.y < 0) v.y = h;
+			}
+
+			lineCoords = [];
+			alphaCoords = [];
+
+			for(var i = 0; i < numDots; i++) {
+				for(var j = i+1; j < numDots; j++) {
+
+					var a = dotCoords[i];
+					var b = dotCoords[j];
+					_tmpV2.sub(a, b);
+					var d = _tmpV2.magsq();
+
+					if(d < minDist) {
+						lineCoords.push(a);
+						lineCoords.push(b);
+						alphaCoords.push(1 - d / minDist);
+					}
+				}
+			}
+
+			lines.buffer.iterate('aPosition', function(i, data, c) {
+				if(!lineCoords[c]) {
+					data[i+0] = 0;
+					data[i+1] = 0;
+				} else {
+					data[i+0] = lineCoords[c].x;
+					data[i+1] = lineCoords[c].y;
+				}
+			}).iterate('aAlpha', function(i, data, c) {
+				data[i+0] = alphaCoords[c/2 | 0] || 0;
+			}).update();
+
+			dots.buffer.iterate('aPosition', function(i, data, c) {
+				data[i+0] = dotCoords[c].x;
+				data[i+1] = dotCoords[c].y;
+			}).update();
+
+			renderer.render(root);
+		}
+
+		var dotSize = 16;
+		var dcv = document.createElement('canvas');
+		dcv.ctx = dcv.getContext('2d');
+		dcv.width = dotSize;
+		dcv.height = dotSize;
+		dcv.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+		dcv.ctx.fillRect(0, 0, dotSize, dotSize);
+		dcv.ctx.fillStyle = '#ffffff';
+		dcv.ctx.beginPath();
+		dcv.ctx.arc(dotSize/2, dotSize/2, dotSize/2, 0, SQR.TWOPI);
+		dcv.ctx.fill();
+		var dtex = SQR.Texture(dcv);
+
+		var dotCoords = [], numDots = 2000, lineCoords = [], alphaCoords = [];
+		var wm = 30, minDist = (h / wm) * (h / wm);
+		var lineBufferMax = numDots * 32;
+
+		for(var i = 0; i < numDots; i++) {
+			var a = SQR.TWOPI * r();
+			var rd = r() * h * 0.4;
+			var v = new SQR.V2(w/2 + Math.cos(a) * rd, h/2 + Math.sin(a) * rd);
+
+			var bs = 0.5;
+			v.basespeed = new SQR.V2(-bs + r(bs * 2), -bs + r(bs * 2));
+			v.speed = new SQR.V2();
+			dotCoords.push(v);
+		}
+
+		
+
+		/// -----------------------------------------------
+
+		var dots = new SQR.Transform();
+
+		dots.buffer = SQR.Buffer()
+			.layout({ aPosition: 2 }, numDots)
+			.setMode(SQR.gl.POINTS)
+
+		dots.setBlending(true);
+
+		dots.shader = SQR.Shader(assets.dotShader)
+			.use()
+			.setUniform('uTexture', dtex);
+
+		root.add(dots);
+
+		
+
+		var lines = new SQR.Transform();
+
+		lines.buffer = SQR.Buffer()
+			.layout({ aPosition: 2, aAlpha: 1 }, lineBufferMax)
+			.setMode(SQR.gl.LINES);
+
+		lines.useDepth = false;
+		lines.setBlending(true);
+		lines.lineWidth = 3;
+
+		lines.shader = SQR.Shader(assets.lineShader)
+			.use()
+			.setUniform('uTexture', dtex);
+
+		root.add(lines);
+
+		/// -----------------------------------------------
+
+		render();
+	});
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

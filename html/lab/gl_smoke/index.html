@@ -98,14 +98,20 @@
 
         root.add(smoke);
 
+        var mx = 0, my = 0;
+        document.addEventListener('mousemove', function(e) {
+            mx = e.pageX / window.innerWidth * 2 - 1;
+            my = e.pageY / window.innerHeight * 2 - 1;
+        });
+
         var render = function() {
             requestAnimationFrame(render);
             renderer.render(root, camera);
 
             camera.position.y = -10;
-            // smoke.rotation.x = 1.2;
-            smoke.rotation.y += 0.02;
-            // smoke.rotation.z += 0.03;
+            
+            smoke.rotation.y = Math.PI * mx;
+            smoke.rotation.z = -0.2 * mx;
         }
 
         render();

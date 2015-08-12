@@ -38,6 +38,8 @@ SQR.Renderer = function(context) {
 		if(!startTime) startTime = new Date().getTime();
 		time = new Date().getTime() - startTime;
 
+		r.currentTime = time;
+
 		options = options || defOpts;
 
 		if(!options.dontClear && r.autoClear) context.clear();

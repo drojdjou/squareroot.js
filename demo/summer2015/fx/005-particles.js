@@ -1,5 +1,8 @@
-var numDots = 250;
-var minRadius = 15, maxRadius = 35;
+var numDots = 200;
+var minRadius = 5, maxRadius = 55;
+var colFunc = function() {
+	return Math.random() > 0.99 ? '#ff0000' : '#ffffff';
+}
 
 var dots = [];
 
@@ -12,7 +15,7 @@ for(var i = 0; i < numDots; i++) {
 		position: new SQR.V2().set(window.innerWidth * Math.random(), window.innerHeight * Math.random()),
 		radius: minRadius + (maxRadius - minRadius) * f * f,
 		alpha: 0.5 + 0.5 * (1 - f),
-		color: Math.random() > 0.95 ? '#ff0000' : '#ffffff',
+		color: colFunc(),
 		wrap: true,
 		move: (function() {
 			var xd = -0.5 + (0.1 + 0.9 * Math.random());

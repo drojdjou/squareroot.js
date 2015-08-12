@@ -882,6 +882,8 @@ SQR.Mesh = {
 			aUV: 'uv1',
 			aUV2: 'uv2',
 			aTangent: 'tangent',
+			aWeight: 'boneWeights',
+			aIndex: 'boneIndices',
 			indices: 'tris'
 		};
 
@@ -894,7 +896,6 @@ SQR.Mesh = {
 		var layout = options.layout || data.layout || SQR.v3n3u2();
 		var vs = options.vertexSize || layout.aPosition;
 		var size = (geo.vertices || geo.aPosition).length / vs;
-
 
 		var buffer = SQR.Buffer().layout(layout, size);
 
@@ -965,7 +966,7 @@ SQR.Mesh = {
 
 /* --- --- [primitives/Plane.js] --- --- */
 
-/**
+ /**
  *  @method create2DQuad
  *  @memberof SQR.Primitives
  *
@@ -980,10 +981,10 @@ SQR.Mesh = {
  */
 SQR.Primitives.create2DQuad = function(x, y, w, h) {
 	return SQR.Buffer()
-        .layout(SQR.v2u2(), 6)
-        .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
-        .data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
-        .update();
+		.layout(SQR.v2u2(), 6)
+		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
+		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
+		.update();
 }
 
 /**
@@ -1003,106 +1004,122 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
  */
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 
-    var faces = [], indices = [];
+	var faces = [], indices = [];
 
-    var geo = new SQR.Buffer();
-    var options = options || {};
-    
-    geo.width = w;
-    geo.height = h;
+	var geo = new SQR.Buffer();
+	var options = options || {};
+	
+	geo.width = w;
+	geo.height = h;
 
-    var w = w * 0.5;
-    var h = h * 0.5;
+	var w = w * 0.5;
+	var h = h * 0.5;
 
-    var wo = wo || 0;
-    var ho = ho || 0;
+	var wo = wo || 0;
+	var ho = ho || 0;
 
-    var wd = wd || 1;
-    var hd = hd || 1;
+	var wd = wd || 1;
+	var hd = hd || 1;
 
-    faces.length = [];
+	faces.length = [];
 
-    var wStart = -w + wo;
-    var hStart = -h + ho;
+	var wStart = -w + wo;
+	var hStart = -h + ho;
 
-    var wb = geo.width / wd;
-    var hb = geo.height / hd;
+	var wb = geo.width / wd;
+	var hb = geo.height / hd;
 
-    var i, j;
-    var vertices = [], uvs = [];
+	var i, j;
+	var vertices = [], uvs = [];
 
-    for (i = 0; i < wd+1; i++) {
-        for (j = 0; j < hd+1; j++) {
-            var bvStart = wStart + i * wb;
-            var bhStart = hStart + j * hb;
-            var ij = i * (hd+1) + j;
+	for (i = 0; i < wd+1; i++) {
+		for (j = 0; j < hd+1; j++) {
+			var bvStart = wStart + i * wb;
+			var bhStart = hStart + j * hb;
+			var ij = i * (hd+1) + j;
 
-            uvs[ij] = new SQR.V2(i/wd, j/hd);
+			if(options.perQuadUV) {
+				uvs[ij] = new SQR.V2(i % 2, j % 2);
+			} else {
+				uvs[ij] = new SQR.V2(i/wd, j/hd);
+			}
 
-            if (!options.zUp) {
-                vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
-            } else {
-                vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
-            }
-        }
-    }
+			if (!options.zUp) {
+				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
+			} else {
+				vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
+			}
+		}
+	}
 
-    for (i = 0; i < wd; i++) {
-        for (j = 0; j < hd; j++) {
+	for (i = 0; i < wd; i++) {
+		for (j = 0; j < hd; j++) {
 
-            var bvStart = wStart + i * wb;
-            var bvEnd = bvStart + wb;
-            var bhStart = hStart + j * hb;
-            var bhEnd = bhStart + hb;
+			var bvStart = wStart + i * wb;
+			var bvEnd = bvStart + wb;
+			var bhStart = hStart + j * hb;
+			var bhEnd = bhStart + hb;
 
-            var ij = i * (hd+1) + j;
-            var ij2 = (i+1) * (hd+1) + j;
+			var ij = i * (hd+1) + j;
+			var ij2 = (i+1) * (hd+1) + j;
 
-            var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
-            faces.push(q);
-            indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
-        }
-    }
-
-
-    layout = (options && options.layout) ? options.layout : {};
-
-    layout.aPosition = 3;
-    layout.aNormal = 3;
-    layout.aUV = 2;
-
-    geo.layout(layout, vertices.length);
+			var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
+			faces.push(q);
+			indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
+		}
+	}
 
 
-	faces.forEach(function(f) {
-		f.calculateNormal();
-        f.addNormalToVertices();
-	});
+	layout = (options.layout) ? options.layout : {};
 
-    geo.iterate('aPosition', function(i, data, c) {
-        var v = vertices[c];
-        data[i+0] = v.x;
-        data[i+1] = v.y;
-        data[i+2] = v.z;
-    });
+	layout.aPosition = 3;
+	layout.aNormal = 3;
+	layout.aUV = 2;
 
-    geo.iterate('aNormal', function(i, data, c) {
-        var v = vertices[c];
-        v.normal.norm();
-        data[i+0] = v.normal.x;
-        data[i+1] = v.normal.y;
-        data[i+2] = v.normal.z;
-    });
+	geo.layout(layout, vertices.length);
 
-    geo.iterate('aUV', function(i, data, c) {
-        var v = uvs[c];
-        data[i+0] = v.x;
-        data[i+1] = v.y;
-    });
+	geo.faces = faces;
+	geo.vertices = vertices;
 
-    geo.index(indices);
+	geo.recalculateNormals = function() {
+		faces.forEach(function(f) {
+			f.calculateNormal();
+			f.addNormalToVertices();
+		});
 
-    return geo.update();
+		return geo;
+	}
+
+	geo.updateFromFaces = function() {
+
+		geo.iterate('aPosition', function(i, data, c) {
+			var v = vertices[c];
+			data[i+0] = v.x;
+			data[i+1] = v.y;
+			data[i+2] = v.z;
+		});
+
+		geo.iterate('aNormal', function(i, data, c) {
+			var v = vertices[c];
+			v.normal.norm();
+			data[i+0] = v.normal.x;
+			data[i+1] = v.normal.y;
+			data[i+2] = v.normal.z;
+		});
+
+		geo.iterate('aUV', function(i, data, c) {
+			var v = uvs[c];
+			data[i+0] = v.x;
+			data[i+1] = v.y;
+		});
+
+		geo.index(indices);
+
+		return geo;
+	}
+
+
+	return geo.recalculateNormals().updateFromFaces().update();
 }
 
 
@@ -1229,6 +1246,116 @@ SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
 
 
 
+
+/* --- --- [primitives/SceneParser.js] --- --- */
+
+SQR.SceneParser = (function() {
+
+	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
+
+	var arrayToObject = function(a, v) {
+		v.x = a[0];
+		v.y = a[1];
+		v.z = a[2];
+		if(v.w) v.w = a[3];
+	}
+
+	return {
+
+		parse: function(scene, meshes, options) {
+
+			var defaultShader = SQR.Shader(options.shader);
+
+			// If this is a scene coming from unity we need to flip the matrix
+			SQR.flipMatrix = (options && options.flipMatrix) ? options.flipMatrix : false;
+
+			var buffers = {}, bufferByName = {};
+			var skinnedMeshes = [];
+
+			for(var n in meshes) {
+				var md = meshes[n];
+
+				var layout = md.boneWeights ? skinnedMeshLayout() : SQR.v3n3u2();
+
+				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
+				buffers[n] = b;
+				bufferByName[md.name] = b;
+			}
+
+			var root = new SQR.Transform();
+			var camera;
+			var ts = scene.transforms;
+
+			ts.forEach(function(td) {
+				var t = new SQR.Transform(td.name, td.uid);
+				t.useQuaternion = true;
+				arrayToObject(td.position, t.position);
+				arrayToObject(td.rotation, t.quaternion);
+
+				t.data = td;
+				if(td.bones) skinnedMeshes.push(t);
+
+				if(td.camera) {
+					camera = t;
+					var cd = scene.cameras[td.camera];
+
+					var resize = function() {
+						var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+						camera.projection = new SQR.ProjectionMatrix().perspective(cd.fov, aspect, cd.near, cd.far);
+					}
+
+					window.addEventListener('resize', resize);
+					resize();
+				}
+
+				if(td.mesh) {
+					t.buffer = buffers[td.meshId];
+					if(!td.bones) t.shader = defaultShader;
+				}
+
+				if(td.parent) {
+					root.findById(td.parent).add(t);
+				} else {
+					root.add(t);
+				}
+			});
+
+			skinnedMeshes.forEach(function(s) {
+				var bs = s.data.bones, bst = [], numBones = bs.length;
+				
+				bs.forEach(function(id) {
+					bst.push(root.findById(id));
+				});
+
+				bst[0].setAsBoneRoot();
+
+				var boneMatrices = [];
+
+				s.shader = SQR.Shader(options.shader, {
+					directives: [
+						{ name: 'NUM_BONES', value: numBones },
+						{ name: 'BONE_PER_VERTEX', value: 4 }
+					]
+				});
+
+				s.beforeDraw = function() {
+
+					for(var i = 0; i < numBones; i++) {
+						boneMatrices[i] = bst[i].computeBoneMatrix();
+					}
+
+					s.shader.use().setUniform('uBones', boneMatrices);
+				}
+			});
+
+			return {
+				root: root, camera: camera, buffers: bufferByName
+			};
+		}
+
+	}
+
+})();
 
 /* --- --- [primitives/Sphere.js] --- --- */
 

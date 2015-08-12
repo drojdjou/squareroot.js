@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Particle system - dust</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+	* {cursor: none;}
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['dust.glsl', 'dustShader']
+	], function(assets) {
+
+		var w, h;
+		var numDots = 100000;
+
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+
+		var renderer = SQR.Renderer(ctx);
+		var root = new SQR.Transform();
+
+		var resize = function() {
+			w = window.innerWidth, h = window.innerHeight;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var r = function(m) { 
+			m = m || 1; 
+			return Math.random() * m; 
+		};
+
+		var mouseTarget = new SQR.V2(), mouse = new SQR.V2(), isMouseDown = false;
+		document.addEventListener('mousemove', function(e) {
+			mouseTarget.x = e.pageX;
+			mouseTarget.y = e.pageY;
+		});
+
+		document.addEventListener('mousedown', function() { isMouseDown = true; });
+		document.addEventListener('mouseup', function() { isMouseDown = false; });
+
+
+		var index = 0, dotsPerFrame = 80;
+
+		var render = function() {
+
+			requestAnimationFrame(render);
+			renderer.render(root);
+
+			if(isMouseDown) {
+
+				for(var i = 0; i < dotsPerFrame; i++) {
+					mouse.lerp(mouseTarget, mouse, 0.9);
+
+					dots.buffer.set('aPosition', index, 
+						mouse.x + r(10), 
+						mouse.y + r(10)
+					);
+
+					dots.buffer.set('aBirth', index, renderer.currentTime || 0);
+					index++;
+					if(index > numDots) index = 0;
+				}	
+
+				dots.buffer.update();
+			}
+
+			mouse.lerp(mouseTarget, mouse, 0.9);
+		}
+
+		var dotSize = 16;
+		var dcv = document.createElement('canvas');
+		dcv.ctx = dcv.getContext('2d');
+		dcv.width = dotSize;
+		dcv.height = dotSize;
+		dcv.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+		dcv.ctx.fillRect(0, 0, dotSize, dotSize);
+		dcv.ctx.fillStyle = '#ffffff';
+		dcv.ctx.beginPath();
+		dcv.ctx.arc(dotSize/2, dotSize/2, dotSize/2, 0, SQR.TWOPI);
+		dcv.ctx.fill();
+		var dtex = SQR.Texture(dcv);		
+
+		/// -----------------------------------------------
+
+		var dots = new SQR.Transform();
+
+		dots.buffer = SQR.Buffer()
+			.layout({ aPosition: 2, aBirth: 1, aEnergy: 2, aSize: 1 }, numDots)
+			.iterate('aEnergy', function(i, data) {
+				data[i+0] = (r() * 2 - 1) * 0.1;
+				data[i+1] = r() * 0.08;
+			})
+			.iterate('aBirth', function(i, data) {
+				data[i+0] = -1000000;
+			})
+			.iterate('aSize', function(i, data) {
+				data[i+0] =  r();
+			})
+			.setMode(SQR.gl.POINTS)
+			.update();
+
+		dots.setBlending(true);
+		dots.useDepth = false;
+
+		dots.shader = SQR.Shader(assets.dustShader)
+			.use()
+			.setUniform('uGravity', [0.0, 0.005])
+			.setUniform('uTexture', dtex);
+
+		root.add(dots);
+
+		/// -----------------------------------------------
+
+		render();
+	});
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
