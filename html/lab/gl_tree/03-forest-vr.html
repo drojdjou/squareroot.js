@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tree</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+
+<script type="text/javascript" src="../../src/vr/Gyro.js"></script>
+<script type="text/javascript" src="../../src/vr/VRApp.js"></script>
+<script type="text/javascript" src="../../src/vr/VRPost.js"></script>
+
+
+<script type="text/javascript" src="src/Tree.js"></script>
+<script type="text/javascript" src="src/Tree.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+<link rel="stylesheet" type="text/css" href="../../vr/common/base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+SQR.VRApp(function(options) {
+
+	SQR.Loader.loadAssets([
+		['glsl/tree-line.glsl', 'treeLine'],
+		['glsl/tree-mesh.glsl', 'treeMesh'],
+		['glsl/stars.glsl', 'stars'],
+		['glsl/ground.glsl', 'ground'],
+		['../../src/glsl/light/sphar.glsl', 'sphar'],
+		['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data']
+	], function(assets) {
+
+		var isTouch = ('ontouchstart' in document);
+
+		var NUM_TREES = isTouch ? 150 : 500;
+		var NUM_TREE_TYPES = isTouch ? 2 : 8;
+		var NUM_STARS = isTouch ? 300 : 1000;
+		var GROUND_DETAIL = isTouch ? 30 : 120;
+		var TREE_LIMIT = isTouch ? 25 : 80;
+
+		var sky = new SQR.Color().setRGB(0.05, 0.05, 0.08);
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(sky.r, sky.g, sky.b, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		// var resize =function() {
+		// 	w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		// 	ctx.size(w, h);
+		// 	renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, 1000);
+		// }
+
+		// window.addEventListener('resize', resize);
+		// resize();
+
+		var root = new SQR.Transform();
+
+		var cameraBase = new SQR.Transform();
+		root.add(cameraBase);
+		var camera = new SQR.Transform();
+		cameraBase.position.y = 2;
+		cameraBase.add(camera);
+
+		var treeTemplates = [], trees = [];
+
+		var treeShader = SQR.Shader(assets.treeMesh)
+			.use()
+			.setUniform('uFogStart', 15)
+			.setUniform('uFogEnd', TREE_LIMIT)
+			.setUniform('uDarkness', sky);
+
+		var addTreeTemplate = function() {
+			var ts = SQR.Tree({
+				depth: isTouch ? 2 : 3,
+				branches: isTouch ? 2 : 3,
+				branchProbability: 1,
+				branchLength: [2, 4],
+				trunkLength: [4, 8],
+				lengthDepthFactor: 0.8,
+				angleDepthFactor: 0.3,
+				branchAngle: [0.25, 0.50],
+				branchDeviation: Math.PI,
+
+				baseWidth: 0.35,
+				branchWidth: 0.3,
+				widthDepthFactor: 0.5,
+				branchSides: isTouch ? 5 : 6
+			});
+
+
+			var buffer = ts.toMesh({ perVertexNormal: true });
+			treeTemplates.push(buffer);
+		}
+
+		var addTree = function(x, z) {
+			var ri = treeTemplates.length * Math.random() | 0;
+			var tree = new SQR.Transform();
+
+			var getColor = function() {
+				var c = 0.3 * Math.random(); 
+
+				var r = 0.30;
+				var g = 0.20;
+				var b = 0.15;
+
+				var f = 0.75;
+
+				return [(r + c/1) * f, (g + c/4) * f, (b + c/8) * f];
+			}
+
+			
+			tree.shader = treeShader;
+			tree.uniforms = {
+				'uColor': getColor()
+			};
+
+			tree.buffer = treeTemplates[ri];
+
+			tree.lineWidth = 10 + Math.random() * 10;
+			tree.position.set(x, 0, z);
+			tree.phase = Math.random();
+			tree.speed = 0.005 + Math.random() * 0.01;
+			tree.rotation.y = Math.random() * SQR.TWOPI;
+
+			root.add(tree);
+			trees.push(tree);
+		}
+
+		for(var i = 0; i < NUM_TREE_TYPES; i++) addTreeTemplate();
+
+		for(var i = 0; i < NUM_TREES; i++) {
+			var st = 5, en = TREE_LIMIT;
+			var a = Math.random() * SQR.TWOPI;
+			var r = st + (en - st) * Math.random();
+			addTree(Math.cos(a) * r, Math.sin(a) * r);
+		}
+
+		var dotSize = 16;
+		var dcv = document.createElement('canvas');
+		dcv.ctx = dcv.getContext('2d');
+		dcv.width = dotSize;
+		dcv.height = dotSize;
+		dcv.ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+		dcv.ctx.fillRect(0, 0, dotSize, dotSize);
+
+		dcv.ctx.fillStyle = 'rgba(255, 255, 255, 0.33';
+		var r = dotSize/2;
+
+		dcv.ctx.beginPath();
+		dcv.ctx.arc(r, r, r, 0, SQR.TWOPI);
+		dcv.ctx.fill();
+
+		dcv.ctx.beginPath();
+		dcv.ctx.arc(r, r, r-2, 0, SQR.TWOPI); 
+		dcv.ctx.fill();
+
+		dcv.ctx.beginPath();
+		dcv.ctx.arc(r, r, r-4, 0, SQR.TWOPI); 
+		dcv.ctx.fill();
+
+		
+		var dtex = SQR.Texture(dcv);
+
+		var stars = new SQR.Transform();
+		stars.shader = SQR.Shader(assets.stars).use().setUniform('uTexture', dtex);
+		stars.buffer = SQR.Buffer()
+			.layout({ aPosition: 3, aSize: 1, aBrightness: 1 }, NUM_STARS)
+			.iterate('aPosition', function(i, data) {
+
+				var d = new SQR.V3().random().norm();
+				d.y = 0.1 + Math.abs(d.y);
+				d.mul(1500);
+
+				data[i+0] = d.x;
+				data[i+1] = d.y;
+				data[i+2] = d.z;
+			})
+			.iterate('aSize', function(i, data) {
+				data[i+0] = 1 + Math.random() * 2;
+			})
+			.iterate('aBrightness', function(i, data) {
+				data[i+0] = 0.2 + Math.random() * 0.8;
+			})
+			.setMode(SQR.gl.POINTS)
+			.update();
+
+		stars.setBlending(true);
+
+		root.add(stars);
+
+		var ground = new SQR.Transform();
+		ground.buffer = SQR.Primitives.createPlane(200, 200, GROUND_DETAIL, GROUND_DETAIL);
+
+		ground.buffer.vertices.forEach(function(v) {
+			v.y = 0.5 - Math.random() * 1;
+		})
+
+		ground.buffer.recalculateNormals().updateFromFaces().update();
+
+		ground.rotation.x = Math.PI;
+
+		ground.shader = SQR.Shader(assets.ground)
+			.use()
+			.setUniform('uFogStart', 15)
+			.setUniform('uFogEnd', TREE_LIMIT * 1.2)
+			.setUniform('uDarkness', sky)
+			.setUniform('uColor', [0.60, 0.60, 0.50]);
+
+
+		root.add(ground);
+
+		var mx = 0, my = 0, tx = 0, ty = 0;
+		document.addEventListener('mousemove', function(e) {
+			tx = (e.pageX / window.innerWidth) * 2 - 1;
+			ty = (e.pageY / window.innerHeight) * 2 - 1;
+		});
+
+		options.customCameraAnimation = function() {
+			mx += (tx - mx) * 0.2;
+			my += (ty - my) * 0.2;
+			cameraBase.rotation.y = mx * Math.PI;
+			camera.rotation.x = my * SQR.HALFPI;
+		}
+
+		var vr = SQR.VRPost(camera, renderer, ctx, options);
+		window.addEventListener('resize', vr.size);
+		vr.size();
+
+		var render = function() {
+			requestAnimationFrame(render);
+
+
+			for(var i = 0; i < trees.length; i++) {
+				var t = trees[i];
+				t.phase += t.speed;
+				t.rotation.x = Math.sin(t.phase * 1.00) * 0.04;
+				t.rotation.z = Math.cos(t.phase * 1.37) * 0.02;
+			}
+
+			// renderer.render(root, camera);
+			vr.render(root);
+			
+		}
+
+		render();
+	});
+
+}, { 
+	debug: false
+});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
-var numDots = 200;
-var minRadius = 5, maxRadius = 55;
+var numDots = 350;
+var minRadius = 20, maxRadius = 35;
 var colFunc = function() {
-	return Math.random() > 0.99 ? '#ff0000' : '#ffffff';
+	return Math.random() > 0.90 ? '#ff0000' : '#ffffff';
 }
 
 var dots = [];

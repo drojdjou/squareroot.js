@@ -1,9 +1,9 @@
 var numDots = 250;
-var minRadius = 5, maxRadius = 15;
+var minRadius = 6, maxRadius = 12;
 var offset = -100;
-var speedBase = 0.002;
-var speedMult = 0.002;
-var rotationSpeed = 0.2;
+var speedBase = 0.001;
+var speedMult = 0.001;
+var rotationSpeed = 0.03;
 var colFunc = function() {
 	return Math.random() > 0.95 ? '#ff0000' : '#ffffff';
 }

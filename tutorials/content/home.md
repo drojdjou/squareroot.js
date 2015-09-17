@@ -5,7 +5,11 @@ A 2d/3d engine for WebGL and Canvas drawing and animation.
 - [Github repo](https://github.com/drojdjou/squareroot.js/tree/brandnew)
 - [API docs](http://sqr.bartekdrozdz.com/docs/)
 - [Examples and tests](../html/lab/)
+
+####Tutorial
 - Getting Started tutorial {@tutorial basic-setup}
+- Bone Export Tutorial {@tutorial bone-export}
+
 
 Guide:
 
@@ -33,6 +37,7 @@ Guide:
 - {@link SQR.Spline} - a spline: multiple line segments smoothed with bezier function
 
 ####Animation
+*THIS WILL BE DEPRECATED SOON, USE TweenLite INSTEAD*
 - {@link SQR.Anm} - a tiny animation/tweening enging
 - {@link SQR.Animation} - a class that represetns an animation
 - {@link SQR.Tween} - a tween is an animation applied to an object

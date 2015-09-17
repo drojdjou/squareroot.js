@@ -4,12 +4,14 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 	var fbo, post;
 
-	var isStereo = options.vrInput || (options.isTouch && SQR.Gyro.hasGyro());
+	var isStereo = options.vrInput || options.debug || options.forceStereo;
+
+	renderer.autoClear = false;
 
 	var left = new SQR.Transform();
 	var right = new SQR.Transform();
 
-	left.position.x =  options.vrData.leftEyeX || -0.1;
+	left.position.x =  options.vrData.leftEyeX  || -0.1;
 	right.position.x = options.vrData.rightEyeX || 0.1;
 
 	if(options.isTouch || options.vrInput) camera.useQuaternion = true;
@@ -37,13 +39,14 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 			height = window.innerHeight * pr;
 			halfWidth = width / 2;
 
-			ctx.size(width, height);
-			fbo.resize(halfWidth, height);
+			ctx.size(window.innerWidth, window.innerHeight, pr);
+
+			if(options.customShader) fbo.resize(halfWidth, height);
 
 			var aspect = width / height;
 			var halfAspect = (width * 0.5) / height;
 
-			var p = new SQR.ProjectionMatrix().perspective(75, isStereo ? halfAspect : aspect, 0.01, 10000);
+			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, 0.01, 10000);
 			camera.projection = p;
 			left.projection = p;
 			right.projection = p;
@@ -61,16 +64,21 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 				if(state.position !== null) {
 					camera.position.copyFrom(state.position);
 				}
+
 			} else if(options.isTouch && SQR.Gyro.hasGyro()) {
+
 				camera.quaternion.copyFrom(SQR.Gyro.getOrientation());
+
 			} else if(options.customCameraAnimation) {
+
 				options.customCameraAnimation();
+
 			}
 
 			ctx.viewport(0, 0, width, height);
 			ctx.clear();
 
-			if(options.vrInput) {
+			if(isStereo) {
 
 				ctx.viewport(0, 0, halfWidth, height);
 				renderer.render(root, left);
@@ -78,15 +86,9 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 				ctx.viewport(halfWidth, 0, halfWidth, height);
 				renderer.render(root, right);
 
-			} else if(options.isTouch) {
+			// } else if(options.isTouch) {
 
-				ctx.viewport(0, 0, halfWidth, height);
-				renderer.render(root, left);
-
-				ctx.viewport(halfWidth, 0, halfWidth, height);
-				renderer.render(root, right);
-
-				// Turning the distortion off for mobile
+				//
 
 				// 	fbo.bind();
 				// 	ctx.clear();

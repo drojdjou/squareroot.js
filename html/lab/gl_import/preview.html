@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Visualizer of imported animation data</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+
+<script type="text/javascript" src="src/AnimationPreview.js"></script>
+
+<link rel="stylesheet" type="text/css" href="preview.css">
+
+</head>
+<body>
+
+<div class='container'></div>
+
+<div class="anim-template template">
+	<section>
+		<h1>Animations</h1>
+		<ul><ul>
+	</section>
+</div>
+
+<script type="text/javascript">
+
+
+	// Super tight framework :) 
+	var qs = (function(e) {
+		e.sel = function(s) { return e.querySelector(s); };
+		e.add = function(t, c) { 
+			var n = cr(t, c);
+			e.appendChild(n); 
+			return n;
+		};
+		return e;
+	});
+
+	var cr = function(t, c) {
+		var e = qs(document.createElement(t));
+		if(c) e.innerHTML = c;
+		return e;
+	}
+
+	var sel = function(s) {
+		var e = document.querySelector(s);
+		if(e) return qs(e);
+		else return null;
+	}
+
+	var clone = function(e) {
+		return qs(e.cloneNode(true));
+	}
+
+	// Super tight framework :) 
+
+
+
+
+	SQR.Loader.loadAssets([
+		// ['../../assets/unity-export/one-cube-anim.json', 'mesh'],
+		// ['../../assets/unity-export/one-cube-animAnim.json', 'anim'],
+		// ['../../assets/unity-export/one-cube-animScene.json', 'scene']
+
+		// ['../../assets/unity-export/two-cubes-anim.json', 'mesh'],
+		// ['../../assets/unity-export/two-cubes-animAnim.json', 'anim'],
+		// ['../../assets/unity-export/two-cubes-animScene.json', 'scene']
+
+		['../../assets/unity-export/seagull.json', 'mesh'],
+        ['../../assets/unity-export/seagullAnim.json', 'anim'],
+        ['../../assets/unity-export/seagullScene.json', 'scene'],
+
+	], function(assets) {
+
+		var container = sel('.container');
+		var animReport = clone(sel('.anim-template section'));
+
+		for(var animationId in assets.anim) {
+			animReport.add('h2', animationId);
+			
+			var animation = assets.anim[animationId];
+
+			animReport.add('h4', 'Root: ' + animation.root);
+			animReport.add('h4', 'Length: ' + animation.length);
+			animReport.add('h4', 'Framerate: ' + animation.framerate);
+			
+			for(var transformName in animation.curves) {
+				animReport.add('h4', 'Transform: ' + ((transformName == '') ? '[' + animation.root + ']' : transformName));
+				var curves = animation.curves[transformName];
+				
+				for(var propName in curves) {
+					animReport.add('h5', 'Prop: ' + propName);
+					var prop = curves[propName];
+
+					animReport.add('h5', 'Num keyframes: ' + prop.keys.length / 4);
+					
+					var time = animReport.add('h6', '0');
+					var cnv = animReport.add('canvas');
+
+					AnimationPreview(time, cnv, prop, animation.length, true);
+					// break;
+				}
+
+				// break;
+			}
+
+			// break;
+		}
+
+
+		container.appendChild(animReport);
+
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

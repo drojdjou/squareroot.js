@@ -172,12 +172,6 @@ SQR.Loader.loadAssets([
 			SQR.Loader.assets[aliases[p]] = asset;
 			toLoad--;
 
-			// if(includes[p]) {
-			// 	console.log(includes[p].substring(1));
-			// 	if(!SQR.GLSL) SQR.GLSL = {};
-			// 	SQR.GLSL[includes[p].substring(1)] = asset;
-			// }
-
 			if(progressCallback) {
 				progressCallback(toLoad, paths.length);
 			}
@@ -194,17 +188,6 @@ SQR.Loader.loadAssets([
 			var file = hasAlias ? p[0] : p;
 			var alias = hasAlias ? p[1] : p;
 			var fileType = file.substring(file.lastIndexOf('.') + 1);
-
-			if(file.indexOf('~') > -1) {
-				if(SQR.GLSL && SQR.GLSL[file.substring(2)]) {
-					toLoad--;
-					continue;
-				} else {
-					var f = file.replace('~', SQR.shaderPath);
-					includes[f] = file;
-					file = f;
-				}
-			}
 
 			aliases[file] = alias;
 			

@@ -72,7 +72,7 @@ var SQR = {
 				f.faces.forEach(function(fc) {
 					if(options && options.reverseNormals) fc.flip();
 					fc.calculateNormal();
-					c += fc.toBuffer(geo, c);
+					c += fc.toBuffer(geo, c, options && options.perVertexNormal);
 				});
 				return c;
 			}

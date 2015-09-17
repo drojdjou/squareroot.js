@@ -7,15 +7,15 @@ Feature.create({
 			coords: ['35%', '100%', '44.5%', '50%', '20%', '30%', 0, 0],
 		},
 
-		wave2: {
-			type: 'Path',
-			coords: ['65%', '100%', '56.5%', '50%', '80%', '30%', '100%', 0],
-		}
+		// wave2: {
+		// 	type: 'Path',
+		// 	coords: ['65%', '100%', '56.5%', '50%', '80%', '30%', '100%', 0],
+		// }
 	},
 
 	objects: (function() {
 
-		var numLines = 20;
+		var numLines = 10; // 20;dw
 		var lines = [];
 
 		/*
@@ -67,10 +67,14 @@ Feature.create({
 			}
 
 			l.type = 'Path';
-			l.path = i % 2 == 1 ? 'wave' : 'wave2';
-			l.offset = i * 6 - numLines * 6 / 2;
+			// l.path = i % 2 == 1 ? 'wave' : 'wave2';
+			l.path = 'wave';
+
+			// l.offset = i * 10 - numLines * 10 / 2;
+			l.offset = i * 5 - numLines * 5 / 2;
+
 			l.color = '#ffffff';
-			l.width = 4;
+			l.width = 2;
 			l.actions = {
 				q: function(obj) { obj.clear() },
 				w: animate(2),

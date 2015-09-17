@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Long Walk 01</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../html/src/SQR.js"></script>
+<script type="text/javascript" src="../../html/src/common/Context.js"></script>
+<script type="text/javascript" src="../../html/src/common/Loader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../html/src/common/Shader.js"></script>
+<script type="text/javascript" src="../../html/src/common/Transform.js"></script>
+<script type="text/javascript" src="../../html/src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../html/src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../html/src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../html/src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../html/src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../html/src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../html/src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../html/src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../html/src/primitives/Mesh.js"></script>
+
+<script type="text/javascript" src="../../html/src/math/PerlinNoise.js"></script>
+<script type="text/javascript" src="src/TerrainTexture.js"></script>
+<script type="text/javascript" src="src/CameraControl.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../html/lab/base.css">
+
+<style type="text/css">
+
+canvas.noise {
+	position: absolute;
+	image-rendering: pixelated;
+	width: 512px;
+	height: 512px;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+var size = 160;
+
+var tt = SQR.TerrainTexture(size, 0.10, 1.00, 
+	[2, 4, 8, 16, 32, 64], 
+	[1/2, 1/4, 1/8, 1/16, 1/32, 1/64],
+	8, new SQR.V2(18, 1)
+);
+
+// tt.canvas.classList.add('noise');
+// document.body.appendChild(tt.canvas);
+
+SQR.Loader.loadAssets([
+	['shaders/terrain.glsl', 'shader'],
+	['assets/terrain/grass16.jpg', 'grassTex'],
+	['assets/terrain/sand-b16.jpg', 'sandTex'],
+	['assets/terrain/rock-d16.jpg', 'rockTex'],
+	['assets/terrain/snow16.jpg', 'snowTex'],
+], function(assets) {
+
+	var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+	var ctx = SQR.Context('#gl-canvas').create().clearColor(0.5, 0.7, 1, 1);
+	var renderer = new SQR.Renderer(ctx);
+
+	var resize = function() {
+		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		ctx.size(w, h);
+		renderer.projection = new SQR.ProjectionMatrix().perspective(40, aspect, 0.1, 1000);
+	}
+
+	window.addEventListener('resize', resize);
+	resize();
+
+	var root = new SQR.Transform();
+
+	var camera = new SQR.Transform();
+	var camHolder = new SQR.Transform();
+	// camera.position.z = size * 2;
+	// camera.position.y = 140;
+	// camera.position.z = 140;
+	// camera.rotation.x = 0.8;
+
+	// camera.position.y = 20;
+	// camera.rotation.x = 0.4;
+
+	camHolder.position.y = 10;
+	root.add(camHolder);
+	camHolder.add(camera);
+	SQR.CameraControl(camHolder, camera);
+
+	// w, h, wd, hd, wo, ho, options
+	var plane = new SQR.Transform();
+
+	plane.buffer = SQR.Primitives.createPlane(size, size, size, size);
+
+	var amp = size * -0.4;
+
+	plane.buffer.vertices.forEach(function(v) {
+		v.y = tt.getValue(v.x + size/2, v.z + size/2) * amp;
+	});
+
+	plane.buffer.recalculateNormals().updateFromFaces().update();
+
+	var to = { wrap: SQR.gl.REPEAT, filter: SQR.gl.NEAREST };
+
+	plane.shader = SQR.Shader(assets.shader).use()
+		.setUniform('uGrassTexture', SQR.Texture(assets.grassTex, to))
+		.setUniform('uSandTexture', SQR.Texture(assets.sandTex, to))
+		.setUniform('uRockTexture', SQR.Texture(assets.rockTex, to))
+		.setUniform('uSnowTexture', SQR.Texture(assets.snowTex, to))
+		.setUniform('uLight', new SQR.V3(-1.0, -0.7, 0.5))
+		.setUniform('uSky', new SQR.V3(0.5, 0.7, 1));
+
+	// plane.rotation.x = Math.PI - 0.8;
+	plane.rotation.x = Math.PI;
+
+	root.add(plane);
+
+	var render = function() {
+		requestAnimationFrame(render);
+		// plane.rotation.y += 0.0025;
+		renderer.render(root, camera);
+	}
+
+	render();
+
+});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

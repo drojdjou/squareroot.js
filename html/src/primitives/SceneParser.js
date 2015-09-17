@@ -11,15 +11,32 @@ SQR.SceneParser = (function() {
 
 	return {
 
-		parse: function(scene, meshes, options) {
+		parse: function(assets, options) {
 
-			var defaultShader = SQR.Shader(options.shader);
+			var scene = assets.scene;
+			var meshes = assets.mesh;
+			var anim = assets.anim;
+
+			if(options.context) {
+				var bc = scene.background;
+				options.context.clearColor(bc.r, bc.g, bc.b);
+			};
+
+			var getDefaultShader = (function() {
+				var d;
+				return function() {
+					if(!d) d = SQR.Shader(options.shader);
+					return d;
+				}
+			})();
 
 			// If this is a scene coming from unity we need to flip the matrix
+			// TODO: this doesn't play well with the WebVR thing btw....
 			SQR.flipMatrix = (options && options.flipMatrix) ? options.flipMatrix : false;
 
 			var buffers = {}, bufferByName = {};
 			var skinnedMeshes = [];
+			var animations = {};
 
 			for(var n in meshes) {
 				var md = meshes[n];
@@ -29,6 +46,11 @@ SQR.SceneParser = (function() {
 				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
 				buffers[n] = b;
 				bufferByName[md.name] = b;
+			}
+
+			for(var m in scene.materials) {
+				var mat = scene.materials[m];
+				mat.color = SQR.Color().setRGB(mat.color.r, mat.color.g, mat.color.b);
 			}
 
 			var root = new SQR.Transform();
@@ -59,7 +81,18 @@ SQR.SceneParser = (function() {
 
 				if(td.mesh) {
 					t.buffer = buffers[td.meshId];
-					if(!td.bones) t.shader = defaultShader;
+					
+				}
+
+				
+				if(td.renderer) {
+
+					// we will deal with skinned meshes below
+					if(!td.bones) t.shader = getDefaultShader();
+
+					t.uniforms = t.uniforms || {};
+					t.uniforms.uColor = scene.materials[td.renderer].color;
+					
 				}
 
 				if(td.parent) {
@@ -96,6 +129,78 @@ SQR.SceneParser = (function() {
 					s.shader.use().setUniform('uBones', boneMatrices);
 				}
 			});
+
+			for(var id in anim) {
+
+				var data = anim[id];
+
+				animations[id] = {
+					duration: data.length,
+					transforms: {}
+				};
+
+				for(var c in data.curves) {
+
+					animations[id].transforms[c] = {
+						properties: {}
+					};
+
+					for(var p in data.curves[c]) {
+						var keyframes = [];
+						var d = data.curves[c][p];
+
+						if(options.linearAnimation) {
+							for(var i = 0; i < d.keys.length; i += 4) {
+								var a = d.keys[i + 0];
+								var b = d.keys[i + 1];
+								keyframes.push(new SQR.V2(a, b));								
+							}
+						} else {
+							for(var i = 0; i < d.keys.length - 4; i += 4) {
+								var k1t = d.keys[i+0];
+								var k1v = d.keys[i+1];
+								var k1o = d.keys[i+3];
+
+								var k2t = d.keys[i+4];
+								var k2v = d.keys[i+5];
+								var k2i = d.keys[i+6];
+								
+								var start = new SQR.V2(k1t, k1v);
+								var end = new SQR.V2(k2t, k2v);
+
+								var dt = (end.x - start.x) / 3.0;
+								var st = new SQR.V2( dt,  dt * k1o).add(start);
+								var et = new SQR.V2(-dt, -dt * k2i).add(end);
+
+								keyframes.push(new SQR.Bezier(start, st, et, end));
+							}
+						}
+
+						animations[id].transforms[c].properties[p] = keyframes;
+					}
+				}
+			}
+
+			root.recurse(function(t) {
+				if(t.data && t.data.animation) {
+					var id = t.data.animationId;
+					var data = animations[id];
+
+					t.animation = SQR.Animation(data.duration);
+
+					for(var cn in data.transforms) {
+						var c = t.findByPath(cn);
+						c.clip = SQR.Clip(data.duration);
+						t.animation.addClip(c.clip);
+
+						for(var p in data.transforms[cn].properties) {
+							c.clip.addProperty(p, data.transforms[cn].properties[p]);
+						}
+					}
+
+					if(options.autoPlay) t.animation.play();
+				};
+			}, true);
 
 			return {
 				root: root, camera: camera, buffers: bufferByName

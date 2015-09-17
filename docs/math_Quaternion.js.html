@@ -179,6 +179,19 @@ SQR.Quaternion.prototype.normalize = function() {
     this.y /= n;
     this.z /= n;
     this.w /= n;
+    return this;
+}
+
+
+/**
+ *  Inverses the quaternion.
+ */
+SQR.Quaternion.prototype.neg = function() {
+    this.x *= -1;
+    this.y *= -1;
+    this.z *= -1;
+    this.w *= -1;
+    return this;
 }
 
 /**
@@ -192,6 +205,62 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
     throw "SQR.Quaternion.toMatrix() is not implemented. Check SQR.Matrix44.TQS()"; 
 }
 
+
+// This one is from three.js (used for reference )
+// SQR.Quaternion.slerp2 = function(qa, qb, t, qr) {
+
+//     qr = qr || new SQR.Quaternion();
+
+
+//     if ( t === 0 ) return qr.copyFrom(qa);
+//     if ( t === 1 ) return qr.copyFrom(qb);
+
+//     var x = qa.x, y = qa.y, z = qa.z, w = qa.w;
+
+//     // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
+//     var cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
+
+//     if (cosHalfTheta &lt; 0) {
+//         qr.w = - qb.w;
+//         qr.x = - qb.x;
+//         qr.y = - qb.y;
+//         qr.z = - qb.z;
+//         cosHalfTheta = - cosHalfTheta;
+//     } else {
+//         qr.copyFrom( qb );
+//     }
+
+//     if (cosHalfTheta >= 1.0) {
+//         qr.w = w;
+//         qr.x = x;
+//         qr.y = y;
+//         qr.z = z;
+//         return qr;
+//     }
+
+//     var halfTheta = Math.acos( cosHalfTheta );
+//     var sinHalfTheta = Math.sqrt( 1.0 - cosHalfTheta * cosHalfTheta );
+
+//     if (Math.abs( sinHalfTheta ) &lt; 0.001) {
+//         qr.w = 0.5 * (w + qr.w);
+//         qr.x = 0.5 * (x + qr.x);
+//         qr.y = 0.5 * (y + qr.y);
+//         qr.z = 0.5 * (z + qr.z);
+//         return qr;
+//     }
+
+//     var ratioA = Math.sin( ( 1 - t ) * halfTheta ) / sinHalfTheta,
+//     ratioB = Math.sin( t * halfTheta ) / sinHalfTheta;
+
+//     qr.w = (w * ratioA + qr.w * ratioB);
+//     qr.x = (x * ratioA + qr.x * ratioB);
+//     qr.y = (y * ratioA + qr.y * ratioB);
+//     qr.z = (z * ratioA + qr.z * ratioB);
+
+//     return qr;
+
+// }
+
 /**
  *  Returns a spherical linear interpolation between two quaternions.
  *  @param qa first quaternion
@@ -202,7 +271,23 @@ SQR.Quaternion.prototype.toMatrix = function(m) {
 SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr = qr || new SQR.Quaternion();
 
-    var cha = qa.w * qb.w + qa.x * qb.x + qa.y * qb.y + qa.z * qb.z;
+    if (t === 0) return qr.copyFrom(qa);
+    if (t === 1) return qr.copyFrom(qb);
+
+    // Try taking the dot product of your two quaternions (i.e., the 4-D dot product), 
+    // and if the dot product is negative, replace your quaterions q1 and q2 with -q1 and q2 before performing Slerp.
+    // http://stackoverflow.com/questions/2886606/flipping-issue-when-interpolating-rotations-using-quaternions
+
+    // (This is not working for me)
+
+
+    var cha = SQR.Quaternion.dot(qa, qb);
+
+    if(cha &lt; 0) {
+        qa.neg();
+        cha = SQR.Quaternion.dot(qa, qb);
+    }
+
     var ha = Math.acos(cha);
     var sha = Math.sqrt(1 - cha * cha);
     var ra = Math.sin((1 - t) * ha) / sha;
@@ -225,6 +310,10 @@ SQR.Quaternion.slerp = function(qa, qb, t, qr) {
     qr.y = (qa.y * ra + qb.y * rb);
     qr.z = (qa.z * ra + qb.z * rb);
     return qr;
+}
+
+SQR.Quaternion.dot = function(qa, qb) {
+    return qa.x * qb.x + qa.y * qb.y + qa.z * qb.z + qa.w * qb.w;
 }
 
 SQR.Quaternion.prototype.slerp = function(qa, qb, t) {
@@ -259,13 +348,13 @@ SQR.Quaternion.__tv3 = new SQR.Quaternion();
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.Tween.html">Tween</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.Anm.html">Anm</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Mar 27 2015 14:32:48 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Sep 16 2015 21:12:12 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

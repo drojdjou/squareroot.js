@@ -5,12 +5,14 @@ SQR.VRApp = function(appFunc, options) {
 	options.vrInput = null;
 	options.vrData = {};
 
-	var startBtn, startInstr;
+	var vrBtn, novrBtn, startInstr;
 	var fsopt = {};
 	
 
-	var INSTR_COPY 			= '<span>Put on your head set and press space when ready.</span>';
-	var BTN_COPY   			= 'Start';
+	var INSTR_COPY_DESKTOP 	= '<span>Put on your head set and press space when ready.</span>';
+	var INSTR_COPY_MOBILE 	= '<span>Put on your head set tap screen when ready.</span>';
+	var BTN_COPY_VR   		= 'CARDBOARD';
+	var BTN_COPY_NO_VR   	= 'NO CARDBOARD';
 	var PORT_WARN_COPY   	= 'Please rotate your screen to landscape mode';
 
 	var fullscreen = function(c) {
@@ -75,40 +77,51 @@ SQR.VRApp = function(appFunc, options) {
 	}
 
 	var startApp = function(e) {
-		if(startBtn) document.body.removeChild(startBtn);
+		if(vrBtn) document.body.removeChild(vrBtn);
+		if(novrBtn) document.body.removeChild(novrBtn);
 		if(startInstr) document.body.removeChild(startInstr);
 		if(options.isTouch || (options.vrInput && !options.debug)) fullscreen(document.body);
 		if(appFunc) appFunc(options);
 	}
 
 	var prepare = function() {
-		if(options.debug && !options.isTouch) {
-			startApp();
-		} else if(options.vrInput) {
+
+		if(options.vrInput && !options.isTouch) {
+
 			startInstr = document.createElement('div');
-			startInstr.innerHTML = INSTR_COPY + INSTR_COPY;
+			startInstr.innerHTML = INSTR_COPY_DESKTOP + INSTR_COPY_DESKTOP;
 			startInstr.setAttribute('class', 'instr');
 			document.body.appendChild(startInstr);
+			
 			document.addEventListener('keydown', onKeyDown);
+
 		} else if(options.isTouch) {
 
-			startBtn = document.createElement('div');
-			startBtn.setAttribute('class', 'start');
-			startBtn.innerHTML = BTN_COPY;
+			vrBtn = document.createElement('div');
+			vrBtn.setAttribute('class', 'start vr');
+			vrBtn.innerHTML = BTN_COPY_VR;
+			document.body.appendChild(vrBtn);
+
+			novrBtn = document.createElement('div');
+			novrBtn.setAttribute('class', 'start novr');
+			novrBtn.innerHTML = BTN_COPY_NO_VR;
+			document.body.appendChild(novrBtn);
 
 			portWarn = document.createElement('div');
 			portWarn.setAttribute('class', 'portrait-warning');
 			portWarn.innerHTML = PORT_WARN_COPY;
-
-			document.body.appendChild(startBtn);
 			document.body.appendChild(portWarn);
 
-			startBtn.addEventListener('click', startApp);
-			document.addEventListener('keydown', onKeyDown);
+			vrBtn.addEventListener('click', function() {
+				options.forceStereo = true;
+				startApp();
+			});
+
+			novrBtn.addEventListener('click', startApp);
+
 		} else {
 			startApp();
-		}
-		
+		}	
 	}
 
 	tryVR(prepare);

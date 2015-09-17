@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tree</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+
+<script type="text/javascript" src="src/Tree.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+    SQR.Loader.loadAssets([
+        ['glsl/tree-line.glsl', 'treeLine'],
+        ['glsl/tree-mesh.glsl', 'treeMesh'],
+
+        ['../../src/glsl/light/sphar.glsl', 'sphar'],
+        ['../../src/glsl/light/sphar-sunset.glsl', 'sphar-data']
+    ], function(assets) {
+
+        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(1, 1, 1, 1);
+        var renderer = new SQR.Renderer(ctx);
+
+        var resize =function() {
+            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h);
+            renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        var root = new SQR.Transform();
+
+        var cameraBase = new SQR.Transform();
+        root.add(cameraBase);
+
+        var camera = new SQR.Transform();
+        camera.position.z = 25;
+        camera.position.y = 10;
+        cameraBase.add(camera);
+
+        var treeTemplates = [], trees = [];
+
+        var treeLineShader = SQR.Shader(assets.treeLine)
+            .use()
+            .setUniform('uFogStart', 5)
+            .setUniform('uFogEnd', 50)
+            .setUniform('uFogColor', [0.05, 0.01, 0.1]);
+
+        var treeShader = SQR.Shader(assets.treeMesh)
+            .use()
+            .setUniform('uFogStart', 5)
+            .setUniform('uFogEnd', 50)
+            .setUniform('uFogColor', [0.05, 0.01, 0.1]);
+
+        var addTree = function() {
+
+            // var ts = SQR.Tree({
+            //     depth: 4,
+            //     branches: 3,
+            //     branchProbability: [1, 0.5],
+            //     branchLength: [6, 8],
+            //     trunkLength: 8,
+            //     lengthDepthFactor: 1,
+            //     angleDepthFactor: 0.5,
+            //     branchAngle: [0.2, 0.5],
+            //     branchDeviation: 2.0
+            // });
+
+            var ts = SQR.Tree({
+                depth: 3,
+                branches: 3,
+                branchProbability: 1,
+                branchLength: [3, 5],
+                trunkLength: 10,
+                lengthDepthFactor: 0.8,
+                angleDepthFactor: 0.3,
+                branchAngle: [0.25, 0.50],
+                branchDeviation: Math.PI,
+
+                baseWidth: 1,
+                branchWidth: 0.7,
+                widthDepthFactor: 0.5,
+                branchSides: 8
+            });
+
+
+            var buffer = ts.toMesh({ perVertexNormal: true });
+
+            var tree = new SQR.Transform();
+            var c = 0.5 + 0.3 * Math.random();
+            tree.shader = treeShader;
+            tree.uniforms = { 'uColor': [0.2 + c, 0.066 + c / 3, 0] };
+            tree.buffer = buffer;
+
+            root.add(tree);
+
+            // var treeLine = new SQR.Transform();
+            // var c = 0.2 * Math.random();
+            // treeLine.shader = treeLineShader;
+            // treeLine.uniforms = { 'uColor': [0.2 + c, 0.066 + c / 3, 0] };
+            // treeLine.buffer = ts.toLineBuffer();
+            // treeLine.lineWidth = 1;
+            // root.add(treeLine);
+        }
+
+        addTree();
+
+        var render = function() {
+            requestAnimationFrame(render);
+            renderer.render(root, camera);
+            cameraBase.rotation.y += 0.01;
+        }
+
+        render();
+    });
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

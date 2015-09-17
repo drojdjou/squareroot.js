@@ -6,14 +6,19 @@
  */
 SQR.Renderer = function(context) {
 
-	var r = {};
+	var r = {
+		currentTime: 0
+	};
+	
 	var uniforms = {}, renderObjects = [], transparentObjects = [];
-	var startTime, time;
+	var startTime, time, deltaTime;
 
 	var updateTransform = function(t) {
 		if(!t.active) return;
 
 		t.transformWorld();
+
+		if(t.clip) t.clip.update(t, time, deltaTime);
 		
 		if (t.numChildren > 0) {
             for (var i = 0; i < t.numChildren; i++) {
@@ -37,7 +42,7 @@ SQR.Renderer = function(context) {
 
 		if(!startTime) startTime = new Date().getTime();
 		time = new Date().getTime() - startTime;
-
+		deltaTime = time - (r.currentTime || 0);
 		r.currentTime = time;
 
 		options = options || defOpts;

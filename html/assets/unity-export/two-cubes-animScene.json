@@ -1,0 +1,111 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0.1921569, "g":0.3019608, "b":0.4745098, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"red": { 
+		"type": "Phong",
+		"color": { "r":1, "g":0, "b":0, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"blue": { 
+		"type": "Phong",
+		"color": { "r":0.1463019, "g":0.6220813, "b":0.9044118, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+	
+	"light": { 
+		"type": 1,
+		"color": { "r":1, "g":0.9568627, "b":0.8392157, "a":1 },
+		"intensity": 1
+	}
+
+},
+
+"cameras": {
+	
+	"camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-15632",
+        "name": "two_cubes_animated",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"animation": "c4d_animation_take",
+		"animationId": "a7748"
+	},
+	
+	{
+		"uid": "t-15636",
+        "name": "cube1",
+		"parent": "t-15632",
+		"position": [ -1.1,-1.1,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "blue",
+		"mesh": "cube1",
+		"meshId": "m-7744"
+	},
+	
+	{
+		"uid": "t-15638",
+        "name": "cube2",
+		"parent": "t-15632",
+		"position": [ 1.1,1.1,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "red",
+		"mesh": "cube2",
+		"meshId": "m-7746"
+	},
+	
+	{
+		"uid": "t-15412",
+        "name": "camera",
+		"position": [ 1.94,0.34,6.04 ],
+		"rotation": [ 0,0.139079,0,0.9902813 ],
+		"camera": "camera"
+	},
+	
+	{
+		"uid": "t-15424",
+        "name": "light",
+		"position": [ 0,3,0 ],
+		"rotation": [ -0.408218,0.2345698,0.1093817,0.875426 ],
+		"light": "light"
+	}
+
+]
+}
+
+
+
+

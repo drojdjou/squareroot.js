@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 <style type="text/css">
-	* {cursor: none;}
+	/** {cursor: none;}*/
 </style>
 
 </head>
@@ -74,7 +74,7 @@
 		document.addEventListener('mouseup', function() { isMouseDown = false; });
 
 
-		var index = 0, dotsPerFrame = 80;
+		var index = 0, dotsPerFrame = 30;
 
 		var render = function() {
 
@@ -139,7 +139,7 @@
 
 		dots.shader = SQR.Shader(assets.dustShader)
 			.use()
-			.setUniform('uGravity', [0.0, 0.005])
+			.setUniform('uGravity', [0.0, 0.001])
 			.setUniform('uTexture', dtex);
 
 		root.add(dots);

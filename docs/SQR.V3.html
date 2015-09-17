@@ -183,7 +183,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line271">line 271</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line276">line 276</a>
     </li></ul></dd>
     
 
@@ -247,7 +247,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line262">line 262</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line267">line 267</a>
     </li></ul></dd>
     
 
@@ -274,7 +274,7 @@
 
     
 
-    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(a, b)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(a, b<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -305,6 +305,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -330,6 +332,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -353,10 +363,20 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"></td>
+            <td class="description last">if omitted the current vector is used, which basically means that a is added to current vector.</td>
         </tr>
 
     
@@ -396,7 +416,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line136">line 136</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -425,6 +445,7 @@
     
     <pre class="prettyprint"><code>a.add(b, c); // a = b + c
 a.add(a, b); // a += b
+a.add(b);    // alt a += b
 a.add(a, b).add(a, c); // = a + b + c
 
  </code></pre>
@@ -491,7 +512,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line238">line 238</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -945,7 +966,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line181">line 181</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line183">line 183</a>
     </li></ul></dd>
     
 
@@ -1550,7 +1571,7 @@ a.add(a, b).add(a, c); // = a + b + c
 
 
 <div class="description">
-    This is use to reset the normal to 0.
+    This is used to reset the normal to 0,0,0.
 </div>
 
 
@@ -1594,7 +1615,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line250">line 250</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line255">line 255</a>
     </li></ul></dd>
     
 
@@ -1917,7 +1938,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line149">line 149</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line151">line 151</a>
     </li></ul></dd>
     
 
@@ -2093,7 +2114,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line224">line 224</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line226">line 226</a>
     </li></ul></dd>
     
 
@@ -2175,7 +2196,7 @@ a.add(a, b).add(a, c); // = a + b + c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line174">line 174</a>
+        <a href="math_Vector3.js.html">math/Vector3.js</a>, <a href="math_Vector3.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -2239,13 +2260,13 @@ a.add(a, b).add(a, c); // = a + b + c
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.Tween.html">Tween</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.Anm.html">Anm</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Mar 27 2015 14:32:49 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Sep 16 2015 21:12:12 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

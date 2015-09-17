@@ -126,3 +126,21 @@ Adding perQuadUV option to plane contructor in primitives
 
 Adding small settings to Renderer and Plane + new demo
 
+
+##### v3.0 b 120
+*Aug 20th 2015*
+
+Just recompiling
+
+
+##### v3.0 b 121
+*Aug 20th 2015*
+
+Just recompiling
+
+
+##### v3.0 b 122
+*Aug 20th 2015*
+
+Added naturalWidth/Height vs simple width/height to Util.fullBleed because of an IE bug
+

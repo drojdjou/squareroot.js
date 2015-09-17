@@ -46,7 +46,7 @@
 
 <script type="text/javascript">
 
-	console.log('Universal VR | b1');
+	console.log('Universal Web VR | b1');
 	
 	SQR.VRApp(function(options) {
 
@@ -77,7 +77,6 @@
 			var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
 			var renderer = new SQR.Renderer(ctx);
-			renderer.autoClear = false;
 
 			var root = new SQR.Transform();
 			var camRoot = new SQR.Transform();

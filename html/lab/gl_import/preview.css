@@ -1,0 +1,26 @@
+body {
+	background-color: #ddd;
+	font-family: sans-serif;
+	margin: 5px 0 0 20px;
+}
+
+.template {
+	display: none;
+}
+
+h1, h2, h3, h4, h5, h6, canvas {
+	margin: 6px;
+}
+
+h3, h4, h5, h6 {
+	font-weight: normal;
+}
+
+canvas {
+	background-color: #fff;
+}
+
+em {
+	background-color: #ff8080;
+	color: white;
+}

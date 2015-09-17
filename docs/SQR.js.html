@@ -51,6 +51,12 @@ var SQR = {
 	 *	@property gl - Placeholder that holds current gl context. This is set in SQR.Context.create(), but can be modified manually too
 	 */
 	gl: null, 
+
+	/** 
+	 *	Setting this value to true will use the old matrix calculation. 
+	 *	Best to keep it false, but for now it's true by default for backwards compatibility.
+	 */
+	flipMatrix: true,
 	
 	/** 
 	 *	@property fullScreenQuad - placeholder that holds a fullscreen geometry for post effects. Lazily created in PostEffect.js
@@ -66,12 +72,42 @@ var SQR = {
 	 */
 	shaderPath: '.',
 
+
 	/**
 	 *	@namespace Primitives
 	 *	@memberof SQR
 	 *	@description A collection of classes &amp; functions and utilities to create geometries
 	 */
-	Primitives: {},
+	Primitives: {
+
+		V2: function(x, y) { return new SQR.V2(x, y); },
+		V3: function(x, y, z) { return new SQR.V3(x, y, z); },
+		Q:  function(x, y, z, w) { return new SQR.Quaternion(x, y, z, w); },
+		M4: function() { return new SQR.Matrix44(); },
+
+		F: 	function(options) { 
+
+			var f = function(a, b, c, d) {
+				var fc = SQR.Face().v(a, b, c, d);
+				f.faces.push(fc);
+				return fc; 
+			};
+
+			f.faces = [];
+
+			f.toBuffer = function(geo) {
+				var c = 0;
+				f.faces.forEach(function(fc) {
+					if(options &amp;&amp; options.reverseNormals) fc.flip();
+					fc.calculateNormal();
+					c += fc.toBuffer(geo, c, options &amp;&amp; options.perVertexNormal);
+				});
+				return c;
+			}
+
+			return f;
+		}
+	},
 
 	/**
 	 *	@method v2
@@ -114,7 +150,7 @@ var SQR = {
 	v3n3: function() { return { aPosition: 3, aNormal: 3 }; },
 
 	/**
-	 *	@method v2
+	 *	@method v3n3u2
 	 *	@memberof SQR
 	 *
 	 *	Shorthand for { aPosition: 3, aNormal: 3, aUV: 2 }
@@ -136,13 +172,13 @@ var SQR = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.Tween.html">Tween</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.Anm.html">Anm</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Mar 27 2015 14:32:48 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Sep 16 2015 21:12:12 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

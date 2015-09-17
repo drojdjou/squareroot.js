@@ -40,43 +40,39 @@
  */
 SQR.Primitives.createCube = function(w, h, d, options) {
 
+
+	var V2 = this.V2, V3 = this.V3, F = this.F(options);
+
 	w = w || 1;
 	h = h || 1;
 	d = d || 1;
 
-	var geo = SQR.Buffer()
-		.layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
+	var geo = SQR.Buffer().layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
 	
-	var v0 = new SQR.V3(w * -0.5,   h *  0.5,   d *  0.5); // Top left
-	var v1 = new SQR.V3(w *  0.5,   h *  0.5,   d *  0.5); // Top right 
-	var v2 = new SQR.V3(w * -0.5,   h * -0.5,   d *  0.5); // Bottom left 
-	var v3 = new SQR.V3(w *  0.5,   h * -0.5,   d *  0.5); // Bottom right
+	var 
+		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+		v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+		v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+		v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
 
-	var v4 = new SQR.V3(w * -0.5,   h *  0.5,   d * -0.5); // Top left
-	var v5 = new SQR.V3(w *  0.5,   h *  0.5,   d * -0.5); // Top right
-	var v6 = new SQR.V3(w * -0.5,   h * -0.5,   d * -0.5); // Bottom left
-	var v7 = new SQR.V3(w *  0.5,   h * -0.5,   d * -0.5); // Bottom right
+		v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+		v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+		v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+		v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
 
-	var u0 = new SQR.V2(0, 1);
-	var u1 = new SQR.V2(1, 1);
-	var u2 = new SQR.V2(0, 0);
-	var u3 = new SQR.V2(1, 0);
+		u0 = V2(0, 1),
+		u1 = V2(1, 1),
+		u2 = V2(0, 0),
+		u3 = V2(1, 0);
 
-	var faces = [];
-
-	faces.push(SQR.Face().setPosition(v0, v1, v2, v3).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v5, v4, v7, v6).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v4, v0, v6, v2).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v1, v5, v3, v7).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v4, v5, v0, v1).setUV(u0, u1, u2, u3));
-	faces.push(SQR.Face().setPosition(v2, v3, v6, v7).setUV(u0, u1, u2, u3));
+	F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
+	F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
+	F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
+	F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
+	F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
+	F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
 	
-	var c = 0;
-	faces.forEach(function(t) {
-		if(options &amp;&amp; options.reverseNormals) t.flip();
-		t.calculateNormal();
-		c += t.toBuffer(geo, c);
-	});
+	F.toBuffer(geo);
 
 	// SQR.Debug.traceBuffer(geo, true);
 	
@@ -99,22 +95,19 @@ SQR.Primitives.createSkybox = function(options) {
 	if(!options.glsl) throw "Missing shader code. Pass GLSL string as 2nd argument or include sqr-glsl.js to use the default one.";
 
 	var skybox = new SQR.Transform();
-
-	
-
 	var shader = SQR.Shader(options.glsl);
 
-	
 	if(options.use2dTextures) {
 
 		var planeOptions = { zUp: true };
 		var s = options.size;
+		var buffer = SQR.Primitives.createPlane(s, s, 1, 1, 0, 0, planeOptions);
 
-		var side = function(name, o) {
-			var f = new SQR.Transform('front');
+		var side = function(name) {
+			var f = new SQR.Transform(name);
 			f.shader = shader;
 			f.useDepth = options.useDepth;
-			f.buffer = SQR.Primitives.createPlane(s, s, 1, 1, 0, 0, o);
+			f.buffer = buffer;
 			return f;
 		}
 
@@ -144,6 +137,9 @@ SQR.Primitives.createSkybox = function(options) {
 
 		skybox.setTexture = function(f) {
 			if(!f) return;
+
+			console.log(f);
+
 			front.uniforms = { uTexture: SQR.Texture(f.front) };
 			back.uniforms = { uTexture: SQR.Texture(f.back) };
 			left.uniforms = { uTexture: SQR.Texture(f.left) };
@@ -203,13 +199,13 @@ SQR.Primitives.createSkybox = function(options) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.Tween.html">Tween</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.Anm.html">Anm</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Mar 27 2015 14:32:48 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Sep 16 2015 21:12:12 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

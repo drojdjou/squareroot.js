@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 <style type="text/css">
-	* {cursor: none;}
+	/** {cursor: none;}*/
 </style>
 
 </head>
@@ -48,6 +48,8 @@
 
 		var renderer = SQR.Renderer(ctx);
 		var root = new SQR.Transform();
+
+		root.position.y = 0;
 
 		var resize = function() {
 			w = window.innerWidth, h = window.innerHeight;
@@ -154,13 +156,13 @@
 		dcv.ctx.fill();
 		var dtex = SQR.Texture(dcv);
 
-		var dotCoords = [], numDots = 2000, lineCoords = [], alphaCoords = [];
-		var wm = 30, minDist = (h / wm) * (h / wm);
+		var dotCoords = [], numDots = 1000, lineCoords = [], alphaCoords = [];
+		var wm = 16, minDist = (h / wm) * (h / wm);
 		var lineBufferMax = numDots * 32;
 
 		for(var i = 0; i < numDots; i++) {
 			var a = SQR.TWOPI * r();
-			var rd = r() * h * 0.4;
+			var rd = r() * h * 0.2;
 			var v = new SQR.V2(w/2 + Math.cos(a) * rd, h/2 + Math.sin(a) * rd);
 
 			var bs = 0.5;
@@ -197,7 +199,7 @@
 
 		lines.useDepth = false;
 		lines.setBlending(true);
-		lines.lineWidth = 3;
+		lines.lineWidth = 2;
 
 		lines.shader = SQR.Shader(assets.lineShader)
 			.use()

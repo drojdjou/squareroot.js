@@ -26,7 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code> /**
  *  @method create2DQuad
  *  @memberof SQR.Primitives
  *
@@ -41,10 +41,10 @@
  */
 SQR.Primitives.create2DQuad = function(x, y, w, h) {
 	return SQR.Buffer()
-        .layout(SQR.v2u2(), 6)
-        .data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
-        .data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
-        .update();
+		.layout(SQR.v2u2(), 6)
+		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
+		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
+		.update();
 }
 
 /**
@@ -64,106 +64,122 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
  */
 SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 
-    var faces = [], indices = [];
+	var faces = [], indices = [];
 
-    var geo = new SQR.Buffer();
-    var options = options || {};
-    
-    geo.width = w;
-    geo.height = h;
+	var geo = new SQR.Buffer();
+	var options = options || {};
+	
+	geo.width = w;
+	geo.height = h;
 
-    var w = w * 0.5;
-    var h = h * 0.5;
+	var w = w * 0.5;
+	var h = h * 0.5;
 
-    var wo = wo || 0;
-    var ho = ho || 0;
+	var wo = wo || 0;
+	var ho = ho || 0;
 
-    var wd = wd || 1;
-    var hd = hd || 1;
+	var wd = wd || 1;
+	var hd = hd || 1;
 
-    faces.length = [];
+	faces.length = [];
 
-    var wStart = -w + wo;
-    var hStart = -h + ho;
+	var wStart = -w + wo;
+	var hStart = -h + ho;
 
-    var wb = geo.width / wd;
-    var hb = geo.height / hd;
+	var wb = geo.width / wd;
+	var hb = geo.height / hd;
 
-    var i, j;
-    var vertices = [], uvs = [];
+	var i, j;
+	var vertices = [], uvs = [];
 
-    for (i = 0; i &lt; wd+1; i++) {
-        for (j = 0; j &lt; hd+1; j++) {
-            var bvStart = wStart + i * wb;
-            var bhStart = hStart + j * hb;
-            var ij = i * (hd+1) + j;
+	for (i = 0; i &lt; wd+1; i++) {
+		for (j = 0; j &lt; hd+1; j++) {
+			var bvStart = wStart + i * wb;
+			var bhStart = hStart + j * hb;
+			var ij = i * (hd+1) + j;
 
-            uvs[ij] = new SQR.V2(i/wd, j/hd);
+			if(options.perQuadUV) {
+				uvs[ij] = new SQR.V2(i % 2, j % 2);
+			} else {
+				uvs[ij] = new SQR.V2(i/wd, j/hd);
+			}
 
-            if (!options.zUp) {
-                vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
-            } else {
-                vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
-            }
-        }
-    }
+			if (!options.zUp) {
+				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
+			} else {
+				vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
+			}
+		}
+	}
 
-    for (i = 0; i &lt; wd; i++) {
-        for (j = 0; j &lt; hd; j++) {
+	for (i = 0; i &lt; wd; i++) {
+		for (j = 0; j &lt; hd; j++) {
 
-            var bvStart = wStart + i * wb;
-            var bvEnd = bvStart + wb;
-            var bhStart = hStart + j * hb;
-            var bhEnd = bhStart + hb;
+			var bvStart = wStart + i * wb;
+			var bvEnd = bvStart + wb;
+			var bhStart = hStart + j * hb;
+			var bhEnd = bhStart + hb;
 
-            var ij = i * (hd+1) + j;
-            var ij2 = (i+1) * (hd+1) + j;
+			var ij = i * (hd+1) + j;
+			var ij2 = (i+1) * (hd+1) + j;
 
-            var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
-            faces.push(q);
-            indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
-        }
-    }
-
-
-    layout = (options &amp;&amp; options.layout) ? options.layout : {};
-
-    layout.aPosition = 3;
-    layout.aNormal = 3;
-    layout.aUV = 2;
-
-    geo.layout(layout, vertices.length);
+			var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
+			faces.push(q);
+			indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
+		}
+	}
 
 
-	faces.forEach(function(f) {
-		f.calculateNormal();
-        f.addNormalToVertices();
-	});
+	layout = (options.layout) ? options.layout : {};
 
-    geo.iterate('aPosition', function(i, data, c) {
-        var v = vertices[c];
-        data[i+0] = v.x;
-        data[i+1] = v.y;
-        data[i+2] = v.z;
-    });
+	layout.aPosition = 3;
+	layout.aNormal = 3;
+	layout.aUV = 2;
 
-    geo.iterate('aNormal', function(i, data, c) {
-        var v = vertices[c];
-        v.normal.norm();
-        data[i+0] = v.normal.x;
-        data[i+1] = v.normal.y;
-        data[i+2] = v.normal.z;
-    });
+	geo.layout(layout, vertices.length);
 
-    geo.iterate('aUV', function(i, data, c) {
-        var v = uvs[c];
-        data[i+0] = v.x;
-        data[i+1] = v.y;
-    });
+	geo.faces = faces;
+	geo.vertices = vertices;
 
-    geo.index(indices);
+	geo.recalculateNormals = function() {
+		faces.forEach(function(f) {
+			f.calculateNormal();
+			f.addNormalToVertices();
+		});
 
-    return geo.update();
+		return geo;
+	}
+
+	geo.updateFromFaces = function() {
+
+		geo.iterate('aPosition', function(i, data, c) {
+			var v = vertices[c];
+			data[i+0] = v.x;
+			data[i+1] = v.y;
+			data[i+2] = v.z;
+		});
+
+		geo.iterate('aNormal', function(i, data, c) {
+			var v = vertices[c];
+			v.normal.norm();
+			data[i+0] = v.normal.x;
+			data[i+1] = v.normal.y;
+			data[i+2] = v.normal.z;
+		});
+
+		geo.iterate('aUV', function(i, data, c) {
+			var v = uvs[c];
+			data[i+0] = v.x;
+			data[i+1] = v.y;
+		});
+
+		geo.index(indices);
+
+		return geo;
+	}
+
+
+	return geo.recalculateNormals().updateFromFaces().update();
 }
 
 
@@ -189,13 +205,13 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.Tween.html">Tween</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.Anm.html">Anm</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Mar 27 2015 14:32:48 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Sep 16 2015 21:12:12 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

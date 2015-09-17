@@ -247,7 +247,7 @@ SQR.Matrix44 = function(data) {
 	 *  @param rx angle in radians of the rotation on x axis
 	 *  @param ry angle in radians of the rotation on y axis
 	 *  @param rz angle in radians of the rotation on z axis
-	 *  @param m the matrix to set shear to, applies to `this` if ommited
+	 *  @param m the matrix to set rotation to, applies to `this` if ommited
 	 */
 	this.setRotation = function(rx, ry, rz, m) {
 		var d = m || this.data;

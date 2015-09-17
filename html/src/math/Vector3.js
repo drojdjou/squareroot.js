@@ -128,12 +128,14 @@ SQR.V3.prototype.norm = function() {
  *  @example
 a.add(b, c); // a = b + c
 a.add(a, b); // a += b
+a.add(b);    // alt a += b
 a.add(a, b).add(a, c); // = a + b + c
  *
  *  @param {SQR.V3} a
- *  @param {SQR.V3} b
+ *  @param {SQR.V3=} b - if omitted the current vector is used, which basically means that a is added to current vector.
  */
 SQR.V3.prototype.add = function(a, b) {
+    b = b || this;
     this.x = a.x + b.x;
     this.y = a.y + b.y;
     this.z = a.z + b.z;

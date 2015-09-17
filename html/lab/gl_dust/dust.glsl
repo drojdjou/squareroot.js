@@ -17,7 +17,7 @@ const float timescale = 0.01;
 
 void main() {
 	float l = uTime - aBirth;
-	vLife = max(0.0, 1.0 - l / 3000.0);
+	vLife = max(0.0, 1.0 - l / 2500.0);
 
 	vec2 g = uGravity;
 	g.y += aSize * 0.01;
@@ -25,7 +25,7 @@ void main() {
 
 	vec2 p = aPosition + l * aEnergy + g * g;
 	gl_Position = uProjection * uViewMatrix * vec4(p, 0.0, 1.0);
-	gl_PointSize = 2.0 + aSize * 8.0;
+	gl_PointSize = 2.0 + aSize * 6.0;
 }
 
 //#fragment

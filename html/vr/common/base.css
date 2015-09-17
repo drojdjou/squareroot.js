@@ -54,6 +54,9 @@ canvas {
 	transition: all 0.3s ease;
 }
 
+.vr { margin-left: -160px; }
+.novr { margin-left: 40px; }
+
 .portrait-warning {
 	position: absolute;
 	width: 100%;

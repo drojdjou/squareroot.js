@@ -64,13 +64,13 @@ SQR.Shader = function(source, options) {
 			if (l.indexOf("//#include") > -1) {
 				var p = l.substring(11), inc;
 
-				if(SQR.GLSL && SQR.GLSL[p.substring(1)]) {
-					inc = SQR.GLSL[p.substring(1)];
+				if(SQR.GLSL && SQR.GLSL[p]) {
+					inc = SQR.GLSL[p];
 				} else {
 					inc = SQR.Loader.assets[p];
 				}
 
-				if(!inc) throw "> SQR.Shader.parseGLSL - Include not found " + p;
+				if(!inc) throw "> SQR.Shader.parseGLSL - Include not found: " + p;
 				ls[i] = inc;
 			}
 		}
