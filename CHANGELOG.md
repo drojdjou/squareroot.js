@@ -144,3 +144,9 @@ Just recompiling
 
 Added naturalWidth/Height vs simple width/height to Util.fullBleed because of an IE bug
 
+
+##### v3.0 b 123
+*Sep 18th 2015*
+
+Removing extras bucket, adding vr
+

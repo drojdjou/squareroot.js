@@ -15,7 +15,6 @@
 <script type="text/javascript" src="../../html/src/common/Transform.js"></script>
 <script type="text/javascript" src="../../html/src/common/Texture.js"></script>
 <script type="text/javascript" src="../../html/src/common/FrameBuffer.js"></script>
-<script type="text/javascript" src="../../html/src/common/PostEffect.js"></script>
 
 <script type="text/javascript" src="../../html/src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../html/src/math/Vector3.js"></script>
@@ -30,6 +29,7 @@
 <script type="text/javascript" src="../../html/src/primitives/Sphere.js"></script>
 <script type="text/javascript" src="../../html/src/primitives/Cylinder.js"></script>
 <script type="text/javascript" src="../../html/src/primitives/Icosphere.js"></script>
+<script type="text/javascript" src="../../html/src/primitives/PostEffect.js"></script>
 
 <script type="text/javascript" src="../../html/src/dev/Debug.js"></script>
 
@@ -71,7 +71,7 @@ var init = function() {
     SQR.Loader.loadAssets([
         'earth.glsl',
         'space.glsl',
-        videoUrl,
+        [videoUrl, 'co2_s.mp4'],
         'earth.jpg',
         'space.jpg',
         'blur.glsl',
@@ -229,7 +229,7 @@ var toggleInfo = function() {
 infobtn.addEventListener('click', toggleInfo);
 info.addEventListener('click', toggleInfo);
 
-videoUrl = 'co2_s.mp4';
+videoUrl = 'http://sqr.bartekdrozdz.com/demo/co2nasa/co2_s.mp4';
 
 if(!checkWebGL()) {
     loader.style.display = 'none';

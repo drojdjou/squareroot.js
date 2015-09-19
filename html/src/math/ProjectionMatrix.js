@@ -17,6 +17,17 @@ SQR.ProjectionMatrix = function() {
     this.identity();
 }
 
+
+SQR.ProjectionMatrix.getBoundsAtDistance = function(fov, distance, width, height) {
+    width = width || window.innerWidth;
+    height = height || window.innerHeight;
+    var aspect = width/height;
+    var t = Math.tan(fov / 180 * Math.PI / 2);
+    var h = distance * t;
+    var w = h * aspect;
+    return { w : w, h : h };
+};
+
 /**
  *  Resets the matrix to identity
  */
@@ -76,18 +87,13 @@ SQR.ProjectionMatrix.prototype.orthographic = function(left, right, top, bottom,
  */
 SQR.ProjectionMatrix.prototype.perspective = function(fov, aspect, near, far) {
 
-    /**
-     *  @property the near clipping
-     *  @readonly
-     */
     this.near = near;
-
-    /**
-     *  @property the far clipping
-     *  @readonly
-     */
     this.far = far;
 
+    /**
+     *  @property {Number} the field ov view
+     *  @readonly
+     */
     this.fov = fov;
 
     var m = this.data;

@@ -10,6 +10,9 @@ A 2d/3d engine for WebGL and Canvas drawing and animation.
 - Getting Started tutorial {@tutorial basic-setup}
 - Bone Export Tutorial {@tutorial bone-export}
 
+####Other interesting WEbGL links
+- [WebGL Spec](https://www.khronos.org/registry/webgl/specs/latest/1.0/)
+- [WebGL Params](http://alteredqualia.com/tmp/webgl-maxparams-test/)
 
 Guide:
 

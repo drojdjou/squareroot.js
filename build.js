@@ -177,7 +177,7 @@ saveBucket(two, 'sqr-two');
 
 saveBucket(jsifyShaders('glsl'), 'sqr-glsl');
 saveBucket(createBucket('primitives'), 'sqr-primitives');
-saveBucket(createBucket('extras'), 'sqr-extras');
+saveBucket(createBucket('vr'), 'sqr-vr');
 
 
 

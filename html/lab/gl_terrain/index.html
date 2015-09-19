@@ -1,35 +1,37 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-<title>Long Walk 01</title>
+<title>Terrain</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-<script type="text/javascript" src="../../html/src/SQR.js"></script>
-<script type="text/javascript" src="../../html/src/common/Context.js"></script>
-<script type="text/javascript" src="../../html/src/common/Loader.js"></script>
-<script type="text/javascript" src="../../html/src/common/Buffer.js"></script>
-<script type="text/javascript" src="../../html/src/common/Renderer.js"></script>
-<script type="text/javascript" src="../../html/src/common/Shader.js"></script>
-<script type="text/javascript" src="../../html/src/common/Transform.js"></script>
-<script type="text/javascript" src="../../html/src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
 
-<script type="text/javascript" src="../../html/src/math/Vector2.js"></script>
-<script type="text/javascript" src="../../html/src/math/Vector3.js"></script>
-<script type="text/javascript" src="../../html/src/math/Matrix33.js"></script>
-<script type="text/javascript" src="../../html/src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../../html/src/math/Quaternion.js"></script>
-<script type="text/javascript" src="../../html/src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/PerlinNoise.js"></script>
 
-<script type="text/javascript" src="../../html/src/primitives/Face.js"></script>
-<script type="text/javascript" src="../../html/src/primitives/Plane.js"></script>
-<script type="text/javascript" src="../../html/src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
-<script type="text/javascript" src="../../html/src/math/PerlinNoise.js"></script>
-<script type="text/javascript" src="src/TerrainTexture.js"></script>
+<script type="text/javascript" src="../../src/extras/TerrainTexture.js"></script>
+
 <script type="text/javascript" src="src/CameraControl.js"></script>
 
-<link rel="stylesheet" type="text/css" href="../../html/lab/base.css">
+<link rel="stylesheet" type="text/css" href="../../lab/base.css">
 
 <style type="text/css">
 
@@ -62,10 +64,10 @@ var tt = SQR.TerrainTexture(size, 0.10, 1.00,
 
 SQR.Loader.loadAssets([
 	['shaders/terrain.glsl', 'shader'],
-	['assets/terrain/grass16.jpg', 'grassTex'],
-	['assets/terrain/sand-b16.jpg', 'sandTex'],
-	['assets/terrain/rock-d16.jpg', 'rockTex'],
-	['assets/terrain/snow16.jpg', 'snowTex'],
+	['assets/terrain/grass512.jpg', 'grassTex'],
+	['assets/terrain/sand-b512.jpg', 'sandTex'],
+	['assets/terrain/rock-d512.jpg', 'rockTex'],
+	['assets/terrain/snow512.jpg', 'snowTex'],
 ], function(assets) {
 
 	var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
