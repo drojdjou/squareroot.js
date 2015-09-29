@@ -171,6 +171,10 @@ SQR.Transform = function(name, uid) {
 	t.add = function() {
 		for (var i = 0; i < arguments.length; i++) {
 			var c = arguments[i];
+
+			if(c.parent) { c.parent.remove(c); }
+			if(c.onAdd) c.onAdd(t);
+
 			c.parent = t;
 			if (t.children.indexOf(c) == -1) t.children.push(c);
 		}
@@ -192,6 +196,7 @@ SQR.Transform = function(name, uid) {
 			if (j == -1) continue;
 			c.parent = null;
 			t.children.splice(j, 1);
+			if(c.onRemove) c.onRemove(t);
 		}
 		t.numChildren = t.children.length;
 		return t;
@@ -223,13 +228,13 @@ SQR.Transform = function(name, uid) {
 	 *  @method recurse
 	 *  @memberof SQR.Transform.prototype
 	 *   
-	 *  @description Execute this function on all the child transforms including this current one.
+	 *  @description Execute this function on all the child transforms.
 	 *
 	 *  @param {function} f the function that will be called on each child. 
 	 *  This function will receive the transform as argument.
 	 *
 	 *  @param {boolean} excludeSelf if set to true, the function will only be called for all 
-	 *  the ancestors of the Transform.
+	 *  the ancestors of the Transform, not on the transform itself.
 	 */
 	t.recurse = function(f, excludeSelf) {
 	   if(!excludeSelf) f(t);

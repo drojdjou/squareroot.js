@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Universal VR Rotating Cubes</title>
+<title>Universal VR Music Video</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -47,6 +47,7 @@
 <script type="text/javascript">
 
 	console.log('Universal Web VR | b1');
+
 	
 	SQR.VRApp(function(options) {
 
@@ -83,19 +84,6 @@
 			var camera = new SQR.Transform();
 			camRoot.add(camera);
 			root.add(camRoot);
-
-			options.customShader = assets.vrShader;
-
-			options.customCameraAnimation = function() {
-				mx += (tx - mx) * 0.02;
-				my += (ty - my) * 0.1;
-				camRoot.rotation.y += my * 0.02;
-				camera.rotation.x = mx;
-			}
-
-			var vr = SQR.VRPost(camera, renderer, ctx, options);
-			window.addEventListener('resize', vr.size);
-			vr.size();
 
 			var cubeGeo = SQR.Primitives.createCube(2, 2, 2).update();
 			var cubeShader = SQR.Shader(assets['n2c']);
@@ -142,6 +130,23 @@
 			root.add(cubeFront, cubeLeft, cubeRight, cubeBack);
 			root.add(skybox);
 
+
+
+
+			// options.customShader = assets.vrShader;
+			options.camRoot = camRoot;
+			options.target = cubeFront;
+			options.customCameraAnimation = function() {
+				mx += (tx - mx) * 0.02;
+				my += (ty - my) * 0.1;
+				camRoot.rotation.y += my * 0.02;
+				camera.rotation.x = mx;
+			}
+
+			var vr = SQR.VRPost(camera, renderer, ctx, options);
+			window.addEventListener('resize', vr.size);
+			vr.size();
+
 			var render = function() {
 				requestAnimationFrame(render);
 
@@ -164,7 +169,7 @@
 		});
 
 	}, { 
-		debug: true
+		debug: false
 	});
 
 </script>

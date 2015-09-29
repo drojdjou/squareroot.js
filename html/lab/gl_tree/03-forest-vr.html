@@ -25,6 +25,8 @@
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
 
+<script type="text/javascript" src="../../src/extras/GeometryTools.js"></script>
+
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 
@@ -61,11 +63,11 @@ SQR.VRApp(function(options) {
 
 		var isTouch = ('ontouchstart' in document);
 
-		var NUM_TREES = isTouch ? 150 : 500;
+		var NUM_TREES = isTouch ? 300 : 500;
 		var NUM_TREE_TYPES = isTouch ? 2 : 8;
 		var NUM_STARS = isTouch ? 300 : 1000;
-		var GROUND_DETAIL = isTouch ? 30 : 120;
-		var TREE_LIMIT = isTouch ? 25 : 80;
+		var GROUND_DETAIL = isTouch ? 80 : 120;
+		var TREE_LIMIT = isTouch ? 50 : 80;
 
 		var sky = new SQR.Color().setRGB(0.05, 0.05, 0.08);
 
@@ -90,7 +92,7 @@ SQR.VRApp(function(options) {
 		cameraBase.position.y = 2;
 		cameraBase.add(camera);
 
-		var treeTemplates = [], trees = [];
+		var treeTemplates = [], trees = new SQR.Transform();
 
 		var treeShader = SQR.Shader(assets.treeMesh)
 			.use()
@@ -121,21 +123,23 @@ SQR.VRApp(function(options) {
 			treeTemplates.push(buffer);
 		}
 
+		var getColor = function() {
+			var c = 0.3 * Math.random(); 
+
+			var r = 0.30;
+			var g = 0.20;
+			var b = 0.15;
+
+			var f = 0.75;
+
+			return [(r + c/1) * f, (g + c/4) * f, (b + c/8) * f];
+		}
+
 		var addTree = function(x, z) {
 			var ri = treeTemplates.length * Math.random() | 0;
 			var tree = new SQR.Transform();
 
-			var getColor = function() {
-				var c = 0.3 * Math.random(); 
-
-				var r = 0.30;
-				var g = 0.20;
-				var b = 0.15;
-
-				var f = 0.75;
-
-				return [(r + c/1) * f, (g + c/4) * f, (b + c/8) * f];
-			}
+			
 
 			
 			tree.shader = treeShader;
@@ -151,8 +155,8 @@ SQR.VRApp(function(options) {
 			tree.speed = 0.005 + Math.random() * 0.01;
 			tree.rotation.y = Math.random() * SQR.TWOPI;
 
-			root.add(tree);
-			trees.push(tree);
+			
+			trees.add(tree);
 		}
 
 		for(var i = 0; i < NUM_TREE_TYPES; i++) addTreeTemplate();
@@ -163,6 +167,13 @@ SQR.VRApp(function(options) {
 			var r = st + (en - st) * Math.random();
 			addTree(Math.cos(a) * r, Math.sin(a) * r);
 		}
+
+		trees.uniforms = {
+			'uColor': getColor()
+		};
+
+		SQR.GeometryTools.batch(trees);
+		root.add(trees);
 
 		var dotSize = 16;
 		var dcv = document.createElement('canvas');
@@ -197,7 +208,7 @@ SQR.VRApp(function(options) {
 			.iterate('aPosition', function(i, data) {
 
 				var d = new SQR.V3().random().norm();
-				d.y = 0.1 + Math.abs(d.y);
+				d.y = 1.0 + Math.abs(d.y * 4.0);
 				d.mul(1500);
 
 				data[i+0] = d.x;
@@ -219,15 +230,12 @@ SQR.VRApp(function(options) {
 
 		var ground = new SQR.Transform();
 		ground.buffer = SQR.Primitives.createPlane(200, 200, GROUND_DETAIL, GROUND_DETAIL);
-
 		ground.buffer.vertices.forEach(function(v) {
 			v.y = 0.5 - Math.random() * 1;
 		})
 
 		ground.buffer.recalculateNormals().updateFromFaces().update();
-
 		ground.rotation.x = Math.PI;
-
 		ground.shader = SQR.Shader(assets.ground)
 			.use()
 			.setUniform('uFogStart', 15)
@@ -257,15 +265,6 @@ SQR.VRApp(function(options) {
 
 		var render = function() {
 			requestAnimationFrame(render);
-
-
-			for(var i = 0; i < trees.length; i++) {
-				var t = trees[i];
-				t.phase += t.speed;
-				t.rotation.x = Math.sin(t.phase * 1.00) * 0.04;
-				t.rotation.z = Math.cos(t.phase * 1.37) * 0.02;
-			}
-
 			// renderer.render(root, camera);
 			vr.render(root);
 			

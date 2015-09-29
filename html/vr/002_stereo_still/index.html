@@ -10,6 +10,12 @@
 
 <style type="text/css">
 
+body {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
 .left, .right {
 	position: absolute;
 	top: 0px;
@@ -18,16 +24,17 @@
 	background-size: 100% auto;
 	background-position: center;
 	background-repeat: no-repeat;
+
+	transition: opacity 0.5s ease;
+	-webkit-transition: opacity 0.5s ease;
 }
 
 .left {
 	left: 0;
-	background-image: url(c1.jpg);
 }
 
 .right {
 	left: 50%;
-	background-image: url(c2.jpg);
 }
 
 </style>
@@ -52,6 +59,57 @@ document.addEventListener('click', function(e) {
 		c.webkitRequestFullscreen();
 	}
 });
+
+var left = document.querySelector('.left');
+var right = document.querySelector('.right');
+var index = -1;
+var picts = ['a', 'b', 'c'];
+var images = {};
+
+var setPict = function() {
+	index++;
+	if(index == picts.length) index = 0;
+	var p = picts[index];
+
+	left.style.opacity = 0;
+	right.style.opacity = 0;
+
+	var setImage = function(i) {
+		left.style.backgroundImage = 'url(' + i.a.src + ')';
+		right.style.backgroundImage = 'url(' + i.b.src + ')';
+
+		left.style.opacity = 1;
+		right.style.opacity = 1;
+	}
+
+	if(!images[p]) {
+		var i = {};
+		images[p] = i;
+		var li = 0;
+
+		var onImage = function() {
+			li++;
+			if(li == 2) { setImage(i); }
+		}
+
+		i.a = new Image();
+		i.a.addEventListener('load', onImage);
+		i.b = new Image();
+		i.b.addEventListener('load', onImage);
+		
+		setTimeout(function() {
+			i.a.src = p + '1.jpg';
+			i.b.src = p + '2.jpg';
+		}, 500);
+
+	} else {
+		setTimeout(setImage, 500, images[p]);
+	}
+
+	setTimeout(setPict, 8000);
+};
+
+setPict();
 
 </script>
 

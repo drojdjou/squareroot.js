@@ -32,7 +32,7 @@ SQR.VRApp = function(appFunc, options) {
 		var vrHMD;		
 
 		var onVRError = function(e) {
-			console.log('Error in navigator.getVRDevices()');
+			console.log('VR: Error in navigator.getVRDevices()');
 			console.log(e);
 			onDone();
 		}
@@ -57,7 +57,7 @@ SQR.VRApp = function(appFunc, options) {
 		}
 
 		if(!navigator.mozGetVRDevices && !navigator.getVRDevices) {
-			console.log("Your browser is not VR Ready");
+			console.log("VR: Your browser is not VR Ready");
 			onDone();
 			return;
 		}
@@ -117,7 +117,10 @@ SQR.VRApp = function(appFunc, options) {
 				startApp();
 			});
 
-			novrBtn.addEventListener('click', startApp);
+			novrBtn.addEventListener('click', function() {
+				options.forceMono = true;
+				startApp();
+			});
 
 		} else {
 			startApp();

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Definitive spline and bezierpath study</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<script type="text/javascript" src="../../src/extras/Exporter.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['glsl/line-offset.glsl', 'lineShader'],
+	], function(assets) {
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			// renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+			renderer.projection = new SQR.ProjectionMatrix().perspective(40, aspect, 0.01, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var root = new SQR.Transform();
+
+		var camera = new SQR.Transform();
+		camera.position.z = 10;
+		root.add(camera);
+
+		var buffers = [];
+		var shader = SQR.Shader(assets.lineShader);
+
+		var addRibbon = function() {
+			var drawing = new SQR.Transform();
+			root.add(drawing);
+
+			var d = SQR.Buffer().layout({ aPosition: 3, aOffset: 1, aNormal: 2, aOrder: 1 }, 20 + parseInt(200 * Math.random()));
+			d.drawMode = SQR.gl.DYNAMIC_DRAW;
+			d.mode = SQR.gl.LINE_STRIP;
+			d.update();
+
+			d.lineOffset = Math.random() * 10 - 5;
+			d.lineOffsetPhase = Math.random() * Math.PI;
+			d.lineOffsetPhaseSpeed = 0.01 + 0.005 * Math.random();
+
+			drawing.shader = shader;
+			drawing.buffer = d;
+
+			drawing.uniforms = {
+				uColor: SQR.Color().setRGB(0.5 + Math.random() * 0.5, Math.random() * 0.4, 0),
+				uAngle: buffers.length / 10 * SQR.TWOPI
+			};
+
+			d.transform = drawing;
+
+			buffers.push(d);
+		}
+
+		for(var i = 0; i < 100; i++) addRibbon();
+
+		var mx = 0, my = 0;
+		var p = 0;
+
+		document.addEventListener('mousemove', function(e) {
+
+			var b = SQR.ProjectionMatrix.getBoundsAtDistance(40, camera.position.z);
+
+			mx = (e.pageX / window.innerWidth * 2 - 1) * b.w;
+			my = ((1 - e.pageY / window.innerHeight) * 2 - 1) * b.h;
+
+			
+		});
+
+		var render = function() {
+
+			for(var i = 0; i < buffers.length; i++) {
+				var d = buffers[i];
+				
+				d.lineOffsetPhase += d.lineOffsetPhaseSpeed;
+				var r = Math.sin(d.lineOffsetPhase);
+
+				d.transform.uniforms.uAngle += d.lineOffsetPhaseSpeed;
+
+				d.resize(d.size, -1);
+				d.set('aPosition', d.size, mx, my, p * 0.5);
+				d.set('aOffset', d.size, r * d.lineOffset);
+
+				d.transform.position.z = p * -0.5;
+
+				d.iterate('aOrder', function(i, data, c) {
+					data[i] = c / d.size;
+				});
+
+				d.update();
+			}
+
+			p += 1;
+
+			requestAnimationFrame(render);
+			renderer.render(root, camera);
+		}
+
+		render();
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

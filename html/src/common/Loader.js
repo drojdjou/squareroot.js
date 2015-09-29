@@ -165,6 +165,13 @@ SQR.Loader.loadAssets([
      */
 	loadAssets: function(paths, callback, progressCallback) {
 		var toLoad = paths.length;
+
+		if(toLoad == 0) {
+			progressCallback(1, 1);
+			callback();
+			return;
+		}
+
 		SQR.Loader.assets = {};
 		var aliases = {}, includes = {};
 

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Definitive spline and bezierpath study</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<script type="text/javascript" src="../../src/vr/VRApp.js"></script>
+<script type="text/javascript" src="../../src/vr/VRPost.js"></script>
+<script type="text/javascript" src="../../src/vr/Gyro.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['glsl/particle.glsl', 'shader'],
+		['glsl/dust.glsl', 'dustShader'],
+		['textures/bubble.png', 'bubble'],
+	], function(assets) {
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		var root = new SQR.Transform();
+
+		var camRoot = new SQR.Transform();
+		camRoot.position.z = 12;
+		root.add(camRoot);
+
+		var camera = new SQR.Transform();
+		camRoot.add(camera);
+
+		var lines = new SQR.Transform();
+		lines.position.x = -4;
+		lines.position.y = 2;
+		root.add(lines);
+		var paths = [];
+		
+		var line = new SQR.Transform();
+		line.setBlending(true);
+		line.useDepth = false;
+
+		line.shader = SQR.Shader(assets.shader).use()
+			.setUniform('uTexture', SQR.Texture(assets.bubble, { mipmap: true }));
+
+		line.data = {
+			points: []
+		};
+
+		var addLine = function() {
+
+			var path = SQR.Spline()
+			
+			// path.addSegment(-10, Math.random() * 6 - 3, Math.random() * 6 - 3);
+			// path.addSegment( -3, Math.random() * 6 - 3, Math.random() * 6 - 3);
+			// // path.addSegment(  0, Math.random() * 6 - 3, Math.random() * 6 - 3);
+			// path.addSegment(  3, Math.random() * 6 - 3, Math.random() * 6 - 3);
+			// path.addSegment( 10, Math.random() * 6 - 3, Math.random() * 6 - 3);
+
+			var r = function(m) {
+				m = (m == null) ? 2 : m;
+				return (Math.random() * 2 - 1) * m;
+			}
+
+			path.addSegment(-12 + r(),  6 + r(),  0 + r());
+			path.addSegment( -6 + r(),  0 + r(),  0 + r());
+			path.addSegment(  0 + r(0.5),  0 + r(0.5),  0 + r(0.5));
+			path.addSegment(  6 + r(),  3 + r(),  0 + r());
+			path.addSegment( 12 + r(0.5),  0 + r(0.5),  6 + r(0.5));
+			path.addSegment( 12 + r(1), -6 + r(1),  0 + r(1));
+			path.addSegment(  6 + r(1), -6 + r(1), -6 + r(1));
+			path.addSegment(  0 + r(), -12 + r(), 0 + r());
+
+			path.create(0.5);
+			paths.push(path);
+
+			line.data.points.push([Math.random(), 0.0005]);
+		}
+
+		for(var i = 0; i < 8000; i++) addLine();
+		var res = paths.length;
+
+		line.buffer = SQR.Buffer()
+			.layout({ aPosition: 3, aCycle: 1, aColor: 3 }, res)
+			.setMode(SQR.gl.POINTS);
+
+		line.beforeDraw = function() {
+			line.buffer
+			.iterate(null, function(i, d, c) {
+
+				var s = line.data.points[c][1];
+				line.data.points[c][0] += s;
+				var t = line.data.points[c][0];
+				var v = paths[c].valueAt(t);
+
+				d[i+0] = v.x;
+				d[i+1] = v.y;
+				d[i+2] = v.z;
+
+				var ci = Math.sin((t % 1) * Math.PI);
+				d[i+3] = 1 - ((1 - ci) * (1 - ci));
+			})
+			.update();
+		}
+
+		line.uniforms = {
+			uColor: SQR.Color().setRGB(1, 1, 1),
+			uPointSize: 16
+		};
+
+		lines.add(line);
+
+
+		/// Star field to help orient in space
+		var sf = new SQR.Transform();
+
+		sf.setBlending(true);
+
+		sf.shader = SQR.Shader(assets.dustShader).use()
+			.setUniform('uPointSize', 2)
+			.setUniform('uColor', SQR.Color().setRGB(1, 1, 1));
+
+		sf.buffer = SQR.Buffer().layout({ aPosition: 3, aDirection: 3, aCycle: 1 }, 2000)
+			.iterate(null, function(i, d, c) {
+
+				d[i+0] = -100 + 200 * Math.random();
+				d[i+1] = -100 + 200 * Math.random();
+				d[i+2] = -100 + 200 * Math.random();
+
+				var r = new SQR.V3().random().mul(0.001);
+
+				d[i+3] = r.x;
+				d[i+4] = r.y;
+				d[i+5] = r.z;
+
+				d[i+6] = Math.random() * SQR.TWOPI;
+			})
+			.setMode(SQR.gl.POINTS)
+			.update();
+
+		root.add(sf);
+
+		var vr;
+
+		var render = function() {
+			requestAnimationFrame(render);
+			ctx.clear();
+
+			if(vr) vr.render(root);
+			else renderer.render(root, camera);
+		}
+
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w / h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+		window.addEventListener('resize', resize);
+		resize();
+		render();
+
+		// SQR.VRApp(function(options) {
+		// 	vr = SQR.VRPost(camera, renderer, ctx, options);
+		// 	window.addEventListener('resize', vr.size);
+		// 	vr.size();
+
+		// 	render();
+		// });
+
+	});
+
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

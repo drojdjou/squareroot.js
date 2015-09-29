@@ -24,6 +24,7 @@ SQR.Buffer = function() {
 	var buffer, indexBuffer;
 
 	b.mode = SQR.gl.TRIANGLES;
+	b.drawMode = SQR.gl.STATIC_DRAW;
 	b.cull = true;
 
 	/**
@@ -71,7 +72,30 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 
 		b.strideByteSize = b.strideSize * 4;
 		data = new Float32Array(size * b.strideSize);
+
 		return b;
+	}
+
+	/**
+	 *	@method resize
+	 *	@memberof SQR.Buffer.prototype
+	 *
+	 *	@description Resizes the data 
+	 */
+	b.resize = function(size, offset) {
+		b.size = size;
+		var nd = new Float32Array(size * b.strideSize);
+		
+		if(!offset) { 
+			nd.set(data); 
+		} else {
+			for(var i = 0; i < data.length; i++) {
+				var k = i - offset * b.strideSize;
+				if(k >= 0) nd[k] = data[i];
+			}
+		}
+
+		data = nd;
 	}
 
 	/**
@@ -123,11 +147,28 @@ b.set('aPosition', 1, 	new SQR.V3(3, 5, 6));
 
 		var s = b.attributes[attribute];
 
-		for(var j = 0; j < s.size; j++) {
+		if(position < 0) position += b.size;
+		if(position >= b.size) position = position % b.size;
+
+		for(var j = 0, al = array.length; j < al; j++) {
 			data[position * b.strideSize + j + s.offset] = array[j];
 		}
 
 		return b;
+	}
+
+	b.get = function(attribute, position, array) {
+		array = array || [];
+
+		var s = b.attributes[attribute];
+
+		if(position < 0) position += b.size;
+		if(position >= b.size) position = position % b.size;
+
+		var c = position * b.strideSize + s.offset;
+		for(var i = 0; i < b.size; i++) array[i] = data[c + i];
+
+		return array;
 	}
 
 	/**
@@ -180,12 +221,12 @@ b.iterate('aPosition', function(i, data, count)) {
 
 		buffer = buffer || gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, data, b.drawMode);
 
         if(hasIndex) {
         	indexBuffer = gl.createBuffer();
         	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+        	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, b.drawMode);
         }
 
         return b;
@@ -257,7 +298,7 @@ b.iterate('aPosition', function(i, data, count)) {
 	 *
 	 *	@description Returns the raw array data
 	 *	
-	 *	@data {Float32Array} - Array containing all the vertex attributes data organized in stride
+	 *	@data {Float32Array} - Array containing all the vertex attributes data organized in strides
 	 *	according to the layout.
 	 */
 	b.getDataArray = function() {

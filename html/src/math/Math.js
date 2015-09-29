@@ -9,3 +9,9 @@ Math.clamp01 = function(v) {
 	if(v >= 1) return 1;
 	return v;
 }
+
+Math.absMin = function(a, b) {
+	if(a <= -b || a >= b) return a;
+	else if(a >= 0) return b;
+	else return -b;
+}

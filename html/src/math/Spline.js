@@ -6,15 +6,20 @@
  */
 SQR.Spline = function() {
 
-	var points = [];
+	// Bezier paths generated from segments/controlPoints in create() 
+	var paths = [];
+
+	// Points from the input source defining the path of the spline
 	var segments = [];
+
+	// Each segment has two control points (the "hands" coming out fo paths)
 	var controlPoints = [];
 
 	var s = {};
 
 	var _tv1, _tv2;
 
-	var getControlPoints = function(point, previous, next, c1, c2, smoothness) {
+	var getcontrolPoints = function(point, previous, next, c1, c2, smoothness) {
 		var vab = _tv1.sub(point, previous).neg();
 		var vcb = _tv2.sub(point, next);
 		var d = (smoothness > 1) ? smoothness : smoothness * Math.min(vab.mag(), vcb.mag());
@@ -51,7 +56,7 @@ SQR.Spline = function() {
 		if(segments.length < 2) return segments;
 
 		smoothness = (smoothness !== null) ? smoothness : 0.5;
-		points.length = 0;
+		paths.length = 0;
 		var firstPoint, firstControlPoint;
 
 		var sg = segments, cp = controlPoints, sl = segments.length;
@@ -64,7 +69,7 @@ SQR.Spline = function() {
 			var a = (i == 0) ? sg[sl-1] : sg[i-1];
 			var b = (i == sl-1) ? sg[0] : sg[i+1];
 
-			getControlPoints(si, a, b, c1, c2, smoothness);
+			getcontrolPoints(si, a, b, c1, c2, smoothness);
 			cp.push(c1, c2);
 		}
 
@@ -76,13 +81,16 @@ SQR.Spline = function() {
 			var c2 = (i == sl-2 && !close) ? b : cp[i * 2 + 2];
 
 			var c = new SQR.Bezier(a, c1, c2, b);
-			points.push(c);
+			paths.push(c);
 		}
 
 		if(close) {
 			var c = new SQR.Bezier(sg[sl-1], cp[(sl-1)*2+1], cp[0], sg[0]);
-			points.push(c);
+			paths.push(c);
 		}
+
+		s.smoothness = smoothness;
+		s.close = s.close;
 
 		return s;
 	}
@@ -90,23 +98,30 @@ SQR.Spline = function() {
 	s.valueAt = function(t, v) {
 		if(t == 1) t = 0.999999;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].valueAt(tf % 1, v);
+		var tf = t * paths.length;
+		return paths[tf | 0].valueAt(tf % 1, v);
+	}
+
+	s.bezierAt = function(t) {
+		if(t == 1) t = 0.999999;
+		t = t % 1;
+		var tf = t * paths.length;
+		return paths[tf | 0];
 	}
 
 	s.velocityAt = function(t, v) {
 		if(t == 1) t = 0.999999;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].velocityAt(tf % 1, v);
+		var tf = t * paths.length;
+		return paths[tf | 0].velocityAt(tf % 1, v);
 	}
 
 	s.matrixAt = function(t, m) {
 		if(t == 0) t = SQR.EPSILON;
 		if(t == 1) t = 1 - SQR.EPSILON;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].matrixAt(tf % 1, m);
+		var tf = t * paths.length;
+		return paths[tf | 0].matrixAt(tf % 1, m);
 	}
 
 	Object.defineProperty(s, 'segments', {
@@ -115,12 +130,12 @@ SQR.Spline = function() {
 		}
 	});
 
-	Object.defineProperty(s, 'points', {
+	Object.defineProperty(s, 'paths', {
 		get: function() { 
-			return points; 
+			return paths; 
 		}
 	});
 
-	return s
+	return s;
 
 }

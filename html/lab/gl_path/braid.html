@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Definitive spline and bezierpath study</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<script type="text/javascript" src="../../src/extras/Exporter.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['glsl/line.glsl', 'lineShader'],
+	], function(assets) {
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var root = new SQR.Transform();
+
+		var camera = new SQR.Transform();
+		camera.position.z = 30;
+		root.add(camera);
+
+		var lines = new SQR.Transform();
+		lines.position.x = -4;
+		root.add(lines);
+
+		var shader = SQR.Shader(assets.lineShader);
+		var addLine = function() {
+
+			var line = new SQR.Transform();
+
+			var path = SQR.Spline()
+			
+			var r = function(m) {
+				m = (m == null) ? 2 : m;
+				return (Math.random() * 2 - 1) * m;
+			}
+
+			path.addSegment(-12 + r(1),  6 + r(1),  0 + r(0.25));
+			path.addSegment( -6 + r(),  0 + r(),  0 + r());
+			path.addSegment(  0 + r(0.25),  0 + r(0.25),  0 + r(0.25));
+			path.addSegment(  6 + r(),  3 + r(),  0 + r());
+			path.addSegment( 12 + r(),  0 + r(),  6 + r());
+			path.addSegment( 12 + r(), -6 + r(),  0 + r());
+			path.addSegment(  6 + r(1), -6 + r(1), -6 + r(1));
+			path.addSegment( -3 + r(2),  0 + r(2), -12 + r(0.25));
+			path.create(0.5, true);
+
+			var res = 121;
+
+			line.buffer = SQR.Buffer()
+				.layout({ aPosition: 3, aCycle: 1 }, res)
+				.iterate('aPosition', function(i, d, c) {
+					var v = path.valueAt(c / (res-1));
+					d[i+0] = v.x;
+					d[i+1] = v.y;
+					d[i+2] = v.z;
+				})
+				.setMode(SQR.gl.LINE_STRIP)
+				.update();
+
+			line.shader = shader;
+
+			line.uniforms = {
+				uColor: SQR.Color().setRGB(0.5 + Math.random() * 0.5, 0.5 + Math.random() * 0.5, 0.5 + Math.random() * 0.5)
+			};
+
+			line.path = path;
+			lines.add(line);
+
+		}
+
+		for(var i = 0; i < 10; i++) addLine();
+
+		document.addEventListener('click', function() {
+			// SQR.Exporter.exportSpline(lines.children[0].path, 'path.json');
+		});
+
+		var render = function() {
+			requestAnimationFrame(render);
+			ctx.clear();
+
+			lines.rotation.x += 0.01;
+
+			renderer.render(root, camera);
+		}
+
+		render();
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

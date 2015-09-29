@@ -216,6 +216,10 @@ SQR.V3.prototype.toArray = function() {
     return this.array;
 }
 
+SQR.V3.prototype.toString = function toString() {
+  return x;
+}
+
 /**
  *  Assuming the vector was projected using the {@link SQR.ProjectionMatrix}, use this
  *  to calculate it's screen space. (useful for software rendering, ex. on canvas 2d)

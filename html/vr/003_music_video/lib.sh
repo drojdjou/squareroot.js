@@ -1,0 +1,1 @@
+curl https://raw.githubusercontent.com/greensock/GreenSock-JS/master/src/uncompressed/TweenLite.js > lib/TweenLite.js

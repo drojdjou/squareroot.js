@@ -97,7 +97,7 @@ SQR.Primitives.createSphere = function(radius, sw, sh, options) {
         c += t.toBuffer(geo, c, !options.flatShading);
     });
 
-    return geo;
+    return geo.update();
 }
 
 

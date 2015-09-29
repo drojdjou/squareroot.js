@@ -13,9 +13,10 @@ SQR.SceneParser = (function() {
 
 		parse: function(assets, options) {
 
-			var scene = assets.scene;
-			var meshes = assets.mesh;
-			var anim = assets.anim;
+			var prefix = options.prefix || '';
+			var scene = assets[prefix + 'scene'];
+			var meshes = assets[prefix + 'mesh'];
+			var anim = assets[prefix + 'anim'];
 
 			if(options.context) {
 				var bc = scene.background;

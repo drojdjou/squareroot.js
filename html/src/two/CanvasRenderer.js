@@ -36,6 +36,8 @@ SQR.CanvasRenderer = function(canvas) {
 	r.setSize = function(w, h) {
 		canvas.width = w;
 		canvas.height = h;
+		canvas.style.width = w + 'px';
+		canvas.style.height = h + 'px';
 		return r;
 	}
 

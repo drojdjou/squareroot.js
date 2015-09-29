@@ -39,7 +39,7 @@ SQR.GeometryTools = (function() {
 
 	        if(t.buffer) {
 	        	if(t.buffer.isIndexed()) {
-	        		console.warn("> SQR.GeometryTools.batch - indexed buffers can't be batched");
+	        		console.warn("> SQR.GeometryTools.batch - indexed buffers can't be batched (yet)");
 	        	} else {
 	        		batchObjects.push(t);
 	        		size += t.buffer.size;

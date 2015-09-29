@@ -13,9 +13,11 @@ SQR.Color = function() {
 
 	c.setHex = function(hex) {
 
-		hex = (hex.indexOf('#') == 0) ? hex.substring(1) : hex;
-		hex = (hex.indexOf('0x') == -1) ? '0x' + hex : hex;
-		hex = parseInt(hex);
+		if(hex instanceof String) {
+			hex = (hex.indexOf('#') == 0) ? hex.substring(1) : hex;
+			hex = (hex.indexOf('0x') == -1) ? '0x' + hex : hex;
+			hex = parseInt(hex);
+		}
 
 		c.r = (hex >> 16 & 255 ) / 255;
 		c.g = (hex >> 8 & 255) / 255;

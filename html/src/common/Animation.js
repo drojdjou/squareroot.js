@@ -27,5 +27,9 @@ SQR.Animation = function(duration) {
 		for(var i = 0; i < numClips; i++) clips[i].gotoTime(ms);	
 	}
 
+	a.setTimeScale = function(ts) {
+		for(var i = 0; i < numClips; i++) clips[i].timeScale = ts;	
+	}
+
 	return a;
 }

@@ -1,0 +1,9 @@
+#texture-debug {
+  position: absolute;
+  top: 10;
+  left: 10;
+  z-index: 100;
+}
+#texture-debug canvas {
+  border: 10px solid rgba(128, 128, 128, 0.5);
+}

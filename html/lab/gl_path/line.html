@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Definitive spline and bezierpath study</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Spline.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['glsl/line.glsl', 'lineShader'],
+	], function(assets) {
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var root = new SQR.Transform();
+
+		var camera = new SQR.Transform();
+		camera.position.z = 16;
+		root.add(camera);
+
+		var line = new SQR.Transform();
+
+		var path = SQR.Spline()
+		
+		// Create an funky/uneven spiral
+		var l = 300;
+		for(var i = 0; i < l; i++) {
+
+			var a = i / l * SQR.TWOPI;
+			var r = 0 + Math.sin(a * 0.5) * 3;
+
+			var x = Math.cos(a * 8) * r;
+			var y = i / l * 20 - 10 + Math.sin(a * 10) * 0.5;
+			var z = Math.sin(a * 8) * r;
+
+			path.addSegment(x, y, z);
+		}
+
+		path.create(0.5);
+
+		var res = 3000;
+
+		line.buffer = SQR.Buffer()
+			.layout({ aPosition: 3 }, res)
+			.iterate('aPosition', function(i, d, c) {
+				var v = path.valueAt(c / res);
+				d[i+0] = v.x;
+				d[i+1] = v.y;
+				d[i+2] = v.z;
+			})
+			.setMode(SQR.gl.LINE_STRIP)
+			.update();
+
+
+		line.shader = SQR.Shader(assets.lineShader).use().setUniform('uColor', SQR.Color().setRGB(1, 0, 0));
+
+		root.add(line);
+
+		var render = function() {
+			requestAnimationFrame(render);
+			ctx.clear();
+
+			line.rotation.y += 0.01;
+
+			renderer.render(root, camera);
+		}
+
+		render();
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
