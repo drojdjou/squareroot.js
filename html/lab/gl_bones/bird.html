@@ -74,7 +74,6 @@
         camera.position.z =  2.00;
         // camera.position.x = 1.0;
         camera.position.y =  0.80;
-        camera.rotation.x = -0.50;
         // camera.rotation.y = Math.PI / 4;
 
         scene.root.add(camRoot);
@@ -161,8 +160,10 @@
         scene.root.add(stars);
 
         var tx = 0, mx = 0;
+        var ty = 0, my = 0;
         document.addEventListener('mousemove', function(e) {
-            tx = e.pageX / window.innerWidth * 2 - 1;
+            tx = (e.pageX / window.innerWidth * 2) - 1;
+            ty = (e.pageY / window.innerHeight * 2) - 1;
         });
 
 
@@ -185,7 +186,10 @@
             forearmRight.rotation.z = Math.cos(flightPhase - 0.6) * 0.6;
 
             mx += (tx - mx) * 0.001;
-            camRoot.rotation.y = mx * Math.PI;
+            my += (ty - my) * 0.01;
+
+            camRoot.rotation.y = 0.4 + mx * Math.PI;
+            camera.rotation.x = -0.5 + my * 0.4;
             
             renderer.render(scene.root, camera);
         }
