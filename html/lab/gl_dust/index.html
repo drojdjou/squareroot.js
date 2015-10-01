@@ -161,9 +161,13 @@
 		var lineBufferMax = numDots * 32;
 
 		for(var i = 0; i < numDots; i++) {
-			var a = SQR.TWOPI * r();
-			var rd = r() * h * 0.2;
-			var v = new SQR.V2(w/2 + Math.cos(a) * rd, h/2 + Math.sin(a) * rd);
+
+			// var a = SQR.TWOPI * r();
+			// var rd = r() * h * 0.2;
+			// var v = new SQR.V2(w/2 + Math.cos(a) * rd, h/2 + Math.sin(a) * rd);
+
+			var v = new SQR.V2(Math.random() * w, Math.random() * h);
+
 
 			var bs = 0.5;
 			v.basespeed = new SQR.V2(-bs + r(bs * 2), -bs + r(bs * 2));
