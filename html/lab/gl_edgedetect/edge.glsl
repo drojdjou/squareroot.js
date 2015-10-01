@@ -68,9 +68,9 @@ void main(void)
 
     vec3 e = vec3(step(0.3, brightness(col)));
 
-    vec3 stepColor = (color * 4.0);
-    stepColor = stepColor - fract(stepColor);
-    stepColor = stepColor * 0.25;
+    vec3 stepColor = color;// (color * 4.0);
+    // stepColor = stepColor - fract(stepColor);
+    // stepColor = stepColor * 0.25;
 
     gl_FragColor.rgb = (1.0 - e) * stepColor;
 

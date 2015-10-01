@@ -47,7 +47,9 @@ SQR.Renderer = function(context) {
 
 		options = options || defOpts;
 
-		if(!options.dontClear && r.autoClear) context.clear();
+		if(!options.dontClear && r.autoClear) {
+			context.clear();
+		}
 
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);

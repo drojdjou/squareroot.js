@@ -183,9 +183,12 @@ SQR.SceneParser = (function() {
 			}
 
 			root.recurse(function(t) {
-				if(t.data && t.data.animation) {
+				if(t.data && t.data.animationId) {
 					var id = t.data.animationId;
 					var data = animations[id];
+
+					// Aniation file is missing or was not exported, abort.
+					if(!data) return;
 
 					t.animation = SQR.Animation(data.duration);
 

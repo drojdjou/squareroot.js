@@ -89,7 +89,7 @@
         var cubes = new SQR.Transform();
         root.add(cubes);
 
-        var cubeBuffer = SQR.Primitives.createCube(2, 2, 2).update();
+        var cubeBuffer = SQR.Primitives.createCube(1, 1, 1).update();
         var cubeShader = SQR.Shader(assets['n2c']);
 
         var addCube = function(x, y, z, color) {
@@ -97,6 +97,7 @@
             c.shader = cubeShader;
             c.buffer = cubeBuffer;
             c.position.set(x, y, z);
+            c.scale.set(2, 2, 2);
             c.uniforms = { 'uColor': color };
             cubes.add(c);
             return c;
@@ -110,7 +111,7 @@
         addCube( 0,    0,  -10, [0,1,1]);
 
         var addMoreCube = function() {
-            var v = new SQR.V3().random().norm().mul(10);
+            var v = new SQR.V3().random().norm().mul(8 + Math.random() * 4);
             var c = addCube(v.x, v.y, v.z, [1,1,1]);
             c.rotation.set(v.x, v.y, v.z);
             c.scale.set(0.5, 0.5, 0.5);

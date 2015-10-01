@@ -40,12 +40,12 @@
     SQR.shaderPath = '../../src/glsl/'
 
     SQR.Loader.loadAssets([
-        '~light/sphar.glsl',
-        '~light/sphar-cathedral.glsl',
-        '~light/sphar-eucalyptus.glsl',
-        '~light/sphar-oldtown.glsl',
-        '~light/sphar-st-peter.glsl',
-        '~light/sphar-sunset.glsl',
+        ['../../src/glsl/light/sphar.glsl', 'sphar'],
+        ['../../src/glsl/light/sphar-cathedral.glsl', 'sphar-data'],
+        // ['../../src/glsl/light/sphar-eucalyptus.glsl'],
+        // ['../../src/glsl/light/sphar-oldtown.glsl'],
+        // ['../../src/glsl/light/sphar-st-peter.glsl'],
+        // ['../../src/glsl/light/sphar-sunset.glsl'],
         'shader.glsl',
         'edge.glsl',
         '../../assets/model/elephant.json'
@@ -58,7 +58,7 @@
         var ctx = SQR.Context('#gl-canvas')
             .create()
             .size(w, h).
-            clearColor(1, 1, 1, 1);
+            clearColor(0.2, 0.2, 0.2, 1);
 
         var renderer = SQR.Renderer(ctx);
         renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
@@ -87,7 +87,7 @@
                 .use()
                 .attribPointers(buffer);
 
-        var num = parseInt(document.location.search.substring(1)) || 500;
+        var num = parseInt(document.location.search.substring(1)) || 50;
 
         var t = SQR.Transform();
         t.buffer = buffer;

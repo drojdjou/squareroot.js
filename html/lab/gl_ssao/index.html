@@ -40,11 +40,9 @@
 
 <script type="text/javascript" id="gl-script">
 
-SQR.shaderPath = '../../src/glsl/'
-
 SQR.Loader.loadAssets([
-    '~light/sphar.glsl',
-    '~light/sphar-cathedral.glsl',
+    ['../../src/glsl/light/sphar.glsl', 'sphar'],
+    ['../../src/glsl/light/sphar-cathedral.glsl', 'sphar-data'],
     'shader.glsl',
     'sao.glsl',
     'depth.glsl',
@@ -55,8 +53,8 @@ SQR.Loader.loadAssets([
 
     var ctx = SQR.Context('#gl-canvas')
         .create()
-        .size(w, h).
-        clearColor(0, 0, 0, 1);
+        .size(w, h)
+        .clearColor(0, 0, 0, 1);
 
     var renderer = SQR.Renderer(ctx);
     renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 0.3, 1000);
@@ -117,12 +115,17 @@ SQR.Loader.loadAssets([
     var normalFBO = SQR.FrameBuffer(w, h);     
     var depthFBO = SQR.FrameBuffer(w, h);   
 
-    var noise = SQR.Texture(SQR.TextureGenerator.noise(512)); 
+    var noise = SQR.Texture(SQR.TextureGenerator.noise(256)); 
 
     var inverseProj = new SQR.ProjectionMatrix();
     renderer.projection.inverse(inverseProj); 
 
     var sao = SQR.Primitives.createPostEffect(assets['sao.glsl']);
+
+    sao.shader.use()
+        .setUniform('uNoiseTexture', noise)
+        .setUniform('uTextureWidth', w)
+        .setUniform('uTextureHeight', h);
 
     var my = 0.4, mx = 0.4, tx = mx, ty = my;
 
@@ -162,12 +165,12 @@ SQR.Loader.loadAssets([
         if(renderAO) {
             renderer.renderToScreen();
             ctx.gl.viewport(0, 0, w, h);
-            sao.shader.use();
-            sao.shader.setUniform('uDepthTexture', depthFBO.texture);
-            sao.shader.setUniform('uTexture', rawFBO.texture);
-            sao.shader.setUniform('uNoiseTexture', noise);
-            sao.shader.setUniform('uTextureWidth', w);
-            sao.shader.setUniform('uTextureHeight', h);
+
+            sao.shader
+                .use()
+                .setUniform('uDepthTexture', depthFBO.texture)
+                .setUniform('uTexture', rawFBO.texture);
+
             ctx.clear();
             renderer.render(sao);
         }

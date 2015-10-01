@@ -1,0 +1,497 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0.3382353, "g":0.3382353, "b":0.3382353, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"red": { 
+		"type": "Phong",
+		"color": { "r":1, "g":0, "b":0, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"seagull": { 
+		"type": "Phong",
+		"color": { "r":0.5, "g":0.5, "b":0.5, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"blue": { 
+		"type": "Phong",
+		"color": { "r":0.1463019, "g":0.6220813, "b":0.9044118, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+	
+	"light": { 
+		"type": 1,
+		"color": { "r":1, "g":0.9568627, "b":0.8392157, "a":1 },
+		"intensity": 0.76
+	}
+
+},
+
+"cameras": {
+	
+	"main_camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	},
+	
+	"main_camera_left": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	},
+	
+	"main_camera_right": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-1670",
+        "name": "seagull3",
+		"position": [ 1.96,-1.9,-2.28 ],
+		"rotation": [ 0,0,0,1 ],
+		"animation": "seagull_anim",
+		"animationId": "a7666"
+	},
+	
+	{
+		"uid": "t-1676",
+        "name": "base",
+		"parent": "t-1670",
+		"position": [ 0,0.0569038,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1684",
+        "name": "body",
+		"parent": "t-1676",
+		"position": [ 0,-0.01418793,-0.2426791 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1702",
+        "name": "tail",
+		"parent": "t-1684",
+		"position": [ 0,-0.01289814,-0.215718 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1686",
+        "name": "neck",
+		"parent": "t-1676",
+		"position": [ 0,0.009028816,0.1681938 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1698",
+        "name": "head",
+		"parent": "t-1686",
+		"position": [ 0,-0.05417263,0.18261 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1688",
+        "name": "wing_left",
+		"parent": "t-1676",
+		"position": [ 0.1129215,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1710",
+        "name": "forearm_left",
+		"parent": "t-1688",
+		"position": [ 0.3099545,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1724",
+        "name": "arm_left",
+		"parent": "t-1710",
+		"position": [ 0.3171594,-0.05076622,-0.1465686 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1690",
+        "name": "wing_right",
+		"parent": "t-1676",
+		"position": [ -0.1057281,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1706",
+        "name": "forearm_right",
+		"parent": "t-1690",
+		"position": [ -0.3147652,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1726",
+        "name": "arm_right",
+		"parent": "t-1706",
+		"position": [ -0.3171688,-0.05076622,-0.132152 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1678",
+        "name": "bird",
+		"parent": "t-1670",
+		"position": [ 0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"bones": ["t-1676","t-1684","t-1702","t-1686","t-1698","t-1688","t-1724","t-1690","t-1706","t-1710","t-1726"],
+		"bindposes": [ [0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1] ],
+		"renderer": "blue",
+		"mesh": "bird",
+		"meshId": "m-7658"
+	},
+	
+	{
+		"uid": "t-1682",
+        "name": "null_object_2",
+		"parent": "t-1678",
+		"position": [ -0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1750",
+        "name": "seagull",
+		"position": [ 0,0,-0.04 ],
+		"rotation": [ 0,0,0,1 ],
+		"animation": "seagull_anim",
+		"animationId": "a7666"
+	},
+	
+	{
+		"uid": "t-1756",
+        "name": "base",
+		"parent": "t-1750",
+		"position": [ 0,0.0569038,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1764",
+        "name": "body",
+		"parent": "t-1756",
+		"position": [ 0,-0.01418793,-0.2426791 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1782",
+        "name": "tail",
+		"parent": "t-1764",
+		"position": [ 0,-0.01289814,-0.215718 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1766",
+        "name": "neck",
+		"parent": "t-1756",
+		"position": [ 0,0.009028816,0.1681938 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1778",
+        "name": "head",
+		"parent": "t-1766",
+		"position": [ 0,-0.05417263,0.18261 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1768",
+        "name": "wing_left",
+		"parent": "t-1756",
+		"position": [ 0.1129215,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1790",
+        "name": "forearm_left",
+		"parent": "t-1768",
+		"position": [ 0.3099545,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1804",
+        "name": "arm_left",
+		"parent": "t-1790",
+		"position": [ 0.3171594,-0.05076622,-0.1465686 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1770",
+        "name": "wing_right",
+		"parent": "t-1756",
+		"position": [ -0.1057281,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1786",
+        "name": "forearm_right",
+		"parent": "t-1770",
+		"position": [ -0.3147652,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1806",
+        "name": "arm_right",
+		"parent": "t-1786",
+		"position": [ -0.3171688,-0.05076622,-0.132152 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1758",
+        "name": "bird",
+		"parent": "t-1750",
+		"position": [ 0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"bones": ["t-1756","t-1764","t-1782","t-1766","t-1778","t-1768","t-1804","t-1770","t-1786","t-1790","t-1806"],
+		"bindposes": [ [0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1] ],
+		"renderer": "seagull",
+		"mesh": "bird",
+		"meshId": "m-7658"
+	},
+	
+	{
+		"uid": "t-1762",
+        "name": "null_object_2",
+		"parent": "t-1758",
+		"position": [ -0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1590",
+        "name": "seagull2",
+		"position": [ -2.11,0.75,-2.33 ],
+		"rotation": [ 0,0,0,1 ],
+		"animation": "seagull_anim",
+		"animationId": "a7666"
+	},
+	
+	{
+		"uid": "t-1596",
+        "name": "base",
+		"parent": "t-1590",
+		"position": [ 0,0.0569038,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1604",
+        "name": "body",
+		"parent": "t-1596",
+		"position": [ 0,-0.01418793,-0.2426791 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1622",
+        "name": "tail",
+		"parent": "t-1604",
+		"position": [ 0,-0.01289814,-0.215718 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1606",
+        "name": "neck",
+		"parent": "t-1596",
+		"position": [ 0,0.009028816,0.1681938 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1618",
+        "name": "head",
+		"parent": "t-1606",
+		"position": [ 0,-0.05417263,0.18261 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1608",
+        "name": "wing_left",
+		"parent": "t-1596",
+		"position": [ 0.1129215,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1630",
+        "name": "forearm_left",
+		"parent": "t-1608",
+		"position": [ 0.3099545,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1644",
+        "name": "arm_left",
+		"parent": "t-1630",
+		"position": [ 0.3171594,-0.05076622,-0.1465686 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1610",
+        "name": "wing_right",
+		"parent": "t-1596",
+		"position": [ -0.1057281,-0.006345024,0.03604145 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1626",
+        "name": "forearm_right",
+		"parent": "t-1610",
+		"position": [ -0.3147652,0.04019146,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1646",
+        "name": "arm_right",
+		"parent": "t-1626",
+		"position": [ -0.3171688,-0.05076622,-0.132152 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1598",
+        "name": "bird",
+		"parent": "t-1590",
+		"position": [ 0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"bones": ["t-1596","t-1604","t-1622","t-1606","t-1618","t-1608","t-1644","t-1610","t-1626","t-1630","t-1646"],
+		"bindposes": [ [0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,1] ],
+		"renderer": "red",
+		"mesh": "bird",
+		"meshId": "m-7658"
+	},
+	
+	{
+		"uid": "t-1602",
+        "name": "null_object_2",
+		"parent": "t-1598",
+		"position": [ -0.0004167938,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t7876",
+        "name": "camroot",
+		"position": [ 0,0,1.98 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t7890",
+        "name": "cardboardmain",
+		"parent": "t7876",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1546",
+        "name": "head",
+		"parent": "t7890",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1548",
+        "name": "main_camera",
+		"parent": "t-1546",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "main_camera"
+	},
+	
+	{
+		"uid": "t-1554",
+        "name": "main_camera_left",
+		"parent": "t-1548",
+		"position": [ -0.03,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "main_camera_left"
+	},
+	
+	{
+		"uid": "t-1556",
+        "name": "main_camera_right",
+		"parent": "t-1548",
+		"position": [ 0.03,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "main_camera_right"
+	},
+	
+	{
+		"uid": "t7884",
+        "name": "light",
+		"position": [ 0,3,0 ],
+		"rotation": [ -0.408218,0.2345698,0.1093817,0.875426 ],
+		"light": "light"
+	}
+
+]
+}
+
+
+
+

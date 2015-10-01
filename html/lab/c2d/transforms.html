@@ -20,7 +20,6 @@
 <script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
 
 <script type="text/javascript" src="../../src/extras/SpriteSheet.js"></script>
-<script type="text/javascript" src="../../src/extras/Anm.js"></script>
 
 <script type="text/javascript">
 
@@ -94,7 +93,7 @@
 
 
 	var anim = SQR.Transform2d();
-	anim.position.set(100, 50);
+	anim.position.set(w/2 + 150, 50);
 	anim.shape = function(ctx) {
 		ctx.fillStyle = '#004080';
 		ctx.beginPath();
@@ -105,26 +104,14 @@
 	};
 	root.add(anim);
 
-	var a1 = SQR.Anm.create(1500, { x: w-100 }).ease(SQR.Interpolation.smoothStep);
-	var a2 = SQR.Anm.create(2500, { x: 100 }).ease(SQR.Interpolation.quadOut);
-
-	var t1 = a1.applyTo(anim.position);
-	var t2 = a2.applyTo(anim.position);
-
-	t1.onEnd(t2.start);
-	t2.onEnd(t1.start);
-
-	t1.start();
-
 	var py = 0;
 
 	var run = function() {
-		SQR.Anm.update();
 		requestAnimationFrame(run);
 		square.rotation += 0.01;
 		triangle.rotation += 0.01;
 		anim.rotation += 0.02;
-		anim.position.y = 50 + 25 * Math.sin(py);
+		anim.position.y = h/2 + 25 * Math.sin(py);
 		py += 0.1;
 		renderer.render(root);
 	}

@@ -20,8 +20,8 @@ void main() {
 precision mediump float;
 #endif
 
-//#include ~light/sphar-eucalyptus.glsl
-//#include ~light/sphar.glsl
+//#include sphar-data
+//#include sphar
               
 varying vec3 vNormal;
        

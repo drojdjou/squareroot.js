@@ -57,9 +57,9 @@
         // ['../../assets/unity-export/one-cube-animAnim.json', 'anim'],
         // ['../../assets/unity-export/one-cube-animScene.json', 'scene'],
 
-        ['../../assets/unity-export/seagull.json', 'mesh'],
-        ['../../assets/unity-export/seagullAnim.json', 'anim'],
-        ['../../assets/unity-export/seagullScene.json', 'scene'],
+        ['../../assets/unity-export/seagull-multi.json', 'mesh'],
+        ['../../assets/unity-export/seagull-multiAnim.json', 'anim'],
+        ['../../assets/unity-export/seagull-multiScene.json', 'scene'],
 
         ['../../src/glsl/animation/bones.glsl', 'bones'],
         ['../../src/glsl/light/sphar.glsl', 'sphar'],
@@ -100,7 +100,7 @@
         var render = function() {
             requestAnimationFrame(render);
 
-            cr.rotation.y += 0.01;
+            // cr.rotation.y += 0.01;
 
             renderer.render(scene.root, scene.camera);
         }

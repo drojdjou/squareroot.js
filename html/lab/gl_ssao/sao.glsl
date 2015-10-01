@@ -49,17 +49,17 @@ float znear = 0.3; //Z-near
 float zfar = 40.0; //Z-far
 
 //user variables
-const int samples = 64; //ao sample count
+const int samples = 32; //ao sample count
 
 float radius = 5.0; //ao radius
 float aoclamp = 0.25; //depth clamp - reduces haloing at screen edges
 bool noise = true; //use noise instead of pattern for sample dithering
-float noiseamount = 0.0002; //dithering amount
+float noiseamount = 0.0001; //dithering amount
 
 float diffarea = 0.45; //self-shadowing reduction
 float gdisplace = 0.45; //gauss bell center
 
-bool mist = false; //use mist?
+bool mist = true; //use mist?
 float miststart = 0.0; //mist start
 float mistend = 16.0; //mist end
 
@@ -103,7 +103,7 @@ float compareDepths(in float depth1, in float depth2,inout int far)
   float diff = (depth1 - depth2)*100.0; //depth difference (0-100)
 
   //reduce left bell width to avoid self-shadowing 
-  if (diff<gdisplace) {
+  if (diff < gdisplace) {
     garea = diffarea;
   } else {
     far = 1;

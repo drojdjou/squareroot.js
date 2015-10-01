@@ -1,12 +1,12 @@
 attribute vec3 aPosition;
 
-uniform mat4 uMatrix;
+uniform mat4 uViewMatrix;
 uniform mat4 uProjection;
 
 varying vec4 vPosition;
      
 void main() {
-	vPosition = uProjection * uMatrix * vec4(aPosition, 1.0);
+	vPosition = uProjection * uViewMatrix * vec4(aPosition, 1.0);
 	gl_Position = vPosition;
 }
 

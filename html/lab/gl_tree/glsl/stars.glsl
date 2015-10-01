@@ -27,7 +27,7 @@ varying float vBrightness;
                     
 void main() {
 
-	float b =  sin(uTime / 100.0 + vBrightness * 100.0) * 0.5 + 0.5;
+	float b =  sin(uTime / 500.0 + vBrightness * 10.0) * 0.5 + 0.5;
 
 	vec4 c = texture2D(uTexture, gl_PointCoord);
 	c.a *= 0.25 + b * 0.75;

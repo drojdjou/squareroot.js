@@ -36,11 +36,10 @@
 
 <script type="text/javascript">
 
-    SQR.shaderPath = '../../src/glsl/'
 
     SQR.Loader.loadAssets([
-        '~light/sphar.glsl',
-        'sphar-custom.glsl',
+        ['../../src/glsl/light/sphar.glsl', 'sphar'],
+        ['sphar-custom.glsl', 'sphar-data'],
         'shader.glsl',
         'background.glsl',
         'grace-probe.jpg',
@@ -61,6 +60,7 @@
 
         var renderer = SQR.Renderer(ctx);
         renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
+        renderer.autoClear = false;
 
         var camera = SQR.Transform();
         // camera.position.x = 1;
@@ -106,20 +106,25 @@
             hero.add(t);
         }
 
-        var backgroundBuffer = SQR.Primitives.create2DQuad( w * -0.5, w * -0.5, w, w );
-        var backgroundMatrix = new SQR.Matrix44(); 
-        backgroundMatrix.identity().multiply(new SQR.ProjectionMatrix().screenPixels2d()).translate(w/2, h/2, 0).scale(-1.2, 1.2, 1);
 
-        var backgroundTexture = SQR.Texture(assets['narrowpath.jpg']);
-        var backgroundShader = SQR.Shader(assets['background.glsl'])
+        var background = new SQR.Transform();
+        background.useDepth = false;
+        background.buffer = SQR.Primitives.create2DQuad(0, 0, w, w);
+
+        var backgroundMatrix = new SQR.Matrix44(); 
+        backgroundMatrix.identity().multiply(new SQR.ProjectionMatrix().screenPixels2d()).translate(0, h/-2, 0);
+
+        background.shader = SQR.Shader(assets['background.glsl'])
                 .use()
-                .setUniform('uConcatMatrix', backgroundMatrix.data);
+                .setUniform('uConcatMatrix', backgroundMatrix.data)
+                .setUniform('uTexture', SQR.Texture(assets['narrowpath.jpg']))
+                .attribPointers(background.buffer);
+
+        root.add(background);
 
         // SQR.Debug.traceBuffer(backgroundBuffer, true);
 
         var my = 0, mx = 0, tx = mx, ty = my;
-
-        var options = { dontClear: true };
 
         var render = function() {
             requestAnimationFrame(render);
@@ -127,20 +132,14 @@
             mx += (tx - mx) * 0.1;
             my += (ty - my) * 0.1;
 
-            ctx.clear();
+            // ctx.clear();
 
-            ctx.gl.depthMask(false);
-            ctx.gl.disable(ctx.gl.CULL_FACE);
+            // ctx.gl.depthMask(false);
+            // ctx.gl.disable(ctx.gl.CULL_FACE);
 
-            backgroundBuffer.bind();
-            backgroundShader
-                .use()
-                .setUniform('uTexture', backgroundTexture)
-                .attribPointers(backgroundBuffer);
+            // background.draw();
 
-            // backgroundBuffer.draw();
-
-            ctx.gl.depthMask(true);
+            // ctx.gl.depthMask(true);
 
             camroot.rotation.y = mx * Math.PI * 2;
             // camroot.rotation.y = mx * SQR.TWOPI;
@@ -151,7 +150,7 @@
                 hero.children[i].rotation.y += 0.007;
             }
 
-            renderer.render(root, camera, options);
+            renderer.render(root, camera);
         }
 
         render();

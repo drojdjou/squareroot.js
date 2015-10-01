@@ -40,14 +40,14 @@
 
 <script type="text/javascript" id="gl-script">
 
-var numFish = parseInt(document.location.search.substring(1)) || 250; 
+var numFish = parseInt(document.location.search.substring(1)) || 150; 
 // each fish repeated 3x. append ?XXX to URL where XXX is number of fish you want to see
 
 SQR.shaderPath = '../../src/glsl/';
 
 SQR.Loader.loadAssets([
-    '~light/sphar-eucalyptus.glsl',
-    '~light/sphar.glsl',
+    ['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data'],
+    ['../../src/glsl/light/sphar.glsl', 'sphar'],
     'line.glsl',
     'normal2color.glsl',
     'fish.glsl',
@@ -60,7 +60,7 @@ SQR.Loader.loadAssets([
     var ctx = SQR.Context('#gl-canvas')
         .create()
         .size(w, h).
-        clearColor(0, 0.15, 0.2, 1);
+        clearColor(0, 0.1, 0.1, 1);
 
     var renderer = SQR.Renderer(ctx);
     renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);

@@ -9,13 +9,20 @@
 
 <style type="text/css">
 
-img {
+
+p {
 	position: absolute;
 	top: 0;
 	left: 0;
+	z-index: 10001;
+	margin: 20px;
+
+	display: none;
+}
+
+img {
 	z-index: 10000;
-	/*width: 100%;*/
-	opacity: 0.2;
+	opacity: 0;
 }
 
 </style>
@@ -25,12 +32,18 @@ img {
 
 <canvas></canvas>
 
-<img src="../../assets/eiffel.jpg">
+<!-- <img src="../../assets/golden-gate.jpg"> -->
+<img src="../../assets/monument-xl.jpg">
+
+<p>Space to hide the original image / Click to add points / S or K keys to create a new pattern</p>
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
-<script type="text/javascript" src="../../src/extras/Triangle.js"></script>
-<script type="text/javascript" src="../../src/extras/Delaunay.js"></script>
+<script type="text/javascript" src="../../src/math/Math.js"></script>
+<script type="text/javascript" src="../../src/math/Triangle.js"></script>
+<script type="text/javascript" src="../../src/math/Delaunay.js"></script>
+
+<script type="text/javascript" src="../../lib/malibu.js"></script>
 
 
 <script type="text/javascript">
@@ -55,6 +68,12 @@ var init = function() {
 	cnv.width = w;
 	cnv.height = h;
 
+
+	var rect = Util.fullbleed(img);
+	console.log(rect);
+	Util.resizeTo(img, rect);
+	Util.resizeTo(cnv, rect);
+
 	var ctx = cnv.getContext('2d');
 
 	var points = [], triangles = [];
@@ -74,34 +93,42 @@ var init = function() {
 		}
 
 		for(var i = 0; i < n; i++) {
-			var a = Math.random() * Math.PI * 2;
-			var x = w * 0.5 + Math.cos(a) * w * 0.6 * Math.random();
-			var y = h * 0.5 + Math.sin(a) * w * 0.6 * Math.random();
+			// var a = Math.random() * Math.PI * 2;
+			// var x = w * 0.5 + Math.cos(a) * w * 0.6 * Math.random();
+			// var y = h * 0.5 + Math.sin(a) * h * 0.6 * Math.random();
+
+			var x = img.naturalWidth * Math.random();
+			var y = img.naturalHeight * Math.random();
+
 			addPoint(x | 0, y | 0);
 		}
 
 		triangles = SQR.Delaunay.triangulate(points);
+		run();
 	}
 
-	var addGrid = function(n) {
+	var addGrid = function(n, v) {
+		points.length = 0;
 
 		var nx = w / n + 1;
 		var ny = h / n + 1;
+		v = v || 10;
 
 		for(var x = 0; x < nx; x++) {
 			for(var y = 0; y < ny; y++) {
 				addPoint(
-					x * n + Math.random() * 10, 
-					y * n +  Math.random() * 10
+					x * n + Math.random() * v, 
+					y * n +  Math.random() * v
 				);
 			}
 		}
 
 		triangles = SQR.Delaunay.triangulate(points);	
+		run();
 	}
 
 	var onClick = function(e) {
-		var r = 20, n = 10;
+		var r = 0, n = 0;
 
 		addPoint(e.pageX, e.pageY);
 
@@ -117,8 +144,16 @@ var init = function() {
 
 	var onKeyDown = function(e) {
 		if(e.keyCode == 32) {
-			imgVisible = !imgVisible;
-			img.style.display = imgVisible ? 'block' : 'none';
+			// imgVisible = !imgVisible;
+			// img.style.opacity = imgVisible ? 0 : 0.2;
+		}
+
+		if(e.keyCode == 'K'.charCodeAt(0)) {
+			addInitPoints(800, true);
+		}
+
+		if(e.keyCode == 'S'.charCodeAt(0)) {
+			addGrid(30, 20); 
 		}
 	}
 
@@ -132,6 +167,9 @@ var init = function() {
 
 			var x = t.centroid.x | 0;
 			var y = t.centroid.y | 0;
+
+			x = Math.clamp(x, 0, img.naturalWidth);
+			y = Math.clamp(y, 0, img.naturalHeight);
 
 			var ri = (img.naturalWidth * y + x) * 4 + 0;
 			var gi = (img.naturalWidth * y + x) * 4 + 1;
@@ -162,10 +200,8 @@ var init = function() {
 	document.addEventListener('keydown', onKeyDown);
 	document.addEventListener('click', onClick);
 
-	addInitPoints(800, true);
-	// addGrid(40); 
-
-	run();
+	// addInitPoints(600, true);
+	addGrid(40, 40);
 }
 
 // this way we know the image is loaded before this code runs

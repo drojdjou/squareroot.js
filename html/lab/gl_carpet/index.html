@@ -77,7 +77,7 @@
 		var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
 
 		// document.body.appendChild(heightMap.canvas);
-		var s = 10, sd = 16;
+		var s = 10, sd = 32;
 
 		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0, {
 			perQuadUV: true
@@ -91,7 +91,7 @@
 			t.buffer.iterate('aPosition', function(i, data, c) {
 				var x = (data[i+0] + s/2) / s; 
 				var y = (data[i+2] + s/2) / s;
-				data[i+1] = heightMap.getPixel(x, y) / 255 * 0.75;
+				data[i+1] = heightMap.getPixel(x, y) / 255;// * 0.75;
 			});
 			t.buffer.update();
 
@@ -108,7 +108,7 @@
 		
 
 		var grid = document.createElement('canvas');
-		var gs = 256, ls = 1;
+		var gs = 256, ls = 2;
 		grid.width = gs;
 		grid.height = gs;
 		var gtx = grid.getContext('2d');
@@ -116,14 +116,18 @@
 		gtx.fillRect(0, 0, gs, gs);
 		gtx.fillStyle = '#ffffff';
 
-		gtx.fillRect(0, 0, ls, gs);
-		gtx.fillRect(0, 0, gs, ls);
+		gtx.beginPath();
+		gtx.arc(gs/2, gs/2, 20, 0, SQR.TWOPI);
+		gtx.fill();
 
-		gtx.fillRect(gs-ls, 0, ls, gs);
-		gtx.fillRect(0, gs-ls, gs, ls);
+		// gtx.fillRect(0, 0, ls, gs);
+		// gtx.fillRect(0, 0, gs, ls);
 
-		gtx.fillRect(gs/2 - ls/2, 0, ls * 2, gs);
-		gtx.fillRect(0, gs/2 - ls/2, gs, ls * 2);
+		// gtx.fillRect(gs-ls, 0, ls, gs);
+		// gtx.fillRect(0, gs-ls, gs, ls);
+
+		// gtx.fillRect(gs/2 - ls/2, 0, ls * 2, gs);
+		// gtx.fillRect(0, gs/2 - ls/2, gs, ls * 2);
 
 		t.shader = SQR.Shader(assets.shader)
 			.use()
@@ -133,14 +137,13 @@
 
 		root.add(t);
 
+		camera.position.z = 5;
+		camera.position.y = -0.25;
+		t.rotation.x = -0.5;
+		t.rotation.y = Math.PI / 4 + Math.PI;
 
-		// 
-		// camera.position.z = 5;
-		// t.rotation.x = -0.5;
-		// t.rotation.y = Math.PI / 4 + Math.PI;
-
-		camera.position.y = 2;
-		camera.rotation.x = Math.PI * 0.3;		
+		// camera.position.y = 2;
+		// camera.rotation.x = Math.PI * 0.3;		
 
 		var render = function() {
 			requestAnimationFrame(render);

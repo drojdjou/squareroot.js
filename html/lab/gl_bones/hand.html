@@ -16,6 +16,7 @@
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 
+<script type="text/javascript" src="../../src/math/Color.js"></script>
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix33.js"></script>
@@ -45,7 +46,7 @@
         ['bones4.glsl', 'shader'],
 
         ['../../assets/unity-export/handScene.json', 'scene'],
-        ['../../assets/unity-export/hand.json', 'meshes'],
+        ['../../assets/unity-export/hand.json', 'mesh'],
 
         ['../../src/glsl/animation/bones.glsl', 'bones'],
         ['../../src/glsl/light/sphar.glsl', 'sphar'],
@@ -56,7 +57,7 @@
         var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
         var renderer = new SQR.Renderer(ctx);
         
-        var scene = SQR.SceneParser.parse(assets.scene, assets.meshes, { shader: assets['shader'] });
+        var scene = SQR.SceneParser.parse(assets, { shader: assets['shader'] });
 
         var resize = function() {
             var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
