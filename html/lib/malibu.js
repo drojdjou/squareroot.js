@@ -8,7 +8,7 @@
  *	@property {string} date - the date of the build
  */
 // DO NOT EDIT. Updated from version.json
-var Framework = {"version":"4","build":58,"date":"2015-10-01T00:52:34.417Z"}
+var Framework = {"version":"4","build":62,"date":"2015-10-02T21:45:18.784Z"}
 
 /* --- --- [Simplrz] --- --- */
 
@@ -897,6 +897,19 @@ var Application = (function() {
 	var router;
 
 	/**
+	 *	@member {Object} flags
+	 *	@memberof Application
+	 *	@static
+	 */	
+	app.flags = {};
+
+	var fs = document.location.search.substring(1).split('&');
+	fs.forEach(function(f) {
+		var ff = f.split('=');
+		app.flags[ff[0]] = parseFloat(ff[1]);
+	});
+
+	/**
 	 *	@member {Trigger} resize
 	 *	@memberof Application
 	 *	@static
@@ -908,7 +921,7 @@ var Application = (function() {
 	 *	@memberof Application
 	 *	@static
 	 */
-	app.route = new Value();
+	app.route = new Value({});
 	
 	/**
 	 *	@function init
@@ -1119,7 +1132,32 @@ var ExtState = function(ext, element) {
 	ext.readCss = function(property, notCalculated) {
 		return (notCalculated) ? element.style[property] : getComputedStyle(element).getPropertyValue(property);
 	}
+
+	ext.bg = function(path, onLoad) {
+
+		if(onLoad) {
+			var i = new Image();
+			i.addEventListener('load', function() {
+				onLoad(i);
+				element.style.backgroundImage = 'url(' +  + ')';
+			});
+			i.src = path;
+		} else {
+			element.style.backgroundImage = 'url(' +  + ')';
+		}
+	}
 };
+
+
+
+
+
+
+
+
+
+
+
 
 /* --- --- [domExtend/Transform] --- --- */
 
@@ -1696,7 +1734,7 @@ var HistoryRouter = function (app, params) {
 			} else {
 				var home, qs = document.location.search;
 
-				if(params || params.home) home = params.home;
+				if(params && params.home) home = params.home;
 
 				if(qs.indexOf('=') > -1) {
 					var aq = qs.substring(1).split('&');
