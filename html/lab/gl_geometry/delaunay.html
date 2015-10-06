@@ -32,9 +32,6 @@ img {
 
 <canvas></canvas>
 
-<!-- <img src="../../assets/golden-gate.jpg"> -->
-<img src="../../assets/monument-xl.jpg">
-
 <p>Space to hide the original image / Click to add points / S or K keys to create a new pattern</p>
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
@@ -48,10 +45,15 @@ img {
 
 <script type="text/javascript">
 
+var images = [
+	"../../assets/golden-gate.jpg",
+	"../../assets/monument-xl.jpg",
+	"../../assets/beach.jpg",
+	"../../assets/la-skyline.jpg",
+];
+
 
 var init = function() {
-	var img = document.querySelector('img');
-	var imgVisible = true;
 
 	var imgcnv = document.createElement('canvas');
 	imgcnv.width = img.naturalWidth;
@@ -70,7 +72,6 @@ var init = function() {
 
 
 	var rect = Util.fullbleed(img);
-	console.log(rect);
 	Util.resizeTo(img, rect);
 	Util.resizeTo(cnv, rect);
 
@@ -112,7 +113,6 @@ var init = function() {
 
 		var nx = w / n + 1;
 		var ny = h / n + 1;
-		v = v || 10;
 
 		for(var x = 0; x < nx; x++) {
 			for(var y = 0; y < ny; y++) {
@@ -142,21 +142,6 @@ var init = function() {
 		run();
 	}
 
-	var onKeyDown = function(e) {
-		if(e.keyCode == 32) {
-			// imgVisible = !imgVisible;
-			// img.style.opacity = imgVisible ? 0 : 0.2;
-		}
-
-		if(e.keyCode == 'K'.charCodeAt(0)) {
-			addInitPoints(800, true);
-		}
-
-		if(e.keyCode == 'S'.charCodeAt(0)) {
-			addGrid(30, 20); 
-		}
-	}
-
 	var run = function() {
 		// requestAnimationFrame(run);
 		ctx.clearRect(0, 0, w, h);
@@ -183,7 +168,6 @@ var init = function() {
 
 			// ctx.fillStyle = 'rgb(' + c + ',' + c + ',' + c + ')';
 			ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b  + ')';
-
 			ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
 			// ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
 
@@ -197,15 +181,33 @@ var init = function() {
 		}
 	}
 
-	document.addEventListener('keydown', onKeyDown);
 	document.addEventListener('click', onClick);
 
-	// addInitPoints(600, true);
-	addGrid(40, 40);
+	var g = flags.g || 40;
+	var n = flags.n || 400;
+
+	if(flags.r == 1) addInitPoints(n, true);
+	else addGrid(g, flags.gr || 0);
 }
 
-// this way we know the image is loaded before this code runs
-window.addEventListener('load', init);
+var img = new Image();
+var imgVisible = true;
+
+img.addEventListener('load', function() {
+	init();
+});
+
+
+var flags = {};
+
+var fs = document.location.search.substring(1).split('&');
+fs.forEach(function(f) {
+	var ff = f.split('=');
+	flags[ff[0]] = parseFloat(ff[1]);
+});
+
+img.src = images[flags.i || 0];
+
 
 </script>
 
