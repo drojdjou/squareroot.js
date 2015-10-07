@@ -1264,9 +1264,10 @@ SQR.SceneParser = (function() {
 
 		parse: function(assets, options) {
 
-			var scene = assets.scene;
-			var meshes = assets.mesh;
-			var anim = assets.anim;
+			var prefix = options.prefix || '';
+			var scene = assets[prefix + 'scene'];
+			var meshes = assets[prefix + 'mesh'];
+			var anim = assets[prefix + 'anim'];
 
 			if(options.context) {
 				var bc = scene.background;
@@ -1433,9 +1434,12 @@ SQR.SceneParser = (function() {
 			}
 
 			root.recurse(function(t) {
-				if(t.data && t.data.animation) {
+				if(t.data && t.data.animationId) {
 					var id = t.data.animationId;
 					var data = animations[id];
+
+					// Aniation file is missing or was not exported, abort.
+					if(!data) return;
 
 					t.animation = SQR.Animation(data.duration);
 
@@ -1563,7 +1567,7 @@ SQR.Primitives.createSphere = function(radius, sw, sh, options) {
         c += t.toBuffer(geo, c, !options.flatShading);
     });
 
-    return geo;
+    return geo.update();
 }
 
 

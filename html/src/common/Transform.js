@@ -356,7 +356,7 @@ SQR.Transform = function(name, uid) {
 	}
 
 	/** 
-	 *  Used for sorting object in the rendering function
+	 *  Used for sorting objects in the rendering function
 	 *  (not implemented yet)
 	 */
 	t.viewDepth = function() {

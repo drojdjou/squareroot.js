@@ -15,3 +15,9 @@ Math.absMin = function(a, b) {
 	else if(a >= 0) return b;
 	else return -b;
 }
+
+Math.map = function(v, s, e) {
+	if(v <= s) return 0;
+	if(v >= e) return 1;
+	return (v - s) / (e - s);
+}

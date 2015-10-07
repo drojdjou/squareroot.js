@@ -150,3 +150,9 @@ Added naturalWidth/Height vs simple width/height to Util.fullBleed because of an
 
 Removing extras bucket, adding vr
 
+
+##### v3.0 b 124
+*Oct 6th 2015*
+
+Small fixes, adding Math.map
+

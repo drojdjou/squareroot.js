@@ -95,7 +95,7 @@ SQR.Renderer = function(context) {
 					gl.enable(gl.BLEND);
 					transparentRendering = true;
 				}
-				
+
 				gl.blendFunc(ro.srcFactor, ro.dstFactor);
 			}
 
@@ -114,6 +114,8 @@ SQR.Renderer = function(context) {
 				if(p) lastShader.setUniform('uProjection', p);
 
 				lastShader.setUniform('uTime', time);
+				lastShader.setUniform('uNear', p.near);
+				lastShader.setUniform('uFar', p.far);
 
 				shaderChanged = true;
 			}

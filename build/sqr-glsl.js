@@ -1,6 +1,8 @@
 SQR.GLSL = {
 	/* --- --- [animation/bones.glsl] --- --- */
 	"animation/bones.glsl": "#ifndef NUM_BONES\n	#define NUM_BONES 1\n#endif\n#ifndef BONE_PER_VERTEX\n	#define BONE_PER_VERTEX 4\n#endif\nattribute vec4 aIndex;\nattribute vec4 aWeight;\nuniform mat4 uBones[NUM_BONES];\nvec3 bones(vec3 v) {\n	mat4 bone;\n	vec3 vs[BONE_PER_VERTEX];\n	vec3 r = vec3(0.0, 0.0, 0.0);\n	bone = uBones[int(aIndex.x)];\n	r += (bone * vec4(v, 1.0)).xyz * aWeight.x;\n	#if (BONE_PER_VERTEX > 1)\n	bone = uBones[int(aIndex.y)];\n	r += (bone * vec4(v, 1.0)).xyz * aWeight.y;\n	#endif\n	#if (BONE_PER_VERTEX > 2)\n	bone = uBones[int(aIndex.z)];\n	r += (bone * vec4(v, 1.0)).xyz * aWeight.z;\n	#endif\n	#if (BONE_PER_VERTEX > 3)\n	bone = uBones[int(aIndex.w)];\n	r += (bone * vec4(v, 1.0)).xyz * aWeight.w;\n	#endif\n	return r.xyz;\n}\n",
+	/* --- --- [light/fog.glsl] --- --- */
+	"light/fog.glsl": "uniform float uNear;\nuniform float uFar;\nfloat fog() {\n	return (gl_FragCoord.z / gl_FragCoord.w - uNear) / (uFar - uNear);\n}\n",
 	/* --- --- [light/sphar-cathedral.glsl] --- --- */
 	"light/sphar-cathedral.glsl": "const vec3 L00  = vec3( 0.78908,  0.43710,  0.54161);\nconst vec3 L1m1 = vec3( 0.39499,  0.34989,  0.60488);\nconst vec3 L10  = vec3(-0.33974, -0.18236, -0.26940);\nconst vec3 L11  = vec3(-0.29213, -0.05562,  0.00944);\nconst vec3 L2m2 = vec3(-0.11141, -0.05090, -0.12231);\nconst vec3 L2m1 = vec3(-0.26240, -0.22401, -0.47479);\nconst vec3 L20  = vec3(-0.15570, -0.09471, -0.14733);\nconst vec3 L21  = vec3( 0.56014,  0.21444,  0.13915);\nconst vec3 L22  = vec3( 0.21205, -0.05432, -0.30374);\n",
 	/* --- --- [light/sphar-eucalyptus.glsl] --- --- */

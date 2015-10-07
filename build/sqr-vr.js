@@ -121,7 +121,7 @@ SQR.VRApp = function(appFunc, options) {
 		var vrHMD;		
 
 		var onVRError = function(e) {
-			console.log('Error in navigator.getVRDevices()');
+			console.log('VR: Error in navigator.getVRDevices()');
 			console.log(e);
 			onDone();
 		}
@@ -146,7 +146,7 @@ SQR.VRApp = function(appFunc, options) {
 		}
 
 		if(!navigator.mozGetVRDevices && !navigator.getVRDevices) {
-			console.log("Your browser is not VR Ready");
+			console.log("VR: Your browser is not VR Ready");
 			onDone();
 			return;
 		}
@@ -206,7 +206,10 @@ SQR.VRApp = function(appFunc, options) {
 				startApp();
 			});
 
-			novrBtn.addEventListener('click', startApp);
+			novrBtn.addEventListener('click', function() {
+				options.forceMono = true;
+				startApp();
+			});
 
 		} else {
 			startApp();
@@ -222,13 +225,11 @@ SQR.VRApp = function(appFunc, options) {
 
 SQR.VRPost = function(camera, renderer, ctx, options) {
 
+	var isStereo = (options.vrInput && !options.forceMono) || options.forceStereo;
+
 	var width, height, halfWidth;
-
 	var fbo, post;
-
-	var isStereo = options.vrInput || options.debug || options.forceStereo;
-
-	renderer.autoClear = false;
+	var firstRender = true;
 
 	var left = new SQR.Transform();
 	var right = new SQR.Transform();
@@ -238,6 +239,7 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 	if(options.isTouch || options.vrInput) camera.useQuaternion = true;
 	camera.add(left, right);
+	renderer.autoClear = false;
 
 	if(options.customShader) {
 		fbo = SQR.FrameBuffer(0, 0);    
@@ -268,7 +270,7 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 			var aspect = width / height;
 			var halfAspect = (width * 0.5) / height;
 
-			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, 0.01, 10000);
+			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, options.near || 0.01, options.far || 10000);
 			camera.projection = p;
 			left.projection = p;
 			right.projection = p;
@@ -302,35 +304,57 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 			if(isStereo) {
 
-				ctx.viewport(0, 0, halfWidth, height);
-				renderer.render(root, left);
+				if(!options.customShader) {
 
-				ctx.viewport(halfWidth, 0, halfWidth, height);
-				renderer.render(root, right);
+					ctx.viewport(0, 0, halfWidth, height);
+					renderer.render(root, left);
 
-			// } else if(options.isTouch) {
+					ctx.viewport(halfWidth, 0, halfWidth, height);
+					renderer.render(root, right);
 
-				//
+				} else {
 
-				// 	fbo.bind();
-				// 	ctx.clear();
-				// 	renderer.render(root, left);
-				// 	renderer.renderToScreen();
-				// 	ctx.viewport(0, 0, halfWidth, height);
-				// 	post.shader.use().setUniform('uTexture', fbo.texture);
-				// 	renderer.render(post);
+					fbo.bind();
+					ctx.clear();
+					renderer.render(root, left);
+					renderer.renderToScreen();
+					ctx.viewport(0, 0, halfWidth, height);
+					post.shader.use().setUniform('uTexture', fbo.texture);
+					renderer.render(post);
 
-				// 	fbo.bind();
-				// 	ctx.clear();
-				// 	renderer.render(root, right);
-				// 	renderer.renderToScreen();
-				// 	ctx.viewport(halfWidth, 0, halfWidth, height);
-				// 	post.shader.use().setUniform('uTexture', fbo.texture);
-				// 	renderer.render(post);
+					fbo.bind();
+					ctx.clear();
+					renderer.render(root, right);
+					renderer.renderToScreen();
+					ctx.viewport(halfWidth, 0, halfWidth, height);
+					post.shader.use().setUniform('uTexture', fbo.texture);
+					renderer.render(post);
+
+				}
 
 			} else {
 
 				renderer.render(root, camera);
+			}
+
+			if(firstRender) {
+					
+				if(options.target && options.camRoot) {
+
+					var a = new SQR.V3().sub(options.camRoot.position, options.target.position);
+					var b = new SQR.V3().copyFrom(camera.forward); // i.e forward vector
+					a.y = 0;
+					b.y = 0;
+					a.norm();
+					b.norm();
+
+					var d = SQR.V3.dot(a, b);
+					var ca = Math.acos(d) / Math.PI * 180;
+
+					options.camRoot.rotation.y = -Math.acos(d);
+				}
+
+				firstRender = false;
 			}
 		}
 	};
