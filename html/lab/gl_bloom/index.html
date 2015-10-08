@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -40,154 +42,139 @@
 SQR.shaderPath = '../../src/glsl/'
 
 SQR.Loader.loadAssets([
-    ['../../src/glsl/light/sphar.glsl', 'sphar'],
-    ['../../src/glsl/light/sphar-sunset.glsl', 'sphar-data'],
-    'shader.glsl',
-    'blur.glsl',
-    'bloom.glsl',
-    '../../assets/model/elephant.json'
+	['../../src/glsl/light/sphar.glsl', 'sphar'],
+	['../../src/glsl/light/sphar-sunset.glsl', 'sphar-data'],
+	'shader.glsl',
+	'blur.glsl',
+	'bloom.glsl',
+	'../../assets/model/elephant.json'
 ], function(assets) {
 
-    var w = window.innerWidth, h = window.innerHeight;
+	var w = window.innerWidth, h = window.innerHeight;
 
-    var ctx = SQR.Context('#gl-canvas')
-        .create()
-        .size(w, h).
-        clearColor(0, 0, 0, 1);
+	var ctx = SQR.Context('#gl-canvas')
+		.create()
+		.size(w, h).
+		clearColor(0, 0, 0, 1);
 
-    var renderer = SQR.Renderer(ctx);
-    renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
+	var renderer = SQR.Renderer(ctx);
+	renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
 
-    var camera = SQR.Transform();
-    camera.position.set(0, 0, 50);
+	var camera = SQR.Transform();
+	camera.position.set(0, 0, 50);
 
-    var camroot = SQR.Transform();
-    camroot.add(camera);
-    
-    var hero = SQR.Transform();
+	var camroot = SQR.Transform();
+	camroot.add(camera);
+	
+	var hero = SQR.Transform();
 
-    var root = SQR.Transform().add(camroot, hero);
+	var root = SQR.Transform().add(camroot, hero);
 
-    var model = assets['../../assets/model/elephant.json'];
+	var model = assets['../../assets/model/elephant.json'];
 
-    var buffer = SQR.Buffer()
-            .layout(SQR.v3n3u2(), model.vertices.length / 3)
-            .data('aPosition', model.vertices)
-            .data('aNormal',  model.normals)
-            // .data('aUV',  model.uv1)
-            .index(model.tris)
-            .update();
+	var buffer = SQR.Buffer()
+			.layout(SQR.v3n3u2(), model.vertices.length / 3)
+			.data('aPosition', model.vertices)
+			.data('aNormal',  model.normals)
+			// .data('aUV',  model.uv1)
+			.index(model.tris)
+			.update();
 
-    var shader = SQR.Shader(assets['shader.glsl'])
-            .use()
-            .attribPointers(buffer);
+	var shader = SQR.Shader(assets['shader.glsl'])
+			.use()
+			.attribPointers(buffer);
 
-    var num = parseInt(document.location.search.substring(1)) || 500;
+	var num = parseInt(document.location.search.substring(1)) || 500;
 
-    document.querySelector('.num').innerHTML = num;
+	var t = SQR.Transform();
+	t.buffer = buffer;
+	t.shader = shader;
 
-    var t = SQR.Transform();
-    t.buffer = buffer;
-    t.shader = shader;
-    // t.scale.set(2, 2, 2);
-    hero.add(t);
+	for (var i = 0; i < num; i++) {
+		var t = SQR.Transform();
+		t.buffer = buffer;
+		t.shader = shader;
+		t.position.random().norm().mul(20 + Math.random() * 80);
+		t.rotation.random().mul(SQR.TWOPI);
+		// t.isStatic = true;
+		hero.add(t);
+	}
 
-    for (var i = 0; i < num; i++) {
-        var t = SQR.Transform();
-        t.buffer = buffer;
-        t.shader = shader;
-        t.position.random().norm().mul(20 + Math.random() * 80);
-        t.rotation.random().mul(SQR.TWOPI);
-        // t.isStatic = true;
-        hero.add(t);
-    }
+	var rawFBO = SQR.FrameBuffer(w, h);    
+	var blurXFBO = SQR.FrameBuffer(w, h);   
+	var blurYFBO = SQR.FrameBuffer(w, h);   
 
-    var rawFBO = SQR.FrameBuffer(w, h);    
-    var blurXFBO = SQR.FrameBuffer(w, h);   
-    var blurYFBO = SQR.FrameBuffer(w, h);   
+	var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
+	var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
-    var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
-    var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
+	var my = 0.4, mx = 0.4, tx = mx, ty = my;
 
-    var my = 0.4, mx = 0.4, tx = mx, ty = my;
+	var blurForce;
 
-    var blurForce;
+	var render = function() {
+		requestAnimationFrame(render);
 
-    var render = function() {
-        requestAnimationFrame(render);
+		mx += (tx - mx) * 0.1;
+		my += (ty - my) * 0.1;
 
-        mx += (tx - mx) * 0.1;
-        my += (ty - my) * 0.1;
+		ctx.clear();
+		camroot.rotation.y += 0.002;
+		// camroot.rotation.y = mx * SQR.TWOPI;
+		camera.position.z = -50 + my * 200;
 
-        ctx.clear();
-        camroot.rotation.y += 0.002;
-        // camroot.rotation.y = mx * SQR.TWOPI;
-        camera.position.z = -50 + my * 200;
+		for(var i = 1; i < hero.numChildren; i++) {
+			hero.children[i].rotation.x += 0.005;
+			hero.children[i].rotation.y += 0.007;
+		}
 
-        for(var i = 1; i < hero.numChildren; i++) {
-            hero.children[i].rotation.x += 0.005;
-            hero.children[i].rotation.y += 0.007;
-        }
+		rawFBO.bind();
+		renderer.render(root, camera);
 
-        rawFBO.bind();
-        renderer.render(root, camera);
+		// Bloom
+		blurForce = 0.03;
+		// Glow
+		// blurForce = mx * 0.1;
 
-        // Bloom
-        blurForce = mx * 0.066;
-        // Glow
-        // blurForce = mx * 0.1;
+		blurXFBO.bind();
+		blur.shader.use();
+		blur.shader.setUniform('uDelta', [0.0, blurForce]);
+		blur.shader.setUniform('uTexture', rawFBO.texture);
+		renderer.render(blur);
 
-        blurXFBO.bind();
-        blur.shader.use();
-        blur.shader.setUniform('uDelta', [0.0, blurForce]);
-        blur.shader.setUniform('uTexture', rawFBO.texture);
-        renderer.render(blur);
+		blurYFBO.bind();
+		blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+		blur.shader.setUniform('uTexture', blurXFBO.texture);
+		renderer.render(blur);
 
-        blurYFBO.bind();
-        blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-        blur.shader.setUniform('uTexture', blurXFBO.texture);
-        renderer.render(blur);
+		renderer.renderToScreen();
+		ctx.gl.viewport(0, 0, w, h);
+		bloom.shader.use();
+		bloom.shader.setUniform('uTexture', rawFBO.texture);
+		bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+		renderer.render(bloom);
+	}
 
-        renderer.renderToScreen();
-        ctx.gl.viewport(0, 0, w, h);
-        bloom.shader.use();
-        bloom.shader.setUniform('uTexture', rawFBO.texture);
-        bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
-        renderer.render(bloom);
-    }
+	render();
 
-    render();
+	var isTouch = 'ontouchstart' in document;
+	var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
-    var isTouch = 'ontouchstart' in document;
-    var mousemove = isTouch ? 'touchmove' : 'mousemove';
-
-    document.addEventListener(mousemove, function(e) {
-        e = isTouch ? e.targetTouches[0] : e;
-        tx = e.pageX / window.innerWidth;
-        ty = e.pageY / window.innerHeight;
-    });
+	document.addEventListener(mousemove, function(e) {
+		e = isTouch ? e.targetTouches[0] : e;
+		tx = e.pageX / window.innerWidth;
+		ty = e.pageY / window.innerHeight;
+	});
 
 });
 
 </script>
 
-<!--
-<header>
-    <button class="icon"></button>
-    <article>
-        <h1>Bloom effect</h1>
-        <p>By <a href="http://bartekdrozdz.com">Bartek Drozdz.</a></p>
-        <code></code>
-    </article>
-</header>
-<script type="text/javascript" src="../base.js"></script>
--->
-
 <script>
-if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
-}
+	if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+		document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	}
 </script>
+
 </body>
 </head>
 

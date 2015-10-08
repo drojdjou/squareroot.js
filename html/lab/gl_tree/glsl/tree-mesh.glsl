@@ -9,10 +9,12 @@ uniform mat4 uProjection;
 uniform mat3 uNormalMatrix;
 
 varying vec3 vNormal;
+varying float vZ;
      
 void main() {
 	vNormal = normalize(uNormalMatrix * aNormal);
 	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
+	vZ = gl_Position.z;
 }
 
 //#fragment
@@ -26,13 +28,14 @@ uniform float uFogEnd;
 uniform vec3 uFogColor;
 
 varying vec3 vNormal;
+varying float vZ;
 
 //#include sphar-data
 //#include sphar
            
 void main() {
 
-	float w = (gl_FragCoord.z / gl_FragCoord.w - uFogStart) / (uFogEnd - uFogStart);
+	float w = (vZ - uFogStart) / (uFogEnd - uFogStart);
 
 	// float fs = smoothstep(0.8, 1.0, w);
 	// float ls = smoothstep(0.0, 0.8, w);

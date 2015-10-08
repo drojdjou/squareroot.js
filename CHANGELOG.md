@@ -156,3 +156,15 @@ Removing extras bucket, adding vr
 
 Small fixes, adding Math.map
 
+
+##### v3.0 b 125
+*Oct 7th 2015*
+
+Cleaning the Texture class a bit, update to API (all backwards compatible btw)
+
+
+##### v3.0 b 126
+*Oct 7th 2015*
+
+and now a small fix in the Texture class
+

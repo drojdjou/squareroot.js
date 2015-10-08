@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -48,14 +50,18 @@
         ['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data']
     ], function(assets) {
 
+        var NUM_TEMPLATES = Simplrz.touch ? 5 : 5;
+        var NUM_TREES = Simplrz.touch ? 100 : 400;
+        var FOG_END = Simplrz.touch ? 40 : 40;
+
         var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0.15, 0.15, 0.20, 1);
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0.2, 0.2, 0.3, 1);
         var renderer = new SQR.Renderer(ctx);
 
         var resize =function() {
             w = window.innerWidth, h = window.innerHeight, aspect = w/h;
             ctx.size(w, h);
-            renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, 1000);
+            renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, FOG_END);
         }
 
         window.addEventListener('resize', resize);
@@ -76,14 +82,14 @@
 
         var treeShader = SQR.Shader(assets.treeMesh)
             .use()
-            .setUniform('uFogStart', 5)
-            .setUniform('uFogEnd', 100)
+            .setUniform('uFogStart', 0)
+            .setUniform('uFogEnd', FOG_END)
             .setUniform('uFogColor', [0.8, 0.4, 0.2])
-            .setUniform('uDarkness', [0.15, 0.15, 0.20]);
+            .setUniform('uDarkness', [0.2, 0.2, 0.3]);
 
         var addTreeTemplate = function() {
             var ts = SQR.Tree({
-                depth: 3,
+                depth: Simplrz.touch ? 2 : 3,
                 branches: 3,
                 branchProbability: 1,
                 branchLength: [2, 4],
@@ -96,7 +102,7 @@
                 baseWidth: 0.35,
                 branchWidth: 0.3,
                 widthDepthFactor: 0.5,
-                branchSides: 8
+                branchSides: 6
             });
 
 
@@ -139,19 +145,21 @@
             trees.push(tree);
         }
 
-        for(var i = 0; i < 10; i++) {
+        for(var i = 0; i < NUM_TEMPLATES; i++) {
             addTreeTemplate();
         }
 
-        for(var i = 0; i < 600; i++) {
+        for(var i = 0; i < NUM_TREES; i++) {
 
-            var s = 100;
+            
 
-            var xr = 0.33 + Math.random() * s / 3;
+            var s = Simplrz.touch ? 20 : 100;
+            var xr = 0.5 + Math.random() * s / 3;
             var xd = Math.random() > 0.5 ? 1 : -1;
+            
+            var z = FOG_END * -Math.random();
 
-
-            addTree(xr * xd, -s * Math.random());
+            addTree(xr * xd, z);
         }
 
         var ground = new SQR.Transform();
@@ -173,7 +181,7 @@
                 // t.rotation.x = Math.sin(t.phase * 1.00) * 0.04;
                 // t.rotation.z = Math.cos(t.phase * 1.37) * 0.02;
 
-                if(t.position.z - cameraBase.position.z > 0) t.position.z -= 100;
+                if(t.position.z - cameraBase.position.z > 0) t.position.z -= FOG_END;
             }
 
             // cameraBase.rotation.y += 0.002;

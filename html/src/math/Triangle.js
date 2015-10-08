@@ -101,4 +101,10 @@ SQR.Triangle = function(v0, v1, v2) {
 
 	}
 
+	this.get = function(i) {
+		if(i == 0) return this.v0;
+		if(i == 1) return this.v1;
+		if(i == 2) return this.v2;
+	}
+
 };

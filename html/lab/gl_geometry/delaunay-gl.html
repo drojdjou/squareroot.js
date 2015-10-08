@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Delaunay trinagluation GL</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas></canvas>
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Delaunay.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Triangle.js"></script>
+
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
+
+<script type="text/javascript">
+
+var images = [
+	'assets/la-skyline.jpg',
+	'assets/monument.jpg',
+	'assets/griffith.jpg',
+	'assets/hollywood.jpg',
+	'assets/pyramid.jpg',
+	'assets/berkeley.jpg',
+	'assets/sunset.jpg',
+	'assets/nyc.jpg',
+	'assets/night.jpg',
+	'assets/yellowstone.jpg',
+];
+
+var index = localStorage.delaunayIndex;
+if(index === undefined || index === null) index = -1;
+index++;
+index = index % images.length;
+localStorage.delaunayIndex = index;
+
+
+SQR.Loader.loadAssets([
+	['glsl/delaunay.glsl', 'shader'],
+	[images[index], 'image']
+], function(assets) {
+
+	var ctx = SQR.Context(document.querySelector('canvas'))
+		.create()
+		.clearColor(0.1, 0.1, 0.1, 1);
+
+	var renderer = SQR.Renderer(ctx);
+
+	var root = new SQR.Transform();
+	var plane = new SQR.Transform();
+
+	plane.shader = SQR.Shader(assets.shader)
+		.use()
+		.setUniform('uTexture', SQR.Texture(assets.image, { flip: false }));
+
+	
+	var points = [], triangles = [];
+
+	var addInitPoints = function(n) {
+
+		var a = assets.image.width / assets.image.height;
+
+		points.length = 0;
+
+		points.push(new SQR.V3(-0.1, 0.0, 0));
+		points.push(new SQR.V3(-0.1, 1.1, 0));
+		points.push(new SQR.V3( 1.0, 1.1, 0));
+		points.push(new SQR.V3( 1.0, 0.0, 0));
+
+		for(var i = 0; i < n; i++) {
+			var x = Math.random() * 1;
+			var y = Math.random() * 1;
+			points.push(new SQR.V3(x, y, 0));
+		}
+
+		triangles = SQR.Delaunay.triangulate(points);
+	}
+
+	var addGrid = function(n, v) {
+		points.length = 0;
+
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var fsr = Util.fullbleed(assets.image, 1, w/h);
+		var sx = fsr[2];
+		var sy = fsr[3];
+
+		var p = 1/n * v;
+
+		for(var x = -0.1; x <= 1.2 + 1/n; x += 1/n * sy) {
+			for(var y = -0.1; y <= 1.2 + 1/n; y += 1/n * sx) {
+				points.push(new SQR.V3(
+					x + (Math.random() * 2 - 1) * p * sy, 
+					y + (Math.random() * 2 - 1) * p * sx,
+					0
+				));
+			}
+		}
+
+		triangles = SQR.Delaunay.triangulate(points);	
+	}
+
+	// addInitPoints(600);
+	// addGrid(24, 0.33);
+	// addGrid(8, 0.5);
+	addGrid(window.innerWidth / 24, 0.33);
+	// addGrid(window.innerWidth / 48, 0);
+	// addGrid(24, 0.1);
+
+	plane.buffer = SQR.Buffer()
+		.layout({ aPosition: 3, aCentroid: 3 }, triangles.length * 3)
+		.iterate(null, function(i, d, c) {
+			var vi = c % 3, ti = (c / 3) | 0;
+			var t = triangles[ti];
+			var v = t.get(vi);
+
+			// console.log(v.x.toPrecision(2), v.y.toPrecision(2), v.z.toPrecision(2));
+
+			if(!t.centroid) t.calculateCentroid();
+
+			d[i+0] = v.x;
+			d[i+1] = v.y;
+			d[i+2] = v.z;
+
+			d[i+3] = t.centroid.x;
+			d[i+4] = t.centroid.y;
+			d[i+5] = 0.0;
+
+			// if(vi == 2) console.log('---');
+
+		})
+		// .setMode(SQR.gl.LINE_LOOP)
+		// .setMode(SQR.gl.POINTS)
+		.update();
+
+	plane.buffer.cull = false;
+	plane.lineWidth = 3;
+
+	root.add(plane);
+
+	var render = function() {
+		// requestAnimationFrame(render);
+		renderer.render(root);
+	}
+
+	var resize = function() {
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var r = window.devicePixelRatio;
+		var a = h/w;
+		ctx.size(w, h, r);
+
+		var fsr = Util.fullbleed(assets.image, 1, a);
+		// var fsr = Util.fullbleed({ width: 1, height: 1 }, 1, a);
+
+		plane.scale.set(fsr[2], fsr[3], 1);
+		plane.position.set(fsr[0], fsr[1], 0);
+
+		// if(w > h) plane.position.y = (1 - a) * -0.5;
+		// else plane.scale.set(a, a, 1);
+
+		// console.log(fsr[2], fsr[3]);
+
+		renderer.projection = new SQR.ProjectionMatrix().orthographic(0, 1, 0, a, -1, 1);
+		
+		render();
+	}
+
+	Application.resize.on(resize);
+	resize();
+	Application.init();
+});
+
+</script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

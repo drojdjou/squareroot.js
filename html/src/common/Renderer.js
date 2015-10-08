@@ -111,11 +111,16 @@ SQR.Renderer = function(context) {
 				if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
 
 				var p = (camera && camera.projection) ? camera.projection : r.projection;
-				if(p) lastShader.setUniform('uProjection', p);
+
+				if(p) {
+					lastShader
+						.setUniform('uProjection', p)
+						.setUniform('uNear', p.near)
+						.setUniform('uFar', p.far);
+				}
 
 				lastShader.setUniform('uTime', time);
-				lastShader.setUniform('uNear', p.near);
-				lastShader.setUniform('uFar', p.far);
+				
 
 				shaderChanged = true;
 			}

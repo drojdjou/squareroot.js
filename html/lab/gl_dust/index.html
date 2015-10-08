@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -43,6 +45,11 @@
 		['line.glsl', 'lineShader']
 	], function(assets) {
 
+		var numDots = Simplrz.touch ? 300 : 1200;
+		var lineWidth = 2;// * window.devicePixelRatio;
+		var pointSize = 2 * window.devicePixelRatio;
+		var minRadius = Simplrz.touch ? 12 : 20;
+
 		var w, h;
 		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
@@ -53,7 +60,7 @@
 
 		var resize = function() {
 			w = window.innerWidth, h = window.innerHeight;
-			ctx.size(w, h);
+			ctx.size(w, h, window.devicePixelRatio);
 			renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
 		}
 
@@ -66,7 +73,9 @@
 		};
 
 		var mouse = new SQR.V2();
-		document.addEventListener('mousemove', function(e) {
+		var moveEvent = Simplrz.touch ? 'touchmove' : 'mousemove';
+		document.addEventListener(moveEvent, function(e) {
+			e = e.targetTouches ? e.targetTouches[0] : e;
 			mouse.x = e.pageX;
 			mouse.y = e.pageY;
 		});
@@ -156,8 +165,8 @@
 		dcv.ctx.fill();
 		var dtex = SQR.Texture(dcv);
 
-		var dotCoords = [], numDots = 1000, lineCoords = [], alphaCoords = [];
-		var wm = 16, minDist = (h / wm) * (h / wm);
+		var dotCoords = [], lineCoords = [], alphaCoords = [];
+		var wm = minRadius, minDist = (h / wm) * (h / wm);
 		var lineBufferMax = numDots * 32;
 
 		for(var i = 0; i < numDots; i++) {
@@ -167,8 +176,6 @@
 			// var v = new SQR.V2(w/2 + Math.cos(a) * rd, h/2 + Math.sin(a) * rd);
 
 			var v = new SQR.V2(Math.random() * w, Math.random() * h);
-
-
 			var bs = 0.5;
 			v.basespeed = new SQR.V2(-bs + r(bs * 2), -bs + r(bs * 2));
 			v.speed = new SQR.V2();
@@ -187,7 +194,11 @@
 
 		dots.setBlending(true);
 
-		dots.shader = SQR.Shader(assets.dotShader)
+		dots.shader = SQR.Shader(assets.dotShader, {
+				directives: [
+					{ name: 'POINT_SIZE', value: pointSize + '.0' }
+				]
+			})
 			.use()
 			.setUniform('uTexture', dtex);
 
@@ -203,7 +214,7 @@
 
 		lines.useDepth = false;
 		lines.setBlending(true);
-		lines.lineWidth = 2;
+		lines.lineWidth = lineWidth;
 
 		lines.shader = SQR.Shader(assets.lineShader)
 			.use()

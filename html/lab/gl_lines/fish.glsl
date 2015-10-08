@@ -28,7 +28,7 @@ varying vec3 vNormal;
 void main() {
 	vec3 n = vNormal;
 	n.z *= -1.0;
-    gl_FragColor = vec4(sphericalHarmonics(n) * 1.33, 1.0);
+    gl_FragColor = vec4(sphericalHarmonics(n) * 1.66, 1.0);
 }
 
 

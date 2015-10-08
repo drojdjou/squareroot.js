@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -38,179 +40,185 @@
 
 <script type="text/javascript">
 
-    SQR.Loader.loadAssets([
-        ['normal2color.glsl', 'n2c'],
-        ['reflective.glsl', 'refl'],
-        ['../../assets/monument.jpg', 'tex'],
-    ], function(assets) {
+	SQR.Loader.loadAssets([
+		['normal2color.glsl', 'n2c'],
+		['reflective.glsl', 'refl'],
+		['../../assets/monument.jpg', 'tex'],
+	], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var REFL_SIZE = Simplrz.touch ? 128 : 512;
+		var NUM_CUBES = Simplrz.touch ? 25 : 100;
 
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
-        var renderer = new SQR.Renderer(ctx);
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
-        var resize =function() {
-            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-            ctx.size(w, h);
-            renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-        }
+		var renderer = new SQR.Renderer(ctx);
 
-        window.addEventListener('resize', resize);
-        resize();
-        
-        var root = new SQR.Transform();
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
 
-        var camera = new SQR.Transform();
-        camera.position.z = 20;
-        root.add(camera);
+		window.addEventListener('resize', resize);
+		resize();
+		
+		var root = new SQR.Transform();
 
-        var cubemapBuffer = SQR.FrameBuffer(512, 512, 1, true);
+		var camRoot = new SQR.Transform();
+		root.add(camRoot);
 
-        var cubemapCameraHolder = SQR.Transform();
-        var cubemapCamera = SQR.Transform();
+		var camera = new SQR.Transform();
+		camera.position.z = w > h ? 20 : 25;
+		camRoot.add(camera);
 
-        var p = new SQR.ProjectionMatrix().perspective(90, 1, 1, 1000);
-        cubemapCamera.projection = p;
+		var cubemapBuffer = SQR.FrameBuffer(REFL_SIZE, REFL_SIZE, 1, true);
 
-        cubemapCameraHolder.add(cubemapCamera);
-        root.add(cubemapCameraHolder);
+		var cubemapCameraHolder = SQR.Transform();
+		var cubemapCamera = SQR.Transform();
 
-        var reflShader = SQR.Shader(assets['refl'])
-                        .use()
-                        .setUniform('uCubemap', cubemapBuffer.texture);
+		var p = new SQR.ProjectionMatrix().perspective(90, 1, 1, 1000);
+		cubemapCamera.projection = p;
 
-        var sphere = new SQR.Transform();
-        sphere.buffer = SQR.Primitives.createSphere(5, 20, 20).update();
-        // sphere.buffer = SQR.Primitives.createCube(5, 5, 5).update();
-        sphere.shader = reflShader
-        root.add(sphere);
+		cubemapCameraHolder.add(cubemapCamera);
+		root.add(cubemapCameraHolder);
 
-        var cubes = new SQR.Transform();
-        root.add(cubes);
+		var reflShader = SQR.Shader(assets['refl'])
+						.use()
+						.setUniform('uCubemap', cubemapBuffer.texture);
 
-        var cubeBuffer = SQR.Primitives.createCube(1, 1, 1).update();
-        var cubeShader = SQR.Shader(assets['n2c']);
+		var sphere = new SQR.Transform();
+		sphere.buffer = SQR.Primitives.createSphere(5, 20, 20).update();
+		// sphere.buffer = SQR.Primitives.createCube(5, 5, 5).update();
+		sphere.shader = reflShader
+		root.add(sphere);
 
-        var addCube = function(x, y, z, color) {
-            var c = new SQR.Transform();
-            c.shader = cubeShader;
-            c.buffer = cubeBuffer;
-            c.position.set(x, y, z);
-            c.scale.set(2, 2, 2);
-            c.uniforms = { 'uColor': color };
-            cubes.add(c);
-            return c;
-        }
+		var cubes = new SQR.Transform();
+		root.add(cubes);
 
-        addCube(-10,   0,    0, [1,0,0]);
-        addCube( 10,   0,    0, [0,1,0]);
-        addCube( 0,   10,    0, [0,0,1]);
-        addCube( 0,  -10,    0, [1,1,0]);
-        addCube( 0,    0,   10, [1,0,1]);
-        addCube( 0,    0,  -10, [0,1,1]);
+		var cubeBuffer = SQR.Primitives.createCube(1, 1, 1).update();
+		var cubeShader = SQR.Shader(assets['n2c']);
 
-        var addMoreCube = function() {
-            var v = new SQR.V3().random().norm().mul(8 + Math.random() * 4);
-            var c = addCube(v.x, v.y, v.z, [1,1,1]);
-            c.rotation.set(v.x, v.y, v.z);
-            c.scale.set(0.5, 0.5, 0.5);
-        }
+		var addCube = function(x, y, z, color) {
+			var c = new SQR.Transform();
+			c.shader = cubeShader;
+			c.buffer = cubeBuffer;
+			c.position.set(x, y, z);
+			c.scale.set(2, 2, 2);
+			c.uniforms = { 'uColor': color };
+			cubes.add(c);
+			return c;
+		}
 
-        for(var i = 0; i < 100; i++) {
-            addMoreCube();
-        }
+		addCube(-10,   0,    0, [1,0,0]);
+		addCube( 10,   0,    0, [0,1,0]);
+		addCube( 0,   10,    0, [0,0,1]);
+		addCube( 0,  -10,    0, [1,1,0]);
+		addCube( 0,    0,   10, [1,0,1]);
+		addCube( 0,    0,  -10, [0,1,1]);
 
-        var tx = 0, mx = 0, ty = 0, my = 0;
+		var addMoreCube = function() {
+			var v = new SQR.V3().random().norm().mul(8 + Math.random() * 4);
+			var c = addCube(v.x, v.y, v.z, [1,1,1]);
+			c.rotation.set(v.x, v.y, v.z);
+			c.scale.set(0.5, 0.5, 0.5);
+		}
 
-        document.addEventListener('mousemove', function(e) {
-            tx = (e.pageX / w) * 2 - 1;
-            ty = (e.pageY / h) * 2 - 1;
-        });
+		for(var i = 0; i < NUM_CUBES; i++) {
+			addMoreCube();
+		}
 
-        cubemapCamera.useQuaternion = true;
-        var qt = new SQR.Quaternion();
+		var tx = 0, mx = 0, ty = 0, my = 0;
 
-        var renderSide = function(name) {
-            cubemapBuffer.bind(name);
-            ctx.clearColor(0.2, 0, 0, 1);
-            ctx.clear();
-            ctx.gl.viewport(0, 0, 512, 512);
+		document.addEventListener('mousemove', function(e) {
+			tx = (e.pageX / w) * 2 - 1;
+			ty = (e.pageY / h) * 2 - 1;
+		});
 
-            switch(name) {
-                case 'front':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI, 1, 0, 0);
-                break;
-                case 'back':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI, 0, 0, 1);
-                break;
-                case 'left':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
-                qt.fromAngleAxis(Math.PI, 0, 0, 1);
-                cubemapCamera.quaternion.mul(qt);
-                break;
-                case 'right':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
-                qt.fromAngleAxis(Math.PI, 0, 0, -1);
-                cubemapCamera.quaternion.mul(qt);
-                break;
-                case 'up':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
-                break;
-                case 'down':
-                cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 1, 0, 0);
-                break;
-            }
+		cubemapCamera.useQuaternion = true;
+		var qt = new SQR.Quaternion();
 
-            renderer.render(root, cubemapCamera);//, { dontCalculateTransforms: (name == 'front') });
-        }
+		var renderSide = function(name) {
+			cubemapBuffer.bind(name);
+			ctx.clearColor(0.2, 0.0, 0.2, 1);
+			ctx.clear();
+			ctx.gl.viewport(0, 0, REFL_SIZE, REFL_SIZE);
 
-        var render = function() {
-            requestAnimationFrame(render);
-            mx += (tx - mx) * 0.1;
-            my += (ty - my) * 0.1;
+			switch(name) {
+				case 'front':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 1, 0, 0);
+				break;
+				case 'back':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 0, 0, 1);
+				break;
+				case 'left':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
+				qt.fromAngleAxis(Math.PI, 0, 0, 1);
+				cubemapCamera.quaternion.mul(qt);
+				break;
+				case 'right':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
+				qt.fromAngleAxis(Math.PI, 0, 0, -1);
+				cubemapCamera.quaternion.mul(qt);
+				break;
+				case 'up':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+				break;
+				case 'down':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 1, 0, 0);
+				break;
+			}
 
+			renderer.render(root, cubemapCamera);//, { dontCalculateTransforms: (name == 'front') });
+		}
 
-            renderSide('front');
-            renderSide('back');
-
-            renderSide('left');
-            renderSide('right');
-
-            renderSide('up');
-            renderSide('down');
+		var render = function() {
+			requestAnimationFrame(render);
+			mx += (tx - mx) * 0.1;
+			my += (ty - my) * 0.1;
 
 
+			renderSide('front');
+			renderSide('back');
 
-            renderer.renderToScreen();
-            ctx.clearColor(0, 0, 0, 1);
-            ctx.clear();
-            ctx.gl.viewport(0, 0, w, h);
+			renderSide('left');
+			renderSide('right');
 
-            cubes.rotation.x += 0.01;
-            cubes.rotation.y += 0.01;
-            // cubes.rotation.z += 0.01;
-
-            cubes.children.forEach(function(e) {
-                e.rotation.y += 0.01;
-                e.rotation.x += 0.02;
-            });
+			renderSide('up');
+			renderSide('down');
 
 
-            // camera.position.x = mx * 20;
-            // camera.position.y = my * 20;
-            camera.lookAt = cubes;
-            renderer.render(root, camera);
-        }
 
-        render();
-    });
+			renderer.renderToScreen();
+			ctx.clearColor(0, 0, 0, 1);
+			ctx.clear();
+			ctx.gl.viewport(0, 0, w, h);
+
+			cubes.rotation.x += 0.01;
+			cubes.rotation.y += 0.01;
+			cubes.rotation.z += 0.01;
+
+			cubes.children.forEach(function(e) {
+				e.rotation.y += 0.01;
+				e.rotation.x += 0.02;
+			});
+
+			// camRoot.rotation.y += 0.01;
+			// camera.position.x = mx * 20;
+			// camera.position.y = my * 20;
+			camera.lookAt = cubes;
+			renderer.render(root, camera);
+		}
+
+		render();
+	});
 
 </script>
 
 <script>
 if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 </body>

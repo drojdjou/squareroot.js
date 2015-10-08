@@ -43,9 +43,9 @@ SQR.Delaunay = (function() {
 		var dx = (maxx - minx) * 10;
 		var dy = (maxy - miny) * 10;
 
-		var stv0 = new SQR.V2(minx - dx, miny - dy * 3);
-		var stv1 = new SQR.V2(minx - dx, maxy + dy);
-		var stv2 = new SQR.V2(maxx + dx * 3, maxy + dy);
+		var stv0 = vertices[0].clone().set(minx - dx, miny - dy * 3);
+		var stv1 = vertices[0].clone().set(minx - dx, maxy + dy);
+		var stv2 = vertices[0].clone().set(maxx + dx * 3, maxy + dy);
 
 		return new SQR.Triangle(stv0, stv1, stv2);
 	}

@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -40,214 +42,232 @@
 
 <script type="text/javascript" id="gl-script">
 
-var numFish = parseInt(document.location.search.substring(1)) || 150; 
+var numFish = parseInt(document.location.search.substring(1)) || 100; 
 // each fish repeated 3x. append ?XXX to URL where XXX is number of fish you want to see
 
 SQR.shaderPath = '../../src/glsl/';
 
 SQR.Loader.loadAssets([
-    ['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data'],
-    ['../../src/glsl/light/sphar.glsl', 'sphar'],
-    'line.glsl',
-    'normal2color.glsl',
-    'fish.glsl',
-    'blur.glsl',
-    'bloom.glsl'
+	['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data'],
+	['../../src/glsl/light/sphar.glsl', 'sphar'],
+	'line.glsl',
+	'normal2color.glsl',
+	'fish.glsl',
+	'blur.glsl',
+	'bloom.glsl'
 ], function(assets) {
 
-    var w = window.innerWidth, h = window.innerHeight;
+	var w, h;
 
-    var ctx = SQR.Context('#gl-canvas')
-        .create()
-        .size(w, h).
-        clearColor(0, 0.1, 0.1, 1);
+	var ctx = SQR.Context('#gl-canvas')
+		.create()
+		.clearColor(0, 0.3, 0.4, 1);
 
-    var renderer = SQR.Renderer(ctx);
-    renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 1, 1000);
+	var renderer = SQR.Renderer(ctx);
 
-    var camera = SQR.Transform();
-    camera.position.z = 400;
-    camera.position.y = 140;
-    camera.rotation.x = 0.1;
+	var resize = function() {
+		w = window.innerWidth, h = window.innerHeight;
 
-    var camRoot = SQR.Transform();
+		// ctx.size(w, h, window.devicePixelRatio);
+		ctx.size(w, h, 1);
 
-    var curve = new SQR.Spline()
-        .addSegment( 200,  100,  100)
-        .addSegment(   0, -100, -200)
-        .addSegment(   0,  100,  200)
-        .addSegment(-200,  150, -100)
-        .create(0.5, true);
+		// renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+		renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
+	}
 
-    var curveResolution = 100;
-    var curveBuffer = SQR.Buffer()
-        .layout({ aPosition: 3 }, curveResolution+1)
-        .setMode(SQR.gl.LINE_STRIP);
+	window.addEventListener('resize', resize);
+	resize();
 
-        for(var i = 0; i <= curveResolution; i++) {
-            curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
-        }
+	var camera = SQR.Transform();
+	camera.position.z = window.innerWidth < 768 ? 200 : 250;
+	camera.position.y = 70;
+	camera.rotation.x = 0.1;
 
-        curveBuffer.update();
+	var camRoot = SQR.Transform();
 
-    var line = SQR.Transform();
-    line.buffer = curveBuffer;
-    line.shader = SQR.Shader(assets['line.glsl']);
-    line.uniforms = { 'uColor': [1, 1, 1] };
+	var curve = new SQR.Spline()
+		.addSegment( 100,   50,   50)
+		.addSegment(   0,  -50, -100)
+		.addSegment(   0,   50,  100)
+		.addSegment(-100,   75,  -50)
+		.create(0.5, true);
 
-    var root = SQR.Transform();
-    root.add(camRoot);
-    // root.add(line);
-    camRoot.add(camera);
+	var curveResolution = 100;
+	var curveBuffer = SQR.Buffer()
+		.layout({ aPosition: 3 }, curveResolution+1)
+		.setMode(SQR.gl.LINE_STRIP);
 
-    var s = 4, shape = [
-        new SQR.V2( 0,  s),
-        new SQR.V2(-s, -s),
-        new SQR.V2( s, -s)
-    ];
+		for(var i = 0; i <= curveResolution; i++) {
+			curveBuffer.set('aPosition', i, curve.valueAt(i / curveResolution));
+		}
 
-    var n2c = SQR.Shader(assets['fish.glsl']);
-    var extrudes = [], 
-        fishes = [];
+		curveBuffer.update();
 
-    for(var i = 0; i < numFish; i++) {
+	var line = SQR.Transform();
+	line.buffer = curveBuffer;
+	line.shader = SQR.Shader(assets['line.glsl']);
+	line.uniforms = { 'uColor': [1, 1, 1] };
 
-        var extrude = SQR.Extrude().setPaths(shape, curve, 6);
-        extrudes.push(extrude);
-        extrude.phase = Math.random() * 2;
-        extrude.speed = 0.0005 + Math.random() * 0.002;
+	var root = SQR.Transform();
+	root.add(camRoot);
+	// root.add(line);
+	camRoot.add(camera);
 
-        for(var j = 0; j < 3; j++) {
-            var fish = SQR.Transform();
-            fish.buffer = extrude.buffer;
-            fish.shader = n2c;
-        
-            fish.name = 'fish.' + i;
+	var s = 4, shape = [
+		new SQR.V2( 0,  s),
+		new SQR.V2(-s, -s),
+		new SQR.V2( s, -s)
+	];
 
-            var sp = 120;
+	var n2c = SQR.Shader(assets['fish.glsl']);
+	var extrudes = [], 
+		fishes = [];
 
-            // the transform never moves, only the geometry does, hence...
-            fish.isStatic = true;
+	for(var i = 0; i < numFish; i++) {
 
-            fish.position.x += Math.random() * sp - sp/2;
-            fish.position.y += Math.random() * sp - sp/2;
-            fish.position.z += Math.random() * sp - sp/2;
+		var extrude = SQR.Extrude().setPaths(shape, curve, 6);
+		extrudes.push(extrude);
+		extrude.phase = Math.random() * 2;
+		extrude.speed = 0.0005 + Math.random() * 0.002;
 
-            fish.rotation.x += Math.random() * 0.1;
-            fish.rotation.y += Math.random() * 0.1;
-            fish.rotation.z += Math.random() * 0.1;
+		for(var j = 0; j < 3; j++) {
+			var fish = SQR.Transform();
+			fish.buffer = extrude.buffer;
+			fish.shader = n2c;
+		
+			fish.name = 'fish.' + i;
 
-            fishes.push(fish);
-            root.add(fish);
-        }
-    }
+			var sp = 120;
 
-    var my = 0, mx = 0, tx = 0, ty = 0;
+			// the transform never moves, only the geometry does, hence...
+			fish.isStatic = true;
 
-    var isTouch = 'ontouchstart' in document;
-    var mousemove = isTouch ? 'touchmove' : 'mousemove';
+			fish.position.x += Math.random() * sp - sp/2;
+			fish.position.y += Math.random() * sp - sp/2;
+			fish.position.z += Math.random() * sp - sp/2;
 
-    document.addEventListener(mousemove, function(e) {
-        e = isTouch ? e.targetTouches[0] : e;
-        tx = e.pageX / window.innerWidth;
-        ty = e.pageY / window.innerHeight;
-    });
+			fish.rotation.x += Math.random() * 0.1;
+			fish.rotation.y += Math.random() * 0.1;
+			fish.rotation.z += Math.random() * 0.1;
 
-    var phase = 0;
+			fishes.push(fish);
+			root.add(fish);
+		}
+	}
 
-    var fishify = function(t, v) {
-        t = 1 - Math.abs(t * 2 - 1);
-        t = Math.sin(t * Math.PI * 0.5);
-        v.mul(t);
-    }
+	var my = 0, mx = 0, tx = 0, ty = 0;
 
-    var rawFBO = SQR.FrameBuffer(w, h);    
-    var blurXFBO = SQR.FrameBuffer(w, h);   
-    var blurYFBO = SQR.FrameBuffer(w, h);   
+	var mousemove = Simplrz.touch ? 'touchmove' : 'mousemove';
 
-    var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
-    var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
+	document.addEventListener(mousemove, function(e) {
 
-    var renderBloom = false;
+		e.preventDefault();
 
-    document.addEventListener('keydown', function(e) {
+		e = Simplrz.touch ? e.targetTouches[0] : e;
+		tx = e.pageX / window.innerWidth;
+		ty = e.pageY / window.innerHeight;
 
-        if(e.keyCode == 'Q'.charCodeAt(0)) {
-            renderBloom = !renderBloom;
-        }
+		if(Simplrz.touch) {
+			tx *= 4;
+			ty *= 4;
+		}
+	});
 
-    });
+	var phase = 0;
 
-    var render = function() {
-        requestAnimationFrame(render);
-        ctx.clear();
-    
-        for(var i = 0; i < numFish; i++) {
-            var f = extrudes[i];
-            var p = f.phase;
-            f.update(p, p + 0.03, fishify);
-            f.phase += f.speed;
-        }
+	var fishify = function(t, v) {
+		t = 1 - Math.abs(t * 2 - 1);
+		t = Math.sin(t * Math.PI * 0.5);
+		v.mul(t);
+	}
 
-        camRoot.rotation.y = (mx * 2 - 1) * 0.2;
-        camRoot.rotation.x = (my * 2 - 1) * 0.2;
-        
-        if(renderBloom) {
-    
-            // At apply the bloom post-effect
-            rawFBO.bind();
-            renderer.render(root, camera);
+	var rawFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);    
+	var blurXFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);   
+	var blurYFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);   
 
-            blurForce = 0.02;
+	var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
+	var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
-            blurXFBO.bind();
-            blur.shader.use();
-            blur.shader.setUniform('uDelta', [0.0, blurForce]);
-            blur.shader.setUniform('uTexture', rawFBO.texture);
-            renderer.render(blur);
+	var renderBloom = true;
 
-            blurYFBO.bind();
-            blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-            blur.shader.setUniform('uTexture', blurXFBO.texture);
-            renderer.render(blur);
+	document.addEventListener('keydown', function(e) {
 
-            renderer.renderToScreen();
-            ctx.gl.viewport(0, 0, w, h);
-            bloom.shader.use();
-            bloom.shader.setUniform('uTexture', rawFBO.texture);
-            bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
-            renderer.render(bloom);
+		if(e.keyCode == 'Q'.charCodeAt(0)) {
+			renderBloom = !renderBloom;
+		}
 
-        } else {
+	});
 
-            renderer.render(root, camera);
+	var render = function() {
+		requestAnimationFrame(render);
+		ctx.clear();
+	
+		for(var i = 0; i < numFish; i++) {
+			var f = extrudes[i];
+			var p = f.phase;
+			f.update(p, p + 0.04, fishify);
+			f.phase += f.speed;
+		}
 
-        }
+		camRoot.rotation.y = (mx * 2 - 1) * 0.2;
+		camRoot.rotation.x = (my * 2 - 1) * 0.2;
+		
+		if(renderBloom) {
+	
+			// At apply the bloom post-effect
+			rawFBO.bind();
+			renderer.render(root, camera);
 
-        mx += (tx - mx) * 0.1;
-        my += (ty - my) * 0.1;
-    }
+			blurForce = 0.02;
 
-    render();
+			blurXFBO.bind();
+			blur.shader.use();
+			blur.shader.setUniform('uDelta', [0.0, blurForce]);
+			blur.shader.setUniform('uTexture', rawFBO.texture);
+			renderer.render(blur);
+
+			blurYFBO.bind();
+			blur.shader.setUniform('uDelta', [blurForce, 0.0]);
+			blur.shader.setUniform('uTexture', blurXFBO.texture);
+			renderer.render(blur);
+
+			renderer.renderToScreen();
+			ctx.gl.viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
+			bloom.shader.use();
+			bloom.shader.setUniform('uTexture', rawFBO.texture);
+			bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
+			renderer.render(bloom);
+
+		} else {
+
+			renderer.render(root, camera);
+
+		}
+
+		mx += (tx - mx) * 0.1;
+		my += (ty - my) * 0.1;
+	}
+
+	render();
 });
 
 </script>
 
 <!--
 <header>
-    <button class="icon"></button>
-    <article>
-        <h1>Fish school</h1>
-        <p><script type="text/javascript"> document.write(numFish * 3); </script> simple meshes extruded and moving along a spline. A video of this demo can be found <a href="https://vimeo.com/113256369">here</a>. Press Q to toggle bloom effect. By <a href="http://bartekdrozdz.com">Bartek Drozdz.</a></p>
-        <code></code>
-    </article>
+	<button class="icon"></button>
+	<article>
+		<h1>Fish school</h1>
+		<p><script type="text/javascript"> document.write(numFish * 3); </script> simple meshes extruded and moving along a spline. A video of this demo can be found <a href="https://vimeo.com/113256369">here</a>. Press Q to toggle bloom effect. By <a href="http://bartekdrozdz.com">Bartek Drozdz.</a></p>
+		<code></code>
+	</article>
 </header>
 <script type="text/javascript" src="../base.js"></script>
 -->
 
 <script>
 if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 
