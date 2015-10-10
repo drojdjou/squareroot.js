@@ -79,9 +79,8 @@ void main()
 	col += texture2D(uTexture, vUV + (vec2( -0.4,0.0 )*as) * dofblur*0.4);	
 	col += texture2D(uTexture, vUV + (vec2( -0.29,-0.29 )*as) * dofblur*0.4);	
 	col += texture2D(uTexture, vUV + (vec2( 0.0,0.4 )*as) * dofblur*0.4);	
-			
+		
 	// gl_FragColor = col/17.0;
 	gl_FragColor = col/41.0;
-
 	gl_FragColor.a = 1.0;
 }

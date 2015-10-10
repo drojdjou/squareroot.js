@@ -25,7 +25,6 @@ SQR.Buffer = function() {
 
 	b.mode = SQR.gl.TRIANGLES;
 	b.drawMode = SQR.gl.STATIC_DRAW;
-	b.cull = true;
 
 	/**
 	 *	@method setMode
@@ -274,8 +273,6 @@ b.iterate('aPosition', function(i, data, count)) {
 	b.draw = function() {
 		var gl = SQR.gl;
 
-		b.cull ? gl.enable(gl.CULL_FACE) : gl.disable(gl.CULL_FACE);
-		
 		if(hasIndex)
 			gl.drawElements(b.mode, b.indexSize, gl.UNSIGNED_SHORT, 0);
 		else 

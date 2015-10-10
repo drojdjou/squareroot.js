@@ -8,6 +8,7 @@
 SQR.V3 = function(x, y, z) {
     this.set(x, y, z)
     this.size = 3;
+    SQR.V3.instances++;
 }
 
 /**
@@ -282,3 +283,5 @@ SQR.V3.forward = new SQR.V3(0,0,1);
 SQR.V3.__tv1 = new SQR.V3();
 SQR.V3.__tv2 = new SQR.V3();
 SQR.V3.__tv3 = new SQR.V3();
+
+SQR.V3.instances = 0;

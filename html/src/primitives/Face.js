@@ -119,7 +119,7 @@ SQR.Face = function() {
     t.calculateNormal = t.cn = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;
-        t.normal = new SQR.V3();
+        t.normal = t.normal || new SQR.V3();
 
         if(indexed) {
             t1.sub(vertexArray[t.ia], vertexArray[t.ib]);

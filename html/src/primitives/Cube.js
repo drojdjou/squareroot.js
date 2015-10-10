@@ -55,7 +55,7 @@ SQR.Primitives.createSkybox = function(options) {
 
 	options = options || {};
 	options.size = options.size || 5;
-	options.useDepth = (options.useDepth === undefined) ? true : options.useDepth;
+	options.useDepth = (options.useDepth === undefined) ? false : options.useDepth;
 
 	if(!options.glsl && SQR.GLSL) {
 		if(options.use2dTextures) 

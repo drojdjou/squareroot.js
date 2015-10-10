@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Template</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['normal2color.glsl', 'n2c'],
+	], function(assets) {
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+		var ctx = SQR.Context('#gl-canvas')
+			.create({ stencil: true })
+			.clearColor(0.2, 0.2, 0.2, 1);
+
+		var renderer = new SQR.Renderer(ctx);
+
+		renderer.autoClear = false;
+
+		var resize = function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var root = new SQR.Transform();
+
+		var camRoot = new SQR.Transform();
+
+		var camera = new SQR.Transform();
+		camera.position.z = 8;
+		camRoot.add(camera);
+		root.add(camRoot);
+
+		var tx = 0, ty = 0;
+		var mx = 0, my = 0.2;
+		document.addEventListener('mousemove', function(e) {
+			tx = e.pageX / window.innerWidth * 2 - 1;
+			ty = e.pageY / window.innerHeight;
+		});
+
+		var s = SQR.Shader(assets['n2c']);
+		var b = SQR.Primitives.createCube(2, 2, 2).update();
+		var y = 3;
+
+		var cube = new SQR.Transform('cube');
+		cube.buffer = b;
+		cube.shader = s;
+		cube.position.y = y;
+		cube.uniforms = { uAlpha: 1 };
+		cube.setBlending(true);
+		root.add(cube);
+
+		var floor = new SQR.Transform('floor');
+		floor.buffer = SQR.Primitives.createPlane(6, 6, 1, 1);
+		floor.shader = s;
+		floor.position.z = 2;
+		floor.uniforms = { uAlpha: 1 };
+		floor.rotation.x = Math.PI;
+		root.add(floor);
+
+		var setupStencil = function(gl) {
+			gl.enable(gl.STENCIL_TEST);
+			gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+			gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+			gl.stencilMask(0xff);
+		}
+
+		var setupReflection = function(gl) {
+			gl.enable(gl.STENCIL_TEST);
+			gl.stencilFunc(gl.EQUAL, 1, 0xff);
+			gl.stencilMask(0x00);
+			gl.frontFace(gl.CCW);
+		}
+
+		var render = function() {
+			requestAnimationFrame(render);
+			ctx.clear();
+
+
+
+			mx += (tx - mx) * 0.05;
+			my += (ty - my) * 0.05;
+
+			cube.rotation.x += 0.01;
+			cube.rotation.y += 0.02;
+			cube.position.x = Math.sin(cube.rotation.x) * 3;
+			cube.position.y = y + Math.cos(cube.rotation.x * 3) * 1;
+
+			camera.position.y = 2 + my * 6;
+			camera.position.x = mx * 10;
+			camera.lookAt = floor;
+
+			// 1. Render the regular cube
+			camRoot.scale.y =  1;
+			cube.active = true;
+			cube.uniforms.uAlpha = 1;
+			floor.active = false;
+			renderer.render(root, camera);
+
+			// 2. Render floor to stencil
+			camRoot.scale.y =  1;
+			cube.active = false;
+			floor.active = true;
+			floor.useDepth = false;
+			renderer.render(root, camera, { customGLSetup: setupStencil });
+
+			// 3. Render the reflected cube using stencil
+			camRoot.scale.y = -1;
+			cube.active = true;
+			cube.uniforms.uAlpha = 0.1;
+			floor.active = false;
+			floor.useDepth = true;
+			renderer.render(root, camera, { customGLSetup: setupReflection });
+
+					
+		}
+
+		render();
+		// render();
+	});
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

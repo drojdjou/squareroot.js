@@ -24,11 +24,7 @@
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
-<script type="text/javascript" src="../../src/dev/Debug.js"></script>
-
 <script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
-
-<!-- <script type="text/javascript" src="../../../build/sqr-glsl.min.js"></script> -->
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -37,40 +33,43 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript" id="gl-script">
 
-SQR.shaderPath = '../../src/glsl/'
-
 SQR.Loader.loadAssets([
-	['../../src/glsl/post/fxaa.glsl', 'fxaa'],
+
 	['../../src/glsl/light/sphar.glsl', 'sphar'],
 	['../../src/glsl/light/sphar-oldtown.glsl', 'sphar-data'],
+
+	['../../assets/model/elephant.json', 'elephant'],
+
 	'shader.glsl',
 	'depth.glsl',
 	'bokeh.glsl',
-	'../../assets/model/elephant.json'
 ], function(assets) {
 
-	var w = window.innerWidth, h = window.innerHeight;
+	var numElephants = parseInt(document.location.search.substring(1)) || 80;
 
-	var ctx = SQR.Context('#gl-canvas')
-		.create()
-		// .clearColor(0.5, 0.5, 0.5, 1);
-		.clearColor(0.2, 0.2, 0.2, 1);
+
+	var w = window.innerWidth, h = window.innerHeight;
+	var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
 	var renderer = SQR.Renderer(ctx);
-	renderer.projection = new SQR.ProjectionMatrix().perspective(60, w/h, 1, 1000);
+	var depthFBO = SQR.FrameBuffer(w, h);    
+	var rawFBO = SQR.FrameBuffer(w, h); 
+	var bokeh = SQR.Primitives.createPostEffect(assets['bokeh.glsl']); 
+
+	var depthShader = SQR.Shader(assets['depth.glsl'])
+		.use()
+		.setUniform('uDofNear',  5)
+		.setUniform('uDofFar',  25);  
 
 	var resize = function() {
-		w = window.innerWidth, h = window.innerHeight;
-
-		ctx.size(w, h, window.devicePixelRatio);
-		// ctx.size(w, h, 1);
-
-		// renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
-		renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
+		var w = window.innerWidth, h = window.innerHeight, pr = window.devicePixelRatio, a = w/h;
+		ctx.size(w, h, 1);
+		depthFBO.resize(w/4, h/4);
+		rawFBO.resize(w, h);
+		bokeh.shader.use().setUniform('uScreenSize', [w, h, a]);
+		renderer.projection = new SQR.ProjectionMatrix().perspective(70, a, 0.1, 200);
 	}
 
 	window.addEventListener('resize', resize);
@@ -83,11 +82,9 @@ SQR.Loader.loadAssets([
 	camroot.add(camera);
 	
 	var hero = SQR.Transform();
-
 	var root = SQR.Transform().add(camroot, hero);
 
-	var model = assets['../../assets/model/elephant.json'];
-
+	var model = assets.elephant;
 	var buffer = SQR.Buffer()
 			.layout(SQR.v3n3u2(), model.vertices.length / 3)
 			.data('aPosition', model.vertices)
@@ -96,20 +93,9 @@ SQR.Loader.loadAssets([
 			.index(model.tris)
 			.update();
 
-	var shader = SQR.Shader(assets['shader.glsl'])
-			.use()
-			.attribPointers(buffer);
+	var shader = SQR.Shader(assets['shader.glsl']);
 
-	var num = parseInt(document.location.search.substring(1)) || 100;
-
-	document.querySelector('.num').innerHTML = num;
-
-	var t = SQR.Transform();
-	t.buffer = buffer;
-	t.shader = shader;
-	// t.scale.set(2, 2, 2);
-
-	for (var i = 0; i < num; i++) {
+	for (var i = 0; i < numElephants; i++) {
 		var t = SQR.Transform();
 		t.buffer = buffer;
 		t.shader = shader;
@@ -119,18 +105,7 @@ SQR.Loader.loadAssets([
 		hero.add(t);
 	}
 
-	var depthShader = SQR.Shader(assets['depth.glsl'])
-		.use()
-		.setUniform('uProjection', renderer.projection)
-		.setUniform('uNear', 05)
-		.setUniform('uFar',  25);  
-
-	var depthFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);    
-	var rawFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);    
-	var bokeh = SQR.Primitives.createPostEffect(assets['bokeh.glsl']);
-	bokeh.shader
-		.use()
-		.setUniform('uScreenSize', [ctx.canvas.width, ctx.canvas.height, w/h]);
+	
 
 	var my = 0.4, mx = 0.4, tx = mx, ty = my;
 
@@ -142,7 +117,6 @@ SQR.Loader.loadAssets([
 		mx += (tx - mx) * 0.1;
 		my += (ty - my) * 0.1;
 
-		ctx.clear();
 		camroot.rotation.y += 0.002;
 		camroot.rotation.y = mx * SQR.TWOPI;
 		camera.position.z = my * 100;
@@ -153,22 +127,23 @@ SQR.Loader.loadAssets([
 		}
 
 		if(renderDOF) {
+
 			depthFBO.bind();
-			ctx.clearColor(0, 0, 0, 1).clear();
 			renderer.render(root, camera, { replacementShader: depthShader });
 
 			rawFBO.bind();
-			ctx.clearColor(0, 0, 0, 1);
 			renderer.render(root, camera);
 
 			renderer.renderToScreen();
-			ctx.gl.viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
 			bokeh.shader.use();
 			bokeh.shader.setUniform('uTexture', rawFBO.texture);
 			bokeh.shader.setUniform('uDepthTexture', depthFBO.texture);
 			renderer.render(bokeh);
+
 		} else {
+
 			renderer.render(root, camera);
+
 		}
 	}
 

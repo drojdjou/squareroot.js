@@ -43,14 +43,14 @@
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
-        ['bones4.glsl', 'shader'],
+        ['hand.glsl', 'shader'],
 
         ['../../assets/unity-export/handScene.json', 'scene'],
         ['../../assets/unity-export/hand.json', 'mesh'],
 
         ['../../src/glsl/animation/bones.glsl', 'bones'],
         ['../../src/glsl/light/sphar.glsl', 'sphar'],
-        ['../../src/glsl/light/sphar-cathedral.glsl', 'sphar-data']
+        ['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data']
 
     ], function(assets) {
 
@@ -75,55 +75,18 @@
 
         scene.root.findByName('hand_model').shader.use().setUniform('uColor', [1, 0.33, 0.1]);
 
-        // var arm = scene.root.findByName('arm');
-        // arm.useQuaternion = false;
-
-        // var wrist = scene.root.findByName('wrist');
-        // wrist.useQuaternion = false;
-        
-        // var elbow = scene.root.findByName('elbow');
-        // elbow.useQuaternion = false;
-
-        // arm.rotation.x = 0.7;
-        // elbow.rotation.x = 0.5;
-        // wrist.rotation.x = 1.1;
 
         var base = queryBone('base');
 
-        // queryBone('f1a').rotation.x = 1.2;
-        // queryBone('f1a').rotation.y = -0.3;
+        // queryBone('f1a').rotation.y = -0.0;
+        queryBone('f1a').rotation.z = -0.4;
+        queryBone('f1b').rotation.z = -0.4;
 
-        // queryBone('f1b').rotation.x = 1.5;
-        // queryBone('f1b').rotation.y = 0.2;
+        queryBone('f2a').rotation.y = 0.1;
+        queryBone('f2a').rotation.z = -0.3;
+        // queryBone('f2b').rotation.y = 0.5;
 
-        // queryBone('f1c').rotation.x = 1.8;
-        // queryBone('f1c').rotation.y = 0.8;
-
-
-        // queryBone('f2a').rotation.x = 1.3;
-        // queryBone('f2a').rotation.y = 0.3;
-
-        // queryBone('f2b').rotation.x = 1.5;
-        // queryBone('f2b').rotation.y = 0.2;
-
-        // queryBone('f2c').rotation.x = 1.8;
-        // queryBone('f2c').rotation.y = 0.8;
-
-
-        // queryBone('f4a').rotation.x = 1.3;
-        // queryBone('f4a').rotation.y = -0.3;
-
-        // queryBone('f4b').rotation.x = 1.5;
-        // queryBone('f4b').rotation.y = -0.2;
-
-        // queryBone('f4c').rotation.x = 1.8;
-        // queryBone('f4c').rotation.y = -0.8;
-
-        queryBone('f1a').rotation.y = -0.2;
-        queryBone('f1a').rotation.z = -0.5;
-
-        queryBone('f2a').rotation.y = -0.05;
-        queryBone('f3a').rotation.y =  0.05;
+        queryBone('f3a').rotation.y =  0.10;
 
         queryBone('f4a').rotation.y =  0.2;
         queryBone('f4a').rotation.z =  0.4;
@@ -140,30 +103,47 @@
             // elbow.rotation.z = Math.sin(a * 1.5) * 0.3;
             // wrist.rotation.z = Math.sin(a * 2.0) * 0.5;
 
-            queryBone('f1a').rotation.x = 0.7 + Math.sin(a + 0.0) * 0.7;
-            queryBone('f1b').rotation.x = 0.7 + Math.sin(a + 0.0) * 0.7;
-            queryBone('f1c').rotation.x = 0.7 + Math.sin(a + 0.0) * 0.7;
+            var f1d = 2.5;
+            var f2d = 0.0;
+            var f3d = 0.0;
+            var f4d = 2.5;
 
-            queryBone('f2a').rotation.x = 0.7 + Math.sin(a + 0.5) * 0.7;
-            queryBone('f2b').rotation.x = 0.7 + Math.sin(a + 0.5) * 0.7;
-            queryBone('f2c').rotation.x = 0.7 + Math.sin(a + 0.5) * 0.7;
+            var f5d = 2.0;
 
-            queryBone('f3a').rotation.x = 0.7 + Math.sin(a + 1.0) * 0.7;
-            queryBone('f3b').rotation.x = 0.7 + Math.sin(a + 1.0) * 0.7;
-            queryBone('f3c').rotation.x = 0.7 + Math.sin(a + 1.0) * 0.7;
+            var f1a = 0.7;
+            var f2a = -0.3;
+            var f3a = -0.3;
+            var f4a = 0.7;
 
-            queryBone('f4a').rotation.x = 0.7 + Math.sin(a + 1.5) * 0.7;
-            queryBone('f4b').rotation.x = 0.7 + Math.sin(a + 1.5) * 0.7;
-            queryBone('f4c').rotation.x = 0.7 + Math.sin(a + 1.5) * 0.7;
+            var f5a = 0.1;
 
-            // queryBone('f5a').rotation.x = 0.7 + Math.sin(a) * 0.7;
-            // queryBone('f5b').rotation.x = 0.7 + Math.sin(a) * 0.7;
+            queryBone('f1a').rotation.x = 0.7 + Math.sin(a + f1d) * f1a;
+            queryBone('f1b').rotation.x = 0.7 + Math.sin(a + f1d) * f1a;
+            queryBone('f1c').rotation.x = 0.7 + Math.sin(a + f1d) * f1a;
 
-            a += 0.1;
+            queryBone('f2a').rotation.x = 0.7 + Math.sin(a + f2d) * f2a;
+            queryBone('f2b').rotation.x = 0.7 + Math.sin(a + f2d) * f2a;
+            queryBone('f2c').rotation.x = 0.7 + Math.sin(a + f2d) * f2a;
 
-            base.rotation.z += 0.01;
+            queryBone('f3a').rotation.x = 0.7 + Math.sin(a + f3d) * f3a;
+            queryBone('f3b').rotation.x = 0.7 + Math.sin(a + f3d) * f3a;
+            queryBone('f3c').rotation.x = 0.7 + Math.sin(a + f3d) * f3a;
+
+            queryBone('f4a').rotation.x = 0.7 + Math.sin(a + f4d) * f4a;
+            queryBone('f4b').rotation.x = 0.7 + Math.sin(a + f4d) * f4a;
+            queryBone('f4c').rotation.x = 0.7 + Math.sin(a + f4d) * f4a;
+
+            queryBone('f5a').rotation.y = 0.2 + Math.cos(a + f5d) * f5a;
+            queryBone('f5b').rotation.y = 0.5 + Math.cos(a + f5d) * f5a;
+
+            a += 0.05;
+
+            base.rotation.x = Math.sin(a - 0.5) * 0.2;
+            // base.rotation.z = Math.PI;
 
             renderer.render(scene.root, scene.camera);
+
+            console.log(SQR.V3.instances);
         }
 
         render();

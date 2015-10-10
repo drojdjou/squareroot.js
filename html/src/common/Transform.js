@@ -123,6 +123,7 @@ SQR.Transform = function(name, uid) {
 	t.srcFactor = null;
 	t.dstFactor = null;
 	t.useDepth = true;
+	t.depthMask = true;
 	t.lineWidth = 1;
 
 	t.setAsBoneRoot = function() {
@@ -301,10 +302,10 @@ SQR.Transform = function(name, uid) {
 		// This works, but this is much better:
 		// http://stackoverflow.com/questions/2859722/opengl-how-can-i-put-the-skybox-in-the-infinity (implement globally)
 		var gl = SQR.gl;
-		// gl.depthMask(t.depthMask);
-		t.useDepth ? gl.enable(gl.DEPTH_TEST): gl.disable(gl.DEPTH_TEST);
+		gl.depthMask(t.useDepth);
 		gl.lineWidth(t.lineWidth);
 		t.buffer.draw();
+		if(t.afterDraw) t.afterDraw();
 	}
 
 	/**
@@ -352,7 +353,7 @@ SQR.Transform = function(name, uid) {
 		t.forward.set(g.data[8], g.data[9], g.data[10]);
 
 		if(t.isStatic) transformState = 1;
-		if(t.beforeDraw) t.beforeDraw();
+		if(t.beforeDraw) t.beforeDraw(t);
 	}
 
 	/** 
@@ -374,10 +375,13 @@ SQR.Transform = function(name, uid) {
 		if(inverseCamMatrix) {
 			inverseCamMatrix.copyTo(t.viewMatrix);
 			t.viewMatrix.multiply(t.globalMatrix);
-			t.viewMatrix.inverseMat3(t.normalMatrix);
+
+			// it used to be viewMatrix instead, but this was (probably) wrong
+			t.globalMatrix.inverseMat3(t.normalMatrix);
+
 		} else {
 			t.globalMatrix.copyTo(t.viewMatrix);
-			t.viewMatrix.inverseMat3(t.normalMatrix);
+			t.globalMatrix.inverseMat3(t.normalMatrix);
 		}
 		
 	}

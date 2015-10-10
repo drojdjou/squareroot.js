@@ -154,8 +154,10 @@ SQR.Loader.loadAssets([
 		// .setMode(SQR.gl.POINTS)
 		.update();
 
-	plane.buffer.cull = false;
+	SQR.gl.disable(SQR.gl.CULL_FACE);
 	plane.lineWidth = 3;
+
+	
 
 	root.add(plane);
 

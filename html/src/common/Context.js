@@ -58,18 +58,23 @@ SQR.Context = function(canvas) {
 
 		options = options || {};
 		if(options.antialias === undefined) options.antialias = true;
+		if(options.stencil === undefined) options.stencil = false;
 
 		if(!window.WebGLRenderingContext) onError()
 
 		try {
 			gl = canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options);
-	    } catch(e) { 
-	    	console.error(e);
-	    	onError();
-	    } 
+		} catch(e) { 
+			console.error(e);
+			onError();
+		} 
 
 		c.gl = gl;
-        c.setAsCurrent();
+		c.setAsCurrent();
+
+		gl.enable(gl.CULL_FACE);
+		if(options.customGLSetup) options.customGLSetup();
+
 		return c;
 	}
 
@@ -101,6 +106,7 @@ SQR.Context = function(canvas) {
 	 */
 	c.clearColor = function(r, g, b, a) {
 		gl.clearColor(r, g, b, a);
+		gl.clear(gl.COLOR_BUFFER_BIT);
 		return c;
 	}
 
@@ -110,7 +116,7 @@ SQR.Context = function(canvas) {
 	 *	For custom clearing options use SQR.gl.clear()
 	 */
 	c.clear = function() {
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 		return c;
 	}
 

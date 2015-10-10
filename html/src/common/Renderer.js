@@ -21,14 +21,14 @@ SQR.Renderer = function(context) {
 		if(t.clip) t.clip.update(t, time, deltaTime);
 		
 		if (t.numChildren > 0) {
-            for (var i = 0; i < t.numChildren; i++) {
-                updateTransform(t.children[i]);
-            }
-        }
+			for (var i = 0; i < t.numChildren; i++) {
+				updateTransform(t.children[i]);
+			}
+		}
 
-        if(t.transparent) transparentObjects.push(t);
-        else if(!t.useDepth) renderObjects.unshift(t);
-        else renderObjects.push(t);
+		if(t.transparent) transparentObjects.push(t);
+		else if(!t.useDepth) renderObjects.unshift(t);
+		else renderObjects.push(t);
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
@@ -36,6 +36,21 @@ SQR.Renderer = function(context) {
 	var defOpts = {};
 
 	r.autoClear = true;
+
+	var setCameraUniforms = function(camera, lastShader) {
+		if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
+
+		var p = (camera && camera.projection) ? camera.projection : r.projection;
+
+		if(p) {
+			lastShader
+				.setUniform('uProjection', p)
+				.setUniform('uNear', p.near)
+				.setUniform('uFar', p.far);
+		}
+
+		lastShader.setUniform('uTime', time);
+	}
 
 	r.render = function(root, camera, options) {
 		var gl = SQR.gl;
@@ -47,25 +62,23 @@ SQR.Renderer = function(context) {
 
 		options = options || defOpts;
 
-		if(!options.dontClear && r.autoClear) {
-			context.clear();
-		}
+		if(r.autoClear) context.clear();
 
-		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
-		gl.enable(gl.CULL_FACE);
-        gl.frontFace(gl.CW);
-
-		renderObjects.length = 0;
-		transparentObjects.length = 0;
+		gl.disable(gl.STENCIL_TEST);
+		gl.frontFace(gl.CW);
 		
-		updateTransform(root);
-
-		if(camera) {
-			camera.computeInverseMatrix();
+		if(options.customGLSetup) {
+			options.customGLSetup(gl);
 		}
 
-		renderObjects = renderObjects.concat(transparentObjects);
+		if(!options.drawAgain) {
+			renderObjects.length = 0;
+			transparentObjects.length = 0;
+			updateTransform(root);
+			if(camera) camera.computeInverseMatrix();
+			renderObjects = renderObjects.concat(transparentObjects);
+		}
 
 		var objectsToRender = renderObjects.length, ro, 
 			lastBuffer = null, 
@@ -76,7 +89,8 @@ SQR.Renderer = function(context) {
 		var hasReplacementShader = options && options.replacementShader;
 
 		if(hasReplacementShader) {
-			lastShader = options.replacementShader.use();
+			lastShader = options.replacementShader.use().updateTextures();
+			setCameraUniforms(camera, lastShader);
 		}
 
 		for(var i = 0; i < objectsToRender; i++) {
@@ -85,17 +99,15 @@ SQR.Renderer = function(context) {
 
 			var ro = renderObjects[i];
 
-			ro.transformView(camera ? camera.inverseWorldMatrix : null);
+			if(!options.drawAgain) ro.transformView(camera ? camera.inverseWorldMatrix : null);
 
 			if(!ro.buffer) continue;
 
 			if(ro.transparent) {
-
 				if(!transparentRendering) {
 					gl.enable(gl.BLEND);
 					transparentRendering = true;
 				}
-
 				gl.blendFunc(ro.srcFactor, ro.dstFactor);
 			}
 
@@ -107,21 +119,7 @@ SQR.Renderer = function(context) {
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
-
-				if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
-
-				var p = (camera && camera.projection) ? camera.projection : r.projection;
-
-				if(p) {
-					lastShader
-						.setUniform('uProjection', p)
-						.setUniform('uNear', p.near)
-						.setUniform('uFar', p.far);
-				}
-
-				lastShader.setUniform('uTime', time);
-				
-
+				setCameraUniforms(camera, lastShader);
 				shaderChanged = true;
 			}
 
@@ -132,6 +130,7 @@ SQR.Renderer = function(context) {
 			ro.draw(options);
 		}
 
+		gl.disable(gl.BLEND);
 	}
 
 	r.renderToScreen = function() {

@@ -5,6 +5,9 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/Version.js"></script>
 
@@ -43,6 +46,8 @@
 
 <script type="text/javascript">
 
+	VirtualScroll.lockTouch();
+
 	SQR.Loader.loadAssets([
 		['tex.glsl', 'shader']
 	], function(assets) {
@@ -74,33 +79,39 @@
 		var t = new SQR.Transform();
 
 		// size, speed, baseOffset, scale
-		var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
+		var heightMap = new AnimatedTexture(300, 10, 200, 6 / 256);
 
 		// document.body.appendChild(heightMap.canvas);
-		var s = 10, sd = 32;
+		var s = 12, sd = Simplrz.touch ? 24 : 64;
 
 		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0, {
 			perQuadUV: true
 		});
 
-		t.buffer.cull = false;
+		// t.buffer.cull = false;
+
+		SQR.gl.disable(SQR.gl.CULL_FACE);
+
+		var vs = t.buffer.vertices, vsl = vs.length; 
 
 		var animate = function() {
 
 			// Faster, no lighting
-			t.buffer.iterate('aPosition', function(i, data, c) {
-				var x = (data[i+0] + s/2) / s; 
-				var y = (data[i+2] + s/2) / s;
-				data[i+1] = heightMap.getPixel(x, y) / 255;// * 0.75;
-			});
-			t.buffer.update();
+			// t.buffer.iterate('aPosition', function(i, data, c) {
+			// 	var x = (data[i+0] + s/2) / s; 
+			// 	var y = (data[i+2] + s/2) / s;
+			// 	data[i+1] = heightMap.getPixel(x, y) / 255;
+			// });
+			// t.buffer.update();
 
 			// Slower, with lighting
-			// t.buffer.vertices.forEach(function(f) {
-			// 	var x = (f.x + s/2) / s, y = (f.z + s/2) / s;
-			// 	f.y = heightMap.getPixel(x, y) / 255 * 1;
-			// });
-			// t.buffer.recalculateNormals().updateFromFaces().update();
+			for(var i = 0; i < vsl; i++) {
+				var f = vs[i];
+				var x = (f.x + s/2) / s, y = (f.z + s/2) / s;
+				f.y = heightMap.getPixel(x, y) / 255;
+			};
+
+			t.buffer.recalculateNormals().updateFromFaces().update();
 
 			heightMap.move(1);
 		}
@@ -117,23 +128,13 @@
 		gtx.fillStyle = '#ffffff';
 
 		gtx.beginPath();
-		gtx.arc(gs/2, gs/2, 20, 0, SQR.TWOPI);
+		gtx.arc(gs/2, gs/2, 25, 0, SQR.TWOPI);
 		gtx.fill();
-
-		// gtx.fillRect(0, 0, ls, gs);
-		// gtx.fillRect(0, 0, gs, ls);
-
-		// gtx.fillRect(gs-ls, 0, ls, gs);
-		// gtx.fillRect(0, gs-ls, gs, ls);
-
-		// gtx.fillRect(gs/2 - ls/2, 0, ls * 2, gs);
-		// gtx.fillRect(0, gs/2 - ls/2, gs, ls * 2);
 
 		t.shader = SQR.Shader(assets.shader)
 			.use()
-			.setUniform('uTexture', SQR.Texture(grid, {
-				mipmap: true
-			}));
+			.setUniform('uTexture', SQR.Texture(grid, { mipmap: true }))
+			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm());
 
 		root.add(t);
 
@@ -142,13 +143,9 @@
 		t.rotation.x = -0.5;
 		t.rotation.y = Math.PI / 4 + Math.PI;
 
-		// camera.position.y = 2;
-		// camera.rotation.x = Math.PI * 0.3;		
-
 		var render = function() {
 			requestAnimationFrame(render);
-			ctx.clear();
-			animate();
+			animate()
 			renderer.render(root, camera);
 		}
 

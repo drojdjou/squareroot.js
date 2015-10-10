@@ -24,12 +24,16 @@ precision mediump float;
 
 //#include sphar-data
 //#include sphar
+
+uniform float uNear;
+uniform float uFar;
               
 varying vec3 vNormal;
 varying vec2 vUV;
        
 void main() {
-    gl_FragColor = vec4(sphericalHarmonics(vNormal), 1.0);
+	float w = 1.0 - (gl_FragCoord.z / gl_FragCoord.w - uNear) / (uFar - uNear);
+    gl_FragColor = vec4(sphericalHarmonics(vNormal) * w, 1.0);
 }
 
 
