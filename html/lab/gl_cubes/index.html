@@ -31,8 +31,6 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
@@ -42,8 +40,8 @@
         var w = window.innerWidth, h = window.innerHeight;
 
         var ctx = SQR.Context('#gl-canvas')
-            .create()
-            .size(w, h).
+            .create({ antialias: false })
+            .size(w, h, 1).
             clearColor(1, 1, 1, 1);
 
         var renderer = new SQR.Renderer(ctx);
@@ -53,10 +51,9 @@
         camera.position.z = 100;
 
         var numSquares = parseInt(document.location.search.substring(1)) || 12000;
-        document.querySelector('.num').innerHTML = numSquares;
 
         var buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        var shader = SQR.Shader(assets['normal2color.glsl']).use().attribPointers(buffer);
+        var shader = SQR.Shader(assets['normal2color.glsl']);
 
         var root = new SQR.Transform();
         var camRoot = new SQR.Transform();

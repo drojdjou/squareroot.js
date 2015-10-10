@@ -42,7 +42,7 @@
 
 <script type="text/javascript" id="gl-script">
 
-var numFish = parseInt(document.location.search.substring(1)) || 100; 
+var numFish = parseInt(document.location.search.substring(1)) || 50; 
 // each fish repeated 3x. append ?XXX to URL where XXX is number of fish you want to see
 
 SQR.shaderPath = '../../src/glsl/';
@@ -57,21 +57,28 @@ SQR.Loader.loadAssets([
 	'bloom.glsl'
 ], function(assets) {
 
-	var w, h;
+	var w = window.innerWidth, h = window.innerHeight;
 
 	var ctx = SQR.Context('#gl-canvas')
-		.create()
+		.create({ antialias: false })
 		.clearColor(0, 0.3, 0.4, 1);
 
 	var renderer = SQR.Renderer(ctx);
 
+	var rawFBO = SQR.FrameBuffer(w, h);    
+	var blurXFBO = SQR.FrameBuffer(w/2, h/2);   
+	var blurYFBO = SQR.FrameBuffer(w/2, h/2); 
+
 	var resize = function() {
 		w = window.innerWidth, h = window.innerHeight;
 
-		// ctx.size(w, h, window.devicePixelRatio);
-		ctx.size(w, h, 1);
+		ctx.size(w, h, window.devicePixelRatio);
+		// ctx.size(w, h, 1);
 
-		// renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+		rawFBO.resize(w, h);
+		blurXFBO.resize(w/4, h/4);
+		blurYFBO.resize(w/4, h/4);
+
 		renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
 	}
 
@@ -114,7 +121,7 @@ SQR.Loader.loadAssets([
 	camRoot.add(camera);
 
 	var s = 4, shape = [
-		new SQR.V2( 0,  s),
+		new SQR.V2(0,  s * 0.66),
 		new SQR.V2(-s, -s),
 		new SQR.V2( s, -s)
 	];
@@ -125,7 +132,7 @@ SQR.Loader.loadAssets([
 
 	for(var i = 0; i < numFish; i++) {
 
-		var extrude = SQR.Extrude().setPaths(shape, curve, 6);
+		var extrude = SQR.Extrude().setPaths(shape, curve, 5);
 		extrudes.push(extrude);
 		extrude.phase = Math.random() * 2;
 		extrude.speed = 0.0005 + Math.random() * 0.002;
@@ -146,9 +153,9 @@ SQR.Loader.loadAssets([
 			fish.position.y += Math.random() * sp - sp/2;
 			fish.position.z += Math.random() * sp - sp/2;
 
-			fish.rotation.x += Math.random() * 0.1;
-			fish.rotation.y += Math.random() * 0.1;
-			fish.rotation.z += Math.random() * 0.1;
+			fish.rotation.x += Math.random() * 0.3;
+			fish.rotation.y += Math.random() * 0.3;
+			fish.rotation.z += Math.random() * 0.3;
 
 			fishes.push(fish);
 			root.add(fish);
@@ -181,10 +188,6 @@ SQR.Loader.loadAssets([
 		v.mul(t);
 	}
 
-	var rawFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);    
-	var blurXFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);   
-	var blurYFBO = SQR.FrameBuffer(ctx.canvas.width, ctx.canvas.height);   
-
 	var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
 	var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
@@ -205,7 +208,7 @@ SQR.Loader.loadAssets([
 		for(var i = 0; i < numFish; i++) {
 			var f = extrudes[i];
 			var p = f.phase;
-			f.update(p, p + 0.04, fishify);
+			f.update(p, p + 0.06, fishify);
 			f.phase += f.speed;
 		}
 

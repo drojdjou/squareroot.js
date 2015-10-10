@@ -47,7 +47,9 @@ SQR.Loader.loadAssets([
 	'bokeh.glsl',
 ], function(assets) {
 
+	// *** ***
 	var numElephants = parseInt(document.location.search.substring(1)) || 80;
+	// *** ***
 
 
 	var w = window.innerWidth, h = window.innerHeight;
@@ -65,8 +67,13 @@ SQR.Loader.loadAssets([
 
 	var resize = function() {
 		var w = window.innerWidth, h = window.innerHeight, pr = window.devicePixelRatio, a = w/h;
-		ctx.size(w, h, 1);
-		depthFBO.resize(w/4, h/4);
+
+		ctx.size(w, h, pr);
+
+		w *= pr;
+		h *= pr;
+
+		depthFBO.resize(w, h);
 		rawFBO.resize(w, h);
 		bokeh.shader.use().setUniform('uScreenSize', [w, h, a]);
 		renderer.projection = new SQR.ProjectionMatrix().perspective(70, a, 0.1, 200);
@@ -132,7 +139,7 @@ SQR.Loader.loadAssets([
 			renderer.render(root, camera, { replacementShader: depthShader });
 
 			rawFBO.bind();
-			renderer.render(root, camera);
+			renderer.render(root, camera, { drawOnly: true });
 
 			renderer.renderToScreen();
 			bokeh.shader.use();

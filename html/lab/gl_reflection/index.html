@@ -144,7 +144,7 @@
 			// 3. Render the reflected cube using stencil
 			camRoot.scale.y = -1;
 			cube.active = true;
-			cube.uniforms.uAlpha = 0.1;
+			// cube.uniforms.uAlpha = 0.1;
 			floor.active = false;
 			floor.useDepth = true;
 			renderer.render(root, camera, { customGLSetup: setupReflection });

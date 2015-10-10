@@ -72,7 +72,7 @@ SQR.Renderer = function(context) {
 			options.customGLSetup(gl);
 		}
 
-		if(!options.drawAgain) {
+		if(!options.drawOnly) {
 			renderObjects.length = 0;
 			transparentObjects.length = 0;
 			updateTransform(root);
@@ -99,7 +99,7 @@ SQR.Renderer = function(context) {
 
 			var ro = renderObjects[i];
 
-			if(!options.drawAgain) ro.transformView(camera ? camera.inverseWorldMatrix : null);
+			if(!options.drawOnly) ro.transformView(camera ? camera.inverseWorldMatrix : null);
 
 			if(!ro.buffer) continue;
 
