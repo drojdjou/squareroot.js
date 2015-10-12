@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Template</title>
+<title>FXAA 3d rotating cube</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
@@ -13,6 +14,7 @@
 <script type="text/javascript" src="../../src/common/Renderer.js"></script>
 <script type="text/javascript" src="../../src/common/Shader.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -23,6 +25,7 @@
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -31,26 +34,31 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
+    var resolution = 1;// window.devicePixelRatio;
+    var antialias = false;
+    var autorotate = true;
+    var fxaapass = true;
+
     SQR.Loader.loadAssets([
-        ['normal2color.glsl', 'n2c'],
+        ['normal2color.glsl', 'shader'],
+        ['fxaaPass.glsl', 'postShader'],
+        ['../../src/glsl/post/fxaa.glsl', 'fxaa']
     ], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-        var ctx = SQR.Context('#gl-canvas').create({ antialias: false }).clearColor(0, 0, 0, 1);
+        var ctx = SQR.Context('#gl-canvas')
+            .create({ antialias: antialias })
+            .clearColor(0, 0, 0, 1);
+
         var renderer = new SQR.Renderer(ctx);
 
-        var resize =function() {
-            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-            ctx.size(w, h, 1);
-            renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-        }
+        var fbo = SQR.FrameBuffer(1, 1); 
+        var post = SQR.Primitives.createPostEffect(assets.postShader);  
 
-        window.addEventListener('resize', resize);
-        resize();
+        post.uniforms = {
+            uTexture: fbo.texture
+        }
 
         var root = new SQR.Transform();
 
@@ -58,17 +66,45 @@
         camera.position.z = 5;
         root.add(camera);
 
+        var resize =function() {
+            var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            ctx.size(w, h, resolution);
+            fbo.resize(w * resolution, h * resolution);
+            post.shader.use().setUniform('uResolution', [w * resolution, h * resolution]);
+            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
         var cube = new SQR.Transform();
         cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        cube.shader = SQR.Shader(assets['n2c']);
+        cube.shader = SQR.Shader(assets.shader);
         root.add(cube);
 
+        cube.rotation.x = 0.8;
+        cube.rotation.y = 0.8;
         var render = function() {
             requestAnimationFrame(render);
-            ctx.clear();
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.02;
-            renderer.render(root, camera);
+
+            if(autorotate) {
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.02;
+            }
+            
+            if(fxaapass) {
+
+                fbo.bind();
+                renderer.render(root, camera);
+
+                renderer.renderToScreen();
+                renderer.render(post);
+
+            } else {
+                renderer.render(root, camera);
+            }
+
+            
         }
 
         render();

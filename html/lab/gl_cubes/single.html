@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Simples 3d rotating cube</title>
+<title>3d rotating cube</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -36,77 +36,89 @@
 
 <script type="text/javascript">
 
-    SQR.Loader.loadAssets([
-        // Load all the files you need here
-        // Each file will be availabke below from the asset object
-        // under it's name, ex. assets['normal2color.glsl']
-        // It's also possible ot specify an alias. Instead of a String, 
-        // use an Array, where [0] is the path, and [1] is the alias.
-        ['normal2color.glsl', 'n2c'],
-    ], function(assets) {
+	var resolution = window.devicePixelRatio;
+	var antialias = true;
+	var autorotate = true;
 
-        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+	SQR.Loader.loadAssets([
 
-        // Create the context based on the #id of the canvas element
-        // (there are more options for hw to do that - check the docs)
-        // Use chaining to create the GL context and set it's clear color (r,g,b,a)
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		// Load all the files you need here
+		// Each file will be availabke below from the asset object
+		// under it's name, ex. assets['normal2color.glsl']
+		// It's also possible ot specify an alias. Instead of a String, 
+		// use an Array, where [0] is the path, and [1] is the alias.
+		['normal2color.glsl', 'shader'],
 
-        // Create a renderer, pass the context to it
-        var renderer = new SQR.Renderer(ctx);
+	], function(assets) {
 
-        // There is no scene in SQR, a scene is basically just a transform 
-        // that holds the entire scene
-        var root = new SQR.Transform();
+		// Create the context based on the #id of the canvas element
+		// (there are more options for hw to do that - check the docs)
+		// Use chaining to create the GL context and set it's clear color (r,g,b,a)
+		var ctx = SQR.Context('#gl-canvas')
+			.create({ antialias: antialias })
+			.clearColor(0, 0, 0, 1);
 
-        // Create a camera, make sure to add it to the root (or any if it's children)
-        var camera = new SQR.Transform();
-        camera.position.z = 5;
-        root.add(camera);
+		// Create a renderer, pass the context to it
+		var renderer = new SQR.Renderer(ctx);
 
-        // Create a resize handler and call it once to set the size of the viewport 
-        // and the correct projection matrix
-        var resize =function() {
-            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-            ctx.size(w, h);
-            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-        }
+		// There are no "scenes" in SQR. A scene is basically just a root transform 
+		// that holds the entire scene.
+		var root = new SQR.Transform();
 
-        window.addEventListener('resize', resize);
-        resize();
+		// Create a camera, make sure to add it to the root (or any if it's children)
+		var camera = new SQR.Transform();
+		camera.position.z = 5;
+		root.add(camera);
 
-        // Create an object
-        var cube = new SQR.Transform();
-        // When creating buffers, the buffers are actually populated  
-        // in the udate function, so it needs to be called on init
-        cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        // Shaders are create from GLSL code loaded thru the SQR.Loader
-        cube.shader = SQR.Shader(assets['n2c']);
-        // Add the cube to the root
-        root.add(cube);
+		// Create a resize handler and call it once to set the size of the viewport 
+		// and the correct projection matrix
+		var resize =function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h, resolution);
+			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
 
-        // cube.position.set(2, 3, -1);
-        // cube.scale.x = 0.25;
-        // cube.scale.y = 0.25;
-        // cube.scale.z = 0.25;
+		window.addEventListener('resize', resize);
+		resize();
 
-        var render = function() {
-            requestAnimationFrame(render);
-            ctx.clear();
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.02;
-            // Render the scene from the root transform up, directly to screen
-            renderer.render(root, camera);
-        }
+		// Create an object
+		var cube = new SQR.Transform();
+		// When creating buffers, the buffers are actually populated  
+		// in the udate function, so it needs to be called on init
+		cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+		// Shaders are created from GLSL code loaded with the SQR.Loader as strings.
+		// The SQR.Shader function processes the string and compiles it into a WebGL shader.
+		cube.shader = SQR.Shader(assets.shader);
+		// Add the cube to the root
+		root.add(cube);
 
-        render();
-    });
+		cube.rotation.x = 0.8;
+		cube.rotation.y = 0.8;
+		// cube.position.set(2, 3, -1);
+		// cube.scale.x = 0.25;
+		// cube.scale.y = 0.25;
+		// cube.scale.z = 0.25;
+
+		var render = function() {
+			requestAnimationFrame(render);
+
+			if(autorotate) {
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.02;
+			}
+			
+			// Render the scene from the root transform up, directly to screen
+			renderer.render(root, camera);
+		}
+
+		render();
+	});
 
 </script>
 
 <script>
 if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 

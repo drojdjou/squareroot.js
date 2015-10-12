@@ -31,20 +31,17 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
-        ['normal2color.glsl', 'n2c'],
+        ['normal2color.glsl', 'shader'],
     ], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
         var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
         var renderer = new SQR.Renderer(ctx);
 
         var resize =function() {
-            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+            var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
             ctx.size(w, h);
             renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
         }
@@ -60,12 +57,11 @@
 
         var cube = new SQR.Transform();
         cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        cube.shader = SQR.Shader(assets['n2c']);
+        cube.shader = SQR.Shader(assets.shader);
         root.add(cube);
 
         var render = function() {
             requestAnimationFrame(render);
-            ctx.clear();
             cube.rotation.x += 0.01;
             cube.rotation.y += 0.02;
             renderer.render(root, camera);

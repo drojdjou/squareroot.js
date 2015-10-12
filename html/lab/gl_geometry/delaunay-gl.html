@@ -22,6 +22,7 @@
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 
+<script type="text/javascript" src="../../src/math/Math.js"></script>
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Delaunay.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -124,7 +125,10 @@ SQR.Loader.loadAssets([
 	// addInitPoints(600);
 	// addGrid(24, 0.33);
 	// addGrid(8, 0.5);
-	addGrid(window.innerWidth / 24, 0.33);
+
+	var density = Math.clamp(window.innerWidth / 24, 8, 32);
+
+	addGrid(density, 0.33);
 	// addGrid(window.innerWidth / 48, 0);
 	// addGrid(24, 0.1);
 
@@ -189,9 +193,8 @@ SQR.Loader.loadAssets([
 		render();
 	}
 
-	Application.resize.on(resize);
+	window.addEventListener('resize', resize);
 	resize();
-	Application.init();
 });
 
 </script>
