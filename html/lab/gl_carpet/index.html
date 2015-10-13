@@ -79,10 +79,10 @@
 		var t = new SQR.Transform();
 
 		// size, speed, baseOffset, scale
-		var heightMap = new AnimatedTexture(300, 10, 200, 6 / 256);
+		var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
 
 		// document.body.appendChild(heightMap.canvas);
-		var s = 12, sd = Simplrz.touch ? 24 : 64;
+		var s = 12, sd = Simplrz.touch ? 24 : 48;
 
 		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0, {
 			perQuadUV: true

@@ -96,7 +96,7 @@ SQR.Extrude = function() {
 		e.buffer.layout(layout, faces.length * 3);
 	}
 
-	var update = function(scalingFunc) {
+	var update = function(scalingFunc, ampFunc) {
 
 		for(var i = 0; i < resolution; i++) {
 
@@ -107,8 +107,9 @@ SQR.Extrude = function() {
 			for(var j = 0; j < shapeSize; j++) {
 				var v = vertices[i * shapeSize + j];
 				v.copyFrom(shape[j]);
-				if(scalingFunc) scalingFunc(tg, v);
+				if(scalingFunc) scalingFunc(tg, v, e);
 				m.transformVector(v);
+				if(ampFunc) ampFunc(tg, v, e);
 			}
 		}
 
@@ -118,11 +119,11 @@ SQR.Extrude = function() {
 		}
 	}
 
-	e.update = function(_start, _end, _scalingFunc) {
+	e.update = function(_start, _end, _scalingFunc, _ampFunc) {
 		start = _start || 0;
 		end = _end || 1;
 		range = (end - start);	
-		update(_scalingFunc);
+		update(_scalingFunc, _ampFunc);
 		e.buffer.update();
 		return e;
 	}

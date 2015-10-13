@@ -185,11 +185,11 @@
             forearmLeft.rotation.z = Math.cos(flightPhase - 0.6) * -0.6;
             forearmRight.rotation.z = Math.cos(flightPhase - 0.6) * 0.6;
 
-            mx += (tx - mx) * 0.001;
+            mx += (tx - mx) * 0.01;
             my += (ty - my) * 0.01;
 
             camRoot.rotation.y = 0.4 + mx * Math.PI;
-            camera.rotation.x = -0.5 + my * 0.4;
+            camera.rotation.x = -0.5 + my * -0.4;
             
             renderer.render(scene.root, camera);
         }

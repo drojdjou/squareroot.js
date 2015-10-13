@@ -61,7 +61,7 @@ SQR.Loader.loadAssets([
 
 	var ctx = SQR.Context('#gl-canvas')
 		.create({ antialias: false })
-		.clearColor(0, 0.3, 0.4, 1);
+		.clearColor(0, 0.2, 0.26, 1);
 
 	var renderer = SQR.Renderer(ctx);
 
@@ -86,18 +86,19 @@ SQR.Loader.loadAssets([
 	resize();
 
 	var camera = SQR.Transform();
-	camera.position.z = window.innerWidth < 768 ? 200 : 250;
+	camera.position.z = window.innerWidth < 768 ? 200 : 225;
 	camera.position.y = 70;
+	camera.position.x = 10;
 	camera.rotation.x = 0.1;
 
 	var camRoot = SQR.Transform();
 
 	var curve = new SQR.Spline()
 		.addSegment( 100,   50,   50)
-		.addSegment(   0,  -50, -100)
+		.addSegment(   0,  -80, -100)
 		.addSegment(   0,   50,  100)
-		.addSegment(-100,   75,  -50)
-		.create(0.5, true);
+		.addSegment(-120,   80,  -50)
+		.create(100, true);
 
 	var curveResolution = 100;
 	var curveBuffer = SQR.Buffer()
@@ -117,7 +118,6 @@ SQR.Loader.loadAssets([
 
 	var root = SQR.Transform();
 	root.add(camRoot);
-	// root.add(line);
 	camRoot.add(camera);
 
 	var s = 4, shape = [
@@ -141,21 +141,23 @@ SQR.Loader.loadAssets([
 			var fish = SQR.Transform();
 			fish.buffer = extrude.buffer;
 			fish.shader = n2c;
+
+			fish.offsetStrenght = -6 + Math.random() * 12;
 		
 			fish.name = 'fish.' + i;
 
-			var sp = 120;
+			var sp = 80;
 
 			// the transform never moves, only the geometry does, hence...
-			fish.isStatic = true;
+			// fish.isStatic = true;
 
 			fish.position.x += Math.random() * sp - sp/2;
 			fish.position.y += Math.random() * sp - sp/2;
 			fish.position.z += Math.random() * sp - sp/2;
 
-			fish.rotation.x += Math.random() * 0.3;
-			fish.rotation.y += Math.random() * 0.3;
-			fish.rotation.z += Math.random() * 0.3;
+			fish.rotation.x += Math.random() * 0.2;
+			fish.rotation.y += Math.random() * 0.2;
+			fish.rotation.z += Math.random() * 0.2;
 
 			fishes.push(fish);
 			root.add(fish);
@@ -163,6 +165,7 @@ SQR.Loader.loadAssets([
 	}
 
 	var my = 0, mx = 0, tx = 0, ty = 0;
+	var last = 0;
 
 	var mousemove = Simplrz.touch ? 'touchmove' : 'mousemove';
 
@@ -174,18 +177,32 @@ SQR.Loader.loadAssets([
 		tx = e.pageX / window.innerWidth;
 		ty = e.pageY / window.innerHeight;
 
+		globalSpeedTarget += Math.abs(tx - last) * 0.01;
+		globalSpeedTarget = Math.min(0.005, globalSpeedTarget);
+
 		if(Simplrz.touch) {
 			tx *= 4;
 			ty *= 4;
 		}
+
+		last = tx;
 	});
 
 	var phase = 0;
+	var globalSpeed = 0, globalSpeedTarget = 0;
+
+	var offMat = new SQR.Matrix44();
 
 	var fishify = function(t, v) {
-		t = 1 - Math.abs(t * 2 - 1);
-		t = Math.sin(t * Math.PI * 0.5);
-		v.mul(t);
+		var a = 1 - Math.abs(t * 2 - 1);
+		a = Math.sin(a * Math.PI * 0.5);
+		v.mul(a);
+	}
+
+	var scatter = function(t, v, e) {
+		var r = 250 * globalSpeed * e.speed;
+		offMat.identity().setRotation(r, r, r);
+		offMat.transformVector(v);
 	}
 
 	var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
@@ -193,27 +210,36 @@ SQR.Loader.loadAssets([
 
 	var renderBloom = true;
 
-	document.addEventListener('keydown', function(e) {
-
-		if(e.keyCode == 'Q'.charCodeAt(0)) {
-			renderBloom = !renderBloom;
-		}
-
-	});
+	// document.addEventListener('keydown', function(e) {
+	// 	if(e.keyCode == 'Q'.charCodeAt(0)) {
+	// 		renderBloom = !renderBloom;
+	// 	}
+	// });
 
 	var render = function() {
 		requestAnimationFrame(render);
 		ctx.clear();
+
+		globalSpeed += (globalSpeedTarget - globalSpeed) * 0.2;
+		globalSpeedTarget *= 0.99;
 	
 		for(var i = 0; i < numFish; i++) {
 			var f = extrudes[i];
 			var p = f.phase;
-			f.update(p, p + 0.06, fishify);
-			f.phase += f.speed;
+			f.update(p, p + 0.04, fishify);
+			f.phase += f.speed + globalSpeed;
 		}
 
-		camRoot.rotation.y = (mx * 2 - 1) * 0.2;
-		camRoot.rotation.x = (my * 2 - 1) * 0.2;
+		for(var i = 0; i < numFish * 3; i++) {
+
+			var ft = fishes[i];
+			//ft.rotation.x = f.speed * globalSpeed * 5;
+			ft.rotation.y = ft.offsetStrenght * globalSpeed * 25;
+			ft.rotation.z = ft.offsetStrenght * globalSpeed * 4;
+		}
+
+		camRoot.rotation.y = (mx * 2 - 1) * 0.3;
+		camRoot.rotation.x = (my * 2 - 1) * 0.3;
 		
 		if(renderBloom) {
 	
@@ -247,8 +273,8 @@ SQR.Loader.loadAssets([
 
 		}
 
-		mx += (tx - mx) * 0.1;
-		my += (ty - my) * 0.1;
+		// mx += (tx - mx) * 0.01;
+		// my += (ty - my) * 0.01;
 	}
 
 	render();
