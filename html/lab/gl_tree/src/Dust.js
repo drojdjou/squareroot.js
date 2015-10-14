@@ -49,8 +49,11 @@ var Dust = function(parent, assets, renderer, light, color) {
 	dots.setBlending(true);
 	dots.useDepth = false;
 
-	var bs = (3 / 1024 * window.innerWidth).toPrecision(2).toString();
-	var es = (6 / 1024 * window.innerWidth).toPrecision(2).toString();
+	var bs = (3 / 1024 * window.innerWidth).toPrecision(3).toString();
+	var es = (6 / 1024 * window.innerWidth).toPrecision(3).toString();
+
+	if(bs.indexOf('.') == -1) bs += '.0';
+	if(es.indexOf('.') == -1) es += '.0';
 
 	console.log(bs, es);
 
