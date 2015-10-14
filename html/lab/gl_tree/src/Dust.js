@@ -49,7 +49,17 @@ var Dust = function(parent, assets, renderer, light, color) {
 	dots.setBlending(true);
 	dots.useDepth = false;
 
-	dots.shader = SQR.Shader(assets.dust)
+	var bs = (3 / 1024 * window.innerWidth).toPrecision(2).toString();
+	var es = (6 / 1024 * window.innerWidth).toPrecision(2).toString();
+
+	console.log(bs, es);
+
+	dots.shader = SQR.Shader(assets.dust, {
+			directives: [
+				{ name: 'BASE_SIZE', value: bs },
+				{ name: 'EXTRA_SIZE', value: es }
+			]
+		})
 		.use()
 		.setUniform('uGravity', [0.0, -0.0002, 0.0])
 		.setUniform('uTexture', dtex);

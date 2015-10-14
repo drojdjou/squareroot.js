@@ -29,7 +29,7 @@ void main() {
 
 	vec3 p = aPosition + l * aEnergy + g;
 	gl_Position = uProjection * uViewMatrix * vec4(p, 1.0);
-	gl_PointSize = 3.0 + aSize * 6.0;
+	gl_PointSize = BASE_SIZE + aSize * EXTRA_SIZE;
 }
 
 //#fragment
