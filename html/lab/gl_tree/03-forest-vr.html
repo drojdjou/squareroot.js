@@ -36,7 +36,8 @@
 
 
 <script type="text/javascript" src="src/Tree.js"></script>
-<script type="text/javascript" src="src/Tree.js"></script>
+<script type="text/javascript" src="src/NightSky.js"></script>
+<script type="text/javascript" src="src/ForestGrund.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 <link rel="stylesheet" type="text/css" href="../../vr/common/base.css">
@@ -65,8 +66,6 @@ SQR.VRApp(function(options) {
 
 		var NUM_TREES = isTouch ? 300 : 500;
 		var NUM_TREE_TYPES = isTouch ? 2 : 8;
-		var NUM_STARS = isTouch ? 300 : 1000;
-		var GROUND_DETAIL = isTouch ? 80 : 120;
 		var TREE_LIMIT = isTouch ? 50 : 80;
 
 		var sky = new SQR.Color().setRGB(0.05, 0.05, 0.08);
@@ -175,76 +174,9 @@ SQR.VRApp(function(options) {
 		SQR.GeometryTools.batch(trees);
 		root.add(trees);
 
-		var dotSize = 16;
-		var dcv = document.createElement('canvas');
-		dcv.ctx = dcv.getContext('2d');
-		dcv.width = dotSize;
-		dcv.height = dotSize;
-		dcv.ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-		dcv.ctx.fillRect(0, 0, dotSize, dotSize);
+		NightSky(root);
 
-		dcv.ctx.fillStyle = 'rgba(255, 255, 255, 0.33';
-		var r = dotSize/2;
-
-		dcv.ctx.beginPath();
-		dcv.ctx.arc(r, r, r, 0, SQR.TWOPI);
-		dcv.ctx.fill();
-
-		dcv.ctx.beginPath();
-		dcv.ctx.arc(r, r, r-2, 0, SQR.TWOPI); 
-		dcv.ctx.fill();
-
-		dcv.ctx.beginPath();
-		dcv.ctx.arc(r, r, r-4, 0, SQR.TWOPI); 
-		dcv.ctx.fill();
-
-		
-		var dtex = SQR.Texture(dcv);
-
-		var stars = new SQR.Transform();
-		stars.shader = SQR.Shader(assets.stars).use().setUniform('uTexture', dtex);
-		stars.buffer = SQR.Buffer()
-			.layout({ aPosition: 3, aSize: 1, aBrightness: 1 }, NUM_STARS)
-			.iterate('aPosition', function(i, data) {
-
-				var d = new SQR.V3().random().norm();
-				d.y = Math.abs(d.y * 4.0);
-				d.mul(1500);
-
-				data[i+0] = d.x;
-				data[i+1] = d.y;
-				data[i+2] = d.z;
-			})
-			.iterate('aSize', function(i, data) {
-				data[i+0] = 1 + Math.random() * 2;
-			})
-			.iterate('aBrightness', function(i, data) {
-				data[i+0] = 0.2 + Math.random() * 0.8;
-			})
-			.setMode(SQR.gl.POINTS)
-			.update();
-
-		stars.setBlending(true);
-
-		root.add(stars);
-
-		var ground = new SQR.Transform();
-		ground.buffer = SQR.Primitives.createPlane(200, 200, GROUND_DETAIL, GROUND_DETAIL);
-		ground.buffer.vertices.forEach(function(v) {
-			v.y = 0.5 - Math.random() * 1;
-		})
-
-		ground.buffer.recalculateNormals().updateFromFaces().update();
-		ground.rotation.x = Math.PI;
-		ground.shader = SQR.Shader(assets.ground)
-			.use()
-			.setUniform('uFogStart', 15)
-			.setUniform('uFogEnd', TREE_LIMIT * 1.2)
-			.setUniform('uDarkness', sky)
-			.setUniform('uColor', [0.60, 0.60, 0.50]);
-
-
-		root.add(ground);
+		ForestGround();
 
 		var mx = 0, my = 0, tx = 0, ty = 0;
 		document.addEventListener('mousemove', function(e) {

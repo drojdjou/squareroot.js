@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tree</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/extras/GeometryTools.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+
+
+<script type="text/javascript" src="src/Tree.js"></script>
+<script type="text/javascript" src="src/ForestFactory.js"></script>
+<script type="text/javascript" src="src/ForestGround.js"></script>
+<script type="text/javascript" src="src/NightSky.js"></script>
+<script type="text/javascript" src="src/Dust.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+
+		['glsl/tree-mesh-light.glsl', 'treeMesh'],
+		['glsl/stars.glsl', 'stars'],
+		['glsl/ground-light.glsl', 'ground'],
+		['glsl/self-illum.glsl', 'lightSource'],
+		['glsl/dust.glsl', 'dust'],
+
+		['../../src/glsl/light/sphar.glsl', 'sphar'],
+		['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data']
+
+	], function(assets) {
+
+		var sky = SQR.Color().setRGB(0.03, 0.03, 0.06);
+		var lightColor = SQR.Color().setRGB(0.8, 0.1, 0);
+		var treeColor = SQR.Color().setRGB(0.2, 0.15, 0.15);
+		var groundColor = SQR.Color().setRGB(0.60, 0.60, 0.50);
+
+
+		sky.lighten(2);
+		lightColor.lighten(2);
+		treeColor.lighten(2);
+		groundColor.lighten(2);
+
+
+		var lightDistance = 12;
+		var lightRange = 7;
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(sky.r, sky.g, sky.b, 1);
+		var renderer = new SQR.Renderer(ctx);
+
+
+		var root = new SQR.Transform();
+
+		var cameraBase = new SQR.Transform();
+		root.add(cameraBase);
+
+		var camera = new SQR.Transform();
+
+		camera.position.z = 0;
+		camera.position.y = 2;
+		camera.rotation.x = -0.1;
+
+		// camera.position.z = 0;
+		// camera.position.y = 10;
+		// camera.rotation.x = 0.4;
+
+		cameraBase.add(camera);
+
+		var options = {
+			numTemplates: 5,
+			numTrees:     Simplrz.touch ? 50 : 100,
+			numPatches:    5,
+			end: 		  40,
+			patchDepth:   10,
+			patchWidth:   Simplrz.touch ? 30 : 60,
+			alleyWidth:    1.25,
+			nightColor:	sky,
+			treeColor: treeColor,
+			groundColor: groundColor
+		};
+
+		NightSky(root, assets, root);
+		var forest = ForestFactory(assets, cameraBase, options);
+		var ground = ForestGround(root, assets, options, cameraBase);
+	
+		forest.shader.use()
+			.setUniform('uLightColor', lightColor)
+			.setUniform('uLightRange', lightRange);
+
+		ground.shader.use()
+			.setUniform('uLightColor', lightColor)
+			.setUniform('uLightRange', lightRange);
+
+		root.add.apply(root, forest.patches);
+
+		var resize =function() {
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+			// ctx.size(w, h, window.devicePixelRatio);
+			ctx.size(w, h, 1);
+
+			renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, 10000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		
+
+		var cameraPhase = 0;
+		var mx = 0, my = 0, tx = 0, ty = 0;
+		var lx = 0, ly = 0;
+		var event = Simplrz.touch ? 'touchmove' : 'mousemove';
+
+		document.addEventListener(event, function(e) {
+			e = e.targetTouches ? e.targetTouches[0] : e;
+			tx = (e.pageX / window.innerWidth) * 2 - 1;
+			ty = (e.pageY / window.innerHeight) * 2 - 1;
+		});
+
+		var light = new SQR.Transform();
+		light.shader = SQR.Shader(assets.lightSource).use().setUniform('uColor', lightColor);
+		light.buffer = SQR.Primitives.createSphere(0.01);
+		root.add(light);
+
+		Dust(root, assets, renderer, light, lightColor);
+		
+
+		var render = function() {
+			requestAnimationFrame(render);
+			
+
+			cameraBase.position.z -= 0.05;//0.01;
+
+			mx += (tx - mx) * 0.05;
+			cameraBase.rotation.y = mx * Math.PI / 4;
+
+			my += (ty - my) * 0.05;
+			camera.rotation.x = my * Math.PI / 4;
+
+			lx += (tx - lx) * 0.01;
+			ly += (ty - ly) * 0.01;
+			light.position.x = 15 * lx;
+			light.position.y = Math.max(1, 20 * -ly);
+			light.position.z = cameraBase.position.z - lightDistance;
+
+			var li = 0.95 + 0.05 * Math.sin(cameraPhase * 4.11);
+
+			forest.shader.use()
+				.setUniform('uLightPosition', light.globalPosition)
+				.setUniform('uLightIntensity', li);
+
+			ground.shader.use()
+				.setUniform('uLightPosition', light.globalPosition)
+				.setUniform('uLightIntensity', li);
+
+			cameraPhase += 0.2;
+			cameraBase.position.x = Math.sin(cameraPhase * 0.21) * 0.1;
+			cameraBase.position.y = Math.cos(cameraPhase * 0.63) * 0.1;
+			cameraBase.rotation.z = Math.cos(cameraPhase * 0.49 + 1.13) * 0.02;
+
+			renderer.render(root, camera);
+
+		}
+
+		VirtualScroll.lockTouch();
+		render();
+	});
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

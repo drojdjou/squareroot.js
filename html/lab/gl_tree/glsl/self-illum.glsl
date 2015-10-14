@@ -8,27 +8,16 @@ uniform mat4 uMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjection;
 uniform mat3 uNormalMatrix;
-
-varying float vBrightness;
-  
+ 
 void main() {
-	vBrightness = aBrightness;
 	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
-	gl_PointSize = 2.0 + aSize;
 }
 
 //#fragment
 precision mediump float;
 
-uniform sampler2D uTexture;
-uniform float uTime;
-
-varying float vBrightness;
-                    
+uniform vec3 uColor;
+                 
 void main() {
-
-	float b =  sin(uTime / 500.0 + vBrightness * 10.0) * 0.5 + 0.5;
-	vec4 c = texture2D(uTexture, gl_PointCoord);
-	c.a *= 0.25 + b * 0.75;
-	gl_FragColor = c;
+	gl_FragColor = vec4(uColor, 1.0);
 }

@@ -31,8 +31,6 @@
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Extrude.js"></script>
 
-<script type="text/javascript" src="../../src/dev/Debug.js"></script>
-
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 </head>
@@ -42,10 +40,10 @@
 
 <script type="text/javascript" id="gl-script">
 
-var numFish = parseInt(document.location.search.substring(1)) || 50; 
 // each fish repeated 3x. append ?XXX to URL where XXX is number of fish you want to see
+var numFish = parseInt(document.location.search.substring(1)) || 60; 
+var renderBloom = true;
 
-SQR.shaderPath = '../../src/glsl/';
 
 SQR.Loader.loadAssets([
 	['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data'],
@@ -61,7 +59,7 @@ SQR.Loader.loadAssets([
 
 	var ctx = SQR.Context('#gl-canvas')
 		.create({ antialias: false })
-		.clearColor(0, 0.2, 0.26, 1);
+		.clearColor(0, 0.14, 0.18, 1);
 
 	var renderer = SQR.Renderer(ctx);
 
@@ -118,6 +116,7 @@ SQR.Loader.loadAssets([
 
 	var root = SQR.Transform();
 	root.add(camRoot);
+	// root.add(line);
 	camRoot.add(camera);
 
 	var s = 4, shape = [
@@ -126,9 +125,8 @@ SQR.Loader.loadAssets([
 		new SQR.V2( s, -s)
 	];
 
-	var n2c = SQR.Shader(assets['fish.glsl']);
-	var extrudes = [], 
-		fishes = [];
+	var shader = SQR.Shader(assets['fish.glsl']);
+	var extrudes = [], fishes = [];
 
 	for(var i = 0; i < numFish; i++) {
 
@@ -138,18 +136,12 @@ SQR.Loader.loadAssets([
 		extrude.speed = 0.0005 + Math.random() * 0.002;
 
 		for(var j = 0; j < 3; j++) {
-			var fish = SQR.Transform();
+			var fish = SQR.Transform('fish.' + i);
 			fish.buffer = extrude.buffer;
-			fish.shader = n2c;
-
+			fish.shader = shader;
 			fish.offsetStrenght = -6 + Math.random() * 12;
-		
-			fish.name = 'fish.' + i;
 
 			var sp = 80;
-
-			// the transform never moves, only the geometry does, hence...
-			// fish.isStatic = true;
 
 			fish.position.x += Math.random() * sp - sp/2;
 			fish.position.y += Math.random() * sp - sp/2;
@@ -208,14 +200,6 @@ SQR.Loader.loadAssets([
 	var blur = SQR.Primitives.createPostEffect(assets['blur.glsl']);
 	var bloom = SQR.Primitives.createPostEffect(assets['bloom.glsl']);
 
-	var renderBloom = true;
-
-	// document.addEventListener('keydown', function(e) {
-	// 	if(e.keyCode == 'Q'.charCodeAt(0)) {
-	// 		renderBloom = !renderBloom;
-	// 	}
-	// });
-
 	var render = function() {
 		requestAnimationFrame(render);
 		ctx.clear();
@@ -231,23 +215,17 @@ SQR.Loader.loadAssets([
 		}
 
 		for(var i = 0; i < numFish * 3; i++) {
-
 			var ft = fishes[i];
-			//ft.rotation.x = f.speed * globalSpeed * 5;
 			ft.rotation.y = ft.offsetStrenght * globalSpeed * 25;
 			ft.rotation.z = ft.offsetStrenght * globalSpeed * 4;
 		}
 
-		camRoot.rotation.y = (mx * 2 - 1) * 0.3;
-		camRoot.rotation.x = (my * 2 - 1) * 0.3;
-		
+
 		if(renderBloom) {
-	
-			// At apply the bloom post-effect
 			rawFBO.bind();
 			renderer.render(root, camera);
 
-			blurForce = 0.02;
+			blurForce = 0.025;
 
 			blurXFBO.bind();
 			blur.shader.use();
@@ -266,33 +244,15 @@ SQR.Loader.loadAssets([
 			bloom.shader.setUniform('uTexture', rawFBO.texture);
 			bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);
 			renderer.render(bloom);
-
 		} else {
-
 			renderer.render(root, camera);
-
 		}
-
-		// mx += (tx - mx) * 0.01;
-		// my += (ty - my) * 0.01;
 	}
 
 	render();
 });
 
 </script>
-
-<!--
-<header>
-	<button class="icon"></button>
-	<article>
-		<h1>Fish school</h1>
-		<p><script type="text/javascript"> document.write(numFish * 3); </script> simple meshes extruded and moving along a spline. A video of this demo can be found <a href="https://vimeo.com/113256369">here</a>. Press Q to toggle bloom effect. By <a href="http://bartekdrozdz.com">Bartek Drozdz.</a></p>
-		<code></code>
-	</article>
-</header>
-<script type="text/javascript" src="../base.js"></script>
--->
 
 <script>
 if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
