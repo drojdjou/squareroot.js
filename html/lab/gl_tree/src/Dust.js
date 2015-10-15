@@ -1,7 +1,7 @@
 var Dust = function(parent, assets, renderer, light, color) {
 
-	var numDots = 2000;
-	var index = 0, dotsPerFrame = 30;
+	var numDots = 3000;
+	var index = 0, dotsPerFrame = 20;
 
 	var dotSize = 16;
 	var dcv = document.createElement('canvas');
@@ -30,7 +30,7 @@ var Dust = function(parent, assets, renderer, light, color) {
 		.iterate('aEnergy', function(i, data) {
 			data[i+0] = (r() * 2 - 1) * 0.001;
 			data[i+1] = r() * 0.002;
-			data[i+2] = (r() * 2 - 1) * 0.001;
+			data[i+2] = (r() * 2 - 1) * 0.004;
 		})
 		.iterate('aBirth', function(i, data) {
 			data[i+0] = -1000000;

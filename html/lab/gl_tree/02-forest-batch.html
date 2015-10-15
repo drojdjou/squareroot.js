@@ -113,9 +113,10 @@
 			groundColor: groundColor
 		};
 
-		NightSky(root, assets, root);
+		
 		var forest = ForestFactory(assets, cameraBase, options);
 		var ground = ForestGround(root, assets, options, cameraBase);
+		NightSky(root, assets, root);
 	
 		forest.shader.use()
 			.setUniform('uLightColor', lightColor)
@@ -126,6 +127,13 @@
 			.setUniform('uLightRange', lightRange);
 
 		root.add.apply(root, forest.patches);
+
+		var light = new SQR.Transform();
+		light.shader = SQR.Shader(assets.lightSource).use().setUniform('uColor', lightColor);
+		light.buffer = SQR.Primitives.createSphere(0.01);
+		root.add(light);
+
+		Dust(root, assets, renderer, light, lightColor);
 
 		var resize =function() {
 			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
@@ -151,14 +159,6 @@
 			tx = (e.pageX / window.innerWidth) * 2 - 1;
 			ty = (e.pageY / window.innerHeight) * 2 - 1;
 		});
-
-		var light = new SQR.Transform();
-		light.shader = SQR.Shader(assets.lightSource).use().setUniform('uColor', lightColor);
-		light.buffer = SQR.Primitives.createSphere(0.01);
-		root.add(light);
-
-		Dust(root, assets, renderer, light, lightColor);
-		
 
 		var render = function() {
 			requestAnimationFrame(render);
