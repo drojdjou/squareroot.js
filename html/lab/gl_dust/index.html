@@ -75,6 +75,7 @@
 		var mouse = new SQR.V2();
 		var moveEvent = Simplrz.touch ? 'touchmove' : 'mousemove';
 		document.addEventListener(moveEvent, function(e) {
+			e.preventDefault();
 			e = e.targetTouches ? e.targetTouches[0] : e;
 			mouse.x = e.pageX;
 			mouse.y = e.pageY;
