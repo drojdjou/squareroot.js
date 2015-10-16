@@ -78,7 +78,7 @@ SQR.Primitives.createSkybox = function(options) {
 
 	options = options || {};
 	options.size = options.size || 5;
-	options.useDepth = (options.useDepth === undefined) ? true : options.useDepth;
+	options.useDepth = (options.useDepth === undefined) ? false : options.useDepth;
 
 	if(!options.glsl && SQR.GLSL) {
 		if(options.use2dTextures) 
@@ -429,7 +429,7 @@ SQR.Extrude = function() {
 		e.buffer.layout(layout, faces.length * 3);
 	}
 
-	var update = function(scalingFunc) {
+	var update = function(scalingFunc, ampFunc) {
 
 		for(var i = 0; i < resolution; i++) {
 
@@ -440,8 +440,9 @@ SQR.Extrude = function() {
 			for(var j = 0; j < shapeSize; j++) {
 				var v = vertices[i * shapeSize + j];
 				v.copyFrom(shape[j]);
-				if(scalingFunc) scalingFunc(tg, v);
+				if(scalingFunc) scalingFunc(tg, v, e);
 				m.transformVector(v);
+				if(ampFunc) ampFunc(tg, v, e);
 			}
 		}
 
@@ -451,11 +452,11 @@ SQR.Extrude = function() {
 		}
 	}
 
-	e.update = function(_start, _end, _scalingFunc) {
+	e.update = function(_start, _end, _scalingFunc, _ampFunc) {
 		start = _start || 0;
 		end = _end || 1;
 		range = (end - start);	
-		update(_scalingFunc);
+		update(_scalingFunc, _ampFunc);
 		e.buffer.update();
 		return e;
 	}
@@ -605,7 +606,7 @@ SQR.Face = function() {
     t.calculateNormal = t.cn = function() {
         var t1 = SQR.V3.__tv1;
         var t2 = SQR.V3.__tv2;
-        t.normal = new SQR.V3();
+        t.normal = t.normal || new SQR.V3();
 
         if(indexed) {
             t1.sub(vertexArray[t.ia], vertexArray[t.ib]);

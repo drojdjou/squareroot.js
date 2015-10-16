@@ -205,12 +205,13 @@
 			});
 
 			// camRoot.rotation.y += 0.01;
-			// camera.position.x = mx * 20;
-			// camera.position.y = my * 20;
-			camera.lookAt = cubes;
+			// cubes.rotation.x += mx * 0.05;
+			// cubes.rotation.y += my * 0.05;
+
 			renderer.render(root, camera);
 		}
 
+		VirtualScroll.lockTouch();
 		render();
 	});
 

@@ -160,6 +160,7 @@ SQR.Loader.loadAssets([
 	var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
 	document.addEventListener(mousemove, function(e) {
+		e.preventDefault();
 		e = isTouch ? e.targetTouches[0] : e;
 		tx = e.pageX / window.innerWidth;
 		ty = e.pageY / window.innerHeight;

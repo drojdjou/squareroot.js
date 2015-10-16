@@ -168,3 +168,15 @@ Cleaning the Texture class a bit, update to API (all backwards compatible btw)
 
 and now a small fix in the Texture class
 
+
+##### v3.0 b 127
+*Oct 15th 2015*
+
+Rebuilding GLSL
+
+
+##### v3.0 b 128
+*Oct 15th 2015*
+
+Removing GLSL build process
+

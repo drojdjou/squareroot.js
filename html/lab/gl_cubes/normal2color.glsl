@@ -1,4 +1,4 @@
-// normal2color.glsl
+//#name normal2color.glsl
 //#vertex
 attribute vec3 aNormal;
 attribute vec3 aPosition;

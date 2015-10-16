@@ -119,42 +119,6 @@ var saveBucket = function(bucket, fileBase) {
 	console.log('[ ' + mf + '\t' + ms + ' bytes\t' + mks + ' kb ]');
 }
 
-var jsifyShaders = function(folder) {
-
-	var set = walk(baseUrl + folder + '/');
-
-	var concatFile = "SQR.GLSL = {\n";
-
-	for(var i = 0; i < set.length; i++) {
-		var f =  set[i];
-		var name = f.substring((baseUrl + 'glsl/').length);
-		concatFile += "\t/* --- --- [" + name + "] --- --- */\n";
-
-		concatFile += '\t"' + name + '": "';
-
-		var file = fs.readFileSync(f).toString().split('\n');
-
-		for(var j = 0; j < file.length; j++) {
-			var l = file[j];
-			if(l.indexOf("//") > -1 && l.indexOf("//#") == -1) l = l.substring(0, l.indexOf("//"));
-			if(l.match(/^([\s\t]*)$/)) continue;
-			concatFile += l + '\\n';
-		}
-
-		concatFile += '",\n';
-	}
-
-	concatFile += "};\n";
-
-	var result = {};
-
-	result.concat = concatFile;
-	result.mini = UglifyJS.minify(concatFile, { fromString: true }).code;
-
-	return result;
-}
-
-
 var logMessage = process.argv[2];
 
 if(!logMessage) {
@@ -175,7 +139,6 @@ saveBucket(core, 'sqr');
 var two = createBucket(['math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
 saveBucket(two, 'sqr-two');
 
-saveBucket(jsifyShaders('glsl'), 'sqr-glsl');
 saveBucket(createBucket('primitives'), 'sqr-primitives');
 saveBucket(createBucket('vr'), 'sqr-vr');
 

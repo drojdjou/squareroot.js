@@ -64,15 +64,14 @@
 			return Math.random() * m; 
 		};
 
-		var mouseTarget = new SQR.V2(), mouse = new SQR.V2(), isMouseDown = false;
-		document.addEventListener('mousemove', function(e) {
+		var mouseTarget = new SQR.V2(), mouse = new SQR.V2();
+		var event = ('ontouchstart' in document) ? 'touchmove' : 'mousemove';
+		document.addEventListener(event, function(e) {
+			e.preventDefault();
+			e = e.targetTouches ? e.targetTouches[0] : e;
 			mouseTarget.x = e.pageX;
 			mouseTarget.y = e.pageY;
 		});
-
-		document.addEventListener('mousedown', function() { isMouseDown = true; });
-		document.addEventListener('mouseup', function() { isMouseDown = false; });
-
 
 		var index = 0, dotsPerFrame = 30;
 
