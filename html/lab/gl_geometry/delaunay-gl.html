@@ -23,6 +23,7 @@
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 
 <script type="text/javascript" src="../../src/math/Math.js"></script>
+<script type="text/javascript" src="../../src/math/Random.js"></script>
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Delaunay.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
@@ -80,6 +81,7 @@ index++;
 index = index % images.length;
 localStorage.delaunayIndex = index;
 
+Math.seedrandom('29ehwud');
 
 SQR.Loader.loadAssets([
 	['glsl/delaunay.glsl', 'shader'],

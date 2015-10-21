@@ -133,7 +133,7 @@ SQR.Transform2d = function(name) {
 
         if(t.alpha < 1) c.globalAlpha = t.alpha;
         // c.scale(t.scale.x, t.scale.y);
-        if(t.shape) t.shape(c);
+        if(t.shape) t.shape(c, t);
 
     	c.restore();
 	}

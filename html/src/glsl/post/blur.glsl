@@ -1,4 +1,4 @@
-// blur.glsl
+//#name blur
 //#vertex
 precision mediump float;
 

@@ -26,6 +26,13 @@ SQR.Color = function() {
 		return c;
 	}
 
+	c.toCSS = function() {
+		var ri = (c.r * 255) | 0;
+		var gi = (c.g * 255) | 0;
+		var bi = (c.b * 255) | 0;
+		return 'rgb(' + ri + ', ' + gi + ', ' + bi + ')';
+	}
+
 	c.copyFrom = function(oc) {
 		c.r = oc.r;
 		c.g = oc.g;
@@ -50,6 +57,14 @@ SQR.Color = function() {
 		c.r = Math.min(1.0, c.r * v);
 		c.g = Math.min(1.0, c.g * v);
 		c.b = Math.min(1.0, c.b * v);
+		return c;
+	}
+
+	c.lerp  = function(a, b, t) {
+		var m = 1 - t;
+		c.r = a.r * m + b.r * t;
+		c.g = a.g * m + b.g * t;
+		c.b = a.b * m + b.b * t;
 		return c;
 	}
 

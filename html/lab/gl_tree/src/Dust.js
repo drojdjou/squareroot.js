@@ -47,7 +47,7 @@ var Dust = function(parent, assets, renderer, light, color) {
 		.update();
 
 	dots.setBlending(true);
-	dots.useDepth = false;
+	dots.depthMask = false;
 
 	var bs = (3 / 1024 * window.innerWidth).toPrecision(3).toString();
 	var es = (6 / 1024 * window.innerWidth).toPrecision(3).toString();

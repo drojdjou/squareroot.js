@@ -302,7 +302,12 @@ SQR.Transform = function(name, uid) {
 		// This works, but this is much better:
 		// http://stackoverflow.com/questions/2859722/opengl-how-can-i-put-the-skybox-in-the-infinity (implement globally)
 		var gl = SQR.gl;
-		gl.depthMask(t.useDepth);
+
+		// gl.depthMask(t.useDepth);
+		t.useDepth ? gl.enable(gl.DEPTH_TEST) : gl.disable(gl.DEPTH_TEST);
+
+		gl.depthMask(t.depthMask);
+
 		gl.lineWidth(t.lineWidth);
 		t.buffer.draw();
 		if(t.afterDraw) t.afterDraw();

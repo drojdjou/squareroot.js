@@ -167,7 +167,7 @@ SQR.Loader.loadAssets([
 		var toLoad = paths.length;
 
 		if(toLoad == 0) {
-			progressCallback(1, 1);
+			if(progressCallback) progressCallback(1, 1);
 			callback();
 			return;
 		}

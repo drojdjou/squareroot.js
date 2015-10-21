@@ -180,3 +180,27 @@ Rebuilding GLSL
 
 Removing GLSL build process
 
+
+##### v3.0 b 129
+*Oct 16th 2015*
+
+Added toCSS to SQR.Color
+
+
+##### v3.0 b 130
+*Oct 16th 2015*
+
+Added lerp to SQR.Color
+
+
+##### v3.0 b 131
+*Oct 16th 2015*
+
+Fixed an tyop in SQR.Color.lerp
+
+
+##### v3.0 b 132
+*Oct 18th 2015*
+
+Changing how disabling depth works in Transform. Not the entire DEPTH_TEST is disabled, not just the depth mask
+
