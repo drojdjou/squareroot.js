@@ -18,7 +18,7 @@
  *	@example
 {
 	// Do not compile 
-	// (most of the time this is not necessary)
+	// (yes, there is such option, but 99.99% of the time this is not necessary)
 	doNotCompile: true,
 
 	// Preprocesor directives. 
@@ -183,10 +183,64 @@ SQR.Shader = function(source, options) {
 		return uniforms[name];
 	}
 
+	/**
+	 *	@method hasUniform
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@returns {Object} true if the shader has a uniform that has this name, null otherwise. The object returned has 3 properties: name, location, type.	
+	 */
 	s.hasUniform = function(name) {
 		return uniforms[name] != null;
 	}
 
+	/**
+	 *	@method setUniform
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@description using setUniform is recommended for uniforms that do not change much or unifors that have the same
+	 *	value for all the objects rendered with this shader. If you need to as uniforms that are different per object 
+	 *	(ex. a 100 balls rendered with the same shader, but each with a different color) then it is better to use the 
+	 *	<code>uniforms</code> object attached to each instance od <code>SQR.Transform</code>. 
+	 *	Please refer to the {@tutorial understanding-shaders} for more info.
+	 *
+	 *	@param {string} uniform The name of the uniform. 
+	 *	By convection all uniforms in SQR start with a lowercas u and the a capitalized/camelcase name follows.
+	 *	Example of good uniform names: <code>uIntensity, uLightColor</code>. Not good: <code>uintensity, color</code>.
+	 *
+	 *	@param value the value of the uniform to set. It will expect a different object depending on the type of the uniform, 
+	 *	but there are a few rules as shown in the example below.
+	 *
+	 *	@example
+var sh = SQR.Shader(glslCodeString); 
+// glslCodeString = the code loaded from a file or wherever you get it from
+
+// ALWAYS DO THIS FIRST!
+sh.use();
+
+// for floats/ints just a number is ok
+sh.setUniform('uSpeed', 2); 
+
+// ... but a one element array will do too
+sh.setUniform('uIntensity', [0.2]); 
+
+// for vectors, regular Array or Float32Array is ok
+sh.setUniform('uDirection', [0.2, 0.5, 0.3]);
+
+// for matrices, pass in the data property of any Matrix class
+sh.setUniform('uBoneMatrix', boneMatrix.data);
+
+// textures expect an instance of SQR.Texture or SQR.Cubemap
+sh.setUniform('uNormalMap', SQR.Texture('assets/normalMap.jpg'));
+
+// in all the above cases any object that has a method called 'toUniform' works too
+// SQR.V2, SQR.V3 and SQR.Color have that, so:
+sh.setUniform('uCenter', new SQR.V3(12, 45, 33));
+sh.setUniform('uColor', SQR.Color().fromHex('#ff8000'));
+
+// or, assuming that light is an SQR.Transform:
+sh.setUniform('uLighPosition', light.position)
+
+	 */
 	s.setUniform = function(uniform, value) {
 		var gl = SQR.gl;
 		var n = (typeof uniform == stringType) ? uniforms[uniform] : uniform;
@@ -313,6 +367,12 @@ SQR.Shader = function(source, options) {
 		return s;
 	}
 
+	/**
+	 *	@method use
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@description Sets this shader as the current program in GL. This function needs to be called before any uniforms are set.
+	 */
 	s.use = function() {
 		SQR.gl.useProgram(program);
 		return s;

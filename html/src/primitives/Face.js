@@ -1,5 +1,5 @@
 /**
- *  Face is a triangle or a quad.
+ *  @description Face is a triangle or a quad.
  *  If the face is a quad, both triangles composin the quad,
  *  shader the same normal - thanks to this flat shaded materials have quads shaded
  *  the same way which is nicer than havong each triangle have a slightly different normal.

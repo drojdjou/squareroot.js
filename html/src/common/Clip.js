@@ -1,3 +1,9 @@
+/**
+ *	@class Clip
+ *	@memberof SQR
+ *
+ *	@description Represents a single animation clip
+ */
 SQR.Clip = function(duration) {
 
 	var c = {

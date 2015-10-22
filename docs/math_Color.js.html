@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: math/Color.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: math/Color.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @class Color
+ *  @memberof SQR
+ *
+ *  @descrption represents an RGB color. This class works with float values, 
+ *	so all the color components are in range of 0-1, not 0-255.
+ *
+ *	@param {Number=} r the red component of the color
+ *	@param {Number=} g the green component of the color
+ *	@param {Number=} b the blue component of the color
+ *
+ */
+SQR.Color = function(r, g, b) {
+
+	var c = {};
+
+	var array;
+
+	/**
+	 *	@method setRGB
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description sets the color component values.
+	 *
+	 *	@param {Number=} r the red component of the color
+	 *	@param {Number=} g the green component of the color
+	 *	@param {Number=} b the blue component of the color
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
+	c.setRGB = function(r, g, b) {
+		c.r = r || 0;
+		c.g = g || 0;
+		c.b = b || 0;
+		return c;
+	}
+
+	/**
+	 *	@method setHex
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description sets the color component values from a hex string (ex. #a4d278) or number (ex. 0xa4d278) 
+	 *	Useful when copying color vaues from ex. Photoshop.
+	 *
+	 *	@param {string|Number} hex the hex color values as string (ex. #a4d278) or number (ex. 0xa4d278) 
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
+	c.setHex = function(hex) {
+
+		if(hex instanceof String) {
+			hex = (hex.indexOf('#') == 0) ? hex.substring(1) : hex;
+			hex = (hex.indexOf('0x') == -1) ? '0x' + hex : hex;
+			hex = parseInt(hex);
+		}
+
+		c.r = (hex >> 16 &amp; 255 ) / 255;
+		c.g = (hex >> 8 &amp; 255) / 255;
+		c.b = (hex &amp; 255) / 255;
+
+		return c;
+	}
+
+	/**
+	 *	@method toCSS
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@returns {string} a CSS friendly string representing the color. The format used is &lt;code>rgb(r, g, b)&lt;/code>.
+	 */
+	c.toCSS = function() {
+		var ri = (c.r * 255) | 0;
+		var gi = (c.g * 255) | 0;
+		var bi = (c.b * 255) | 0;
+		return 'rgb(' + ri + ', ' + gi + ', ' + bi + ')';
+	}
+
+	/**
+	 *	@method setRGB
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description copies the color component values from another instance of SQR.Color
+	 *
+	 *	@param {SQR.Color} oc the color instance to copy from
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
+	c.copyFrom = function(oc) {
+		c.r = oc.r;
+		c.g = oc.g;
+		c.b = oc.b;
+		return c;
+	}
+
+	/**
+	 *	@method lighten
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description &lt;p>modfies the color values to make them darker of lighter in a more fance way than a simple multiplication. 
+	 *	However this is not currently implemented so for now it really does the same thing as &lt;code>SQR.Color.mul&lt;/code>.&lt;/p>
+	 *
+	 *	&lt;p>Here's &lt;a href='http://stackoverflow.com/questions/141855/programmatically-lighten-a-color'>some info on how to implement this properly&lt;/a>.&lt;/p>
+	 */
+	c.lighten = function(v) {
+		return c.mul(v);
+	}
+
+	/**
+	 *	@method clone
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description creates a copy of the color instance
+	 *
+	 *	@returns {Object} a new SQR.Color instance
+	 */
+	c.clone = function() {
+		return new SQR.Color(c.r, c.g, c.b);
+	}
+
+	/**
+	 *	@method mul
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description modfies the color values to make it darker of lighter
+	 *
+	 *	@param {Number} v the amount by which to change the color (1 will leave it as it, > 1 will lightned, &lt; 1 will darken the color)
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
+	c.mul = function(v) {
+		c.r = Math.min(1.0, c.r * v);
+		c.g = Math.min(1.0, c.g * v);
+		c.b = Math.min(1.0, c.b * v);
+		return c;
+	}
+
+	/**
+	 *	@method lerp
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description performs a linear interpolation between two colors and stores the value in the color instance
+	 *
+	 *	@param {SQR.Color} a the first color to use in interpolation
+	 *	@param {SQR.Color} b the second color to use in interpolation
+	 *	@param {Number} t the interpolation value [0-1]
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
+	c.lerp  = function(a, b, t) {
+		var m = 1 - t;
+		c.r = a.r * m + b.r * t;
+		c.g = a.g * m + b.g * t;
+		c.b = a.b * m + b.b * t;
+		return c;
+	}
+
+	c.toUniform = function(size) {
+
+		if(!array) array = new Float32Array(3);
+
+		array[0] = c.r;
+		array[1] = c.g;
+		array[2] = c.b; 
+
+		return array;
+
+	}
+
+	setRGB(r, g, b);
+
+	return c;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

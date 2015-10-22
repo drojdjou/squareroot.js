@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Perlin Noise Photo Transition</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/PerlinNoise.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
+
+
+
+<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+body {
+	background-color: #444;
+}
+
+canvas {
+	width: 512px;
+	height: 512px;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas id='preview'></canvas>
+
+<script type="text/javascript">
+
+var tt = SQR.PerlinTexture()
+	.configure({
+
+		// ~hairy
+		low:  0.15, 
+		high: 0.50, 
+		octaves: [2, 4, 8, 16, 32], 
+		factors: [1, 1/2, 1/4, 1/8, 1/16]
+
+		//  ~watery
+		// low:  0.00, 
+		// high: 3.00, 
+		// octaves: [2, 4, 8, 16, 24], 
+		// factors: [1/4, 1, 1/2, 1/4, 1/4]
+
+		// ~plastic
+		// low:  0.30, 
+		// high: 1.90, 
+		// octaves: [2, 4], 
+		// factors: [2, 1]
+	})
+	.create(100, 60)
+	.draw();
+
+var showNoise = false;
+// var showNoise = true;
+
+SQR.Loader.loadAssets([
+	['glsl/transition.glsl', 'shader'],
+	['assets/bluesky.jpg', 'blue'],
+	['assets/redsky.jpg', 'red'],
+], function(assets) {
+
+	var ctx = SQR.Context('#preview').create().clearColor(0, 0, 0, 1);
+	var renderer = new SQR.Renderer(ctx);
+
+	var root = new SQR.Transform();
+
+	var sky = SQR.Transform();
+	sky.buffer = SQR.Primitives.createPlane(100, 100);
+	sky.shader = SQR.Shader(assets.shader, {
+		directives: showNoise ?  [ { name: 'NOISE_ONLY' } ] : null
+	});
+	sky.rotation.x = Math.PI / -2;
+
+	sky.shader.use()
+		.setUniform('uTextureA', SQR.Texture(assets.blue))
+		.setUniform('uTextureB', SQR.Texture(assets.red))
+		.setUniform('uNoise', SQR.Texture(tt.canvas, { isAnimated: true }))
+
+	sky.uniforms = {
+		uT: 0
+	};
+
+	root.add(sky);
+
+	var resize = function() {
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		ctx.size(w, h);
+		renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
+		// renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		sky.scale.set(w/100, 1, h/100);
+		sky.position.set(w/2, h/2, 0);
+	}
+
+	window.addEventListener('resize', resize);
+	resize();
+
+	var phase = 0, speed = 0.005;
+
+	var render = function() {
+		requestAnimationFrame(render);
+
+		phase += speed;
+
+		tt.offset.z += 0.002;
+		tt.offset.y += 0.05;
+		tt.draw();
+
+		sky.uniforms.uT = Math.sin(phase) + 0.5;
+		// sky.uniforms.uT = Math.sin(phase) * 0.5 + 0.5;
+
+		renderer.render(root);
+	}
+
+	render();
+});
+
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

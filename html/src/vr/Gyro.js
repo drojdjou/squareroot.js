@@ -1,7 +1,8 @@
 /**
- *	Author @bartekd 
+ *	@class Gyro
+ *	@memberof SQR
  *
- *	Based on Gyro.js by Tom Gallacher <tom.gallacher23@gmail.com>
+ *	@description A gyrospcope data handler, based on Gyro.js by Tom Gallacher <tom.gallacher23@gmail.com>
  */
 SQR.Gyro = (function() {
 

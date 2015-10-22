@@ -27,7 +27,7 @@
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 <script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
-<script type="text/javascript" src="../../src/extras/TerrainTexture.js"></script>
+<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
 
 <script type="text/javascript" src="src/CameraControl.js"></script>
 
@@ -53,11 +53,17 @@ canvas.noise {
 
 var size = 160;
 
-var tt = SQR.TerrainTexture(size, 0.10, 1.00, 
-	[2, 4, 8, 16, 32, 64], 
-	[1/2, 1/4, 1/8, 1/16, 1/32, 1/64],
-	8, new SQR.V2(18, 1)
-);
+var tt = SQR.PerlinTexture()
+	.configure({
+		seed: 8,
+		low: 0.4, 
+		high: 0.8, 
+		octaves: [2, 4, 8, 16, 32, 64], 
+		factors: [2, 1, 1/2, 1/4, 1/8, 1/16]
+	})
+	.setOffset(18, 1)
+	.create(size)
+	.draw();
 
 // tt.canvas.classList.add('noise');
 // document.body.appendChild(tt.canvas);
@@ -95,7 +101,7 @@ SQR.Loader.loadAssets([
 	// camera.position.y = 20;
 	// camera.rotation.x = 0.4;
 
-	camHolder.position.y = 10;
+	camHolder.position.y = 20;
 	root.add(camHolder);
 	camHolder.add(camera);
 	SQR.CameraControl(camHolder, camera);

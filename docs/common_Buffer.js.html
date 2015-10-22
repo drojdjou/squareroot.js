@@ -52,7 +52,7 @@ SQR.Buffer = function() {
 	var buffer, indexBuffer;
 
 	b.mode = SQR.gl.TRIANGLES;
-	b.cull = true;
+	b.drawMode = SQR.gl.STATIC_DRAW;
 
 	/**
 	 *	@method setMode
@@ -99,7 +99,30 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 
 		b.strideByteSize = b.strideSize * 4;
 		data = new Float32Array(size * b.strideSize);
+
 		return b;
+	}
+
+	/**
+	 *	@method resize
+	 *	@memberof SQR.Buffer.prototype
+	 *
+	 *	@description Resizes the data 
+	 */
+	b.resize = function(size, offset) {
+		b.size = size;
+		var nd = new Float32Array(size * b.strideSize);
+		
+		if(!offset) { 
+			nd.set(data); 
+		} else {
+			for(var i = 0; i &lt; data.length; i++) {
+				var k = i - offset * b.strideSize;
+				if(k >= 0) nd[k] = data[i];
+			}
+		}
+
+		data = nd;
 	}
 
 	/**
@@ -151,11 +174,28 @@ b.set('aPosition', 1, 	new SQR.V3(3, 5, 6));
 
 		var s = b.attributes[attribute];
 
-		for(var j = 0; j &lt; s.size; j++) {
+		if(position &lt; 0) position += b.size;
+		if(position >= b.size) position = position % b.size;
+
+		for(var j = 0, al = array.length; j &lt; al; j++) {
 			data[position * b.strideSize + j + s.offset] = array[j];
 		}
 
 		return b;
+	}
+
+	b.get = function(attribute, position, array) {
+		array = array || [];
+
+		var s = b.attributes[attribute];
+
+		if(position &lt; 0) position += b.size;
+		if(position >= b.size) position = position % b.size;
+
+		var c = position * b.strideSize + s.offset;
+		for(var i = 0; i &lt; b.size; i++) array[i] = data[c + i];
+
+		return array;
 	}
 
 	/**
@@ -208,12 +248,12 @@ b.iterate('aPosition', function(i, data, count)) {
 
 		buffer = buffer || gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, data, b.drawMode);
 
         if(hasIndex) {
         	indexBuffer = gl.createBuffer();
         	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+        	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, b.drawMode);
         }
 
         return b;
@@ -261,8 +301,6 @@ b.iterate('aPosition', function(i, data, count)) {
 	b.draw = function() {
 		var gl = SQR.gl;
 
-		b.cull ? gl.enable(gl.CULL_FACE) : gl.disable(gl.CULL_FACE);
-		
 		if(hasIndex)
 			gl.drawElements(b.mode, b.indexSize, gl.UNSIGNED_SHORT, 0);
 		else 
@@ -285,7 +323,7 @@ b.iterate('aPosition', function(i, data, count)) {
 	 *
 	 *	@description Returns the raw array data
 	 *	
-	 *	@data {Float32Array} - Array containing all the vertex attributes data organized in stride
+	 *	@data {Float32Array} - Array containing all the vertex attributes data organized in strides
 	 *	according to the layout.
 	 */
 	b.getDataArray = function() {
@@ -324,13 +362,13 @@ b.iterate('aPosition', function(i, data, count)) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Sat Sep 19 2015 08:55:19 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

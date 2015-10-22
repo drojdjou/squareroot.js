@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: extras/PerlinTexture.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: extras/PerlinTexture.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @class PerlinTexture
+ *  @memberof SQR
+ *
+ *  @description Utility to generate procedural textures based on Perlin noise.
+ */
+SQR.PerlinTexture = function(canvas) {
+
+	var BADCTX = "> SQR.PerlinTexture - Invalid canvas reference.";
+
+	if(!canvas) canvas = document.createElement('canvas');
+	if(!(canvas instanceof HTMLElement)) canvas = document.querySelector(canvas);
+	if(!canvas.getContext) throw BADCTX;
+
+	var tt = {
+		offset: new SQR.V3(0, 0, 0),
+		canvas: canvas
+	};
+
+	var ctx, width, height, data;
+
+	var interpolate = function(v, s, e) {
+		if(v &lt;= s) return 0;
+		if(v >= e) return 1;
+		return (v - s) / (e - s);
+	}
+
+	tt.create = function(w, h) {
+		width = w | 0;
+		height = h | 0 || w;
+		ctx = canvas.getContext('2d');
+		canvas.width = width;
+		canvas.height = height;
+		data = ctx.getImageData(0, 0, width, height);
+		return tt;
+	}
+
+	tt.configure = function(c) {
+		// low, high, octaves, factors, seed, offset
+		c.low = c.low || 0;
+		c.high = c.high || 0;
+		c.octaves = c.octaves || [1];
+		c.factors = c.factors || [1];
+		c.seed = c.seed || 0;
+		tt.config = c;
+
+		SQR.PerlinNoise.seed(c.seed);
+
+		return tt;
+	}	
+
+	tt.setOffset = function(x, y, z) {
+		tt.offset.set(x, y, z);
+		return tt;
+	}
+
+	tt.getValue = function(x, y) {
+		var col = 0;
+		var cf = tt.config;
+		var ol = cf.octaves.length;
+
+		for(var k = 0; k &lt; ol; k++) {
+
+			var c = SQR.PerlinNoise.simplex3(
+				(x + tt.offset.x) / height * cf.octaves[k],
+				(y + tt.offset.y) / width * cf.octaves[k],
+				tt.offset.z
+			);
+
+			c = (c + 1) * 0.5; // Get it to [0-1]
+			c = c * cf.factors[k];
+
+			col += c;
+		}
+
+		col = col / ol;
+		col = interpolate(col, cf.low, cf.high);
+
+		return col;
+	}
+
+	tt.getPixel = function(x, y) {
+		var i = y * width + x;
+		return data.data[i+0]; // Just return red
+	}
+
+	tt.draw = function() {
+
+		var l = width * height * 4;
+		for(var i = 0; i &lt; l; i += 4) {
+
+			var px = (i/4) % width;
+			var py = (i/4) / height;
+			var col = tt.getValue(px, py);
+
+			col = (col * 255) | 0;
+
+			data.data[i+0] = col;
+			data.data[i+1] = col;
+			data.data[i+2] = col;
+
+			data.data[i+3] = 255;
+			
+		}
+		
+		ctx.putImageData(data, 0, 0);
+
+		return tt;
+	}
+
+	return tt;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

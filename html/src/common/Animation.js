@@ -1,3 +1,9 @@
+/**
+ *	@class Animation
+ *	@memberof SQR
+ *
+ *	@description Represents a single animation as a collection of clips
+ */
 SQR.Animation = function(duration) {
 
 	var clips = [], numClips = 0;

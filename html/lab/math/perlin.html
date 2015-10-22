@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Perlin Noise Exploration</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/math/PerlinNoise.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+
+<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+body {
+	background-color: #444;
+}
+
+canvas {
+	width: 512px;
+	height: 512px;
+}
+
+</style>
+
+</head>
+<body>
+
+<canvas id='preview'></canvas>
+
+<script type="text/javascript">
+
+var tt = SQR.PerlinTexture('#preview')
+	.configure({
+
+		// ~hairy
+		low:  0.10, 
+		high: 0.30, 
+		octaves: [2, 4, 8, 16, 32], 
+		factors: [1, 1/2, 1/4, 1/8, 1/16]
+
+		//  ~watery
+		// low:  0.00, 
+		// high: 0.70, 
+		// octaves: [2, 4, 8, 16, 24], 
+		// factors: [1/4, 1, 1/2, 1/4, 1/4]
+
+		// ~plastic
+		// low:  0.30, 
+		// high: 0.90, 
+		// octaves: [2, 4, 8], 
+		// factors: [2, 1, 1/2]
+	})
+	.create(128);
+
+var run = function() {
+	requestAnimationFrame(run);
+	tt.offset.x += 0.1;
+	tt.offset.z += 0.01;
+	tt.draw();
+}
+
+run();
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

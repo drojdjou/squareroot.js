@@ -1,5 +1,20 @@
+/**
+ *  @namespace Mesh
+ *  @memberof SQR
+ *
+ *  @description Utility to load meshes from J3D/Unity exported JSON files. SQR only work with this format. 
+ *	It doesn't have native support for OBJ files or Collada 
+ *	(though it's perfectly possible to create an OBJ or Collada importer if you need to)
+ *
+ */
 SQR.Mesh = {
 
+	/**
+	 *	@method fromJSON
+	 *	@memberof SQR.Mesh
+	 *
+	 *	@description Parses the J3D JSON mesh data format and created a SQR.Buffer out of it.
+	 */	
 	fromJSON: function(data, name, options) {
 
 		var geo;

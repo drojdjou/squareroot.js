@@ -46,7 +46,7 @@
  *	@example
 {
 	// Do not compile 
-	// (most of the time this is not necessary)
+	// (yes, there is such option, but 99.99% of the time this is not necessary)
 	doNotCompile: true,
 
 	// Preprocesor directives. 
@@ -211,10 +211,64 @@ SQR.Shader = function(source, options) {
 		return uniforms[name];
 	}
 
+	/**
+	 *	@method hasUniform
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@returns {Object} true if the shader has a uniform that has this name, null otherwise. The object returned has 3 properties: name, location, type.	
+	 */
 	s.hasUniform = function(name) {
 		return uniforms[name] != null;
 	}
 
+	/**
+	 *	@method setUniform
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@description using setUniform is recommended for uniforms that do not change much or unifors that have the same
+	 *	value for all the objects rendered with this shader. If you need to as uniforms that are different per object 
+	 *	(ex. a 100 balls rendered with the same shader, but each with a different color) then it is better to use the 
+	 *	&lt;code>uniforms&lt;/code> object attached to each instance od &lt;code>SQR.Transform&lt;/code>. 
+	 *	Please refer to the {@tutorial understanding-shaders} for more info.
+	 *
+	 *	@param {string} uniform The name of the uniform. 
+	 *	By convection all uniforms in SQR start with a lowercas u and the a capitalized/camelcase name follows.
+	 *	Example of good uniform names: &lt;code>uIntensity, uLightColor&lt;/code>. Not good: &lt;code>uintensity, color&lt;/code>.
+	 *
+	 *	@param value the value of the uniform to set. It will expect a different object depending on the type of the uniform, 
+	 *	but there are a few rules as shown in the example below.
+	 *
+	 *	@example
+var sh = SQR.Shader(glslCodeString); 
+// glslCodeString = the code loaded from a file or wherever you get it from
+
+// ALWAYS DO THIS FIRST!
+sh.use();
+
+// for floats/ints just a number is ok
+sh.setUniform('uSpeed', 2); 
+
+// ... but a one element array will do too
+sh.setUniform('uIntensity', [0.2]); 
+
+// for vectors, regular Array or Float32Array is ok
+sh.setUniform('uDirection', [0.2, 0.5, 0.3]);
+
+// for matrices, pass in the data property of any Matrix class
+sh.setUniform('uBoneMatrix', boneMatrix.data);
+
+// textures expect an instance of SQR.Texture or SQR.Cubemap
+sh.setUniform('uNormalMap', SQR.Texture('assets/normalMap.jpg'));
+
+// in all the above cases any object that has a method called 'toUniform' works too
+// SQR.V2, SQR.V3 and SQR.Color have that, so:
+sh.setUniform('uCenter', new SQR.V3(12, 45, 33));
+sh.setUniform('uColor', SQR.Color().fromHex('#ff8000'));
+
+// or, assuming that light is an SQR.Transform:
+sh.setUniform('uLighPosition', light.position)
+
+	 */
 	s.setUniform = function(uniform, value) {
 		var gl = SQR.gl;
 		var n = (typeof uniform == stringType) ? uniforms[uniform] : uniform;
@@ -341,6 +395,12 @@ SQR.Shader = function(source, options) {
 		return s;
 	}
 
+	/**
+	 *	@method use
+	 *	@memberof SQR.Shader.prototype
+	 *
+	 *	@description Sets this shader as the current program in GL. This function needs to be called before any uniforms are set.
+	 */
 	s.use = function() {
 		SQR.gl.useProgram(program);
 		return s;
@@ -378,13 +438,13 @@ SQR.Shader = function(source, options) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Sat Sep 19 2015 08:55:19 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

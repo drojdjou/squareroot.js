@@ -1,9 +1,9 @@
 ### Bone Export HOWTO
 
 #### Software
-Cinema4d 11.5
-Unity 5
-WebGL
+- Cinema4d 11.5
+- Unity 5
+- WebGL
 
 #### Modeling / rigging
 
@@ -15,7 +15,7 @@ WebGL
 6. Add skin under the model in hierarchy (Menu > Character > Skin)
 7. If you need to chabge the bone strucotre, select Clear Weights in tag proeprties and siabled Skin (click the green checkmark in Objects panel)
 8. If adding more bones, remember to add the to the list in the Weight tag properties
-9. When done, export to FBX and move over to Unity5
+9. When done, export to FBX and move over to Unity5 (or just save the C4D file in Unity assets folder no need to FBX then)
 
 ### Unity5 exporting
 
@@ -23,6 +23,7 @@ WebGL
 2. Disable all the mess and Null Objects
 3. Fine tune the import setting (scale, normals, etc...)
 4. Select the object and J3D > Export
+5. If model does not have animations, uncheck the "Export Animation" checkbox
 
 ### WebGL / Squareroot
 

@@ -221,7 +221,7 @@ SQR.Matrix44 = function(data) {
 	 */
 	this.setScale = function(sx, sy, sz, m) {
 		var d = m || this.data;
-		d[0] = sx,d[5] = sy,d[10] = sz;
+		d[0] = sx, d[5] = sy, d[10] = sz;
 		return m || this;
 	}
 

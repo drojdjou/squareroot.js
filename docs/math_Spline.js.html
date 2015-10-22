@@ -34,15 +34,20 @@
  */
 SQR.Spline = function() {
 
-	var points = [];
+	// Bezier paths generated from segments/controlPoints in create() 
+	var paths = [];
+
+	// Points from the input source defining the path of the spline
 	var segments = [];
+
+	// Each segment has two control points (the "hands" coming out fo paths)
 	var controlPoints = [];
 
 	var s = {};
 
 	var _tv1, _tv2;
 
-	var getControlPoints = function(point, previous, next, c1, c2, smoothness) {
+	var getcontrolPoints = function(point, previous, next, c1, c2, smoothness) {
 		var vab = _tv1.sub(point, previous).neg();
 		var vcb = _tv2.sub(point, next);
 		var d = (smoothness > 1) ? smoothness : smoothness * Math.min(vab.mag(), vcb.mag());
@@ -79,7 +84,7 @@ SQR.Spline = function() {
 		if(segments.length &lt; 2) return segments;
 
 		smoothness = (smoothness !== null) ? smoothness : 0.5;
-		points.length = 0;
+		paths.length = 0;
 		var firstPoint, firstControlPoint;
 
 		var sg = segments, cp = controlPoints, sl = segments.length;
@@ -92,7 +97,7 @@ SQR.Spline = function() {
 			var a = (i == 0) ? sg[sl-1] : sg[i-1];
 			var b = (i == sl-1) ? sg[0] : sg[i+1];
 
-			getControlPoints(si, a, b, c1, c2, smoothness);
+			getcontrolPoints(si, a, b, c1, c2, smoothness);
 			cp.push(c1, c2);
 		}
 
@@ -104,13 +109,16 @@ SQR.Spline = function() {
 			var c2 = (i == sl-2 &amp;&amp; !close) ? b : cp[i * 2 + 2];
 
 			var c = new SQR.Bezier(a, c1, c2, b);
-			points.push(c);
+			paths.push(c);
 		}
 
 		if(close) {
 			var c = new SQR.Bezier(sg[sl-1], cp[(sl-1)*2+1], cp[0], sg[0]);
-			points.push(c);
+			paths.push(c);
 		}
+
+		s.smoothness = smoothness;
+		s.close = s.close;
 
 		return s;
 	}
@@ -118,23 +126,30 @@ SQR.Spline = function() {
 	s.valueAt = function(t, v) {
 		if(t == 1) t = 0.999999;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].valueAt(tf % 1, v);
+		var tf = t * paths.length;
+		return paths[tf | 0].valueAt(tf % 1, v);
+	}
+
+	s.bezierAt = function(t) {
+		if(t == 1) t = 0.999999;
+		t = t % 1;
+		var tf = t * paths.length;
+		return paths[tf | 0];
 	}
 
 	s.velocityAt = function(t, v) {
 		if(t == 1) t = 0.999999;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].velocityAt(tf % 1, v);
+		var tf = t * paths.length;
+		return paths[tf | 0].velocityAt(tf % 1, v);
 	}
 
 	s.matrixAt = function(t, m) {
 		if(t == 0) t = SQR.EPSILON;
 		if(t == 1) t = 1 - SQR.EPSILON;
 		t = t % 1;
-		var tf = t * points.length;
-		return points[tf | 0].matrixAt(tf % 1, m);
+		var tf = t * paths.length;
+		return paths[tf | 0].matrixAt(tf % 1, m);
 	}
 
 	Object.defineProperty(s, 'segments', {
@@ -143,13 +158,13 @@ SQR.Spline = function() {
 		}
 	});
 
-	Object.defineProperty(s, 'points', {
+	Object.defineProperty(s, 'paths', {
 		get: function() { 
-			return points; 
+			return paths; 
 		}
 	});
 
-	return s
+	return s;
 
 }</code></pre>
         </article>
@@ -161,13 +176,13 @@ SQR.Spline = function() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Sat Sep 19 2015 08:55:19 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

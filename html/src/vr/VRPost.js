@@ -1,3 +1,9 @@
+/**
+ *	@class VRPost
+ *	@memberof SQR
+ *
+ *	@description VR Stereo post effect
+ */
 SQR.VRPost = function(camera, renderer, ctx, options) {
 
 	var isStereo = (options.vrInput && !options.forceMono) || options.forceStereo;

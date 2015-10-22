@@ -1,3 +1,10 @@
+/**
+ *  @namespace SceneParser
+ *  @memberof SQR
+ *
+ *  @description Utility to load scenes from J3D/Unity exported JSON files.
+ *
+ */
 SQR.SceneParser = (function() {
 
 	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
@@ -11,6 +18,18 @@ SQR.SceneParser = (function() {
 
 	return {
 
+		/**
+		 *	@method fromJSON
+		 *	@memberof SQR.SceneParser
+		 *
+		 *	@description Parses the J3D JSON scene data format and creates a SQR.Buffer out of it.
+		 *
+		 *	@param {Object} assets The assets loaded with SQR.Loader or otherwise. 
+		 *	This method will expect to find all the 3 exported files in there, named 'scene', 'mesh' and 'anim'. 
+		 *	Alternatively a prefix can be provided in the seconds, options argument.
+		 *
+		 *	@param {Object} options Options on how to parse the scene.
+		 */	
 		parse: function(assets, options) {
 
 			var prefix = options.prefix || '';

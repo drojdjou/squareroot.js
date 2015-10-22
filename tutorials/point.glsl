@@ -1,4 +1,4 @@
-// normal2color.glsl
+//#name point.glsl
 //#vertex
 attribute vec3 aPosition;
 

@@ -1,8 +1,14 @@
+##Buffers
+
+Buffer are a fundamental part of the engine - the define the shape of things to be rendered. The can do it in a variety of different ways. The shapes can be 3d meshes, triangles, lines or particles systems. The `SQR.Buffer` class allows you to create and manage any buffer possible. On top of that there is a utility called `SQR.Primitives` that has a bunch of functions to easily create primitives shapes such as cubes, spheres, cylinders etc...
+
+Please see this [commented code](../tutorials/understanding-buffers.html) example for a very basic buffer setup.
+
 ##Layouts
 
-The concept of a buffer layout is derived from strides. Strides are an alternative way to organize data in WebGL buffers.
+The concept of a buffer layout is derived from WebGL strides. Strides are an alternative way to organize data in WebGL buffers.
 
-Typically every vertext attribute - such as position, normal or texture coordinate, is stored in a separate buffer. Stirdes allow to keep all the data in one biffer which is far more efficient. A stride represents all the attributes aligned one after the other in a pattern repeated as many times as the geometry has attributes.
+Typically every vertext attribute - such as position, normal or texture coordinate, is stored in a separate buffer. Stirdes allow to keep all the data in one buffer which is far more efficient. A stride represents all the attributes aligned one after the other in a pattern repeated as many times as the geometry has attributes.
 
 For example let's take a buffer that has the following layout:
 ```
@@ -77,6 +83,8 @@ Notice the `SQR.v3n3u2()` function call which is a shorthand for saying:
 { aPosition: 3, aNormal: 3, aUV: 2 }
 ```
 This one and a few similar functions are available in the top-level `SQR` object.
+
+Please note the ther is a function `SQR.Mesh.fromJSON` that helps you with loading meshes from J3D JSON files. It does more or less the same thng as the code snippet above and some more.
 
 ##Drawing modes
 Following OpenGL, WebGL offers several ways to draw a buffer on screen. Here's a quick list of the 5 most common ones:

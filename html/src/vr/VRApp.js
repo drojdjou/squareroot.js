@@ -1,3 +1,9 @@
+/**
+ *	@class VRApp
+ *	@memberof SQR
+ *
+ *	@description A helper class to create universal VR Apps (i.e. that work on both mobile and desktop VR-enabled browsers)
+ */
 SQR.VRApp = function(appFunc, options) {
 
 	options = options || {};

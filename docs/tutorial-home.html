@@ -36,26 +36,35 @@
 </ul>
 <h4>Tutorial</h4><ul>
 <li>Getting Started tutorial <a href="tutorial-basic-setup.html">basic-setup</a></li>
-<li>Bone Export Tutorial <a href="tutorial-bone-export.html">bone-export</a></li>
+<li>Understanding buffers <a href="tutorial-understanding-buffers.html">understanding-buffers</a></li>
+<li>Understanding shaders <a href="tutorial-understanding-shaders.html">understanding-shaders</a></li>
+<li>Bone Export Tutorial <a href="tutorial-bone-export.html">bone-export</a> (advanced)</li>
+<li>2d Canvas Rendering <a href="tutorial-canvas-rendering.html">canvas-rendering</a></li>
 </ul>
 <h4>Other interesting WEbGL links</h4><ul>
 <li><a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/">WebGL Spec</a></li>
 <li><a href="http://alteredqualia.com/tmp/webgl-maxparams-test/">WebGL Params</a></li>
 </ul>
 <p>Guide:</p>
-<h4>GL</h4><ul>
+<h4>GL</h4><p>Core WebGL rendering classes.</p>
+<ul>
 <li><a href="SQR.Transform.html">SQR.Transform</a> - basic building block. A transform is a point in space that has rotation, position and scale.</li>
 <li><a href="SQR.Buffer.html">SQR.Buffer</a> - holds buffers &amp; geometries, see <a href="tutorial-understanding-buffers.html">understanding-buffers</a></li>
 <li><a href="SQR.Shader.html">SQR.Shader</a> - utility to compile and execute GLSL shaders, see <a href="tutorial-understanding-shaders.html">understanding-shaders</a></li>
 <li><a href="SQR.Texture.html">SQR.Texture</a> - create textures from images, vides and canvas elements</li>
 <li><a href="SQR.Cubemap.html">SQR.Cubemap</a> - similar functionality as the texture, but for cubemaps</li>
 <li><a href="SQR.Primitives.html">SQR.Primitives</a> - a collection of functions to create basic geometries like cube, sphere, etc...</li>
+<li><a href="SQR.Mesh.html">SQR.Mesh</a> - utility to import meshes from Unity (J3D JSON format)</li>
 </ul>
-<h4>Canvas 2d</h4><ul>
+<h4>Canvas 2d</h4><p>Canvas 2d rendering engine. See <a href="tutorial-canvas-rendering.html">canvas-rendering</a> for details.</p>
+<ul>
 <li><a href="SQR.Transform2d.html">SQR.Transform2d</a> - similar to the 3d transform above, but optimized for rendering on canvas and in 2d instead of webgl/3d</li>
-<li><a href="SQR.CanvasRenderer.html">SQR.CanvasRenderer</a> - a renderer to draw shapes on a 2d context. For a tutorial see <a href="tutorial-canvas-rendering.html">canvas-rendering</a></li>
+<li><a href="SQR.CanvasRenderer.html">SQR.CanvasRenderer</a> - a renderer to draw shapes on a 2d context</li>
+<li><a href="SQR.SpriteSheet.html">SQR.SpriteSheet</a> - a utility to create sprite sheets for animation</li>
 </ul>
-<h4>Math</h4><ul>
+<h4>Math</h4><p>All the math classes, incuding vectors, matrices and some other goodies.</p>
+<ul>
+<li><a href="SQR.Color.html">SQR.Color</a> - an RGB color</li>
 <li><a href="SQR.V2.html">SQR.V2</a> - a 2d vector</li>
 <li><a href="SQR.V3.html">SQR.V3</a> - a 3d vector</li>
 <li><a href="SQR.Quaternion.html">SQR.Quaternion</a> - a quaternion</li>
@@ -65,12 +74,20 @@
 <li><a href="SQR.ProjectionMatrix.html">SQR.ProjectionMatrix</a> - a 4x4 matrix specialized for creating projection matrices</li>
 <li><a href="SQR.Bezier.html">SQR.Bezier</a> - a quadratic bezier implementations</li>
 <li><a href="SQR.Spline.html">SQR.Spline</a> - a spline: multiple line segments smoothed with bezier function</li>
+<li><a href="SQR.Delaunay.html">SQR.Delaunay</a> - delaunay triangulation utility</li>
 </ul>
-<h4>Animation</h4><p><em>THIS WILL BE DEPRECATED SOON, USE TweenLite INSTEAD</em></p>
+<h4>VR</h4><p>Highly experimental classes that should help build web based VR expriences.</p>
 <ul>
-<li>SQR.Anm - a tiny animation/tweening enging</li>
-<li>SQR.Animation - a class that represetns an animation</li>
-<li>SQR.Tween - a tween is an animation applied to an object</li>
+<li><a href="SQR.VRApp.html">SQR.VRApp</a> - a helper class to create universal VR Apps</li>
+<li><a href="SQR.VRPost.html">SQR.VRPost</a> - a VR stereo post effect</li>
+<li><a href="SQR.Gyro.html">SQR.Gyro</a> - a gyroscope handler</li>
+</ul>
+<h4>Extras</h4><p>Misc stuff. Some real gems can be found in here!</p>
+<ul>
+<li><a href="SQR.GeometryTools.html">SQR.GeometryTools</a> - a collection of functions to deal with buffer and geometries</li>
+<li><a href="SQR.Trackball.html">SQR.Trackball</a> - a quaternion based 3d trackball control</li>
+<li><a href="SQR.ConvexHull.html">SQR.ConvexHull</a> - a utility to calculate a convex hull</li>
+<li><a href="SQR.PerlinTexture.html">SQR.PerlinTexture</a> - a utility to genrate Perlin noise based textures</li>
 </ul>
 </article>
 
@@ -79,13 +96,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Sat Sep 19 2015 08:55:19 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

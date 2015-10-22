@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: primitives/SceneParser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: primitives/SceneParser.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @namespace SceneParser
+ *  @memberof SQR
+ *
+ *  @description Utility to load scenes from J3D/Unity exported JSON files.
+ *
+ */
+SQR.SceneParser = (function() {
+
+	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
+
+	var arrayToObject = function(a, v) {
+		v.x = a[0];
+		v.y = a[1];
+		v.z = a[2];
+		if(v.w) v.w = a[3];
+	}
+
+	return {
+
+		/**
+		 *	@method fromJSON
+		 *	@memberof SQR.SceneParser
+		 *
+		 *	@description Parses the J3D JSON scene data format and creates a SQR.Buffer out of it.
+		 *
+		 *	@param {Object} assets The assets loaded with SQR.Loader or otherwise. 
+		 *	This method will expect to find all the 3 exported files in there, named 'scene', 'mesh' and 'anim'. 
+		 *	Alternatively a prefix can be provided in the seconds, options argument.
+		 *
+		 *	@param {Object} options Options on how to parse the scene.
+		 */	
+		parse: function(assets, options) {
+
+			var prefix = options.prefix || '';
+			var scene = assets[prefix + 'scene'];
+			var meshes = assets[prefix + 'mesh'];
+			var anim = assets[prefix + 'anim'];
+
+			if(options.context) {
+				var bc = scene.background;
+				options.context.clearColor(bc.r, bc.g, bc.b);
+			};
+
+			var getDefaultShader = (function() {
+				var d;
+				return function() {
+					if(!d) d = SQR.Shader(options.shader);
+					return d;
+				}
+			})();
+
+			// If this is a scene coming from unity we need to flip the matrix
+			// TODO: this doesn't play well with the WebVR thing btw....
+			SQR.flipMatrix = (options &amp;&amp; options.flipMatrix) ? options.flipMatrix : false;
+
+			var buffers = {}, bufferByName = {};
+			var skinnedMeshes = [];
+			var animations = {};
+
+			for(var n in meshes) {
+				var md = meshes[n];
+
+				var layout = md.boneWeights ? skinnedMeshLayout() : SQR.v3n3u2();
+
+				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
+				buffers[n] = b;
+				bufferByName[md.name] = b;
+			}
+
+			for(var m in scene.materials) {
+				var mat = scene.materials[m];
+				mat.color = SQR.Color().setRGB(mat.color.r, mat.color.g, mat.color.b);
+			}
+
+			var root = new SQR.Transform();
+			var camera;
+			var ts = scene.transforms;
+
+			ts.forEach(function(td) {
+				var t = new SQR.Transform(td.name, td.uid);
+				t.useQuaternion = true;
+				arrayToObject(td.position, t.position);
+				arrayToObject(td.rotation, t.quaternion);
+
+				t.data = td;
+				if(td.bones) skinnedMeshes.push(t);
+
+				if(td.camera) {
+					camera = t;
+					var cd = scene.cameras[td.camera];
+
+					var resize = function() {
+						var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+						camera.projection = new SQR.ProjectionMatrix().perspective(cd.fov, aspect, cd.near, cd.far);
+					}
+
+					window.addEventListener('resize', resize);
+					resize();
+				}
+
+				if(td.mesh) {
+					t.buffer = buffers[td.meshId];
+					
+				}
+
+				
+				if(td.renderer) {
+
+					// we will deal with skinned meshes below
+					if(!td.bones) t.shader = getDefaultShader();
+
+					t.uniforms = t.uniforms || {};
+					t.uniforms.uColor = scene.materials[td.renderer].color;
+					
+				}
+
+				if(td.parent) {
+					root.findById(td.parent).add(t);
+				} else {
+					root.add(t);
+				}
+			});
+
+			skinnedMeshes.forEach(function(s) {
+				var bs = s.data.bones, bst = [], numBones = bs.length;
+				
+				bs.forEach(function(id) {
+					bst.push(root.findById(id));
+				});
+
+				bst[0].setAsBoneRoot();
+
+				var boneMatrices = [];
+
+				s.shader = SQR.Shader(options.shader, {
+					directives: [
+						{ name: 'NUM_BONES', value: numBones },
+						{ name: 'BONE_PER_VERTEX', value: 4 }
+					]
+				});
+
+				s.beforeDraw = function() {
+
+					for(var i = 0; i &lt; numBones; i++) {
+						boneMatrices[i] = bst[i].computeBoneMatrix();
+					}
+
+					s.shader.use().setUniform('uBones', boneMatrices);
+				}
+			});
+
+			for(var id in anim) {
+
+				var data = anim[id];
+
+				animations[id] = {
+					duration: data.length,
+					transforms: {}
+				};
+
+				for(var c in data.curves) {
+
+					animations[id].transforms[c] = {
+						properties: {}
+					};
+
+					for(var p in data.curves[c]) {
+						var keyframes = [];
+						var d = data.curves[c][p];
+
+						if(options.linearAnimation) {
+							for(var i = 0; i &lt; d.keys.length; i += 4) {
+								var a = d.keys[i + 0];
+								var b = d.keys[i + 1];
+								keyframes.push(new SQR.V2(a, b));								
+							}
+						} else {
+							for(var i = 0; i &lt; d.keys.length - 4; i += 4) {
+								var k1t = d.keys[i+0];
+								var k1v = d.keys[i+1];
+								var k1o = d.keys[i+3];
+
+								var k2t = d.keys[i+4];
+								var k2v = d.keys[i+5];
+								var k2i = d.keys[i+6];
+								
+								var start = new SQR.V2(k1t, k1v);
+								var end = new SQR.V2(k2t, k2v);
+
+								var dt = (end.x - start.x) / 3.0;
+								var st = new SQR.V2( dt,  dt * k1o).add(start);
+								var et = new SQR.V2(-dt, -dt * k2i).add(end);
+
+								keyframes.push(new SQR.Bezier(start, st, et, end));
+							}
+						}
+
+						animations[id].transforms[c].properties[p] = keyframes;
+					}
+				}
+			}
+
+			root.recurse(function(t) {
+				if(t.data &amp;&amp; t.data.animationId) {
+					var id = t.data.animationId;
+					var data = animations[id];
+
+					// Aniation file is missing or was not exported, abort.
+					if(!data) return;
+
+					t.animation = SQR.Animation(data.duration);
+
+					for(var cn in data.transforms) {
+						var c = t.findByPath(cn);
+						c.clip = SQR.Clip(data.duration);
+						t.animation.addClip(c.clip);
+
+						for(var p in data.transforms[cn].properties) {
+							c.clip.addProperty(p, data.transforms[cn].properties[p]);
+						}
+					}
+
+					if(options.autoPlay) t.animation.play();
+				};
+			}, true);
+
+			return {
+				root: root, camera: camera, buffers: bufferByName
+			};
+		}
+
+	}
+
+})();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

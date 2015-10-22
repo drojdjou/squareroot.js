@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: vr/VRPost.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: vr/VRPost.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *	@class VRPost
+ *	@memberof SQR
+ *
+ *	@description VR Stereo post effect
+ */
+SQR.VRPost = function(camera, renderer, ctx, options) {
+
+	var isStereo = (options.vrInput &amp;&amp; !options.forceMono) || options.forceStereo;
+
+	var width, height, halfWidth;
+	var fbo, post;
+	var firstRender = true;
+
+	var left = new SQR.Transform();
+	var right = new SQR.Transform();
+
+	left.position.x =  options.vrData.leftEyeX  || -0.1;
+	right.position.x = options.vrData.rightEyeX || 0.1;
+
+	if(options.isTouch || options.vrInput) camera.useQuaternion = true;
+	camera.add(left, right);
+	renderer.autoClear = false;
+
+	if(options.customShader) {
+		fbo = SQR.FrameBuffer(0, 0);    
+	    post = SQR.Primitives.createPostEffect(options.customShader);
+		
+	    post.uniforms = {
+	    	scale: 			new SQR.V2(0.81, 0.81),
+			scaleIn: 		new SQR.V2(1.0, 1.0),
+			lensCenter: 	new SQR.V2(0.0, 0.0),
+			hmdWarpParam: 	[1.0, 0.11, 0.12, 0.0],
+			chromAbParam: 	[0.996, -0.004, 1.014, 0.0]
+	    };
+	}
+	
+	var p = {
+
+		size: function() {
+			var pr = window.devicePixelRatio;
+
+			width = window.innerWidth * pr; 
+			height = window.innerHeight * pr;
+			halfWidth = width / 2;
+
+			ctx.size(window.innerWidth, window.innerHeight, pr);
+
+			if(options.customShader) fbo.resize(halfWidth, height);
+
+			var aspect = width / height;
+			var halfAspect = (width * 0.5) / height;
+
+			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, options.near || 0.01, options.far || 10000);
+			camera.projection = p;
+			left.projection = p;
+			right.projection = p;
+		},
+
+		render: function(root) {
+
+			if(options.vrInput) {
+				var state = options.vrInput.getState();
+
+				if(state.orientation !== null) {
+					camera.quaternion.copyFrom(state.orientation);
+				}
+
+				if(state.position !== null) {
+					camera.position.copyFrom(state.position);
+				}
+
+			} else if(options.isTouch &amp;&amp; SQR.Gyro.hasGyro()) {
+
+				camera.quaternion.copyFrom(SQR.Gyro.getOrientation());
+
+			} else if(options.customCameraAnimation) {
+
+				options.customCameraAnimation();
+
+			}
+
+			ctx.viewport(0, 0, width, height);
+			ctx.clear();
+
+			if(isStereo) {
+
+				if(!options.customShader) {
+
+					ctx.viewport(0, 0, halfWidth, height);
+					renderer.render(root, left);
+
+					ctx.viewport(halfWidth, 0, halfWidth, height);
+					renderer.render(root, right);
+
+				} else {
+
+					fbo.bind();
+					ctx.clear();
+					renderer.render(root, left);
+					renderer.renderToScreen();
+					ctx.viewport(0, 0, halfWidth, height);
+					post.shader.use().setUniform('uTexture', fbo.texture);
+					renderer.render(post);
+
+					fbo.bind();
+					ctx.clear();
+					renderer.render(root, right);
+					renderer.renderToScreen();
+					ctx.viewport(halfWidth, 0, halfWidth, height);
+					post.shader.use().setUniform('uTexture', fbo.texture);
+					renderer.render(post);
+
+				}
+
+			} else {
+
+				renderer.render(root, camera);
+			}
+
+			if(firstRender) {
+					
+				if(options.target &amp;&amp; options.camRoot) {
+
+					var a = new SQR.V3().sub(options.camRoot.position, options.target.position);
+					var b = new SQR.V3().copyFrom(camera.forward); // i.e forward vector
+					a.y = 0;
+					b.y = 0;
+					a.norm();
+					b.norm();
+
+					var d = SQR.V3.dot(a, b);
+					var ca = Math.acos(d) / Math.PI * 180;
+
+					options.camRoot.rotation.y = -Math.acos(d);
+				}
+
+				firstRender = false;
+			}
+		}
+	};
+
+	return p;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

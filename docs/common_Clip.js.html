@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common/Clip.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common/Clip.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *	@class Clip
+ *	@memberof SQR
+ *
+ *	@description Represents a single animation clip
+ */
+SQR.Clip = function(duration) {
+
+	var c = {
+		timeScale: 1,
+		duration: duration,
+		reverse: false,
+		playing: false
+	};
+
+	var t = 0;
+	var properties = [];
+	var numProps = 0;
+	var tmp = new SQR.V3();
+
+	var setValue = function(target, key, value) {
+		switch(key) {
+			case 'px': target.position.x = value; break;
+			case 'py': target.position.y = value; break;
+			case 'pz': target.position.z = value; break;
+			case 'rx': target.quaternion.x = value; break;
+			case 'ry': target.quaternion.y = value; break;
+			case 'rz': target.quaternion.z = value; break;
+			case 'rw': target.quaternion.w = value; break;
+			default:
+				console.warn('Unknown animation property: ', key, ' on ', target);
+		}
+	}
+
+	// keyframes = Array of V2||V3 or and array of bezier curves
+	c.addProperty = function(property, keyframes) {
+
+		var p = {
+			prop: property,
+			keys: keyframes
+		};
+
+		p.size = p.keys.length;
+
+		properties.push(p);
+		numProps = properties.length;
+
+		return c;
+	}
+
+	c.gotoTime = function(ms) {
+		t = Math.max(ms, 0); 
+		t = Math.min(ms, c.duration);
+	}
+
+	c.update = function(target, time, delta) {
+
+		if(!c.playing || numProps == 0) return;
+
+		var p = delta / 1000 * c.timeScale;
+		t += c.reverse ? -p : p;
+		if(t &lt; 0) t += duration;
+		t = t % duration;
+
+		for(var i = 0; i &lt; numProps; i++) {
+			var p = properties[i];
+
+			for(var j = 0; j &lt; p.size; j++) {
+				var k1 = p.keys[j+0];
+				var k2 = p.keys[j+1];
+
+				if(k1 instanceof SQR.V2) {
+					if(t >= k1.x &amp;&amp; t &lt; k2.x) {
+						var lt = (t - k1.x) / (k2.x - k1.x);
+						var v = k1.y + (k2.y - k1.y) * lt;
+						setValue(target, p.prop, v);
+						break;
+					}
+				} else if(k1 instanceof SQR.Bezier) {
+					var ts = t;
+					if(ts >= k1.p0.x &amp;&amp; ts &lt; k1.p1.x) {
+						var lt = ((ts) - k1.p0.x) / (k1.p1.x - k1.p0.x);
+						k1.valueAt(lt, tmp);
+						setValue(target, p.prop, tmp.y);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	
+
+	return c;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

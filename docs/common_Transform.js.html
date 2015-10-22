@@ -151,6 +151,7 @@ SQR.Transform = function(name, uid) {
 	t.srcFactor = null;
 	t.dstFactor = null;
 	t.useDepth = true;
+	t.depthMask = true;
 	t.lineWidth = 1;
 
 	t.setAsBoneRoot = function() {
@@ -199,6 +200,10 @@ SQR.Transform = function(name, uid) {
 	t.add = function() {
 		for (var i = 0; i &lt; arguments.length; i++) {
 			var c = arguments[i];
+
+			if(c.parent) { c.parent.remove(c); }
+			if(c.onAdd) c.onAdd(t);
+
 			c.parent = t;
 			if (t.children.indexOf(c) == -1) t.children.push(c);
 		}
@@ -220,6 +225,7 @@ SQR.Transform = function(name, uid) {
 			if (j == -1) continue;
 			c.parent = null;
 			t.children.splice(j, 1);
+			if(c.onRemove) c.onRemove(t);
 		}
 		t.numChildren = t.children.length;
 		return t;
@@ -251,13 +257,13 @@ SQR.Transform = function(name, uid) {
 	 *  @method recurse
 	 *  @memberof SQR.Transform.prototype
 	 *   
-	 *  @description Execute this function on all the child transforms including this current one.
+	 *  @description Execute this function on all the child transforms.
 	 *
 	 *  @param {function} f the function that will be called on each child. 
 	 *  This function will receive the transform as argument.
 	 *
 	 *  @param {boolean} excludeSelf if set to true, the function will only be called for all 
-	 *  the ancestors of the Transform.
+	 *  the ancestors of the Transform, not on the transform itself.
 	 */
 	t.recurse = function(f, excludeSelf) {
 	   if(!excludeSelf) f(t);
@@ -324,10 +330,15 @@ SQR.Transform = function(name, uid) {
 		// This works, but this is much better:
 		// http://stackoverflow.com/questions/2859722/opengl-how-can-i-put-the-skybox-in-the-infinity (implement globally)
 		var gl = SQR.gl;
-		// gl.depthMask(t.depthMask);
-		t.useDepth ? gl.enable(gl.DEPTH_TEST): gl.disable(gl.DEPTH_TEST);
+
+		// gl.depthMask(t.useDepth);
+		t.useDepth ? gl.enable(gl.DEPTH_TEST) : gl.disable(gl.DEPTH_TEST);
+
+		gl.depthMask(t.depthMask);
+
 		gl.lineWidth(t.lineWidth);
 		t.buffer.draw();
+		if(t.afterDraw) t.afterDraw();
 	}
 
 	/**
@@ -375,11 +386,11 @@ SQR.Transform = function(name, uid) {
 		t.forward.set(g.data[8], g.data[9], g.data[10]);
 
 		if(t.isStatic) transformState = 1;
-		if(t.beforeDraw) t.beforeDraw();
+		if(t.beforeDraw) t.beforeDraw(t);
 	}
 
 	/** 
-	 *  Used for sorting object in the rendering function
+	 *  Used for sorting objects in the rendering function
 	 *  (not implemented yet)
 	 */
 	t.viewDepth = function() {
@@ -397,10 +408,13 @@ SQR.Transform = function(name, uid) {
 		if(inverseCamMatrix) {
 			inverseCamMatrix.copyTo(t.viewMatrix);
 			t.viewMatrix.multiply(t.globalMatrix);
-			t.viewMatrix.inverseMat3(t.normalMatrix);
+
+			// it used to be viewMatrix instead, but this was (probably) wrong
+			t.globalMatrix.inverseMat3(t.normalMatrix);
+
 		} else {
 			t.globalMatrix.copyTo(t.viewMatrix);
-			t.viewMatrix.inverseMat3(t.normalMatrix);
+			t.globalMatrix.inverseMat3(t.normalMatrix);
 		}
 		
 	}
@@ -446,13 +460,13 @@ SQR.TransformCount = 0;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Primitives.html">Primitives</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Sat Sep 19 2015 08:55:19 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Thu Oct 22 2015 12:10:44 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

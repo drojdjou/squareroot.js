@@ -1,9 +1,33 @@
-SQR.Color = function() {
+/**
+ *  @class Color
+ *  @memberof SQR
+ *
+ *  @descrption represents an RGB color. This class works with float values, 
+ *	so all the color components are in range of 0-1, not 0-255.
+ *
+ *	@param {Number=} r the red component of the color
+ *	@param {Number=} g the green component of the color
+ *	@param {Number=} b the blue component of the color
+ *
+ */
+SQR.Color = function(r, g, b) {
 
 	var c = {};
 
 	var array;
 
+	/**
+	 *	@method setRGB
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description sets the color component values.
+	 *
+	 *	@param {Number=} r the red component of the color
+	 *	@param {Number=} g the green component of the color
+	 *	@param {Number=} b the blue component of the color
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
 	c.setRGB = function(r, g, b) {
 		c.r = r || 0;
 		c.g = g || 0;
@@ -11,6 +35,17 @@ SQR.Color = function() {
 		return c;
 	}
 
+	/**
+	 *	@method setHex
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description sets the color component values from a hex string (ex. #a4d278) or number (ex. 0xa4d278) 
+	 *	Useful when copying color vaues from ex. Photoshop.
+	 *
+	 *	@param {string|Number} hex the hex color values as string (ex. #a4d278) or number (ex. 0xa4d278) 
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
 	c.setHex = function(hex) {
 
 		if(hex instanceof String) {
@@ -26,6 +61,12 @@ SQR.Color = function() {
 		return c;
 	}
 
+	/**
+	 *	@method toCSS
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@returns {string} a CSS friendly string representing the color. The format used is <code>rgb(r, g, b)</code>.
+	 */
 	c.toCSS = function() {
 		var ri = (c.r * 255) | 0;
 		var gi = (c.g * 255) | 0;
@@ -33,6 +74,16 @@ SQR.Color = function() {
 		return 'rgb(' + ri + ', ' + gi + ', ' + bi + ')';
 	}
 
+	/**
+	 *	@method setRGB
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description copies the color component values from another instance of SQR.Color
+	 *
+	 *	@param {SQR.Color} oc the color instance to copy from
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
 	c.copyFrom = function(oc) {
 		c.r = oc.r;
 		c.g = oc.g;
@@ -40,19 +91,41 @@ SQR.Color = function() {
 		return c;
 	}
 
+	/**
+	 *	@method lighten
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description <p>modfies the color values to make them darker of lighter in a more fance way than a simple multiplication. 
+	 *	However this is not currently implemented so for now it really does the same thing as <code>SQR.Color.mul</code>.</p>
+	 *
+	 *	<p>Here's <a href='http://stackoverflow.com/questions/141855/programmatically-lighten-a-color'>some info on how to implement this properly</a>.</p>
+	 */
 	c.lighten = function(v) {
-		// Naive approach for start, look here for more robust solutions:
-		// http://stackoverflow.com/questions/141855/programmatically-lighten-a-color
-		c.r = Math.min(1, c.r * v);
-		c.g = Math.min(1, c.g * v);
-		c.b = Math.min(1, c.b * v);
-		return c;
+		return c.mul(v);
 	}
 
+	/**
+	 *	@method clone
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description creates a copy of the color instance
+	 *
+	 *	@returns {Object} a new SQR.Color instance
+	 */
 	c.clone = function() {
-		return new SQR.Color().setRGB(c.r, c.g, c.b);
+		return new SQR.Color(c.r, c.g, c.b);
 	}
 
+	/**
+	 *	@method mul
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description modfies the color values to make it darker of lighter
+	 *
+	 *	@param {Number} v the amount by which to change the color (1 will leave it as it, > 1 will lightned, < 1 will darken the color)
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
 	c.mul = function(v) {
 		c.r = Math.min(1.0, c.r * v);
 		c.g = Math.min(1.0, c.g * v);
@@ -60,6 +133,18 @@ SQR.Color = function() {
 		return c;
 	}
 
+	/**
+	 *	@method lerp
+	 *	@memberof SQR.Color.prototype
+	 *
+	 *	@description performs a linear interpolation between two colors and stores the value in the color instance
+	 *
+	 *	@param {SQR.Color} a the first color to use in interpolation
+	 *	@param {SQR.Color} b the second color to use in interpolation
+	 *	@param {Number} t the interpolation value [0-1]
+	 *
+	 *	@returns {Object} reference to this SQR.Color instance, for chaining
+	 */
 	c.lerp  = function(a, b, t) {
 		var m = 1 - t;
 		c.r = a.r * m + b.r * t;
@@ -79,6 +164,8 @@ SQR.Color = function() {
 		return array;
 
 	}
+
+	setRGB(r, g, b);
 
 	return c;
 
