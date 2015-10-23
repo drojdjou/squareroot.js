@@ -1,0 +1,340 @@
+body {
+  background-color: #fff;
+  margin: 0;
+  color: #000;
+  font-size: 13px;
+  overflow-x: hidden;
+}
+@media (min-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+}
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+h1,
+h2,
+h3 h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: normal;
+}
+h4 {
+  font-size: 2em;
+}
+h5 {
+  font-style: italic;
+  font-size: 1.2em;
+}
+p,
+li,
+h5 {
+  line-height: 1.6;
+}
+em {
+  font-weight: 700;
+  font-style: normal;
+}
+a {
+  color: #1e4c6a;
+  text-decoration: none;
+}
+a:hover {
+  color: #3282b5;
+  text-decoration: underline;
+}
+a.bio {
+  padding: 0;
+  border-bottom: 1px solid #1e4c6a;
+  font-style: italic;
+  margin-bottom: 2em;
+  display: inline-block;
+}
+a.bio:hover {
+  text-decoration: none;
+  border-bottom: 1px solid #3282b5;
+}
+.title {
+  position: fixed;
+  z-index: -1;
+  width: 100%;
+  height: 80vh;
+  background-color: #000;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-align-content: center;
+  -webkit-justify-content: center;
+  color: #fff;
+}
+.title h1,
+.title h2 {
+  position: relative;
+  z-index: 10;
+}
+.title article {
+  position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.content {
+  position: absolute;
+  width: 100%;
+  z-index: 101;
+  top: 80vh;
+  background-color: #fff;
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: left;
+}
+.content article,
+.content .visual {
+  margin: 40px 0 0 0;
+}
+.content article li {
+  margin-bottom: 1em;
+}
+.content article a:not(.bio) {
+  text-decoration: underline;
+}
+.content .light-list {
+  padding-left: 1.1em;
+  list-style-type: circle;
+}
+.content .light-list li {
+  margin-bottom: 0em;
+}
+.visual {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  background-color: #000;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-align-content: center;
+  -webkit-justify-content: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.visual h2 {
+  color: #fff;
+  font-size: 2em;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+.visual li {
+  float: left;
+  display: block;
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+.visual + .visual {
+  margin-top: 0;
+}
+.portrait {
+  display: inline-block;
+  float: left;
+  width: 128px;
+  height: 128px;
+  border-radius: 256px;
+  margin: 20px 20px 0px 20px;
+  background-color: #fff;
+}
+@media (min-width: 1024px) {
+  .portrait {
+    width: 256px;
+    height: 256px;
+    margin: 0px 20px 0px 0px;
+  }
+}
+.no-bullet {
+  list-style-type: none;
+}
+.goodbye {
+  margin-bottom: 0px;
+}
+.clear {
+  clear: both;
+}
+
+
+
+
+
+.title {
+  font-family: "alternate-gothic-no-3-d", "Impact";
+  text-transform: uppercase;
+  background-image: url('assets/piano-1920.jpg');
+  background-position: center;
+  font-size: 1em;
+}
+.title h1 {
+  font-size: 70px;
+  line-height: 0.9em;
+}
+.title h2 {
+  font-size: 16px;
+  
+}
+
+.title ul {
+  font-size:14px;
+ 
+  position: absolute;
+  bottom:20px;
+  
+}
+
+
+
+.title a{
+  color:#fff;
+}
+
+.title .overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+@media (min-width: 768px) {
+  .title h1 {
+    font-size: 120px;
+  }
+  .title h2 {
+    font-size: 30px;
+  }
+  .title h3 {
+    font-size:20px;
+  }
+
+  .title .vr-icon {
+    top: -6px;
+    height: 98px;
+  }
+}
+.content article h3 {
+  font-family: "alternate-gothic-no-3-d", "Impact";
+  font-size: 2.5em;
+  text-transform: uppercase;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+.content article h4 {
+  font-family: "alternate-gothic-no-3-d", "Impact";
+  text-transform: uppercase;
+}
+.content article p,
+.content article ul,
+.content article h5 {
+  font-family: "Georgia";
+}
+.content article ul {
+  padding: 0;
+  margin: 0;
+}
+.content article h3,
+.content article p,
+.content article ul,
+.content article h4,
+.content article h5,
+.content article ul.no-bullet {
+  max-width: 700px;
+  margin: 20px 20px 0 20px;
+}
+.content article ul {
+  margin: 20px 20px 0 40px;
+}
+.content .visual {
+  height: 80vh;
+}
+.content .visual h2 {
+  font-family: "alternate-gothic-no-3-d", "Impact";
+  text-transform: uppercase;
+}
+.content ul.visual {
+  height: 40vh;
+}
+.content .farwell {
+  background-image: url('assets/farwell-1920.jpg');
+  background-position: bottom;
+}
+.content .ford {
+  background-image: url('assets/ford-1920.jpg');
+}
+.content .vr {
+  background-image: url('assets/vr-1920.jpg');
+}
+.content .classroom {
+  background-image: url('assets/classroom-1920.jpg');
+}
+.content .books {
+  background-image: url('assets/books-1920.jpg');
+}
+.content .church {
+  background-image: url('assets/church-1920.jpg');
+}
+.content .house {
+  background-image: url('assets/house-1920.jpg');
+}
+.content .f-wall {
+  background-image: url('assets/feature-wall.jpg');
+}
+.content .f-building {
+  background-image: url('assets/feature-building.jpg');
+  background-position: bottom;
+}
+.content .f-jacob {
+  background-image: url('assets/feature-jacob.jpg');
+}
+.content .humble {
+  padding: 20px;
+  background-color: #000;
+}
+@media (min-width: 768px) {
+  .content h3,
+  .content p,
+  .content ul,
+  .content h4,
+  .content h5 {
+    margin: 20px 0 0 0;
+    min-width: 700px;
+  }
+  .content .visual {
+    height: 75vh;
+  }
+  .content ul.visual {
+    height: 75vh;
+  }
+}
+@media (min-width: 1024px) {
+  .portrait {
+    margin: 20px 20px 0px 20px !important;
+  }
+}
