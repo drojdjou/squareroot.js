@@ -212,7 +212,7 @@ a.bio:hover {
  
   position: absolute;
   bottom:20px;
-  
+
 }
 
 
@@ -281,8 +281,8 @@ a.bio:hover {
 .content ul.visual {
   height: 40vh;
 }
-.content .farwell {
-  background-image: url('assets/farwell-1920.jpg');
+.content .trees {
+  background-image: url('trees.jpg');
   background-position: bottom;
 }
 .content .ford {
@@ -318,6 +318,7 @@ a.bio:hover {
   background-color: #000;
 }
 @media (min-width: 768px) {
+
   .content h3,
   .content p,
   .content ul,
