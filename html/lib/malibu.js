@@ -8,7 +8,7 @@
  *	@property {string} date - the date of the build
  */
 // DO NOT EDIT. Updated from version.json
-var Framework = {"version":"4","build":62,"date":"2015-10-02T21:45:18.784Z"}
+var Framework = {"version":"4","build":75,"date":"2015-10-15T23:36:18.359Z"}
 
 /* --- --- [Simplrz] --- --- */
 
@@ -720,7 +720,7 @@ health.value = 2;
 /*
  *	Also read this http://www.html5rocks.com/en/tutorials/es7/observe/
  */
-var Value = function(_value) {
+var Value = function(_value, noInitCallback) {
 
 	var that = this, 
 		value = _value, 
@@ -755,7 +755,7 @@ var Value = function(_value) {
 	 *	@description sets the value property of thie Value to whatever is passed as parameter. 
 	 *	Same as saying <code>someValue.value = v;</code> but this method can be useful when chaining. 
 	 */
-	that.on = function(callback, test, param, noInitCallback) {
+	that.on = function(callback, test, param) {
 		var o = callback;
 		o.test = test;
 		o.param = param;
@@ -921,7 +921,9 @@ var Application = (function() {
 	 *	@memberof Application
 	 *	@static
 	 */
-	app.route = new Value({});
+	app.route = new Value({
+		parts: []
+	}, true);
 	
 	/**
 	 *	@function init
@@ -1138,12 +1140,12 @@ var ExtState = function(ext, element) {
 		if(onLoad) {
 			var i = new Image();
 			i.addEventListener('load', function() {
-				onLoad(i);
-				element.style.backgroundImage = 'url(' +  + ')';
+				onLoad(element, i);
+				element.style.backgroundImage = 'url(' + path + ')';
 			});
 			i.src = path;
 		} else {
-			element.style.backgroundImage = 'url(' +  + ')';
+			element.style.backgroundImage = 'url(' + path + ')';
 		}
 	}
 };
@@ -1590,10 +1592,18 @@ var FrameImpulse = (function() {
 	 *	@description Removes a listener to be called on every frame
 	 */
 	r.off = function(f) {
-		if(listeners.indexOf(f) == -1) { return; }
-		toRemove.push(f);
-		numToRemove = toRemove.length;
-		// console.log("FrameImpulse > scheduled removal > total :", numListeners);
+		
+
+		// At this point we think the "late" removal patttern was more harmful than helpful, so it's gone.
+
+		// if(listeners.indexOf(f) == -1) { return; }
+		// toRemove.push(f);
+		// numToRemove = toRemove.length;
+
+		var i = listeners.indexOf(f);
+		if(i == -1) return;
+		listeners.splice(i, 1);
+		numListeners = listeners.length;
 	}
 
 	r.getListeners = function() {
@@ -1665,7 +1675,7 @@ var HistoryRouter = function (app, params) {
 
 				var cb = function (e) {
 					if(e) e.preventDefault();
-					pushState(this.hijackedHref);
+					app.navigate.trigger(this.hijackedHref);
 				}
 
 				if(Simplrz.touch) {
@@ -1678,20 +1688,24 @@ var HistoryRouter = function (app, params) {
 	};
 
 	var notify = function(href) {
-		var qs = document.location.href.indexOf('?');
-		var hs = document.location.href.indexOf('#');
-
-		var route = document.location.href;
-
-		if(qs > -1) route = route.substring(0, qs);
-		if(hs > -1) route = route.substring(0, hs);
 
 		var r = {};
 
-		if(!disableHistoryAPI)  {
-			r.route = route.substring(rootUrl.length + 1 + app.baseUrl.length);
-		} else {
+		if(disableHistoryAPI)  {
+
 			r.route = href || '';
+			
+		} else {
+
+			var qs = document.location.href.indexOf('?');
+			var hs = document.location.href.indexOf('#');
+
+			var route = document.location.href;
+
+			if(qs > -1) route = route.substring(0, qs);
+			if(hs > -1) route = route.substring(0, hs);
+			r.route = route.substring(rootUrl.length + 1 + app.baseUrl.length);			
+
 		}
 
 		r.parts = r.route.split('/');
@@ -1701,16 +1715,11 @@ var HistoryRouter = function (app, params) {
 		while(r.parts[r.parts.length - 1] == '') r.parts.pop();
 
 		r.lastPart = r.parts[r.parts.length - 1];
-		r.route = r.parts.join('/');
 
+		if(r.route == app.route.value.route) return;
 		routeHistory.push(r);
 		app.route.value = r;
 	}
-
-	var pushState = function (href) {
-		if (!disableHistoryAPI) history.pushState(null, null, href);
-		notify(href);
-	};
 
 	if(!disableHistoryAPI) {
 		window.addEventListener('popstate', function(e) {
@@ -1719,7 +1728,10 @@ var HistoryRouter = function (app, params) {
 	}
 
 	app.hijackLinks.on(hijackLinks);
-	app.navigate.on(pushState);
+	app.navigate.on(function(href) {
+		history.pushState(null, null, href);
+		notify();
+	});
 
 	// app.historyBack.on(function() {
 	// 	console.log(arguments)

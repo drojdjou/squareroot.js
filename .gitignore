@@ -10,3 +10,4 @@ demo/ig-*
 **/*.webm
 npm-debug.log
 *.sublime-*
+lib.sh

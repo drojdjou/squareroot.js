@@ -1,1 +1,0 @@
-cp ../malibu/malibu.js html/lib/

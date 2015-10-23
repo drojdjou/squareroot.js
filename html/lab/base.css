@@ -1,6 +1,3 @@
-/*@import url(http://fonts.googleapis.com/css?family=Lora);
-@import url(http://fonts.googleapis.com/css?family=Lato:900,400,300italic);
-*/
 body {
     overflow: hidden;
     background-color: #000;
@@ -18,8 +15,6 @@ canvas {
     top: 0px;
     left: 0px;
     pointer-events: none;
-   /* width: 100%;
-    height: 100%;*/
 }
 
 ul {
