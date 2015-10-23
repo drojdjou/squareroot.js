@@ -2,9 +2,11 @@
 
 A 2d/3d engine for WebGL and Canvas drawing and animation.
 
-Squareroot.js was created by [Bartek Drozdz](http://bartekdrozdz.com) and is a fruit of many years of experience in building cross-device WebGL projects. It's based on the philisophy of writing code that gets shit done and is as flexible as possible. 
+Squareroot.js was created by [Bartek Drozdz](http://bartekdrozdz.com) and is a fruit of many years of experience in building cross-device WebGL projects.
 
-Squareroot is a pretty thin layer over the WebGL API. It is composed mostly of tools that will make creating WebGL experiences easier. The code originates from a practial need encontered during one project or another, not from a priori assumptions of how a 3d engine should work. A lot of the structure is inspired by the Unity3d API, including the central concept of 'transforms' as building blocks.
+Squareroot is a pretty thin layer over the WebGL API. The code directly originates experiences on different WebGL projects. The goal was for SQR to help writing creative with code rather than being easy to use. 
+
+A lot of the structure is inspired by the Unity3d API, including the central concept of 'transforms' as building blocks.
 
 The first version of this engine was created 6 years ago - it was called [J3D](https://github.com/drojdjou/J3D) back then. After that, two versions of Squareroot.js followed. Currently the engine is at version 3 (each consecutive version was a rewrite from scratch).
 

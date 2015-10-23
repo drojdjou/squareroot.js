@@ -1,5 +1,3 @@
-##Post Effects
-
 ##What are post effets?
 
 There is a common misconception that post effect are a special/separate feature of WebGL. This is not the case. A post effect is basically a shader applied to a full screen quad - a plane that covers the entire screen. It can be applied for example to a 3d scene, an image or video.
