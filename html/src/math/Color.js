@@ -165,7 +165,7 @@ SQR.Color = function(r, g, b) {
 
 	}
 
-	setRGB(r, g, b);
+	c.setRGB(r, g, b);
 
 	return c;
 

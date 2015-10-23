@@ -71,7 +71,7 @@
 		oy = oy || 0;
 
 		return SQR.TextureGenerator.generate(w, h, canvas, function(p, i, x, y) {
-			var n = SQR.PerlinNoise.noise(
+			var n = SQR.PerlinNoise.perlin3(
 				(ox + x) * scale, 
 				(oy + y) * scale, 
 				0);

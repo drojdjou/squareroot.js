@@ -2,6 +2,10 @@
 
 SQR has a simple 2d rendering engine located in the solder `src/two`. It festures functionality to render shapes and animations on the 2D Rendering Context of the `<canvas>` element, including support for rendering sprite-sheets.
 
+The 2d engine can be used completely separately without WebGL. However it does not have all the features of the GL engine and it is not meant to replace the GL engine in a way Three.js or Pixi do. 
+
+The 3d engine is more like a companion to the GL, especially useful ex. to render textures to be further used in GL rendering.
+
 The working demo for the tutorial below is available [here](../tutorials/canvas-rendering.html).
 
 ### Setup
