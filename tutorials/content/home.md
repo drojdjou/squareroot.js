@@ -2,15 +2,11 @@
 
 A 2d/3d engine for WebGL and Canvas drawing and animation.
 
-Squareroot.js was created by [Bartek Drozdz](http://bartekdrozdz.com) and is a fruit of many years of experience in building cross-device WebGL projects. 
+Squareroot.js was created by [Bartek Drozdz](http://bartekdrozdz.com) and is a fruit of many years of experience in building cross-device WebGL projects. It's based on the philisophy of writing code that gets shit done and is as flexible as possible. 
 
-It is not aimed to be the easiest WebGL engine out there, but it's based on the philisohpy of writing code that gets shit done and be as flexible as possible. 
+Squareroot is a pretty thin layer over the WebGL API. It is composed mostly of tools that will make creating WebGL experiences easier. The code originates from a practial need encontered during one project or another, not from a priori assumptions of how a 3d engine should work. A lot of the structure is inspired by the Unity3d API, including the central concept of 'transforms' as building blocks.
 
-Squareroot is a pretty thin layer over the WeBGL API. It is composed mostly of tools that will make creating WebGL experiences easier. By far the largest tool in the shed is the scene parser, which allows to import scenes, meshes, riggerd meshes and animations from Unity3d. Other tools include some math goodies such as math library, noise and triangulation functions and a toolkit to easily write shaders and post procesing effects.
-
-Almost every part of the code comes from a practial need encontered during one project or another, not from any a priori assumptions of how a 3d engine should work. However, a lot of the structure is inspired by the Unity3d API, including the central concept of 'transforms' as building blocks.
-
-Bartek wrote the first version of this engine more than 6 years ago, it was called J3D back then. Then two versions of Squareroot.js followed. Currently the engine is at version 3 (each version was a rewrite from scratch).
+The first version of this engine was created 6 years ago - it was called [J3D](https://github.com/drojdjou/J3D) back then. After that, two versions of Squareroot.js followed. Currently the engine is at version 3 (each consecutive version was a rewrite from scratch).
 
 ####Most important links
 
@@ -31,7 +27,7 @@ Bartek wrote the first version of this engine more than 6 years ago, it was call
 
 If you are running a web development company and would like me to come and make a presentation or workshop on WebGL, get in touch! Here is a sample presentation [WebGL basics presentation](../tutorials/gl-basics.html). 
 
-####Other interesting WEbGL links
+####Other interesting WebGL links
 
 - [WebGL Spec](https://www.khronos.org/registry/webgl/specs/latest/1.0/)
 - [WebGL Params](http://alteredqualia.com/tmp/webgl-maxparams-test/)

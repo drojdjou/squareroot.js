@@ -9,5 +9,3 @@ demo/ig-*
 **/*.mp3
 **/*.webm
 npm-debug.log
-qit.sh
-html/lab/gl_2halfd/
