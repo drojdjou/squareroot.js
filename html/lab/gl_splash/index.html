@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Template</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/Cubemap.js"></script>
+
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+		['glsl/logo.glsl', 'shader'],
+
+		['assets/logo.json', 'mesh'],
+		['assets/logoScene.json', 'scene'],
+
+		['assets/sqr_logo_psdambient_occlusion.jpg', 'ambientTexture']
+
+	], function(assets) {
+
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0.2, 0.1, 0, 0);
+		var renderer = new SQR.Renderer(ctx);
+
+		var resize =function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+
+		var ramp = (function() {
+
+			var h = 128;
+			var w = 32;
+
+			var t = new SQR.CanvasRenderer().setSize(w, h);
+			var r = SQR.Transform2d();
+			var tex = SQR.Texture(t.canvas);
+
+			var sky = SQR.Color();
+			var sun = SQR.Color();
+
+			var a = SQR.Color(1.0, 0.9, 0.7);
+			var b = SQR.Color(1.0, 0.5, 0.1);
+			var c = SQR.Color(0.6, 0.3, 0.0);
+
+			var colors = [a, b, c];
+			var stops = [0.4, 0.5, 0.6];
+
+			r.shape = function(ctx) {
+
+				var g = ctx.createLinearGradient(0, 0, 0, h);
+					
+				for(var i = 0; i < colors.length; i++) {
+					g.addColorStop(stops[i], colors[i].toCSS());
+				}
+
+				ctx.fillStyle = g;
+				ctx.fillRect(0, 0, w, h)
+			}
+
+			t.render(r);
+
+			return t.canvas;
+		})();
+
+		ramp.style.position = 'absolute';
+		ramp.style.top = 0;
+		ramp.style.left = 0;
+		ramp.style.width = '100%';
+		ramp.style.height = '100%';
+		ramp.style.zIndex = -1;
+		// document.body.appendChild(ramp);
+
+		
+		var scene = SQR.SceneParser.parse(assets, { shader: assets.shader });
+
+		var holder = scene.root.findByName('holder');
+		holder.useQuaternion = false;
+
+		var logo = scene.root.findByName('logo');
+		logo.shader.use()
+			.setUniform('uTexture', SQR.Texture(assets.ambientTexture))
+			.setUniform('uRamp', SQR.Texture(ramp))
+			.setUniform('uLight', new SQR.V3(-1.0, 0.0, 0.0));
+
+
+		var mx = 0, my = 0;
+
+		document.addEventListener('mousemove', function(e) {
+			mx = (e.pageX / window.innerWidth * 2 - 1) * 0.3;
+			my = (e.pageY / window.innerHeight * 2 - 1) * 0.3;
+		});
+
+		var render = function() {
+			requestAnimationFrame(render);
+
+			holder.rotation.y += (mx - holder.rotation.y) * 0.03;
+			holder.rotation.x += (my - holder.rotation.x) * 0.03;
+
+
+
+			renderer.render(scene.root, scene.camera);
+		}
+
+		render();
+	});
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

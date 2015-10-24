@@ -32,6 +32,8 @@ SQR.SceneParser = (function() {
 		 */	
 		parse: function(assets, options) {
 
+			options = options || {};
+
 			var prefix = options.prefix || '';
 			var scene = assets[prefix + 'scene'];
 			var meshes = assets[prefix + 'mesh'];

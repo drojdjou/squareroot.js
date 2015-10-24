@@ -1,0 +1,80 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0.1921569, "g":0.3019608, "b":0.4745098, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+	
+	"sqr_logo_psdambient_occlusion": { 
+		"file": "sqr_logo_psdambient_occlusion.jpg"
+	}
+
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"logo": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "sqr_logo_psdambient_occlusion"
+	}
+
+},
+
+"lights": {
+},
+
+"cameras": {
+	
+	"camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-1954",
+        "name": "camera",
+		"position": [ 0,0,600 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "camera"
+	},
+	
+	{
+		"uid": "t-38916",
+        "name": "holder",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-32258",
+        "name": "logo",
+		"parent": "t-38916",
+		"position": [ 0,0,0 ],
+		"rotation": [ -0.1464466,-0.8535535,-0.3535535,0.3535532 ],
+		"renderer": "logo",
+		"mesh": "logo_2",
+		"meshId": "m-7278"
+	}
+
+]
+}
+
+
+
+
