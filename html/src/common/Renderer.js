@@ -69,6 +69,7 @@ SQR.Renderer = function(context) {
 		if(r.autoClear) context.clear();
 
 		gl.enable(gl.DEPTH_TEST);
+		gl.depthMask(true);
 		gl.disable(gl.STENCIL_TEST);
 		gl.frontFace(gl.CW);
 		

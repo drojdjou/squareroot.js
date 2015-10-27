@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Template</title>
+<title>SQR Splash</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -54,7 +54,10 @@
 
 		['../../src/glsl/light/fog.glsl', 'fog'],
 		
+		['assets/particle.jpg', 'particle'],
+
 		['assets/logo.json', 'mesh'],
+
 		['assets/logoScene.json', 'scene'],
 
 		['assets/sqr_logo_psdambient_occlusion.jpg', 'ambientTexture']
@@ -126,7 +129,7 @@
 			return t.canvas;
 		};
 
-		var rampTexSharp = SQR.Texture(ramp(0.20, 0.50, 0.50));
+		var rampTexSharp = SQR.Texture(ramp(0.20, 0.50, 0.52));
 		var rampTexBlur = SQR.Texture(ramp(0.30, 0.50, 0.55));
 
 		
@@ -161,24 +164,37 @@
 
 		var particles = new SQR.Transform();
 		particles.shader = SQR.Shader(assets.particleShader, { directives: [
-			{ name: 'POINT_SIZE', value: '4.0' }
-		] });
+			{ name: 'POINT_SIZE', value: '64.0' }
+		] }).use()
+			.setUniform('uRadius', 500)
+			.setUniform('uTexture', SQR.Texture(assets.particle));
 
 		particles.buffer = SQR.Buffer()
-			.layout({ aPosition: 3 }, 1000)
-			.iterate('aPosition', function(i, d, c) {
+			.layout({ aAngle: 1, aVelocity: 3, aColor: 3 }, 5000)
+			.iterate('aAngle', function(i, d, c) {
+				var a = Math.random() * Math.PI * 2;
+				d[i] = a
+			})
+			.iterate('aVelocity', function(i, d, c) {
+				d[i+0] = Math.random();
+				d[i+1] = Math.random();
+				d[i+2] = Math.random();
+			})
+			.iterate('aColor', function(i, d, c) {
 
-				var a = Math.PI * -0.5 - Math.random() * Math.PI;
-				var r = 500;
+				var c = Math.random();
 
-				d[i+0] = Math.sin(a) * r;
-				d[i+1] = 40 + Math.random() * 40;
-				d[i+2] = Math.cos(a) * r / 4;
+				d[i+0] = 0.4 + c * 0.8;
+				d[i+1] = 0.4 + c * 0.0;
+				d[i+2] = 1.0 + c * -0.4;
 			})
 			.setMode(SQR.gl.POINTS)
 			.update();
 
-		// scene.root.add(particles);
+		particles.setBlending(true);
+		particles.useDepth = false;
+
+		scene.root.add(particles);
 
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
@@ -202,6 +218,8 @@
 		var resize = function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 			ctx.size(w, h);
+			rawFBO.resize(w, h);    
+         	blurXFBO.resize(w, h);
 			scene.camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 10, far);
 		}
 
@@ -229,19 +247,27 @@
 
 			camroot.scale.y = 1;
 			logo.active = false;
+			particles.active = false;
 			ground.active = false;
 			skybox.active = true;
 
-			renderer.render(skybox, scene.camera);
+			renderer.render(scene.root, scene.camera);
 
 			camroot.scale.y = -1;
-			logo.active = true;
+
+			logo.active = false;
+			particles.active = true;
 			ground.active = false;
 			skybox.active = false;
-
 			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
 
-            var blurForce = 0.02;
+			logo.active = true;
+			particles.active = false;
+			ground.active = false;
+			skybox.active = false;
+			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
+
+            var blurForce = 0.03;
 
             blurXFBO.bind();
             ctx.clear();
@@ -279,8 +305,16 @@
 
             // 1. Render the regular cube
 			camroot.scale.y =  1;
+
+			logo.active = false;
+			ground.active = false;
+			particles.active = true;
+			skybox.active = false;
+			renderer.render(scene.root, scene.camera);
+
 			logo.active = true;
 			ground.active = true;
+			particles.active = false;
 			skybox.active = false;
 			renderer.render(scene.root, scene.camera);
 
