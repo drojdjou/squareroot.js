@@ -68,7 +68,6 @@
 		var treeColor = SQR.Color().setRGB(0.2, 0.15, 0.15);
 		var groundColor = SQR.Color().setRGB(0.60, 0.60, 0.50);
 
-
 		sky.lighten(2);
 		lightColor.lighten(2);
 		treeColor.lighten(2);
@@ -133,7 +132,7 @@
 		light.buffer = SQR.Primitives.createSphere(0.01);
 		root.add(light);
 
-		Dust(root, assets, renderer, light, lightColor);
+		Dust(root, assets, renderer, light, lightColor, { dotsPerFrame: 20 });
 
 		var resize =function() {
 			w = window.innerWidth, h = window.innerHeight, aspect = w/h;

@@ -54,7 +54,7 @@ const int samples = 32; //ao sample count
 float radius = 5.0; //ao radius
 float aoclamp = 0.25; //depth clamp - reduces haloing at screen edges
 bool noise = true; //use noise instead of pattern for sample dithering
-float noiseamount = 0.0001; //dithering amount
+float noiseamount = 0.001; //dithering amount
 
 float diffarea = 0.45; //self-shadowing reduction
 float gdisplace = 0.45; //gauss bell center
@@ -182,8 +182,7 @@ void main(void)
   ao = mix(ao, 1.0, lum * lumInfluence);
   
   vec3 final = color * vec3(ao);
-  // vec3 final = color;
-  
+
   gl_FragColor = vec4(final,1.0); 
   
 }

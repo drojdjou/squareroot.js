@@ -5,24 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-<script type="text/javascript" src="../html/src/SQR.js"></script>
-
-<script type="text/javascript" src="../html/src/common/Context.js"></script>
-<script type="text/javascript" src="../html/src/common/Loader.js"></script>
-<script type="text/javascript" src="../html/src/common/Buffer.js"></script>
-<script type="text/javascript" src="../html/src/common/Renderer.js"></script>
-<script type="text/javascript" src="../html/src/common/Shader.js"></script>
-<script type="text/javascript" src="../html/src/common/Transform.js"></script>
-
-<script type="text/javascript" src="../html/src/math/Vector2.js"></script>
-<script type="text/javascript" src="../html/src/math/Vector3.js"></script>
-<script type="text/javascript" src="../html/src/math/Matrix33.js"></script>
-<script type="text/javascript" src="../html/src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../html/src/math/Quaternion.js"></script>
-<script type="text/javascript" src="../html/src/math/ProjectionMatrix.js"></script>
-
-<script type="text/javascript" src="../html/src/primitives/Face.js"></script>
-<script type="text/javascript" src="../html/src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../build/sqr.js"></script>
+<script type="text/javascript" src="../build/sqr-primitives.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../html/lab/base.css">
 
@@ -36,18 +20,21 @@
 <script type="text/javascript">
 
     SQR.Loader.loadAssets([
+
         // Load all the files you need here
-        // Each file will be availabke below from the asset object
-        // under it's name, ex. assets['normal2color.glsl']
+
+        // Each file will be available below from the asset object
+        // under it's name, ex. assets['glsl/normal2color.glsl']
         // It's also possible ot specify an alias. Instead of a String, 
         // use an Array, where [0] is the path, and [1] is the alias.
-        ['glsl/normal2color.glsl', 'n2c'],
+        ['glsl/normal2color.glsl', 'n2c']
+
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
         // Create the context based on the #id of the canvas element
-        // (there are more options for hw to do that - check the docs)
+        // (there are more options for how to do that - check the docs)
         // Use chaining to create the GL context and set it's clear color (r,g,b,a)
         var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
@@ -55,10 +42,10 @@
         var renderer = new SQR.Renderer(ctx);
 
         // There is no scene in SQR, a scene is basically just a transform 
-        // that holds the entire scene
+        // that holds all the other transforms
         var root = new SQR.Transform();
 
-        // Create a camera, make sure to add it to the root (or any if it's children)
+        // Create a camera, make sure to add it to the root (or any ancestor)
         var camera = new SQR.Transform();
         camera.position.z = 5;
         root.add(camera);
@@ -74,22 +61,31 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Create an object
+        // Create an transform - basic bulding block in SRQ
+        // Transform by default is an empty object - a point in space.
         var cube = new SQR.Transform();
+
+        // A buffer represents the object geometry (i.e. it's shape)
         // When creating buffers, the buffers are actually populated  
         // in the udate function, so it needs to be called at the end
         // (it returns the instance of the Buffer for chaining)
         cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+
+        // A shader is the objects materials (i.e. it's color)
         // Shaders are created from GLSL code loaded thru the SQR.Loader
         cube.shader = SQR.Shader(assets['n2c']);
-        // Add the cube to the root
+
+        // Now add the cube to the root
         root.add(cube);
 
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
+
+            // Rotate the cube a bit at each frame
             cube.rotation.x += 0.005;
             cube.rotation.y += 0.01;
+
             // Render the scene from the root transform up, directly to screen
             renderer.render(root, camera);
         }

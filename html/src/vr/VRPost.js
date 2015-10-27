@@ -34,6 +34,10 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 			chromAbParam: 	[0.996, -0.004, 1.014, 0.0]
 	    };
 	}
+
+	console.log(options.vrData);
+
+	// HMDVRDevice.getEyeParameters("left").recommendedFieldOfView
 	
 	var p = {
 
@@ -50,8 +54,10 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 			var aspect = width / height;
 			var halfAspect = (width * 0.5) / height;
+			var fov = isStereo ? 80 : 50;
+			if(options.vrData) fov = options.vrData.leftEyeFOV.leftDegrees * 2; // TODO make that better
 
-			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, options.near || 0.01, options.far || 10000);
+			var p = new SQR.ProjectionMatrix().perspective(fov, isStereo ? halfAspect : aspect, options.near || 0.1, options.far || 10000);
 			camera.projection = p;
 			left.projection = p;
 			right.projection = p;

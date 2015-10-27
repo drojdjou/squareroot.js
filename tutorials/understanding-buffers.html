@@ -36,7 +36,7 @@
 <script type="text/javascript">
 
 	SQR.Loader.loadAssets([
-		['point.glsl', 'shader'],
+		['glsl/point.glsl', 'shader'],
 	], function(assets) {
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
@@ -103,7 +103,7 @@
 
 		var render = function() {
 			// Uncomment this line render in a loop and enable animation
-			// requestAnimationFrame(render);
+			requestAnimationFrame(render);
 			t.rotation.x += 0.01;
 			t.rotation.y += 0.02;
 			renderer.render(root, camera);

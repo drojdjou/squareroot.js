@@ -122,15 +122,21 @@ var saveBucket = function(bucket, fileBase) {
 var logMessage = process.argv[2];
 
 if(!logMessage) {
-	console.error('ABORT. Please provide a log message for this build.');
+	console.worn('WARNING - Please provide a log message for this build or - for dev/test builds');
 	return;
 }
 
 version.build++;
-version.date = moment().format('MMM Do YYYY')
-console.log('[ Squareroot.js v' + version.version + ' build ' + version.build + ' ]');	
+version.date = moment().format('MMM Do YYYY');
 
-addToChangeLog(logMessage);
+if(logMessage != '-') {
+	console.log('[ Squareroot.js v' + version.version + ' build ' + version.build + ' ]');	
+	addToChangeLog(logMessage);
+	
+} else {
+	console.log('[ Squareroot.js v' + version.version + ' DEV BUILD (' + version.build + ') ]');
+}
+
 updateVersionFile();
 
 var core = createBucket(['common', 'math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);

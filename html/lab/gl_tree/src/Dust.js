@@ -1,7 +1,11 @@
-var Dust = function(parent, assets, renderer, light, color) {
+var Dust = function(parent, assets, renderer, light, color, options) {
 
-	var numDots = 3000;
-	var index = 0, dotsPerFrame = 20;
+	options = options || {};
+
+	var numDots = options.numDots || 3000;
+	var index = 0, dotsPerFrame = options.dotsPerFrame || 10;
+
+	
 
 	var dotSize = 16;
 	var dcv = document.createElement('canvas');
@@ -49,8 +53,11 @@ var Dust = function(parent, assets, renderer, light, color) {
 	dots.setBlending(true);
 	dots.depthMask = false;
 
-	var bs = (3 / 1024 * window.innerWidth).toPrecision(3).toString();
-	var es = (6 / 1024 * window.innerWidth).toPrecision(3).toString();
+	var bs = options.baseSize || 3;
+	var es = options.extraSize || 6;
+
+	bs = (bs / 1024 * window.innerWidth).toPrecision(3).toString();
+	es = (es / 1024 * window.innerWidth).toPrecision(3).toString();
 
 	if(bs.indexOf('.') == -1) bs += '.0';
 	if(es.indexOf('.') == -1) es += '.0';

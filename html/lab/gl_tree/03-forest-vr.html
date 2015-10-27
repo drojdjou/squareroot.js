@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
@@ -29,6 +31,7 @@
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
 
 <script type="text/javascript" src="../../src/vr/Gyro.js"></script>
 <script type="text/javascript" src="../../src/vr/VRApp.js"></script>
@@ -37,7 +40,8 @@
 
 <script type="text/javascript" src="src/Tree.js"></script>
 <script type="text/javascript" src="src/NightSky.js"></script>
-<script type="text/javascript" src="src/ForestGrund.js"></script>
+<script type="text/javascript" src="src/ForestGround.js"></script>
+<script type="text/javascript" src="src/Dust.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 <link rel="stylesheet" type="text/css" href="../../vr/common/base.css">
@@ -54,18 +58,36 @@
 SQR.VRApp(function(options) {
 
 	SQR.Loader.loadAssets([
-		['glsl/tree-line.glsl', 'treeLine'],
-		['glsl/tree-mesh.glsl', 'treeMesh'],
+		['glsl/tree-mesh-light.glsl', 'treeMesh'],
+		['glsl/ground-light.glsl', 'ground'],
 		['glsl/stars.glsl', 'stars'],
 		['glsl/ground.glsl', 'ground'],
+
+		['glsl/self-illum.glsl', 'lightSource'],
+		['glsl/dust.glsl', 'dust'],
+
 		['../../src/glsl/light/sphar.glsl', 'sphar'],
 		['../../src/glsl/light/sphar-eucalyptus.glsl', 'sphar-data']
 	], function(assets) {
 
+		var sky = SQR.Color().setRGB(0.03, 0.03, 0.06);
+		var lightColor = SQR.Color().setRGB(0.8, 0.1, 0);
+		var treeColor = SQR.Color().setRGB(0.2, 0.15, 0.15);
+		var groundColor = SQR.Color().setRGB(0.60, 0.60, 0.50);
+
+		sky.lighten(2);
+		lightColor.lighten(2);
+		treeColor.lighten(2);
+		groundColor.lighten(2);
+
+		var lightDistance = 12;
+		var lightRange = 5;
+
 		var isTouch = ('ontouchstart' in document);
 
-		var NUM_TREES = isTouch ? 300 : 500;
+		var NUM_TREES = isTouch ? 150 : 300;
 		var NUM_TREE_TYPES = isTouch ? 2 : 8;
+		var TREE_START = 7;
 		var TREE_LIMIT = isTouch ? 50 : 80;
 
 		var sky = new SQR.Color().setRGB(0.05, 0.05, 0.08);
@@ -93,12 +115,6 @@ SQR.VRApp(function(options) {
 
 		var treeTemplates = [], trees = new SQR.Transform();
 
-		var treeShader = SQR.Shader(assets.treeMesh)
-			.use()
-			.setUniform('uFogStart', 15)
-			.setUniform('uFogEnd', TREE_LIMIT)
-			.setUniform('uDarkness', sky);
-
 		var addTreeTemplate = function() {
 			var ts = SQR.Tree({
 				depth: isTouch ? 2 : 3,
@@ -122,6 +138,13 @@ SQR.VRApp(function(options) {
 			treeTemplates.push(buffer);
 		}
 
+		var groundSettings = {
+			nightColor:	sky,
+			treeColor: treeColor,
+			groundColor: groundColor,
+			end: TREE_LIMIT
+		};
+
 		var getColor = function() {
 			var c = 0.3 * Math.random(); 
 
@@ -138,14 +161,6 @@ SQR.VRApp(function(options) {
 			var ri = treeTemplates.length * Math.random() | 0;
 			var tree = new SQR.Transform();
 
-			
-
-			
-			tree.shader = treeShader;
-			tree.uniforms = {
-				'uColor': getColor()
-			};
-
 			tree.buffer = treeTemplates[ri];
 
 			tree.lineWidth = 10 + Math.random() * 10;
@@ -161,22 +176,41 @@ SQR.VRApp(function(options) {
 		for(var i = 0; i < NUM_TREE_TYPES; i++) addTreeTemplate();
 
 		for(var i = 0; i < NUM_TREES; i++) {
-			var st = 5, en = TREE_LIMIT;
+			var st = TREE_START, en = TREE_LIMIT;
 			var a = Math.random() * SQR.TWOPI;
 			var r = st + (en - st) * Math.random();
 			addTree(Math.cos(a) * r, Math.sin(a) * r);
 		}
 
+		trees.shader = SQR.Shader(assets.treeMesh).use()
+			.setUniform('uFogStart', 5)
+			.setUniform('uFogEnd', TREE_LIMIT)
+			.setUniform('uDarkness', sky);
+
 		trees.uniforms = {
-			'uColor': getColor()
+			'uColor': getColor(),
+			'uLightColor': lightColor,
+			'uLightRange': lightRange
 		};
 
 		SQR.GeometryTools.batch(trees);
 		root.add(trees);
 
-		NightSky(root);
+		NightSky(root, assets, camera);
 
-		ForestGround();
+		var ground = ForestGround(root, assets, groundSettings, cameraBase);
+
+		var light = new SQR.Transform();
+		light.shader = SQR.Shader(assets.lightSource).use().setUniform('uColor', lightColor);
+		light.buffer = SQR.Primitives.createSphere(0.01);
+		light.position.y = 2;
+		root.add(light);
+
+		var lightPhase = 0;
+
+		Dust(root, assets, renderer, light, lightColor, {
+			baseSize: 2, extraSize: 2
+		});
 
 		var mx = 0, my = 0, tx = 0, ty = 0;
 		document.addEventListener('mousemove', function(e) {
@@ -197,6 +231,23 @@ SQR.VRApp(function(options) {
 
 		var render = function() {
 			requestAnimationFrame(render);
+
+			lightPhase += 0.005;
+			var r = TREE_START * 2 + Math.cos(lightPhase * 0.2) * TREE_START;
+			light.position.x = Math.sin(lightPhase) * r;
+			light.position.y = 6 + Math.sin(lightPhase * 3) * 4;
+			light.position.z = Math.cos(lightPhase) * r;
+
+			var li = 0.9 + 0.1 * Math.sin(lightPhase * 213);
+
+			trees.shader.use()
+				.setUniform('uLightPosition', light.globalPosition)
+				.setUniform('uLightIntensity', li);
+
+			ground.shader.use()
+				.setUniform('uLightPosition', light.globalPosition)
+				.setUniform('uLightIntensity', li);
+
 			// renderer.render(root, camera);
 			vr.render(root);
 			

@@ -36,71 +36,75 @@
 
 <script type="text/javascript">
 
-    SQR.Loader.loadAssets([
-        ['glsl/normal2color.glsl', 'n2c'],
-        ['glsl/blur.glsl', 'blur'],
-    ], function(assets) {
+	SQR.Loader.loadAssets([
+		['glsl/normal2color.glsl', 'n2c'],
+		['glsl/blur.glsl', 'blur'],
+	], function(assets) {
 
-        var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
-        var renderer = new SQR.Renderer(ctx);
-        var root = new SQR.Transform();
-        var camera = new SQR.Transform();
-        camera.position.z = 5;
-        root.add(camera);
 
-        var resize =function() {
-            w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-            ctx.size(w, h);
-            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-        }
+		var blurForce = 0.066;
 
-        window.addEventListener('resize', resize);
-        resize();
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer(ctx);
 
-        var cube = new SQR.Transform();
-        cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        cube.shader = SQR.Shader(assets['n2c']);
-        root.add(cube);
+		var root = new SQR.Transform();
+		var camera = new SQR.Transform();
+		camera.position.z = 5;
+		root.add(camera);
 
-        var rawFBO = SQR.FrameBuffer(w, h);    
-        var blurXFBO = SQR.FrameBuffer(w, h);
-        var blur = SQR.Primitives.createPostEffect(assets['blur']);
+		var cube = new SQR.Transform();
+		cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+		cube.shader = SQR.Shader(assets['n2c']);
+		root.add(cube);
 
-        var render = function() {
-            requestAnimationFrame(render);
-            ctx.clear();
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.02;
-            
-            rawFBO.bind();
-            renderer.render(root, camera);
+		var rawFBO = SQR.FrameBuffer();    
+		var blurXFBO = SQR.FrameBuffer();
+		var blur = SQR.Primitives.createPostEffect(assets['blur']);
 
-            // Bloom
-            var blurForce = 0.066;
-            // Glow
-            // blurForce = mx * 0.1;
+		var resize = function() {
 
-            blurXFBO.bind();
-            blur.shader.use();
-            blur.shader.setUniform('uDelta', [0.0, blurForce]);
-            blur.shader.setUniform('uTexture', rawFBO.texture);
-            renderer.render(blur);
+			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
 
-            renderer.renderToScreen();
-            blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-            blur.shader.setUniform('uTexture', blurXFBO.texture);
-            renderer.render(blur);
-        }
+			rawFBO.resize(w, h);
+			blurXFBO.resize(w, h);
 
-        render();
-    });
+			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
+
+		window.addEventListener('resize', resize);
+		resize();
+
+		var render = function() {
+			requestAnimationFrame(render);
+
+			cube.rotation.x += 0.01;
+			cube.rotation.y += 0.02;
+			
+			rawFBO.bind();
+			renderer.render(root, camera);
+
+			blurXFBO.bind();
+			blur.shader.use()
+				.setUniform('uDelta', [0.0, blurForce])
+				.setUniform('uTexture', rawFBO.texture);
+			renderer.render(blur);
+
+			renderer.renderToScreen();
+			blur.shader.use()
+				.setUniform('uDelta', [blurForce, 0.0])
+				.setUniform('uTexture', blurXFBO.texture);
+			renderer.render(blur);
+		}
+
+		render();
+	});
 
 </script>
 
 <script>
 if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 

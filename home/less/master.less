@@ -1,0 +1,61 @@
+@background: rgb(40, 0, 20);
+@text-color: lighten(#8000ff, 40%);
+@link-color: lighten(#8000ff, 30%);
+
+@sans: 'proxima-nova', sans-serif;
+
+.header-font() {
+	font-family: @sans;
+	font-weight: 700;
+	font-size: 28px;
+	letter-spacing: 0.05em;
+	-webkit-font-smoothing: subpixel-antialiased;
+	text-transform: uppercase;
+}
+
+.paragraph-font() {
+	font-family: @sans;
+	font-weight: 300;
+	font-size: 18px;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	margin: 0;
+	background-color: @background;
+	.paragraph-font();
+}
+
+a {
+	text-decoration: none;
+
+	&:hover {
+		color: @link-color;
+	}
+}
+
+p a {
+	color: @link-color;
+	
+	padding-bottom: 0;
+
+	&:hover {
+		border-bottom: 2px solid @link-color;
+	}
+}
+
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+* {
+	margin: 0;
+	line-height: 1;
+	border: 0;
+	color: @text-color;
+}
+
+@import "layout";
+@import "typography";
+

@@ -36,8 +36,6 @@
 <script type="text/javascript" src="../../src/vr/VRPost.js"></script>
 <script type="text/javascript" src="../../src/vr/Gyro.js"></script>
 
-<script type="text/javascript" src="../../../build/sqr-glsl.js"></script>
-
 </head>
 <body>
 
@@ -70,6 +68,7 @@
 			[skyboxPath + 'up.jpg',     'up'],
 			[skyboxPath + 'down.jpg',   'down'],
 
+			['../../src/glsl/shaders/skybox-cube.glsl',   'skyboxShader'],
 			['../../src/glsl/post/vr.glsl',   'vrShader'],
 
 		], function(assets) {
@@ -117,6 +116,7 @@
 			var skybox = SQR.Primitives.createSkybox({ 
 				use2dTextures: false, 
 				useDepth: false, 
+				glsl: assets.skyboxShader,
 				faces: {
 					front: assets.front,
 					back: assets.back,
@@ -126,9 +126,10 @@
 					down: assets.down
 				}
 			});
-
-			root.add(cubeFront, cubeLeft, cubeRight, cubeBack);
+			
 			root.add(skybox);
+			root.add(cubeFront, cubeLeft, cubeRight, cubeBack);
+			
 
 
 

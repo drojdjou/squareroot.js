@@ -59,6 +59,11 @@ SQR.VRApp = function(appFunc, options) {
 
 			options.vrData.leftEyeX  =  vrHMD.getEyeParameters("left").eyeTranslation.x;
 			options.vrData.rightEyeX = vrHMD.getEyeParameters("right").eyeTranslation.x;
+
+			options.vrData.leftEyeFOV  =  vrHMD.getEyeParameters("left").recommendedFieldOfView;
+			options.vrData.rightEyeFOV = vrHMD.getEyeParameters("right").recommendedFieldOfView;
+
+
 			onDone();
 		}
 

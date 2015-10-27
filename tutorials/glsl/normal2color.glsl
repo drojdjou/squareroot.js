@@ -17,7 +17,7 @@ void main() {
 
 //#fragment
 #ifdef GL_ES
-precision highp float;
+precision mediump float;
 #endif
                
 varying vec3 vNormal;

@@ -1,0 +1,84 @@
+.splash {
+	position: fixed;
+	width: 100%;
+	height: 60vh;
+
+	background-color: #000;
+
+	iframe {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.content {
+
+	position: absolute;
+	top: 60vh;
+	left: 0;
+	width: 100%;
+	background-color: @background;
+	margin-bottom: 64px;
+
+	article {
+		position: relative;
+		left: 50%;
+		margin-left: -400px;
+		width: 800px;
+	}
+
+	h1 {
+		.header-font();
+		margin: 32px 0 16px 0;
+	}
+
+	p {
+		.paragraph-font();
+		margin: 16px 0 16px 0;
+		line-height: 1.33;
+	}
+
+	li {
+		font-size: 0.85em;
+	}
+
+	.links {
+
+		overflow: auto;
+
+		li {
+			text-align: center;
+			float: left;
+			width: 50%;
+			margin: 32px 0px 32px 0px;
+		}
+
+		img {
+			display: inline-block;
+			width: 64px;
+			height: 64px;
+			margin-bottom: 8px;
+		}
+
+	}
+
+	.grid {
+
+		overflow: auto;
+
+		li {
+			float: left;
+			width: 33%;
+			text-align: center;
+			margin: 16px 0 6px 0;
+		}
+
+		img {
+			position: relative;
+			display: block;
+			width: 90%;
+			left: 5%;
+			margin: 0 0 6px 0;
+		}
+	}
+}

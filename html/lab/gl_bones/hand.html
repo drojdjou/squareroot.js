@@ -96,6 +96,12 @@
 
         var a = 0;
 
+        var mx = 0, tx = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            tx = (e.pageX / window.innerWidth) * 2 - 1;
+        });
+
         var render = function() {
             requestAnimationFrame(render);
 
@@ -143,7 +149,8 @@
 
             renderer.render(scene.root, scene.camera);
 
-            console.log(SQR.V3.instances);
+            mx += (tx - mx) * 0.1;
+            base.rotation.z = mx * 1.2;
         }
 
         render();
