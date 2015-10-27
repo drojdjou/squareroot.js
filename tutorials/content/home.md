@@ -13,7 +13,7 @@ The first version of this engine was created 6 years ago - it was called [J3D](h
 ####Most important links
 
 - [Github repo](https://github.com/drojdjou/squareroot.js/tree/brandnew)
-- [API docs](http://sqr.bartekdrozdz.com/docs/)
+- [API docs](./)
 - [Examples and tests](../html/lab/)
 
 ####Tutorials
