@@ -5,6 +5,12 @@ body {
   font-size: 13px;
   overflow-x: hidden;
 }
+
+#gl{
+  border:none;
+  height:100%;
+  width:100%;
+}
 @media (min-width: 1024px) {
   body {
     font-size: 16px;
