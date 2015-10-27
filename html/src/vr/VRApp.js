@@ -15,8 +15,8 @@ SQR.VRApp = function(appFunc, options) {
 	var fsopt = {};
 	
 
-	var INSTR_COPY_DESKTOP 	= '<span>Put on your head set and press space when ready.</span>';
-	var INSTR_COPY_MOBILE 	= '<span>Put on your head set tap screen when ready.</span>';
+	var INSTR_COPY_DESKTOP 	= '<span>Put on your headset and press space when ready.</span>';
+	var INSTR_COPY_MOBILE 	= '<span>Put on your headset and tap screen when ready.</span>';
 	var BTN_COPY_VR   		= 'CARDBOARD';
 	var BTN_COPY_NO_VR   	= 'NO CARDBOARD';
 	var PORT_WARN_COPY   	= 'Please rotate your screen to landscape mode';
