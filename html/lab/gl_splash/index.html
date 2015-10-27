@@ -72,6 +72,7 @@
 		renderer.autoClear = false;
 
 		var far = 10000;
+		var blurForce = 0.05;
 
 		var grid = function(s, gw) {
 
@@ -107,7 +108,7 @@
 
 			var a = SQR.Color(0.3, 0.3, 0.8);
 			var b = SQR.Color(0.8, 0.0, 1.0);
-			var c = SQR.Color(0.5, 0.3, 0.8);
+			var c = SQR.Color(0.33, 0.2, 0.6);
 
 			var colors = [a, b, c];
 			var stops = [s1, s2, s3];
@@ -201,16 +202,11 @@
 		var rawFBO = SQR.FrameBuffer(w, h);    
         var blurXFBO = SQR.FrameBuffer(w, h);
         var blur = SQR.Primitives.createPostEffect(assets['blur']);
-        // blur.useDepth = false;
         blur.depthMask = false;
-        // blur.setBlending(true);
 
 		var mx = 0, my = 0;
 
 		document.addEventListener('mousemove', function(e) {
-			// mx = (e.pageX / window.innerWidth * 2 - 1) * 400;
-			// my = 200 - (e.pageY / window.innerHeight) * 190;
-
 			mx = (e.pageX / window.innerWidth * 2 - 1);
 			my = (e.pageY / window.innerHeight);
 		});
@@ -220,7 +216,7 @@
 			ctx.size(w, h);
 			rawFBO.resize(w, h);    
          	blurXFBO.resize(w, h);
-			scene.camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 10, far);
+			scene.camera.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 10, far);
 		}
 
 		var setupReflection = function(gl) {
@@ -229,23 +225,15 @@
 
 		var render = function() {
 			requestAnimationFrame(render);
-			ctx.clear();
-
-			// camroot.position.y += (my - camroot.position.y) * 0.03;
-			// camroot.position.x += (mx - camroot.position.x) * 0.03;
+			
 			camroot.rotation.y += (mx * 0.4 - camroot.rotation.y) * 0.03;
 			camroot.rotation.x += (my * -0.4 - camroot.rotation.x) * 0.03;
-			// camroot.position.y += (my * -160 - camroot.position.y) * 0.03;
-
-	
-
-
-
 
 			rawFBO.bind();
 			ctx.clear();
 
 			camroot.scale.y = 1;
+
 			logo.active = false;
 			particles.active = false;
 			ground.active = false;
@@ -267,7 +255,7 @@
 			skybox.active = false;
 			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
 
-            var blurForce = 0.1;
+            
 
             blurXFBO.bind();
             ctx.clear();
@@ -278,15 +266,10 @@
 
             renderer.render(blur);
 
-            // 2. Render floor to stencil
-   //          renderer.renderToScreen();
-			// scene.camera.scale.y =  1;
-			// logo.active = false;
-			// ground.active = true;
-			// ground.useDepth = false;
-			// renderer.render(scene.root, scene.camera, { customGLSetup: setupStencil });
+
 
             renderer.renderToScreen();
+            ctx.clear();
 
             blur.shader
             	.use()
@@ -294,18 +277,7 @@
             	.setUniform('uTexture', blurXFBO.texture);
             renderer.render(blur);
             
-
-
-            // 1. Render skybox
-			// camroot.scale.y =  1;
-			// logo.active = false;
-			// ground.active = false;
-			// skybox.active = true;
-			// renderer.render(scene.root, scene.camera);
-
-            // 1. Render the regular cube
 			camroot.scale.y =  1;
-
 			logo.active = false;
 			ground.active = false;
 			particles.active = true;
