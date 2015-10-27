@@ -30,7 +30,7 @@
 
 		<p>A lot of the structure is inspired by the Unity3d API, including the central concept of 'transforms' as building blocks. It also has a Unity to JSON/WebGL exporter.</p>
 
-		<p>It is developped and maitained by <a href='http://holotype.co'>Holotype studio</a> and used in many of their <a href='http://holotype.co/work'>WebGL projects</a>.</p>
+		<p>It is developped and maitained by <a href='http://holotype.co'>Holotype</a> and used in many of their <a href='http://holotype.co/work'>WebGL projects</a>.</p>
 	</acticle>
 
 	<article>
