@@ -20,6 +20,7 @@
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Color.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix33.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
@@ -31,7 +32,7 @@
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 
-<script type="text/javascript" src="../../src/extras/TextureGenerator.js"></script>
+<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
 
 <script type="text/javascript" src="AnimatedTexture.js"></script>
 
@@ -48,13 +49,39 @@
 
 	VirtualScroll.lockTouch();
 
+	var tt = SQR.PerlinTexture()
+	.configure({
+
+		// ~hairy
+		low:  0.00, 
+		high: 1.00, 
+		octaves: [2, 4, 8], 
+		factors: [1, 1/2, 1/2]
+
+		//  ~watery
+		// low:  0.00, 
+		// high: 0.70, 
+		// octaves: [2, 4, 8, 16, 24], 
+		// factors: [1/4, 1, 1/2, 1/4, 1/4]
+
+		// ~plastic
+		// low:  0.30, 
+		// high: 0.90, 
+		// octaves: [2, 4, 8], 
+		// factors: [2, 1, 1/2]
+	})
+	.create(16, 16, true);
+
+	var amplitude = 3;
+
 	SQR.Loader.loadAssets([
+		['../../src/glsl/light/fog.glsl', 'fog'],
 		['tex.glsl', 'shader']
 	], function(assets) {
 
 		var ctx = SQR.Context('#gl-canvas')
 			.create()
-			.clearColor(0, 0, 0, 1);
+			.clearColor(0.05, 0.0, 0.1, 1);
 			// .clearColor(0.5, 0.5, 0.5, 1);
 
 		var renderer = new SQR.Renderer(ctx);
@@ -79,14 +106,12 @@
 		var t = new SQR.Transform();
 
 		// size, speed, baseOffset, scale
-		var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
+		// var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
 
 		// document.body.appendChild(heightMap.canvas);
-		var s = 12, sd = Simplrz.touch ? 24 : 48;
+		var s = 24, sd = Simplrz.touch ? 24 : 48;
 
-		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0, {
-			perQuadUV: true
-		});
+		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0);
 
 		// t.buffer.cull = false;
 
@@ -104,48 +129,53 @@
 			// });
 			// t.buffer.update();
 
+
 			// Slower, with lighting
 			for(var i = 0; i < vsl; i++) {
 				var f = vs[i];
-				var x = (f.x + s/2) / s, y = (f.z + s/2) / s;
-				f.y = heightMap.getPixel(x, y) / 255;
+				var x = (f.x + s/2), y = (f.z + s/2);
+				f.y = tt.getValue(x, y) * amplitude;
 			};
-
 			t.buffer.recalculateNormals().updateFromFaces().update();
 
-			heightMap.move(1);
+			tt.offset.x -= 0.04;
+			tt.offset.y -= 0.04;
 		}
 
 		
 
 		var grid = document.createElement('canvas');
-		var gs = 256, ls = 2;
+		var gs = 256, ls = 2, radius = 50;
 		grid.width = gs;
 		grid.height = gs;
 		var gtx = grid.getContext('2d');
-		gtx.fillStyle = '#000000';
+
+		gtx.fillStyle = SQR.Color(0.05, 0.0, 0.1).toCSS();
 		gtx.fillRect(0, 0, gs, gs);
-		gtx.fillStyle = '#ffffff';
+
+		gtx.fillStyle = 'rgb(255, 128, 255)';
 
 		gtx.beginPath();
-		gtx.arc(gs/2, gs/2, 25, 0, SQR.TWOPI);
+		gtx.arc(gs/2, gs/2, radius, 0, SQR.TWOPI);
 		gtx.fill();
 
 		t.shader = SQR.Shader(assets.shader)
 			.use()
-			.setUniform('uTexture', SQR.Texture(grid, { mipmap: true }))
-			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm());
+			.setUniform('uTexture', SQR.Texture(grid, { mipmap: true, wrap: SQR.gl.REPEAT }))
+			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm())
+			.setUniform('uTextureTile', [sd * 2, sd * 2])
+			.setUniform('uFog', [8, 12])
+			.setUniform('uFogColor', [0.05, 0.0, 0.1]);
 
 		root.add(t);
 
-		camera.position.z = 5;
-		camera.position.y = -0.25;
-		t.rotation.x = -0.5;
-		t.rotation.y = Math.PI / 4 + Math.PI;
+		camera.position.z = 4.0;
+		camera.position.y = 2.5;
+		camera.rotation.x = 0.5;
 
 		var render = function() {
 			requestAnimationFrame(render);
-			animate()
+			animate();
 			renderer.render(root, camera);
 		}
 

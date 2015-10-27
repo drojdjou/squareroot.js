@@ -27,6 +27,15 @@
 		"textureTile": [ 1,1 ],
 		"textureOffset": [ 0,0 ],
 		"colorTexture": "sqr_logo_psdambient_occlusion"
+	},
+	
+	"no_name": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
 	}
 
 },
@@ -47,29 +56,50 @@
 "transforms": [
 	
 	{
-		"uid": "t-1954",
-        "name": "camera",
-		"position": [ 0,0,600 ],
-		"rotation": [ 0,0,0,1 ],
-		"camera": "camera"
+		"uid": "t-58888",
+        "name": "holder",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,-1,0,-0.0000002821 ],
+		"animation": "",
+		"animationId": ""
 	},
 	
 	{
-		"uid": "t-38916",
-        "name": "holder",
+		"uid": "t-68664",
+        "name": "ground",
+		"parent": "t-58888",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "no_name",
+		"mesh": "ground",
+		"meshId": "m-8160"
+	},
+	
+	{
+		"uid": "t-58912",
+        "name": "logo",
+		"parent": "t-58888",
+		"position": [ 0,72.4343,40 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "logo",
+		"mesh": "logo",
+		"meshId": "m-8072"
+	},
+	
+	{
+		"uid": "t-72770",
+        "name": "camroot",
 		"position": [ 0,0,0 ],
 		"rotation": [ 0,0,0,1 ]
 	},
 	
 	{
-		"uid": "t-32258",
-        "name": "logo",
-		"parent": "t-38916",
-		"position": [ 0,0,0 ],
-		"rotation": [ -0.1464466,-0.8535535,-0.3535535,0.3535532 ],
-		"renderer": "logo",
-		"mesh": "logo_2",
-		"meshId": "m-7278"
+		"uid": "t-1954",
+        "name": "camera",
+		"parent": "t-72770",
+		"position": [ 0,60,300 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "camera"
 	}
 
 ]

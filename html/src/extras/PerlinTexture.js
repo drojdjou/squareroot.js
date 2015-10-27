@@ -25,13 +25,17 @@ SQR.PerlinTexture = function(canvas) {
 		return (v - s) / (e - s);
 	}
 
-	tt.create = function(w, h) {
+	tt.create = function(w, h, noCanvas) {
 		width = w | 0;
 		height = h | 0 || w;
-		ctx = canvas.getContext('2d');
-		canvas.width = width;
-		canvas.height = height;
-		data = ctx.getImageData(0, 0, width, height);
+
+		if(!noCanvas) {
+			ctx = canvas.getContext('2d');
+			canvas.width = width;
+			canvas.height = height;
+			data = ctx.getImageData(0, 0, width, height);
+		}
+
 		return tt;
 	}
 
@@ -62,8 +66,8 @@ SQR.PerlinTexture = function(canvas) {
 		for(var k = 0; k < ol; k++) {
 
 			var c = SQR.PerlinNoise.simplex3(
-				(x + tt.offset.x) / height * cf.octaves[k],
-				(y + tt.offset.y) / width * cf.octaves[k],
+				(x + tt.offset.x * cf.factors[k]) / height * cf.octaves[k],
+				(y + tt.offset.y * cf.factors[k]) / width * cf.octaves[k],
 				tt.offset.z
 			);
 

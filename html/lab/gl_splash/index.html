@@ -15,6 +15,7 @@
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 <script type="text/javascript" src="../../src/common/Cubemap.js"></script>
+<script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
 
 <script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
 <script type="text/javascript" src="../../src/two/Transform2d.js"></script>
@@ -29,6 +30,8 @@
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
 <script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
@@ -41,8 +44,16 @@
 <script type="text/javascript">
 
 	SQR.Loader.loadAssets([
-		['glsl/logo.glsl', 'shader'],
 
+		['glsl/logo.glsl', 'logoShader'],
+		['glsl/skybox.glsl', 'skyboxShader'],
+		['glsl/ground.glsl', 'groundShader'],
+		['glsl/particle.glsl', 'particleShader'],
+
+		['glsl/blur.glsl', 'blur'],
+
+		['../../src/glsl/light/fog.glsl', 'fog'],
+		
 		['assets/logo.json', 'mesh'],
 		['assets/logoScene.json', 'scene'],
 
@@ -50,37 +61,53 @@
 
 	], function(assets) {
 
-		var ctx = SQR.Context('#gl-canvas').create().clearColor(0.2, 0.1, 0, 0);
-		var renderer = new SQR.Renderer(ctx);
+		var ctx = SQR.Context('#gl-canvas')
+			.create()
+			.clearColor(0.5, 0.3, 0.8, 1.0);
 
-		var resize =function() {
-			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h);
-			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		var renderer = new SQR.Renderer(ctx);
+		renderer.autoClear = false;
+
+		var far = 10000;
+
+		var grid = function(s, gw) {
+
+			var t = new SQR.CanvasRenderer().setSize(s, s);
+			var r = SQR.Transform2d();
+
+			r.shape = function(ctx) {
+
+				ctx.fillStyle = 'rgba(128, 80, 200, 0.2)';
+				ctx.fillRect(0, 0, s, s);
+
+				ctx.strokeStyle = 'rgba(140, 200, 255, 1.0)';
+				ctx.lineWidth = gw;
+				ctx.strokeRect(0, 0, s, s);
+			}
+
+			t.render(r);
+
+			return SQR.Texture(t.canvas, { wrap: SQR.gl.REPEAT, mipmap: true });
+
 		}
 
-		window.addEventListener('resize', resize);
-		resize();
-
-
-		var ramp = (function() {
+		var ramp = function(s1, s2, s3) {
 
 			var h = 128;
 			var w = 32;
 
 			var t = new SQR.CanvasRenderer().setSize(w, h);
 			var r = SQR.Transform2d();
-			var tex = SQR.Texture(t.canvas);
 
 			var sky = SQR.Color();
 			var sun = SQR.Color();
 
-			var a = SQR.Color(1.0, 0.9, 0.7);
-			var b = SQR.Color(1.0, 0.5, 0.1);
-			var c = SQR.Color(0.6, 0.3, 0.0);
+			var a = SQR.Color(0.3, 0.3, 0.8);
+			var b = SQR.Color(0.6, 0.8, 1.0);
+			var c = SQR.Color(0.5, 0.3, 0.8);
 
 			var colors = [a, b, c];
-			var stops = [0.4, 0.5, 0.6];
+			var stops = [s1, s2, s3];
 
 			r.shape = function(ctx) {
 
@@ -97,47 +124,172 @@
 			t.render(r);
 
 			return t.canvas;
-		})();
+		};
 
-		ramp.style.position = 'absolute';
-		ramp.style.top = 0;
-		ramp.style.left = 0;
-		ramp.style.width = '100%';
-		ramp.style.height = '100%';
-		ramp.style.zIndex = -1;
-		// document.body.appendChild(ramp);
+		var rampTexSharp = SQR.Texture(ramp(0.20, 0.50, 0.50));
+		var rampTexBlur = SQR.Texture(ramp(0.30, 0.50, 0.55));
 
 		
-		var scene = SQR.SceneParser.parse(assets, { shader: assets.shader });
+		var scene = SQR.SceneParser.parse(assets, { shader: assets.logoShader });
 
-		var holder = scene.root.findByName('holder');
-		holder.useQuaternion = false;
+		var camroot = scene.root.findByName('camroot');
+		camroot.useQuaternion = false;
+		// camroot.lookAt = scene.root.findByName('holder');
+
+		var skybox = new SQR.Transform();
+		skybox.buffer = SQR.Primitives.createCube(far, far, far, { reverseNormals: true });
+		skybox.shader = SQR.Shader(assets.skyboxShader).use().setUniform('uRamp', rampTexBlur);
+		scene.root.add(skybox);
+
+		// skybox.setBlending(true);
 
 		var logo = scene.root.findByName('logo');
 		logo.shader.use()
 			.setUniform('uTexture', SQR.Texture(assets.ambientTexture))
-			.setUniform('uRamp', SQR.Texture(ramp))
+			.setUniform('uRamp', rampTexSharp)
 			.setUniform('uLight', new SQR.V3(-1.0, 0.0, 0.0));
 
+		var ground = scene.root.findByName('ground');	
+		ground.shader = SQR.Shader(assets.groundShader)
+			.use()
+			.setUniform('uTexture', grid(256, 4))
+			.setUniform('uTextureTile', [80, 80])
+			.setUniform('uFog', [200, 1600]);
+
+		ground.setBlending(true);
+
+
+		var particles = new SQR.Transform();
+		particles.shader = SQR.Shader(assets.particleShader, { directives: [
+			{ name: 'POINT_SIZE', value: '4.0' }
+		] });
+
+		particles.buffer = SQR.Buffer()
+			.layout({ aPosition: 3 }, 1000)
+			.iterate('aPosition', function(i, d, c) {
+
+				var a = Math.PI * -0.5 - Math.random() * Math.PI;
+				var r = 500;
+
+				d[i+0] = Math.sin(a) * r;
+				d[i+1] = 40 + Math.random() * 40;
+				d[i+2] = Math.cos(a) * r / 4;
+			})
+			.setMode(SQR.gl.POINTS)
+			.update();
+
+		// scene.root.add(particles);
+
+
+		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		var rawFBO = SQR.FrameBuffer(w, h);    
+        var blurXFBO = SQR.FrameBuffer(w, h);
+        var blur = SQR.Primitives.createPostEffect(assets['blur']);
+        // blur.useDepth = false;
+        blur.depthMask = false;
+        // blur.setBlending(true);
 
 		var mx = 0, my = 0;
 
 		document.addEventListener('mousemove', function(e) {
-			mx = (e.pageX / window.innerWidth * 2 - 1) * 0.3;
-			my = (e.pageY / window.innerHeight * 2 - 1) * 0.3;
+			// mx = (e.pageX / window.innerWidth * 2 - 1) * 400;
+			// my = 200 - (e.pageY / window.innerHeight) * 190;
+
+			mx = (e.pageX / window.innerWidth * 2 - 1);
+			my = (e.pageY / window.innerHeight);
 		});
+
+		var resize = function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			ctx.size(w, h);
+			scene.camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 10, far);
+		}
+
+		var setupReflection = function(gl) {
+			gl.frontFace(gl.CCW);
+		}
 
 		var render = function() {
 			requestAnimationFrame(render);
+			ctx.clear();
 
-			holder.rotation.y += (mx - holder.rotation.y) * 0.03;
-			holder.rotation.x += (my - holder.rotation.x) * 0.03;
+			// camroot.position.y += (my - camroot.position.y) * 0.03;
+			// camroot.position.x += (mx - camroot.position.x) * 0.03;
+			camroot.rotation.y += (mx * 0.4 - camroot.rotation.y) * 0.03;
+			camroot.rotation.x += (my * -0.4 - camroot.rotation.x) * 0.03;
+			// camroot.position.y += (my * -160 - camroot.position.y) * 0.03;
+
+	
 
 
 
+
+			rawFBO.bind();
+			ctx.clear();
+
+			camroot.scale.y = 1;
+			logo.active = false;
+			ground.active = false;
+			skybox.active = true;
+
+			renderer.render(skybox, scene.camera);
+
+			camroot.scale.y = -1;
+			logo.active = true;
+			ground.active = false;
+			skybox.active = false;
+
+			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
+
+            var blurForce = 0.02;
+
+            blurXFBO.bind();
+            ctx.clear();
+            blur.shader
+            	.use()
+            	.setUniform('uDelta', [0.0, blurForce])
+            	.setUniform('uTexture', rawFBO.texture);
+
+            renderer.render(blur);
+
+            // 2. Render floor to stencil
+   //          renderer.renderToScreen();
+			// scene.camera.scale.y =  1;
+			// logo.active = false;
+			// ground.active = true;
+			// ground.useDepth = false;
+			// renderer.render(scene.root, scene.camera, { customGLSetup: setupStencil });
+
+            renderer.renderToScreen();
+
+            blur.shader
+            	.use()
+            	.setUniform('uDelta', [blurForce, 0.0])
+            	.setUniform('uTexture', blurXFBO.texture);
+            renderer.render(blur);
+            
+
+
+            // 1. Render skybox
+			// camroot.scale.y =  1;
+			// logo.active = false;
+			// ground.active = false;
+			// skybox.active = true;
+			// renderer.render(scene.root, scene.camera);
+
+            // 1. Render the regular cube
+			camroot.scale.y =  1;
+			logo.active = true;
+			ground.active = true;
+			skybox.active = false;
 			renderer.render(scene.root, scene.camera);
+
+			
+			
 		}
 
+		window.addEventListener('resize', resize);
+		resize();
 		render();
 	});
 
@@ -151,8 +303,6 @@ if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1)
 
 </body>
 </head>
-
-
 
 
 
