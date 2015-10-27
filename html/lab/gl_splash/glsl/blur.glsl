@@ -16,7 +16,7 @@ void main(void) {
 precision mediump float;
 
 #ifndef ITE
-#define ITE 8.0
+#define ITE 2.0
 #endif
 
 uniform sampler2D uTexture;

@@ -129,8 +129,8 @@
 			return t.canvas;
 		};
 
-		var rampTexSharp = SQR.Texture(ramp(0.40, 0.50, 0.55));
-		var rampTexBlur = SQR.Texture(ramp(0.30, 0.50, 0.55));
+		var rampTexSharp = SQR.Texture(ramp(0.45, 0.50, 0.55));
+		var rampTexBlur = SQR.Texture(ramp(0.30, 0.50, 0.60));
 
 		
 		var scene = SQR.SceneParser.parse(assets, { shader: assets.logoShader });
@@ -155,7 +155,7 @@
 		var ground = scene.root.findByName('ground');	
 		ground.shader = SQR.Shader(assets.groundShader)
 			.use()
-			.setUniform('uTexture', grid(256, 4))
+			.setUniform('uTexture', grid(256, 8))
 			.setUniform('uTextureTile', [80, 80])
 			.setUniform('uFog', [200, 1600]);
 
@@ -170,7 +170,7 @@
 			.setUniform('uTexture', SQR.Texture(assets.particle));
 
 		particles.buffer = SQR.Buffer()
-			.layout({ aAngle: 1, aVelocity: 3, aColor: 3 }, 5000)
+			.layout({ aAngle: 1, aVelocity: 3, aColor: 3 }, 3000)
 			.iterate('aAngle', function(i, d, c) {
 				var a = Math.random() * Math.PI * 2;
 				d[i] = a
@@ -267,7 +267,7 @@
 			skybox.active = false;
 			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
 
-            var blurForce = 0.03;
+            var blurForce = 0.1;
 
             blurXFBO.bind();
             ctx.clear();

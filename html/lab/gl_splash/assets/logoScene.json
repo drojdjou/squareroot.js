@@ -97,7 +97,7 @@
 		"uid": "t-1954",
         "name": "camera",
 		"parent": "t-72770",
-		"position": [ 0,60,300 ],
+		"position": [ 0,60,450 ],
 		"rotation": [ 0,0,0,1 ],
 		"camera": "camera"
 	}
