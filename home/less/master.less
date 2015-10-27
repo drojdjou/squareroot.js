@@ -16,8 +16,14 @@
 .paragraph-font() {
 	font-family: @sans;
 	font-weight: 300;
-	font-size: 18px;
+	font-size: 15px;
+	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
+
+	@media(min-width: 800px) {
+		font-size: 18px;
+		line-height: 1.33;
+	}
 }
 
 body {

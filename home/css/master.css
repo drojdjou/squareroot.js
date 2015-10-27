@@ -3,8 +3,15 @@ body {
   background-color: #280014;
   font-family: 'proxima-nova', sans-serif;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 15px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 800px) {
+  body {
+    font-size: 18px;
+    line-height: 1.33;
+  }
 }
 a {
   text-decoration: none;
@@ -73,10 +80,16 @@ ul {
 .content p {
   font-family: 'proxima-nova', sans-serif;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 15px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   margin: 16px 0 16px 0;
-  line-height: 1.33;
+}
+@media (min-width: 800px) {
+  .content p {
+    font-size: 18px;
+    line-height: 1.33;
+  }
 }
 .content li {
   font-size: 0.85em;
