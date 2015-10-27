@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Tree</title>
+<title>Forest VR</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -46,16 +46,34 @@
 <link rel="stylesheet" type="text/css" href="../base.css">
 <link rel="stylesheet" type="text/css" href="../../vr/common/base.css">
 
+<style type="text/css">
+
+.full-vr {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 8px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.4);
+	color: #aaa;
+	font-size: 12px;
+}
+
+</style>
+
 </head>
 <body>
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
+<div class="full-vr">For a full VR experience, use <a href='https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ#list'>Google Chrome WebVR build</a>with Ocullus Rift or mobile browser with a <a href='https://www.google.com/get/cardboard/'>Google Cardboard</a></div>
+
 
 <script type="text/javascript">
 
 SQR.VRApp(function(options) {
+
+	if(options.vrInput || options.isTouch) EXT.select('.full-vr').ext.hide();
 
 	SQR.Loader.loadAssets([
 		['glsl/tree-mesh-light.glsl', 'treeMesh'],
@@ -209,7 +227,7 @@ SQR.VRApp(function(options) {
 		var lightPhase = 0;
 
 		Dust(root, assets, renderer, light, lightColor, {
-			baseSize: 2, extraSize: 2
+			baseSize: options.vrInput ? 2 : 3, extraSize: options.vrInput ? 2 : 6
 		});
 
 		var mx = 0, my = 0, tx = 0, ty = 0;
