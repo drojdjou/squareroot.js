@@ -33,14 +33,14 @@
 		<p>A lot of the structure is inspired by Unity3d, including the central concept of 'Transforms' as building blocks. It also features a Unity-to-JSON/WebGL exporter that can export meshes, skinned meshes and entire scenes.</p>
 
 		<p>It is developped and maitained by <a href='http://holotype.co'>Holotype</a> and used in many of their <a href='http://holotype.co/work'>WebGL projects</a>.</p>
-	</acticle>
+	</article>
 
 	<article>
 		<ul  class='links'>
 			<li><a href='https://github.com/drojdjou/squareroot.js/'><img src='home/assets/github.svg'><br>Github Repository</a></li>
 			<li><a href='docs/'><img src='home/assets/docs.svg'><br>API docs and tutorials</a></li>
 		</ul>
-	</acticle>
+	</article>
 
 	<article>
 		<h1>Basic Examples</h1>
@@ -51,11 +51,13 @@
 			<li><a href='tutorials/post-effect.html' target='_blank'><img src='home/thumbs/examples/post.jpg'>Post effect</a></li>
 			<li><a href='tutorials/mesh.html' target='_blank'><img src='home/thumbs/examples/mesh.jpg'>Loading a mesh</a></li>
 		</ul>
+	</article>
 
+	<article>
 		<h1>Demos</h1>
 
 		<ul class='grid'>
-			<li><a href='html/lab/gl_tree/03-forest-vr.html' target='_blank'><img src='home/thumbs/demos/vr.jpg'>WebVR (Ocullus, Cardboard VR)</a></li>
+			<li><a href='html/lab/gl_tree/03-forest-vr.html' target='_blank'><img src='home/thumbs/demos/vr.jpg'>WebVR (Rift/Cardboard)</a></li>
 			<li><a href='html/lab/gl_carpet/' target='_blank'><img src='home/thumbs/demos/carpet.jpg'>Perlin Noise Animation</a></li>
 			<li><a href='html/lab/gl_cubemap/' target='_blank'><img src='home/thumbs/demos/cuberefl.jpg'>Real-time reflections</a></li>
 			<li><a href='html/lab/gl_dof/' target='_blank'><img src='home/thumbs/demos/dof.jpg'>Depth-of-field effect</a></li>
@@ -65,7 +67,7 @@
 			<li><a href='html/lab/gl_bones/hand.html' target='_blank'><img src='home/thumbs/demos/hand.jpg'>Skinned mesh</a></li>
 			<li><a href='html/lab/webcam_reflection' target='_blank'><img src='home/thumbs/demos/webcam-refl.jpg'>Live webcam reflection</a></li>
 		</ul>
-	</acticle>
+	</article>
 
 </section>
 

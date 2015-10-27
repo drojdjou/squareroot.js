@@ -200,9 +200,11 @@
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 		var rawFBO = SQR.FrameBuffer(w, h);    
-        var blurXFBO = SQR.FrameBuffer(w, h);
-        var blur = SQR.Primitives.createPostEffect(assets['blur']);
-        blur.depthMask = false;
+		var blurXFBO = SQR.FrameBuffer(w, h);
+		var blur = SQR.Primitives.createPostEffect(assets['blur']);
+
+		// blur.depthMask = false;
+		blur.useDepth = false;
 
 		var mx = 0, my = 0;
 
@@ -215,7 +217,7 @@
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 			ctx.size(w, h);
 			rawFBO.resize(w, h);    
-         	blurXFBO.resize(w, h);
+			blurXFBO.resize(w, h);
 			scene.camera.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 10, far);
 		}
 
@@ -255,28 +257,28 @@
 			skybox.active = false;
 			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
 
-            
+			
 
-            blurXFBO.bind();
-            ctx.clear();
-            blur.shader
-            	.use()
-            	.setUniform('uDelta', [0.0, blurForce])
-            	.setUniform('uTexture', rawFBO.texture);
+			blurXFBO.bind();
+			ctx.clear();
+			blur.shader
+				.use()
+				.setUniform('uDelta', [0.0, blurForce])
+				.setUniform('uTexture', rawFBO.texture);
 
-            renderer.render(blur);
+			renderer.render(blur);
 
 
 
-            renderer.renderToScreen();
-            ctx.clear();
+			renderer.renderToScreen();
+			ctx.clear();
 
-            blur.shader
-            	.use()
-            	.setUniform('uDelta', [blurForce, 0.0])
-            	.setUniform('uTexture', blurXFBO.texture);
-            renderer.render(blur);
-            
+			blur.shader
+				.use()
+				.setUniform('uDelta', [blurForce, 0.0])
+				.setUniform('uTexture', blurXFBO.texture);
+			renderer.render(blur);
+			
 			camroot.scale.y =  1;
 			logo.active = false;
 			ground.active = false;

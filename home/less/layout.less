@@ -22,9 +22,15 @@
 
 	article {
 		position: relative;
-		left: 50%;
-		margin-left: -400px;
-		width: 800px;
+		width: 100%;
+		padding: 0 20px 0 20px;
+
+		@media (min-width: 800px) {
+			left: 50%;
+			margin-left: -400px;
+			width: 800px;
+			padding: 0;
+		}
 	}
 
 	h1 {
@@ -68,9 +74,13 @@
 
 		li {
 			float: left;
-			width: 33%;
+			width: 50%;
 			text-align: center;
 			margin: 16px 0 6px 0;
+
+			@media(min-width: 800px) {
+				width: 33%;
+			}
 		}
 
 		img {

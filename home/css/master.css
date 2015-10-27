@@ -28,6 +28,7 @@ ul {
   line-height: 1;
   border: 0;
   color: #e6ccff;
+  box-sizing: border-box;
 }
 .splash {
   position: fixed;
@@ -49,9 +50,16 @@ ul {
 }
 .content article {
   position: relative;
-  left: 50%;
-  margin-left: -400px;
-  width: 800px;
+  width: 100%;
+  padding: 0 20px 0 20px;
+}
+@media (min-width: 800px) {
+  .content article {
+    left: 50%;
+    margin-left: -400px;
+    width: 800px;
+    padding: 0;
+  }
 }
 .content h1 {
   font-family: 'proxima-nova', sans-serif;
@@ -93,9 +101,14 @@ ul {
 }
 .content .grid li {
   float: left;
-  width: 33%;
+  width: 50%;
   text-align: center;
   margin: 16px 0 6px 0;
+}
+@media (min-width: 800px) {
+  .content .grid li {
+    width: 33%;
+  }
 }
 .content .grid img {
   position: relative;
