@@ -12,7 +12,7 @@
 <meta property='og:title' content='Squareroot.js - Javascript creative coding library'/>
 <meta property="og:site_name" content="sqr.holotype.co"/>
 <meta property="og:url" content="http://sqr.holotype.co"/>
-<meta property="og:description" content="Squareroot.js is a Javascript creative coding library based on the WebGL API. It's very flexible and easy to use"/>
+<meta property="og:description" content="Squareroot.js is a flexible and easy to use Javascript creative coding library based on the WebGL API. It is developed and maintained by <a href='http://holotype.co'>Holotype</a>."/>
 <meta property="og:image" content="http://sqr.holotype.co/home/assets/share/sqr.jpg" />
 
 <link rel="icon" href="home/assets/favicon.png" type="image/x-icon">
