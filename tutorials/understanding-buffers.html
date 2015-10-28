@@ -1,28 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Simple particle buffer example</title>
+<title>A custom buffer</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-<script type="text/javascript" src="../html/src/SQR.js"></script>
-
-<script type="text/javascript" src="../html/src/common/Context.js"></script>
-<script type="text/javascript" src="../html/src/common/Loader.js"></script>
-<script type="text/javascript" src="../html/src/common/Buffer.js"></script>
-<script type="text/javascript" src="../html/src/common/Renderer.js"></script>
-<script type="text/javascript" src="../html/src/common/Shader.js"></script>
-<script type="text/javascript" src="../html/src/common/Transform.js"></script>
-
-<script type="text/javascript" src="../html/src/math/Vector2.js"></script>
-<script type="text/javascript" src="../html/src/math/Vector3.js"></script>
-<script type="text/javascript" src="../html/src/math/Matrix33.js"></script>
-<script type="text/javascript" src="../html/src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../html/src/math/Quaternion.js"></script>
-<script type="text/javascript" src="../html/src/math/ProjectionMatrix.js"></script>
-
-<script type="text/javascript" src="../html/src/primitives/Face.js"></script>
-<script type="text/javascript" src="../html/src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../build/sqr.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../html/lab/base.css">
 
@@ -33,86 +16,101 @@
 
 <div class="num"></div>
 
-<script type="text/javascript">
+<script type="text/javascript" id="gl-script">
 
-	SQR.Loader.loadAssets([
-		['glsl/point.glsl', 'shader'],
-	], function(assets) {
+SQR.Loader.loadAssets([
+	['glsl/point.glsl', 'shader'],
+], function(assets) {
 
-		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+	var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
-		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
-		var renderer = new SQR.Renderer(ctx);
-		var root = new SQR.Transform();
+	var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+	var renderer = new SQR.Renderer(ctx);
+	var root = new SQR.Transform();
 
-		var camera = new SQR.Transform();
-		camera.position.z = 100;
-		root.add(camera);
+	var camera = new SQR.Transform();
+	camera.position.z = 100;
+	root.add(camera);
 
-		var resize =function() {
-			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h);
-			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-		}
+	var resize =function() {
+		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		ctx.size(w, h);
+		camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+	}
 
-		window.addEventListener('resize', resize);
-		resize();
+	window.addEventListener('resize', resize);
+	resize();
 
-		var t = new SQR.Transform();
+	var t = new SQR.Transform();
 
-		// Create a shader from the source code loaded above and set the uColor uniform to blue/greennish tint
-		t.shader = SQR.Shader(assets['shader']).use().setUniform('uColor', [0, 0.5, 1.0]);
+	// Create a shader from the source code loaded above 
+	// and set the uColor uniform to blue/greennish tint
+	t.shader = SQR.Shader(assets['shader']).use().setUniform('uColor', [0, 0.5, 1.0]);
 
 
-		//	Now create the buffer! 
-		//
-		//	The buffer only defines one attribute: aPosition and it will be a 3d position, so the size is 3
-		//	The last argument to the <code>layout</code> function tells us that we want to have 10K points in this buffer
-		//
-		//	The default rendering mode is TRIANGLES in SQR (which is how 3d meshes are drawn) but in 
-		//	this case we prefer to draw points - this is what the <code>setMode</code> method sets.
-		//
-		//	The <code>iterate()</code> callback function will pass thru al the 10K points and allow us to populate the buffer with meanigful
-		//	position data.
-		//
-		//	Finally, we call <code>update()</code> so that the data from the JS array is uploaded to the GPU
-		//
-		// See docs for SQR.Buffer.iterate for details on each of those functions.
-		// 
-		t.buffer = SQR.Buffer()
-			.layout({ aPosition: 3 }, 10000)
-			.setMode(SQR.gl.POINTS)
-			.iterate('aPosition', function(i, data, c) {
+	//	Now create the buffer! 
+	//
+	//	The buffer only defines one attribute: aPosition and it will be a 3d position, so the size is 3
+	//	The last argument to the layout function tells us that we want to have 10K points in this buffer
+	//
+	//	The default rendering mode is TRIANGLES in SQR (which is how 3d meshes are drawn) but in 
+	//	this case we prefer to draw points - this is what the setMode method sets.
+	//
+	//	The iterate() callback function will pass thru al the 10K points 
+	//	and allow us to populate the buffer with meanigful position data.
+	//
+	//	Finally, we call update() so that the data from the JS array is uploaded to the GPU
+	//
+	//	See docs for SQR.Buffer.iterate for details on each of those functions.
+	t.buffer = SQR.Buffer()
+		.layout({ aPosition: 3 }, 10000)
+		.setMode(SQR.gl.POINTS)
+		.iterate('aPosition', function(i, data, c) {
 
-				// The SQR.V3 class has 3 temporary vectors defines. We can reuse on of them here
-				// It's better than creating 10K instances of SQR.V3 just to populate the buffer
-				var v = SQR.V3.__tv1;
+			// The SQR.V3 class has 3 temporary vectors defines. We can reuse on of them here
+			// It's better than creating 10K instances of SQR.V3 just to populate the buffer
+			var v = SQR.V3.__tv1;
 
-				// Generate a vector pointing in a rendom direction, then normalize it and multiply by 50
-				v.random().norm().mul(50);
+			// Generate a vector pointing in a rendom direction, then normalize it and multiply by 50
+			v.random().norm().mul(50);
 
-				// Set the data from the vector back to the buffer array
-				data[i+0] = v.x;
-				data[i+1] = v.y;
-				data[i+2] = v.z;
+			// Set the data from the vector back to the buffer array
+			data[i+0] = v.x;
+			data[i+1] = v.y;
+			data[i+2] = v.z;
 
-			})
-			.update();
+		})
+		.update();
 
-		root.add(t);
+	root.add(t);
 
-		var render = function() {
-			// Uncomment this line render in a loop and enable animation
-			requestAnimationFrame(render);
-			t.rotation.x += 0.01;
-			t.rotation.y += 0.02;
-			renderer.render(root, camera);
-		}
+	var render = function() {
+		// Uncomment this line render in a loop and enable animation
+		requestAnimationFrame(render);
+		t.rotation.x += 0.01;
+		t.rotation.y += 0.02;
+		renderer.render(root, camera);
+	}
 
-		render();
-	});
+	render();
+});
 
 </script>
+
+<header>
+	<button class="icon"></button>
+	<article>
+		<code></code>
+	</article>
+</header>
+<script type="text/javascript" src="../html/lab/base.js"></script>
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
 </body>
 </head>
 

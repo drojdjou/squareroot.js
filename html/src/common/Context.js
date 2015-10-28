@@ -15,7 +15,7 @@ var c = SQR.Context('#canvas').create().size(w, h).clearColor(0, 0, 0, 1);
 SQR.Context = function(canvas) {
 
 	if(!SQR._versionDisplayed && SQR.Version) {
-		console.log('Squareroot v' + SQR.Version.version + ' b' + SQR.Version.build);
+		console.log('%cSquareroot v' + SQR.Version.version + ' b' + SQR.Version.build, 'background: #663399; color: #dd99ff; padding: 4px 10px 4px 10px');
 		SQR._versionDisplayed = true;
 	}
  

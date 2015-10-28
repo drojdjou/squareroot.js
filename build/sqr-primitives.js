@@ -486,7 +486,7 @@ SQR.Extrude = function() {
 /* --- --- [primitives/Face.js] --- --- */
 
 /**
- *  Face is a triangle or a quad.
+ *  @description Face is a triangle or a quad.
  *  If the face is a quad, both triangles composin the quad,
  *  shader the same normal - thanks to this flat shaded materials have quads shaded
  *  the same way which is nicer than havong each triangle have a slightly different normal.
@@ -850,8 +850,23 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
 
 /* --- --- [primitives/Mesh.js] --- --- */
 
+/**
+ *  @namespace Mesh
+ *  @memberof SQR
+ *
+ *  @description Utility to load meshes from J3D/Unity exported JSON files. SQR only work with this format. 
+ *	It doesn't have native support for OBJ files or Collada 
+ *	(though it's perfectly possible to create an OBJ or Collada importer if you need to)
+ *
+ */
 SQR.Mesh = {
 
+	/**
+	 *	@method fromJSON
+	 *	@memberof SQR.Mesh
+	 *
+	 *	@description Parses the J3D JSON mesh data format and created a SQR.Buffer out of it.
+	 */	
 	fromJSON: function(data, name, options) {
 
 		var geo;
@@ -1250,6 +1265,13 @@ SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
 
 /* --- --- [primitives/SceneParser.js] --- --- */
 
+/**
+ *  @namespace SceneParser
+ *  @memberof SQR
+ *
+ *  @description Utility to load scenes from J3D/Unity exported JSON files.
+ *
+ */
 SQR.SceneParser = (function() {
 
 	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
@@ -1263,7 +1285,21 @@ SQR.SceneParser = (function() {
 
 	return {
 
+		/**
+		 *	@method fromJSON
+		 *	@memberof SQR.SceneParser
+		 *
+		 *	@description Parses the J3D JSON scene data format and creates a SQR.Buffer out of it.
+		 *
+		 *	@param {Object} assets The assets loaded with SQR.Loader or otherwise. 
+		 *	This method will expect to find all the 3 exported files in there, named 'scene', 'mesh' and 'anim'. 
+		 *	Alternatively a prefix can be provided in the seconds, options argument.
+		 *
+		 *	@param {Object} options Options on how to parse the scene.
+		 */	
 		parse: function(assets, options) {
+
+			options = options || {};
 
 			var prefix = options.prefix || '';
 			var scene = assets[prefix + 'scene'];

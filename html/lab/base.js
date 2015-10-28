@@ -32,51 +32,48 @@ CodeColor.colorize = function(query) {
 
 		stringTempArray.length = 0;
 
+		var foundContent = false;
+
 		for(var j = 0; j < numLines; j++) {
 
-			// if(code[j].indexOf('//') > -1) {
-			// 	code[j] = CodeColor.wrapString(code[j], 'comment', stringTempArray);
-			// } else {
+			code[j] = code[j].replace(CodeColor.reComment, function(match, m1) {
+				return match.replace(m1, CodeColor.wrapString(m1, 'comment', stringTempArray));
+			});
 
-				code[j] = code[j].replace(CodeColor.reComment, function(match, m1) {
-					return match.replace(m1, CodeColor.wrapString(m1, 'comment', stringTempArray));
-				});
+			code[j] = code[j].replace(CodeColor.reString, function(match) {
+				return CodeColor.wrapString(match, 'string', stringTempArray);
+			});
 
-				code[j] = code[j].replace(CodeColor.reString, function(match) {
-					return CodeColor.wrapString(match, 'string', stringTempArray);
-				});
+			code[j] = code[j].replace(CodeColor.reFunction2, function(match, m1) {
+				return match.replace(m1, CodeColor.wrap(m1, 'func'));
+			});
 
-				code[j] = code[j].replace(CodeColor.reFunction2, function(match, m1) {
-					return match.replace(m1, CodeColor.wrap(m1, 'func'));
-				});
+			code[j] = code[j].replace(CodeColor.reFunction, function(match, m1) {
+				return match.replace(m1, CodeColor.wrap(m1, 'func'));
+			});
 
-				code[j] = code[j].replace(CodeColor.reFunction, function(match, m1) {
-					return match.replace(m1, CodeColor.wrap(m1, 'func'));
-				});
+			code[j] = code[j].replace(CodeColor.reOperator, function(match, m1) {
+				return match.replace(m1, CodeColor.wrap(m1, 'operator'));
+			});
 
-				code[j] = code[j].replace(CodeColor.reOperator, function(match, m1) {
-					return match.replace(m1, CodeColor.wrap(m1, 'operator'));
-				});
+			code[j] = code[j].replace(CodeColor.reSymbol, function(match, m1) {
+				return CodeColor.wrap(match, 'operator');
+			});
 
-				code[j] = code[j].replace(CodeColor.reSymbol, function(match, m1) {
-					return CodeColor.wrap(match, 'operator');
-				});
+			code[j] = code[j].replace(CodeColor.reKeyword, function(match) {
+				return CodeColor.wrap(match, 'keyword');
+			});
 
-				code[j] = code[j].replace(CodeColor.reKeyword, function(match) {
-					return CodeColor.wrap(match, 'keyword');
-				});
-
-				code[j] = code[j].replace(CodeColor.reObject, function(match) {
-					return CodeColor.wrap(match, 'object');
-				});
-			// }
+			code[j] = code[j].replace(CodeColor.reObject, function(match) {
+				return CodeColor.wrap(match, 'object');
+			});
 
 			code[j] = code[j].replace(CodeColor.reStringBack, function(match, m1) {
 				return stringTempArray[parseInt(m1)];
 			});
 		}
-		
-		codeBlocks[i].innerHTML = code.join("\n");
+
+		codeBlocks[i].innerHTML = code.join("\n").trim();
 	}
 }
 

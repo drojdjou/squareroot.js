@@ -204,3 +204,9 @@ Fixed an tyop in SQR.Color.lerp
 
 Changing how disabling depth works in Transform. Not the entire DEPTH_TEST is disabled, not just the depth mask
 
+
+##### v3.0 b 133
+*Oct 27th 2015*
+
+Very important: the welcome console message is not in color
+

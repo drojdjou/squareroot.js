@@ -38,117 +38,107 @@
 <script type="text/javascript" id="gl-script">
 
 SQR.Loader.loadAssets([
-    'reflection.glsl',
-    '../../assets/model/skull.json',
-    'webcam'
+	'reflection.glsl',
+	'../../assets/model/skull.json',
+	'webcam'
 ], function(assets) {
 
-    var w = window.innerWidth, h = window.innerHeight;
+	var w = window.innerWidth, h = window.innerHeight;
 
-    var trackball = SQR.Trackball();
-    var currentRotation = new SQR.Quaternion();
+	var trackball = SQR.Trackball();
+	var currentRotation = new SQR.Quaternion();
 
-    var ctx = SQR.Context('#gl-canvas')
-        .create()
-        .size(w, h).
-        clearColor(0, 0, 0, 1);
+	var ctx = SQR.Context('#gl-canvas')
+		.create()
+		.size(w, h).
+		clearColor(0, 0, 0, 1);
 
-    var renderer = new SQR.Renderer(ctx);
-    renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
+	var renderer = new SQR.Renderer(ctx);
+	renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
 
-    var camera = new SQR.Transform();
-    camera.position.z = 0.8;
+	var camera = new SQR.Transform();
+	camera.position.z = 0.8;
 
-    var model = assets['../../assets/model/skull.json']['m-6338'];
+	var model = assets['../../assets/model/skull.json']['m-6338'];
 
-    var buffer = SQR.Buffer()
-        .layout(SQR.v3n3(), model.vertices.length / 3)
-        .data('aPosition', model.vertices)
-        .data('aNormal',  model.normals)
-        .index(model.indices)
-        .update();
+	var buffer = SQR.Buffer()
+		.layout(SQR.v3n3(), model.vertices.length / 3)
+		.data('aPosition', model.vertices)
+		.data('aNormal',  model.normals)
+		.index(model.indices)
+		.update();
 
-    var webcamTex = SQR.Texture(assets['webcam']);
+	var webcamTex = SQR.Texture(assets['webcam']);
 
-    var shader = SQR.Shader(assets['reflection.glsl'])
-        .use()
-        .setUniform('uTexture', webcamTex)
-        .attribPointers(buffer);
+	var shader = SQR.Shader(assets['reflection.glsl'])
+		.use()
+		.setUniform('uTexture', webcamTex)
+		.attribPointers(buffer);
 
-    var root = new SQR.Transform();
-    var camRoot = new SQR.Transform();
-    var skullRoot = new SQR.Transform();
-    var skullBg = new SQR.Transform();
-    skullRoot.useQuaternion = true;
+	var root = new SQR.Transform();
+	var camRoot = new SQR.Transform();
+	var skullRoot = new SQR.Transform();
+	var skullBg = new SQR.Transform();
+	skullRoot.useQuaternion = true;
 
-    root.add(camRoot, skullRoot, skullBg);
-    camRoot.add(camera);
+	root.add(camRoot, skullRoot, skullBg);
+	camRoot.add(camera);
 
 
-    for(var i = 0; i < 1; i++) {
-        var t = new SQR.Transform();
+	for(var i = 0; i < 1; i++) {
+		var t = new SQR.Transform();
 
-        t.buffer = buffer;
-        t.shader = shader;
-        
-        if(i > 0) {
-            t.position.random().norm().mul(8 + 6 * Math.random());
-            t.rotation.random();
-            skullBg.add(t);
-        } else {
-            t.rotation.set(SQR.HALFPI - 0.2, Math.PI, 0);
-            skullRoot.add(t);
-        }
-        
-       
-    }
+		t.buffer = buffer;
+		t.shader = shader;
+		
+		if(i > 0) {
+			t.position.random().norm().mul(8 + 6 * Math.random());
+			t.rotation.random();
+			skullBg.add(t);
+		} else {
+			t.rotation.set(SQR.HALFPI - 0.2, Math.PI, 0);
+			skullRoot.add(t);
+		}
+		
+	   
+	}
 
-    var my = 0, mx = 0, tx = 0, ty = 0;
+	var my = 0, mx = 0, tx = 0, ty = 0;
 
-    var isTouch = 'ontouchstart' in document;
-    var mousemove = isTouch ? 'touchmove' : 'mousemove';
+	var isTouch = 'ontouchstart' in document;
+	var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
-    document.addEventListener(mousemove, function(e) {
-        e = isTouch ? e.targetTouches[0] : e;
-        tx = e.pageX / window.innerWidth;
-        ty = e.pageY / window.innerHeight;
-    });
+	document.addEventListener(mousemove, function(e) {
+		e = isTouch ? e.targetTouches[0] : e;
+		tx = e.pageX / window.innerWidth;
+		ty = e.pageY / window.innerHeight;
+	});
 
-    var render = function() {
-        requestAnimationFrame(render);
-        ctx.clear();
-        
-        skullBg.rotation.y += 0.002;
-        // camera.position.z = my * 20;
+	var render = function() {
+		requestAnimationFrame(render);
+		ctx.clear();
+		
+		skullBg.rotation.y += 0.002;
+		// camera.position.z = my * 20;
 
-        SQR.Quaternion.slerp(trackball.rotation, currentRotation, 0.05, currentRotation);
+		SQR.Quaternion.slerp(trackball.rotation, currentRotation, 0.05, currentRotation);
 
-        skullRoot.quaternion.copyFrom(currentRotation);
-        
-        renderer.render(root, camera);
+		skullRoot.quaternion.copyFrom(currentRotation);
+		
+		renderer.render(root, camera);
 
-        mx += (tx - mx) * 0.1;
-        my += (ty - my) * 0.1;
-    }
+		mx += (tx - mx) * 0.1;
+		my += (ty - my) * 0.1;
+	}
 
-    render();
+	render();
 });
 
 </script>
 
-<header>
-    <button class="icon"></button>
-    <article>
-        <h1>Realtime reflection from webcam</h1>
-        <p>Webcam feed used to generate lighting and reflection effects on the 3d object. See video of the effect <a href="https://vimeo.com/111070936">here</a>. By <a href="http://bartekdrozdz.com">Bartek Drozdz.</a></p>
-        <code></code>
-    </article>
-</header>
-<script type="text/javascript" src="../base.js"></script>
-
 <script>
 if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 

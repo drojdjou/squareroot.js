@@ -1,9 +1,10 @@
 /* --- --- [vr/Gyro.js] --- --- */
 
 /**
- *	Author @bartekd 
+ *	@class Gyro
+ *	@memberof SQR
  *
- *	Based on Gyro.js by Tom Gallacher <tom.gallacher23@gmail.com>
+ *	@description A gyrospcope data handler, based on Gyro.js by Tom Gallacher <tom.gallacher23@gmail.com>
  */
 SQR.Gyro = (function() {
 
@@ -87,6 +88,12 @@ SQR.Gyro = (function() {
 
 /* --- --- [vr/VRApp.js] --- --- */
 
+/**
+ *	@class VRApp
+ *	@memberof SQR
+ *
+ *	@description A helper class to create universal VR Apps (i.e. that work on both mobile and desktop VR-enabled browsers)
+ */
 SQR.VRApp = function(appFunc, options) {
 
 	options = options || {};
@@ -98,8 +105,8 @@ SQR.VRApp = function(appFunc, options) {
 	var fsopt = {};
 	
 
-	var INSTR_COPY_DESKTOP 	= '<span>Put on your head set and press space when ready.</span>';
-	var INSTR_COPY_MOBILE 	= '<span>Put on your head set tap screen when ready.</span>';
+	var INSTR_COPY_DESKTOP 	= '<span>Put on your headset and press space when ready.</span>';
+	var INSTR_COPY_MOBILE 	= '<span>Put on your headset and tap screen when ready.</span>';
 	var BTN_COPY_VR   		= 'CARDBOARD';
 	var BTN_COPY_NO_VR   	= 'NO CARDBOARD';
 	var PORT_WARN_COPY   	= 'Please rotate your screen to landscape mode';
@@ -142,6 +149,11 @@ SQR.VRApp = function(appFunc, options) {
 
 			options.vrData.leftEyeX  =  vrHMD.getEyeParameters("left").eyeTranslation.x;
 			options.vrData.rightEyeX = vrHMD.getEyeParameters("right").eyeTranslation.x;
+
+			options.vrData.leftEyeFOV  =  vrHMD.getEyeParameters("left").recommendedFieldOfView;
+			options.vrData.rightEyeFOV = vrHMD.getEyeParameters("right").recommendedFieldOfView;
+
+
 			onDone();
 		}
 
@@ -223,6 +235,12 @@ SQR.VRApp = function(appFunc, options) {
 
 /* --- --- [vr/VRPost.js] --- --- */
 
+/**
+ *	@class VRPost
+ *	@memberof SQR
+ *
+ *	@description VR Stereo post effect
+ */
 SQR.VRPost = function(camera, renderer, ctx, options) {
 
 	var isStereo = (options.vrInput && !options.forceMono) || options.forceStereo;
@@ -253,7 +271,7 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 			chromAbParam: 	[0.996, -0.004, 1.014, 0.0]
 	    };
 	}
-	
+
 	var p = {
 
 		size: function() {
@@ -269,8 +287,10 @@ SQR.VRPost = function(camera, renderer, ctx, options) {
 
 			var aspect = width / height;
 			var halfAspect = (width * 0.5) / height;
+			var fov = isStereo ? 80 : 50;
+			if(options.vrData && options.vrData.leftEyeFOV) fov = options.vrData.leftEyeFOV.leftDegrees * 2; // TODO make that better
 
-			var p = new SQR.ProjectionMatrix().perspective(isStereo ? 75 : 50, isStereo ? halfAspect : aspect, options.near || 0.01, options.far || 10000);
+			var p = new SQR.ProjectionMatrix().perspective(fov, isStereo ? halfAspect : aspect, options.near || 0.1, options.far || 10000);
 			camera.projection = p;
 			left.projection = p;
 			right.projection = p;

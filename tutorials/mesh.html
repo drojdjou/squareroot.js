@@ -17,70 +17,83 @@
 
 <script type="text/javascript" id="gl-script">
 
+SQR.Loader.loadAssets([
+	['glsl/normal2color.glsl', 'shader'],
+	['../html/assets/model/elephant.json', 'model'],
+], function(assets) {
 
-	SQR.Loader.loadAssets([
-		['glsl/normal2color.glsl', 'shader'],
-		['../html/assets/model/elephant.json', 'model'],
-	], function(assets) {
+	var ctx = SQR.Context('#gl').create().clearColor(0, 0, 0, 1);
 
-		var w = window.innerWidth, h = window.innerHeight, aspect = w/h, fov = 60;
+	var renderer = SQR.Renderer(ctx);
 
-		var ctx = SQR.Context('#gl')
-			.create()
-			.size(w, h).
-			clearColor(0, 0, 0, 1);
+	var resize =function() {
+		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		ctx.size(w, h);
+		renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
+	}
 
-		var renderer = SQR.Renderer(ctx);
-		renderer.projection = new SQR.ProjectionMatrix().perspective(fov, aspect, 1, 1000);
+	window.addEventListener('resize', resize);
+	resize();
 
-		var root = SQR.Transform();
+	var root = SQR.Transform();
 
-		var camera = SQR.Transform();
-		camera.position.z = 12;
-		camera.position.y = -1;
-		root.add(camera);
+	var camera = SQR.Transform();
+	camera.position.z = 12;
+	camera.position.y = -1;
+	root.add(camera);
 
-		var model = new SQR.Transform();
+	var model = new SQR.Transform();
+ 
+	model.buffer = SQR.Mesh.fromJSON(assets.model);
 
-		// Normals from model 
-		model.buffer = SQR.Mesh.fromJSON(assets.model);
+	// We can also recalculate normals in code 
+	// (note: this will create a flat shading effect)
+	// SQR.Mesh.calculateNormals(model.buffer);
+	// model.buffer.update();
 
-		// Normals calculated locally (note: this will create a flat shading effect in this case)
-		// model.buffer = SQR.Mesh.fromJSON(assets.model, null, { skipNormals: true });
-		// SQR.Mesh.calculateNormals(model.buffer);
-		// model.buffer.update();
+	model.shader = SQR.Shader(assets.shader)
+	root.add(model);
 
-		model.shader = SQR.Shader(assets.shader)
-		root.add(model);
+	var mx = 0, tx = 0;
 
+	var render = function() {
+		requestAnimationFrame(render);
 
-		var my = 0, mx = 0, tx = mx, ty = my;
+		mx += (tx - mx) * 0.1;
+		model.rotation.y = Math.PI + mx * -2;
 
-		var render = function() {
-			requestAnimationFrame(render);
+		renderer.render(root, camera);
+	}
 
-			mx += (tx - mx) * 0.1;
-			model.rotation.y = mx * -2;
+	render();
 
-			renderer.render(root, camera);
-		}
+	var isTouch = 'ontouchstart' in document;
+	var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
-		render();
-
-		var isTouch = 'ontouchstart' in document;
-		var mousemove = isTouch ? 'touchmove' : 'mousemove';
-
-		document.addEventListener(mousemove, function(e) {
-			e = isTouch ? e.targetTouches[0] : e;
-			tx = (e.pageX / window.innerWidth) * 2 - 1;
-			ty = (e.pageY / window.innerHeight) * 2 - 1;
-		});
-
+	document.addEventListener(mousemove, function(e) {
+		e = isTouch ? e.targetTouches[0] : e;
+		tx = (e.pageX / window.innerWidth) * 2 - 1;
+		ty = (e.pageY / window.innerHeight) * 2 - 1;
 	});
+
+});
 
 </script>
 
-<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+<header>
+	<button class="icon"></button>
+	<article>
+		<code></code>
+	</article>
+</header>
+<script type="text/javascript" src="../html/lab/base.js"></script>
+
+
+<script>
+if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
 
 </body>
 </head>
