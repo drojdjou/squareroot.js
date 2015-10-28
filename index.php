@@ -13,10 +13,10 @@
 <meta property="og:site_name" content="sqr.holotype.co"/>
 <meta property="og:url" content="http://sqr.holotype.co"/>
 <meta property="og:description" content="Squareroot.js is a Javascript creative coding library based on the WebGL API. It's very flexible and easy to use"/>
-<meta property="og:image" content="http://sqr.holotype.co/assets/share/sqr.jpg" />
+<meta property="og:image" content="http://sqr.holotype.co/home/assets/share/sqr.jpg" />
 
-<link rel="icon" href="assets/favicon.png" type="image/x-icon">
-<link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+<link rel="icon" href="home/assets/favicon.png" type="image/x-icon">
+<link rel="shortcut icon" href="home/assets/favicon.png" type="image/x-icon">
 
 <script src="https://use.typekit.net/xte5chr.js"></script>
 <script>try{Typekit.load({ async: true });}catch(e){}</script>
