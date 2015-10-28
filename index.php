@@ -15,6 +15,12 @@
 <meta property="og:description" content="Squareroot.js is a flexible and easy to use Javascript creative coding library based on the WebGL API. It is developed and maintained by Holotype."/>
 <meta property="og:image" content="http://sqr.holotype.co/home/assets/share/sqr.jpg" />
 
+<meta name="twitter:card" content="Squareroot.js">
+<meta name="twitter:url" content="http://sqr.holotype.co">
+<meta name="twitter:title" content="Squareroot.js - Javascript creative coding library">
+<meta name="twitter:description" content="Squareroot.js is a flexible and easy to use Javascript creative coding library based on the WebGL API. It is developed and maintained by Holotype.">
+<meta name="twitter:image" content="http://sqr.holotype.co/home/assets/share/sqr.jpg">
+
 <link rel="icon" href="home/assets/favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="home/assets/favicon.png" type="image/x-icon">
 
