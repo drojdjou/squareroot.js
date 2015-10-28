@@ -18,7 +18,6 @@
 	left: 0;
 	width: 100%;
 	background-color: @background;
-	margin-bottom: 64px;
 
 	article {
 		position: relative;
@@ -90,4 +89,27 @@
 			margin: 0 0 6px 0;
 		}
 	}
+}
+
+footer {
+
+	background-color: darken(@background, 20%);
+	color: lighten(@background, 15%);
+
+	a {
+		color: lighten(@background, 15%);
+
+		&:hover {
+			color: lighten(@background, 30%);
+		}
+	}
+
+	width: 100%;
+	padding: 32px 0 32px 0;
+	margin: 32px 0 0 0;
+	text-transform: uppercase;
+	font-weight: 600;
+	font-size: 12px;
+	text-align: center;
+
 }

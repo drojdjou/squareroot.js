@@ -202,8 +202,6 @@
 		var rawFBO = SQR.FrameBuffer(w, h);    
 		var blurXFBO = SQR.FrameBuffer(w, h);
 		var blur = SQR.Primitives.createPostEffect(assets['blur']);
-
-		// blur.depthMask = false;
 		blur.useDepth = false;
 
 		var mx = 0, my = 0;

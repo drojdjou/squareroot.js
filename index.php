@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>SQR | squareroot.js</title>
+<title>SQR | squareroot.js</title>
 
-	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
-	<meta name="robots" content="noindex, nofollow">
-	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+<meta charset="UTF-8">
 
-	<script src="https://use.typekit.net/xte5chr.js"></script>
-	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+<meta name='keywords' content='interactive,design,webgl,fwa,awwwards'/>
+<meta name='description' content='We are Holotype - an interactive studio. We help our clients come up with the best digital ideas and turn those ideas into captivating interactive experiences.'/>
 
-	<link rel="stylesheet" type="text/css" href="home/css/master.css">
+<meta property='og:title' content='Squarerrot.js - Javascript creative coding library'/>
+<meta property="og:site_name" content="sqr.holotype.co"/>
+<meta property="og:url" content="http://sqr.holotype.co"/>
+<meta property="og:description" content="Squareroot.js is a Javascript creative coding library based on the WebGL API. It's very flexible and easy to use"/>
+<meta property="og:image" content="http://sqr.holotype.co/assets/share/sqr.jpg" />
+
+<link rel="icon" href="assets/favicon.png" type="image/x-icon">
+<link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+
+<script src="https://use.typekit.net/xte5chr.js"></script>
+<script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+<link rel="stylesheet" type="text/css" href="home/css/master.css">
 	
 </head>
 
@@ -26,13 +37,14 @@
 	<article>
 		<h1>Squareroot.js</h1>
 
-		<p>Squareroot is a creative coding library based on the WebGL API. The code originates from experiences on different WebGL projects and is written in a very pragmatic way. It makes it very flexible and easy to use if you are familiar with the WebGL specs.</a>
+		<p>Squareroot.js is a Javascript creative coding library based on the WebGL API. It is developed and maintained by <a href='http://holotype.co'>Holotype</a> and used in many of our <a href='http://holotype.co/work'>projects</a>.</p>
 
-		<p>The first version of this library was created 6 years ago - it was called <a href='https://github.com/drojdjou/J3D/'>J3D</a> back then. After that is was written from scratch... three times.</p>
+		<p>Squareroot.js code was born out of many years of experience in building WebGL apps. It is written in a pragmatic way - with the goal of getting things done rather than complying to a praticular programming pattern or philosphy. It makes it very flexible, powerful and easy to use, once you get familiar with it.</a>
 
-		<p>A lot of the structure is inspired by Unity3d, including the central concept of 'Transforms' as building blocks. It also features a Unity-to-JSON/WebGL exporter that can export meshes, skinned meshes and entire scenes.</p>
+		<p>The first version of this library was created 6 years ago - it was called <a href='https://github.com/drojdjou/J3D/'>J3D</a> back then. After that is was re-written from scratch... three times. Each iteration was was built with better understanding of the underlying WebGL API and the mathematics of 2d and 3d rendering.</p>
 
-		<p>It is developped and maitained by <a href='http://holotype.co'>Holotype</a> and used in many of their <a href='http://holotype.co/work'>WebGL projects</a>.</p>
+		<p>The structure is loosely based on Unity3d API, including the central concept of 'Transforms' as building blocks. It also features a Unity-to-WebGL exporter that can export meshes and skinned meshes, textures, animations and even entire scenes.</p>
+
 	</article>
 
 	<article>
@@ -68,6 +80,10 @@
 			<li><a href='html/lab/webcam_reflection' target='_blank'><img src='home/thumbs/demos/webcam-refl.jpg'>Live webcam reflection</a></li>
 		</ul>
 	</article>
+
+	<footer>
+		Created by <a href='http://holotype.co'>HOLOTYPE</a>
+	</footer>
 
 </section>
 

@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-color: #280014;
+  background-color: #000000;
   font-family: 'proxima-nova', sans-serif;
   font-weight: 300;
   font-size: 15px;
@@ -53,7 +53,6 @@ ul {
   left: 0;
   width: 100%;
   background-color: #280014;
-  margin-bottom: 64px;
 }
 .content article {
   position: relative;
@@ -129,4 +128,21 @@ ul {
   width: 90%;
   left: 5%;
   margin: 0 0 6px 0;
+}
+footer {
+  background-color: #000000;
+  color: #75003a;
+  width: 100%;
+  padding: 32px 0 32px 0;
+  margin: 32px 0 0 0;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+}
+footer a {
+  color: #75003a;
+}
+footer a:hover {
+  color: #c10061;
 }
