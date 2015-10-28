@@ -12,7 +12,7 @@
 var w = window.innerWidth, h = window.innerHeight;
 var c = SQR.Context('#canvas').create().size(w, h).clearColor(0, 0, 0, 1);
  */
-SQR.Context = function(canvas) {
+SQR.Context = function(canvas, options, onError) {
 
 	if(!SQR._versionDisplayed && SQR.Version) {
 		console.log('%cSquareroot v' + SQR.Version.version + ' b' + SQR.Version.build, 'background: #663399; color: #dd99ff; padding: 4px 10px 4px 10px');
@@ -128,6 +128,9 @@ SQR.Context = function(canvas) {
 		SQR.gl = gl;
 		return c;
 	}
+
+	// Create the context and set the default black as clear color
+	c.create(options, onError).clearColor(0, 0, 0, 1);
 
 	return c;
 }

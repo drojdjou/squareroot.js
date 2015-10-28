@@ -4,12 +4,17 @@
  *
  *	@description Represents the rendering engine
  */
-SQR.Renderer = function(context) {
+SQR.Renderer = function(c) {
+
+	var context;
+
+	context = c && c.setAsCurrent ? c : SQR.Context(c);
 
 	var r = {
 		currentTime: 0,
 		deltaTime: 0,
-		autoClear: true
+		autoClear: true,
+		context: context
 	};
 	
 	var renderObjects = [], transparentObjects = [];

@@ -1,10 +1,11 @@
 CodeColor = {
 	reComment: /^.*(\/\/.*)/,
-	reKeyword: /(function|var|document|window)/g,
+	rePreproc: /^#.*$/,
+	reKeyword: /(function|var |document|window|attribute |uniform |varying |precision )/g,
 	reString: /("[^"]*")/g,
 	reOperator: /[^a-zA-Z0-9](if|for|return|switch|case|while)[^a-zA-Z0-9]/g,
 	reSymbol: /\s=|\s\*|\s\+|\s-|\s\/\s/g,
-	reObject: /true|false|Date/,
+	reObject: /true|false|Date|float|vec2|vec3/,
 	reStringBack: /%%(.*)%%/g,
 	reFunction: /[\s|\.]([_a-zA-Z0-9]*)\(/g,
 	reFunction2: /[\s|\.]([_a-zA-Z0-9]*) = function/g
@@ -68,6 +69,10 @@ CodeColor.colorize = function(query) {
 				return CodeColor.wrap(match, 'object');
 			});
 
+			code[j] = code[j].replace(CodeColor.rePreproc, function(match, m1) {
+				return match.replace(m1, CodeColor.wrap(m1, 'preproc'));
+			});
+
 			code[j] = code[j].replace(CodeColor.reStringBack, function(match, m1) {
 				return stringTempArray[parseInt(m1)];
 			});
@@ -82,6 +87,8 @@ var button = document.querySelector('header button');
 var code = document.querySelector('header article code');
 var src = document.querySelector('#gl-script');
 
+var shader = document.querySelector('.gl-shader');
+
 var articleVisible = false;
 
 if(button) {
@@ -90,7 +97,14 @@ if(button) {
 		article.style.display = articleVisible ? 'block' : 'none';
 		if(window.innerWidth > 900) {
 			code.innerHTML = src.innerHTML;
+			
+			if(shader) {
+				code.innerHTML += '\n\n// **** This is the shader code used in the script above ****';
+				code.innerHTML += shader.innerHTML;
+			}
+
 			CodeColor.colorize("code");
+			
 		} else {
 			code.innerHTML = "";
 			code.style.display = 'none';

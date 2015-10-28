@@ -132,6 +132,10 @@ article code {
 	line-height: 1.5;
 }
 
+article code a {
+	text-decoration: underline;
+}
+
 article code.block {
 	display: block;
 	white-space: pre-wrap;
@@ -145,6 +149,9 @@ article .comment {
 	color: #74725e;
 }
 article .keyword {
+	color: #00d9ef;
+}
+article .preproc {
 	color: #00d9ef;
 }
 article .object {

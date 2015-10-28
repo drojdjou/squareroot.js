@@ -65,7 +65,7 @@
 		<h1>Basic Examples</h1>
 
 		<ul class='grid'>
-			<li><a href='tutorials/basic-setup.html' target='_blank'><img src='home/thumbs/examples/cube.jpg'>Hello World!</a></li>
+			<li><a href='tutorials/basic-setup.php' target='_blank'><img src='home/thumbs/examples/cube.jpg'>Hello World!</a></li>
 			<li><a href='tutorials/understanding-buffers.html' target='_blank'><img src='home/thumbs/examples/buffer.jpg'>Custom geometry</a></li>
 			<li><a href='tutorials/post-effect.html' target='_blank'><img src='home/thumbs/examples/post.jpg'>Post effect</a></li>
 			<li><a href='tutorials/mesh.html' target='_blank'><img src='home/thumbs/examples/mesh.jpg'>Loading a mesh</a></li>
