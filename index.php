@@ -9,7 +9,7 @@
 <meta name='keywords' content='interactive,design,webgl,fwa,awwwards'/>
 <meta name='description' content='We are Holotype - an interactive studio. We help our clients come up with the best digital ideas and turn those ideas into captivating interactive experiences.'/>
 
-<meta property='og:title' content='Squarerrot.js - Javascript creative coding library'/>
+<meta property='og:title' content='Squareroot.js - Javascript creative coding library'/>
 <meta property="og:site_name" content="sqr.holotype.co"/>
 <meta property="og:url" content="http://sqr.holotype.co"/>
 <meta property="og:description" content="Squareroot.js is a Javascript creative coding library based on the WebGL API. It's very flexible and easy to use"/>
