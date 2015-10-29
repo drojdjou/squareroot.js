@@ -46,11 +46,6 @@ SQR.Loader.loadAssets([
  
 	model.buffer = SQR.Mesh.fromJSON(assets.model);
 
-	// We can also recalculate normals in code 
-	// (note: this will create a flat shading effect)
-	// SQR.Mesh.calculateNormals(model.buffer);
-	// model.buffer.update();
-
 	model.shader = SQR.Shader(assets.shader)
 	root.add(model);
 

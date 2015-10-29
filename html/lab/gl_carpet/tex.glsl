@@ -30,13 +30,14 @@ varying float vX;
 uniform sampler2D uTexture;
 uniform vec3 uLight;
 uniform vec2 uTextureTile;
+uniform vec2 uTextureOffset;
 
 //#include fog
 
 void main() {
 	float l = 0.4 + 1.2 * max(-0.3, dot(vNormal, uLight));
 
-	vec2 uv = vUV * uTextureTile;
+	vec2 uv = vUV * uTextureTile + uTextureOffset;
 	vec3 c = texture2D(uTexture, uv).rgb;
 	
 	gl_FragColor = vec4(fog(c * l), 1.0);

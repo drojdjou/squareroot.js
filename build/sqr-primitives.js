@@ -1,24 +1,3 @@
-/* --- --- [primitives/Basic.js] --- --- */
-
-/**
- *  @method createPoint
- *  @memberof SQR.Primitives
- *
- *  @description Creates a single 2d point
- *
- *	@param {Number} x - x position of the point
- *	@param {Number} y - y position of the point
- *
- *	@returns {SQR.Buffer}
- */
-SQR.Primitives.createPoint = function(x, y) {
-	return SQR.Buffer()
-		.layout(SQR.v2(), 1)
-		.setMode(SQR.gl.POINTS)
-		.data('aPosition', x || 0, y || 0)
-		.update();
-}
-
 /* --- --- [primitives/Cube.js] --- --- */
 
 /**
@@ -42,7 +21,7 @@ SQR.Primitives.createCube = function(w, h, d, options) {
 	h = h || 1;
 	d = d || 1;
 
-	var geo = SQR.Buffer().layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
+	var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
 	
 	var 
 		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
@@ -74,6 +53,7 @@ SQR.Primitives.createCube = function(w, h, d, options) {
 	return geo.update();
 }
 
+/*
 SQR.Primitives.createSkybox = function(options) {
 
 	options = options || {};
@@ -162,6 +142,7 @@ SQR.Primitives.createSkybox = function(options) {
 
 	return skybox;
 }
+*/
 
 
 
@@ -197,7 +178,7 @@ SQR.Primitives.createSkybox = function(options) {
  *  @param {Number} height - height of the cylinder
  *  @param {Number} radius - radius of the cylinder
  *  @param {Number} segments - number of segments along the cylinder
- *  @param {Object} optins - additional options
+ *  @param {Object} options - additional options
  *
  *  @todo document the options
  *
@@ -498,23 +479,21 @@ SQR.Extrude = function() {
  *
  */
 SQR.Face = function() {
+	if(!(this instanceof SQR.Face)) return new SQR.Face();
+}
 
-    var t = {};
-    var indexed = false, vertexArray;
-    var ap = 'aPosition', an = 'aNormal', au = 'aUV';
-
-    /**
-     *  Set the vertex positions. For vertices a, b, c, and d is creates a quad as in the example below.
-     *
-     *  @method setPosition
-     *  @memberof SQR.Face.prototype
-     *
-     *  @param {SQR.V3} a - the first vertex position
-     *  @param {SQR.V3} b - the second vertex position
-     *  @param {SQR.V3} c - the thrid vertex position
-     *  @param {SQR.V3=} d - the optional fourth vertex position
-     *
-     *  @example
+/**
+ *  Set the vertex positions. For vertices a, b, c, and d is creates a quad as in the example below.
+ *
+ *  @method setPosition
+ *  @memberof SQR.Face.prototype
+ *
+ *  @param {SQR.V3} a - the first vertex position
+ *  @param {SQR.V3} b - the second vertex position
+ *  @param {SQR.V3} c - the thrid vertex position
+ *  @param {SQR.V3=} d - the optional fourth vertex position
+ *
+ *  @example
 //
 // a - b
 // | / |
@@ -522,154 +501,170 @@ SQR.Face = function() {
 // 
 // resulting triangles: `abc, cbd`
 // 
-     */
-    t.setPosition = t.v = function(a, b, c, d) {
-        t.a = a || new SQR.V3(); 
-        t.b = b || new SQR.V3(); 
-        t.c = c || new SQR.V3();
-        t.d = d;
-        return t;
-    }
+ */
+SQR.Face.prototype.setPosition = function(a, b, c, d) {
+	var t = this;
+	t.a = a || new SQR.V3(); 
+	t.b = b || new SQR.V3(); 
+	t.c = c || new SQR.V3();
+	t.d = d;
+	return t;
+}
 
-    t.setIndex = t.i = function(va, ia, ib, ic, id) {
-        indexed = true;
-        t.ia = ia;
-        t.ib = ib;
-        t.ic = ic;
-        t.id = id;
-        vertexArray = va;
-        return t;
-    }
+SQR.Face.prototype.setIndex = function(va, ia, ib, ic, id) {
+	var t = this;
+	t.indexed = true;
+	t.ia = ia;
+	t.ib = ib;
+	t.ic = ic;
+	t.id = id;
+	t.vertexArray = va;
+	return t;
+}
 
-    t.flip = function() {
-        var tmp = t.b;
-        t.b = t.c;
-        t.c = tmp;
-    }
+SQR.Face.prototype.flip = function() {
+	var t = this;
+	var tmp = t.b;
+	t.b = t.c;
+	t.c = tmp;
+}
 
-    /**
-     *  Set the normal shared by all the vertices
-     *  @method setNormal
-     *  @memberof SQR.Face.prototype 
-     */
-    t.setNormal = t.n = function(n) {
-        t.normal = n;
-        return t;
-    }
+/**
+ *  Set the normal shared by all the vertices
+ *  @method setNormal
+ *  @memberof SQR.Face.prototype 
+ */
+SQR.Face.prototype.setNormal = function(n) {
+	this.normal = n;
+	return this;
+}
 
-    /**
-     *  Set the texture coordinates for each vertex
-     *
-     *  @method setUV
-     *  @memberof SQR.Face.prototype 
-     *
-     *  @param {SQR.V2} a - the first vertex texture coordinate
-     *  @param {SQR.V2} b - the second vertex texture coordinate
-     *  @param {SQR.V2} c - the thrid vertex texture coordinate
-     *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
-     */
-    t.setUV = t.uv = function(uva, uvb, uvc, uvd) {
-        t.uva = uva;
-        t.uvb = uvb;
-        t.uvc = uvc;
-        t.uvd = uvd;
-        return t;
-    }
+/**
+ *  Set the texture coordinates for each vertex
+ *
+ *  @method setUV
+ *  @memberof SQR.Face.prototype 
+ *
+ *  @param {SQR.V2} a - the first vertex texture coordinate
+ *  @param {SQR.V2} b - the second vertex texture coordinate
+ *  @param {SQR.V2} c - the thrid vertex texture coordinate
+ *  @param {SQR.V2=} d - the optional fourth vertex texture coordinate
+ */
+SQR.Face.prototype.setUV = function(uva, uvb, uvc, uvd) {
+	var t = this;
+	t.uva = uva;
+	t.uvb = uvb;
+	t.uvc = uvc;
+	t.uvd = uvd;
+	return t;
+}
 
-    /** 
-     *  Set the vertex color for each vertex
-     *  <br><br>
-     *  <strong>WARNING! Colors are not passed to the buffer currently (will be added in the future).</strong>
-     *
-     *  @method setColor
-     *  @memberof SQR.Face.prototype 
-     *
-     *  @param {SQR.V2} a - the first vertex color
-     *  @param {SQR.V2} b - the second vertex color
-     *  @param {SQR.V2} c - the thrid vertex color
-     *  @param {SQR.V2=} d - the optional fourth vertex color
-     */
-    t.setColor =  t.cl = function(ca, cb, cc, cd) {
-        t.ca = ca;
-        t.cb = cb;
-        t.cc = cc;
-        t.cd = cd;
-        return t;
-    }
+/** 
+ *  Set the vertex color for each vertex
+ *  <br><br>
+ *  <strong>WARNING! Colors are not passed to the buffer currently (will be added in the future).</strong>
+ *
+ *  @method setColor
+ *  @memberof SQR.Face.prototype 
+ *
+ *  @param {SQR.V2} a - the first vertex color
+ *  @param {SQR.V2} b - the second vertex color
+ *  @param {SQR.V2} c - the thrid vertex color
+ *  @param {SQR.V2=} d - the optional fourth vertex color
+ */
+SQR.Face.prototype.setColor = function(ca, cb, cc, cd) {
+	var t = this;
+	t.ca = ca;
+	t.cb = cb;
+	t.cc = cc;
+	t.cd = cd;
+	return t;
+}
 
-    /**
-     *  Calculte the normal for this face. Regardless of whether there are 3 or 4 vertices
-     *  the normal is calculated for the frst 3 of them an applied to the entire face.
-     *  @method calculateNormal
-     *  @memberof SQR.Face.prototype
-     */
-    t.calculateNormal = t.cn = function() {
-        var t1 = SQR.V3.__tv1;
-        var t2 = SQR.V3.__tv2;
-        t.normal = t.normal || new SQR.V3();
+/**
+ *  Calculte the normal for this face. Regardless of whether there are 3 or 4 vertices
+ *  the normal is calculated for the frst 3 of them an applied to the entire face.
+ *  @method calculateNormal
+ *  @memberof SQR.Face.prototype
+ */
+SQR.Face.prototype.calculateNormal = function() {
+	var t = this;
+	var t1 = SQR.V3.__tv1;
+	var t2 = SQR.V3.__tv2;
+	var va = t.vertexArray;
+	t.normal = t.normal || new SQR.V3();
 
-        if(indexed) {
-            t1.sub(vertexArray[t.ia], vertexArray[t.ib]);
-            if(t1.isZero()) t1.sub(vertexArray[t.ia], vertexArray[t.id]);
-            t2.sub(vertexArray[t.ic], vertexArray[t.ia]);
-        } else {
-            t1.sub(t.a, t.b);
-            if(t1.isZero()) t1.sub(t.a, t.d);
-            t2.sub(t.c, t.a);
-        }
+	if(t.indexed) {
+		t1.sub(va[t.ia], va[t.ib]);
+		if(t1.isZero()) t1.sub(va[t.ia], va[t.id]);
+		t2.sub(va[t.ic], va[t.ia]);
+	} else {
+		t1.sub(t.a, t.b);
+		if(t1.isZero()) t1.sub(t.a, t.d);
+		t2.sub(t.c, t.a);
+	}
 
 
-        t.normal.cross(t1, t2);
+	t.normal.cross(t1, t2);
 
-        return t;
-    }
+	return t;
+}
 
-    t.addNormalToVertices = function() {
-        var a = indexed ? vertexArray[t.ia] : t.a;
-        var b = indexed ? vertexArray[t.ib] : t.b;
-        var c = indexed ? vertexArray[t.ic] : t.c;
-        var d = indexed ? vertexArray[t.id] : t.d;
+SQR.Face.prototype.v = SQR.Face.prototype.setPosition;
+SQR.Face.prototype.i = SQR.Face.prototype.setIndex;
+SQR.Face.prototype.n = SQR.Face.prototype.setNormal;
+SQR.Face.prototype.uv = SQR.Face.prototype.setUV;
+SQR.Face.prototype.cl = SQR.Face.prototype.setColor;
+SQR.Face.prototype.cn = SQR.Face.prototype.calculateNormal;
 
-        a.addNormal(t.normal);
-        b.addNormal(t.normal);
-        c.addNormal(t.normal);
-        if(d) d.addNormal(t.normal);
-        return t;
-    }
+SQR.Face.prototype.addNormalToVertices = function() {
+	var t = this;
+	var va = t.vertexArray;
 
-    t.toBuffer = function(geo, position, perVertextNormal, preNormalizeNormal) {
-        var c = position;
+	var a = t.indexed ? va[t.ia] : t.a;
+	var b = t.indexed ? va[t.ib] : t.b;
+	var c = t.indexed ? va[t.ic] : t.c;
+	var d = t.indexed ? va[t.id] : t.d;
 
-        if(geo.attributes[ap]) {
-            geo.set(ap, c+0, t.a).set(ap, c+1, t.b).set(ap, c+2, t.c);
-            if(t.d) geo.set(ap, c+3, t.c).set(ap, c+4, t.b).set(ap, c+5, t.d);
-        }
+	a.addNormal(t.normal);
+	b.addNormal(t.normal);
+	c.addNormal(t.normal);
+	if(d) d.addNormal(t.normal);
+	return t;
+}
 
-        if(geo.attributes[an] && (t.normal || perVertextNormal)) {
-            var v = perVertextNormal, n = t.normal;
+SQR.Face.prototype.toBuffer = function(geo, position, perVertextNormal, preNormalizeNormal) {
+	var t = this;
+	var ap = 'aPosition', an = 'aNormal', au = 'aUV';
+	var c = position;
 
-            if(preNormalizeNormal && !v) t.normal.norm();
+	if(geo.attributes[ap]) {
+		geo.set(ap, c+0, t.a).set(ap, c+1, t.b).set(ap, c+2, t.c);
+		if(t.d) geo.set(ap, c+3, t.c).set(ap, c+4, t.b).set(ap, c+5, t.d);
+	}
 
-            geo.set(an, c+0, v ? t.a.normal : n)
-               .set(an, c+1, v ? t.b.normal : n)
-               .set(an, c+2, v ? t.c.normal : n);
+	if(geo.attributes[an] && (t.normal || perVertextNormal)) {
+		var v = perVertextNormal, n = t.normal;
 
-            if(t.d) {
-                geo.set(an, c+3, v ? t.c.normal : n)
-                   .set(an, c+4, v ? t.b.normal : n)
-                   .set(an, c+5, v ? t.d.normal : n);
-            }
-        }
+		if(preNormalizeNormal && !v) t.normal.norm();
 
-        if(geo.attributes[au] && t.uva) {
-            geo.set(au, c+0, t.uva).set(au, c+1, t.uvb).set(au, c+2, t.uvc);
-            if(t.d) geo.set(au, c+3, t.uvc).set(au, c+4, t.uvb).set(au, c+5, t.uvd);
-        }
+		geo.set(an, c+0, v ? t.a.normal : n)
+		   .set(an, c+1, v ? t.b.normal : n)
+		   .set(an, c+2, v ? t.c.normal : n);
 
-        return t.d ? 6 : 3;
-    }
+		if(t.d) {
+			geo.set(an, c+3, v ? t.c.normal : n)
+			   .set(an, c+4, v ? t.b.normal : n)
+			   .set(an, c+5, v ? t.d.normal : n);
+		}
+	}
 
-    return t;
+	if(geo.attributes[au] && t.uva) {
+		geo.set(au, c+0, t.uva).set(au, c+1, t.uvb).set(au, c+2, t.uvc);
+		if(t.d) geo.set(au, c+3, t.uvc).set(au, c+4, t.uvb).set(au, c+5, t.uvd);
+	}
+
+	return t.d ? 6 : 3;
 }
 
 /* --- --- [primitives/Icosphere.js] --- --- */
@@ -854,94 +849,35 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
  *  @namespace Mesh
  *  @memberof SQR
  *
- *  @description Utility to load meshes from J3D/Unity exported JSON files. SQR only work with this format. 
- *	It doesn't have native support for OBJ files or Collada 
- *	(though it's perfectly possible to create an OBJ or Collada importer if you need to)
+ *  @description Attempt to create a decorator for a buffer that will be able to process 
+ *	the data (position, normals and tangents) as it if was a collection of faces.
+ *
+ *	
  *
  */
-SQR.Mesh = {
+SQR.Mesh = function(buffer) {
 
-	/**
-	 *	@method fromJSON
-	 *	@memberof SQR.Mesh
-	 *
-	 *	@description Parses the J3D JSON mesh data format and created a SQR.Buffer out of it.
-	 */	
-	fromJSON: function(data, name, options) {
+	var m = {};
 
-		var geo;
+	// Create a face and a normal vector for reuse in loop below
+	var f = new SQR.Face().setPosition(new SQR.V3(), new SQR.V3(), new SQR.V3());
+	f.a.normal = new SQR.V3();
+	f.b.normal = new SQR.V3();
+	f.c.normal = new SQR.V3();
+	var n = new SQR.V3();
 
-		options = options || {};
-
-		if(name) {
-			geo = data[name];
-		} else if(data.vertices) {
-			geo = data;
-		} else {
-			// Unity exported mesh files can have one or more meshes. 
-			// Even if there's only one mesh, it is stored as property
-			// where the key is the mesh uuid. This code will attempt
-			// to find the first mesh, so that on JS side we don't have to 
-			// pass the uuid in the constructor
-			for(var d in data) {
-				geo = data[d];
-				break;
-			}
-		}
-
-		if(!geo) throw "> SQR.Mesh - mesh not found in data (name: " + name + ")";
-	
-		var legacyAttribute = {
-			aPosition: 'vertices',
-			aNormal: 'normals',
-			aColor: 'colors',
-			aUV: 'uv1',
-			aUV2: 'uv2',
-			aTangent: 'tangent',
-			aWeight: 'boneWeights',
-			aIndex: 'boneIndices',
-			indices: 'tris'
-		};
-
-		var getAttributeData = function(n) {
-			var d = geo[n] || geo[legacyAttribute[n]];
-			if(d && d.length > 0) return d;
-			else return null; 
-		}
-
-		var layout = options.layout || data.layout || SQR.v3n3u2();
-		var vs = options.vertexSize || layout.aPosition;
-		var size = (geo.vertices || geo.aPosition).length / vs;
-
-		var buffer = SQR.Buffer().layout(layout, size);
-
-		for(var a in layout) {
-			if(a == 'aNormal' && options.skipNormals) continue;
-			var d = getAttributeData(a);
-			if(d) buffer.data(a, d);
-		}
-
-		var i = getAttributeData('indices');
-		if(i) buffer.index(i);
-
-        return buffer.update();
-	},
-
-	calculateNormals: function(buffer) {
+	m.calculateNormals = function() {
 
 		var index = buffer.getIndexArray();
 		var data = buffer.getDataArray();
 
-		var f = new SQR.Face().setPosition(new SQR.V3(), new SQR.V3(), new SQR.V3());
-		f.a.normal = new SQR.V3();
-		f.b.normal = new SQR.V3();
-		f.c.normal = new SQR.V3();
-		var n = new SQR.V3();
-
+		// This method does the assumption that the aPosition attribute is the first one
 		for(var i = 0; i < buffer.indexSize; i += 3) {
-			var o0 = index[i+0] * buffer.strideSize;
-			var o1 = index[i+1] * buffer.strideSize;
-			var o2 = index[i+2] * buffer.strideSize;
+
+			var s = buffer.strideSize;
+			var o0 = index[i+0] * s;
+			var o1 = index[i+1] * s;
+			var o2 = index[i+2] * s;
 
 			f.a.set(data[o0+0], data[o0+1], data[o0+2]);
 			f.b.set(data[o1+0], data[o1+1], data[o1+2]);
@@ -977,12 +913,103 @@ SQR.Mesh = {
 		});
 
 		buffer.update();
-	} 
+	};
+
+	return m;
 }
+
+
+
+/**
+ *	@method fromJSON
+ *	@memberof SQR.Mesh
+ *
+ *	@param {Object | string} data - the mesh data or an object containing a named list of meshes 
+ *	(which is how meshes get exported from unity by default - the names are the uuids of the object)
+ *
+ *	@param {string=} name - the name of the mesh in the list. 
+ *	If data is a list of meshes and name is omitted, the function will pick the first mesh on the list.
+ *	If data is the mesh data itself, this argument will be ignored.
+ *
+ *	@param {Object=} options - advanced options for mesh construction
+ *
+ *	@description <p>Utility to load meshes from JSON files in the 
+ *	format as exported from the Unity exporter.</p>
+ *
+ *	<p>Parses the J3D JSON mesh data format and creates an instance SQR.Buffer out of it.</p>
+ *
+ *	<p>This is the best way to work with 3d models, since SQR doesn't have native support for OBJ files or Collada 
+ *	(though it's perfectly possible to create an OBJ or Collada importer if you need to).</p>
+ */	
+SQR.Mesh.fromJSON = function(data, name, options) {
+
+	var geo;
+
+	options = options || {};
+
+	if(name) {
+		// data is a list of meshesh from Unity and we provide a name
+		geo = data[name];
+	} else if(data.vertices) {
+		// data is the mesh itself
+		geo = data;
+	} else {
+		// data is a list of meshes from Unity but we didn't provide a name
+
+		// Unity exported mesh files can have one or more meshes. 
+		// Even if there's only one mesh, it is stored as property
+		// where the key is the mesh uuid. This code will attempt
+		// to find the first mesh, so that on JS side we don't have to 
+		// pass the uuid in the constructor
+		for(var d in data) {
+			geo = data[d];
+			break;
+		}
+	}
+
+	if(!geo) throw "> SQR.Mesh - mesh not found in data (name: " + name + ")";
+
+	// This is to be able to work with old JSON format. Needs to go away at some point.
+	var legacyAttribute = {
+		aPosition: 'vertices',
+		aNormal: 'normals',
+		aColor: 'colors',
+		aUV: 'uv1',
+		aUV2: 'uv2',
+		aTangent: 'tangent',
+		aWeight: 'boneWeights',
+		aIndex: 'boneIndices',
+		indices: 'tris'
+	};
+
+	var getAttributeData = function(n) {
+		var d = geo[n] || geo[legacyAttribute[n]];
+		if(d && d.length > 0) return d;
+		else return null; 
+	}
+
+	var layout = options.layout || data.layout || SQR.v3n3u2();
+	var vs = options.vertexSize || layout.aPosition;
+	var size = (geo.vertices || geo.aPosition).length / vs;
+
+	var buffer = SQR.Buffer().layout(layout, size);
+
+	for(var a in layout) {
+		var d = getAttributeData(a);
+		if(d) buffer.data(a, d);
+	}
+
+	var i = getAttributeData('indices');
+	if(i) buffer.index(i);
+
+	buffer.mesh = SQR.Mesh(buffer);
+
+    return buffer.update();
+};
 
 /* --- --- [primitives/Plane.js] --- --- */
 
- /**
+ /*
  *  @method create2DQuad
  *  @memberof SQR.Primitives
  *
@@ -995,13 +1022,13 @@ SQR.Mesh = {
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.create2DQuad = function(x, y, w, h) {
-	return SQR.Buffer()
-		.layout(SQR.v2u2(), 6)
-		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
-		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
-		.update();
-}
+// SQR.Primitives.create2DQuad = function(x, y, w, h) {
+// 	return SQR.Buffer()
+// 		.layout(SQR.v2u2(), 6)
+// 		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
+// 		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
+// 		.update();
+// }
 
 /**
  *  @method createPlane
@@ -1015,6 +1042,8 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
  *  @param {Number} hd - number of segments along the height
  *  @param {Number} wo - horizontal offset
  *  @param {Number} ho - vertical offset
+ *
+ *	@param {Object} options - options for the plan construction
  *
  *  @returns {SQR.Buffer}
  */
@@ -1054,11 +1083,7 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 			var bhStart = hStart + j * hb;
 			var ij = i * (hd+1) + j;
 
-			if(options.perQuadUV) {
-				uvs[ij] = new SQR.V2(i % 2, j % 2);
-			} else {
-				uvs[ij] = new SQR.V2(i/wd, j/hd);
-			}
+			uvs[ij] = new SQR.V2(i/wd, j/hd);
 
 			if (!options.zUp) {
 				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
@@ -1183,76 +1208,76 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
 }
 
 
-SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
+// SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
 
-	if(!shaderSource && !SQR.GLSL) throw '> SQR.Primitives.createImage > sqr-glsl.js package is required to use this feature.';
-    shaderSource = shaderSource || SQR.GLSL['post/image.glsl'];
+// 	if(!shaderSource && !SQR.GLSL) throw '> SQR.Primitives.createImage > sqr-glsl.js package is required to use this feature.';
+//     shaderSource = shaderSource || SQR.GLSL['post/image.glsl'];
 
-	var pe = new SQR.Transform();
+// 	var pe = new SQR.Transform();
 
-    pe.buffer = SQR.Buffer()
-        .layout(SQR.v2u2(), 6)
-        .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
-        .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
-        .update();
+//     pe.buffer = SQR.Buffer()
+//         .layout(SQR.v2u2(), 6)
+//         .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
+//         .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
+//         .update();
 
-    var image = img;
-    var texture = SQR.Texture(image);
-    pe.shader = SQR.Shader(shaderSource, shaderOptions);
+//     var image = img;
+//     var texture = SQR.Texture(image);
+//     pe.shader = SQR.Shader(shaderSource, shaderOptions);
 
-    pe.setImage = function(img) {
-        image = img;
-        texture.setSource(img).update();
-        pe.shader.use().setUniform('uTexture', texture);
-    }
+//     pe.setImage = function(img) {
+//         image = img;
+//         texture.setSource(img).update();
+//         pe.shader.use().setUniform('uTexture', texture);
+//     }
 
-    pe.setImage(image);
+//     pe.setImage(image);
 
-    pe.size = function(w, h) {
+//     pe.size = function(w, h) {
 
-        var xl = -1, yt = 1, xr = 1, yb = -1;
-        var iw = image.width, ih = image.height;
+//         var xl = -1, yt = 1, xr = 1, yb = -1;
+//         var iw = image.width, ih = image.height;
 
-        var fw = iw / ih * h;
-        var fh = ih / iw * w;
+//         var fw = iw / ih * h;
+//         var fh = ih / iw * w;
 
-        if(mode == 'fit') {
-            if(fw > w) {
-                yb = -(fh / h);
-                yt =  (fh / h);
-            }
+//         if(mode == 'fit') {
+//             if(fw > w) {
+//                 yb = -(fh / h);
+//                 yt =  (fh / h);
+//             }
 
-            if(fh > h) {
-                xl = -(fw / w);
-                xr =  (fw / w);
-            }
-        } else if(mode == 'cover') {    
-            if(fw > w) {
-                xl = -(fw / w);
-                xr =  (fw / w);
-            }
+//             if(fh > h) {
+//                 xl = -(fw / w);
+//                 xr =  (fw / w);
+//             }
+//         } else if(mode == 'cover') {    
+//             if(fw > w) {
+//                 xl = -(fw / w);
+//                 xr =  (fw / w);
+//             }
 
-            if(fh > h) {
-                yb = -(fh / h);
-                yt =  (fh / h);
-            }
-        }
+//             if(fh > h) {
+//                 yb = -(fh / h);
+//                 yt =  (fh / h);
+//             }
+//         }
 
-        pe.buffer.data('aPosition', 
-            xl, yt,
-            xr, yt,
-            xr, yb,
+//         pe.buffer.data('aPosition', 
+//             xl, yt,
+//             xr, yt,
+//             xr, yb,
 
-            xl, yt,
-            xr, yb,
-            xl, yb
-        ).update();
+//             xl, yt,
+//             xr, yb,
+//             xl, yb
+//         ).update();
 
-        return pe;
-    }
+//         return pe;
+//     }
 
-	return pe;
-}
+// 	return pe;
+// }
 
 
 

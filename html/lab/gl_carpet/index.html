@@ -3,6 +3,7 @@
 <head>
 <title>Perlin Noise Carpet</title>
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 
@@ -31,12 +32,25 @@
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
 <script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
 
 <script type="text/javascript" src="AnimatedTexture.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+.tt {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	transform: scaleX(40) scaleY(40);
+}
+
+</style>
 
 </head>
 <body>
@@ -72,6 +86,11 @@
 	})
 	.create(16, 16, true);
 
+	// .create(16, 16, false);
+	// tt.canvas.classList.add('tt');
+	// document.body.appendChild(tt.canvas);
+	// console.log(tt.canvas);
+
 	var amplitude = 3;
 
 	SQR.Loader.loadAssets([
@@ -79,12 +98,8 @@
 		['tex.glsl', 'shader']
 	], function(assets) {
 
-		var ctx = SQR.Context('#gl-canvas')
-			.create()
-			.clearColor(0.05, 0.0, 0.1, 1);
-			// .clearColor(0.5, 0.5, 0.5, 1);
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(0.05, 0.0, 0.1);
 
-		var renderer = new SQR.Renderer(ctx);
 		var root = new SQR.Transform();
 		var camera = new SQR.Transform();
 		root.add(camera);
@@ -94,10 +109,9 @@
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 			var d = window.devicePixelRatio;
 
-			ctx.size(w, h, d);
+			renderer.context.size(w, h, d);
 
-			camera.projection = 
-				new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect);
 		}
 
 		window.addEventListener('resize', resize);
@@ -108,11 +122,10 @@
 		// size, speed, baseOffset, scale
 		// var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
 
-		// document.body.appendChild(heightMap.canvas);
-		var s = 24, sd = Simplrz.touch ? 24 : 48;
+		var s = 24, sd = Simplrz.touch ? 24 : 48, tile = 96;
 
 		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd, 0, 0);
-
+		SQR.Mesh(t.buffer);
 		// t.buffer.cull = false;
 
 		SQR.gl.disable(SQR.gl.CULL_FACE);
@@ -121,25 +134,28 @@
 
 		var animate = function() {
 
-			// Faster, no lighting
-			// t.buffer.iterate('aPosition', function(i, data, c) {
-			// 	var x = (data[i+0] + s/2) / s; 
-			// 	var y = (data[i+2] + s/2) / s;
-			// 	data[i+1] = heightMap.getPixel(x, y) / 255;
-			// });
-			// t.buffer.update();
-
-
-			// Slower, with lighting
 			for(var i = 0; i < vsl; i++) {
 				var f = vs[i];
 				var x = (f.x + s/2), y = (f.z + s/2);
 				f.y = tt.getValue(x, y) * amplitude;
 			};
-			t.buffer.recalculateNormals().updateFromFaces().update();
 
-			tt.offset.x -= 0.04;
-			tt.offset.y -= 0.04;
+			// Without lighting
+			// t.buffer.updateFromFaces().update();
+
+			// With lighting
+			t.buffer.recalculateNormals().updateFromFaces(true).update();
+
+			var dx = 0.4;
+			var dy = 0.4;
+
+			tt.offset.x -= dx / 10;
+			tt.offset.y -= dy / 10;
+
+			t.uniforms.uTextureOffset.x -= dx / 48;
+			t.uniforms.uTextureOffset.y -= dy / 48;
+
+			// tt.draw();
 		}
 
 		
@@ -163,9 +179,13 @@
 			.use()
 			.setUniform('uTexture', SQR.Texture(grid, { mipmap: true, wrap: SQR.gl.REPEAT }))
 			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm())
-			.setUniform('uTextureTile', [sd * 2, sd * 2])
-			.setUniform('uFog', [8, 12])
+			.setUniform('uTextureTile', [tile, tile])
+			.setUniform('uFog', [4, 12])
 			.setUniform('uFogColor', [0.05, 0.0, 0.1]);
+
+		t.uniforms = {
+			uTextureOffset: new SQR.V2(0, 0)
+		};
 
 		root.add(t);
 

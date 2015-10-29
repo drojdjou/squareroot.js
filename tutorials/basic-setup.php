@@ -8,11 +8,6 @@
 <script type="text/javascript" src="../build/sqr.js"></script>
 <script type="text/javascript" src="../build/sqr-primitives.js"></script>
 
-
-<script type="text/javascript" src="../html/src/common/Context.js"></script>
-<script type="text/javascript" src="../html/src/common/Renderer.js"></script>
-<script type="text/javascript" src="../html/src/math/ProjectionMatrix.js"></script>
-
 <link rel="icon" href="../home/assets/favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="../home/assets/favicon.png" type="image/x-icon">
 
@@ -53,10 +48,10 @@ SQR.Loader.loadAssets([
 	var resize = function() {
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 		renderer.context.size(w, h);
-		// The projection matrix can bve defined globally as a property of the renderer
-		// or per camera (if your scene uses multiple cameras).
-		// For now, we will stick to the simplest scenario.
-		renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect);
+		// The projection matrix can be defined globally as a property of the renderer
+		// or per camera (useful if your scene uses multiple cameras).
+		// For now, we will stick to the simplest scenario:
+		renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
 	}
 	window.addEventListener('resize', resize);
 	resize();

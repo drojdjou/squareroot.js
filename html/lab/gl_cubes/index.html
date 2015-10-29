@@ -44,23 +44,17 @@
     // var fxaapass = true;
     var staticTransforms = false;
 
-    var numSquares = parseInt(document.location.search.substring(1)) || 5000;
+    var numSquares = parseInt(document.location.search.substring(1)) || 7000;
 
 	SQR.Loader.loadAssets([
 		['basicLight.glsl', 'shader']
 	], function(assets) {
 
-		
-
-		var ctx = SQR.Context('#gl-canvas')
-			.create({ antialias: antialias })
-			.clearColor(1, 1, 1, 1);
-
-		var renderer = new SQR.Renderer(ctx);
+		var renderer = new SQR.Renderer('#gl-canvas', { antialias: antialias }).clearColor(1, 1, 1, 1);
 		
 		var resize =function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h, resolution);
+			renderer.context.size(w, h, resolution);
 			renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
 		}
 

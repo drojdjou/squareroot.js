@@ -64,11 +64,7 @@
 
 	], function(assets) {
 
-		var ctx = SQR.Context('#gl-canvas')
-			.create()
-			.clearColor(0.5, 0.3, 0.8, 1.0);
-
-		var renderer = new SQR.Renderer(ctx);
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(SQR.Color(0.5, 0.3, 0.8), 1.0);
 		renderer.autoClear = false;
 
 		var far = 10000;
@@ -213,7 +209,7 @@
 
 		var resize = function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h);
+			renderer.context.size(w, h);
 			rawFBO.resize(w, h);    
 			blurXFBO.resize(w, h);
 			scene.camera.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 10, far);
@@ -230,7 +226,7 @@
 			camroot.rotation.x += (my * -0.4 - camroot.rotation.x) * 0.03;
 
 			rawFBO.bind();
-			ctx.clear();
+			renderer.context.clear();
 
 			camroot.scale.y = 1;
 
@@ -258,7 +254,7 @@
 			
 
 			blurXFBO.bind();
-			ctx.clear();
+			renderer.context.clear();
 			blur.shader
 				.use()
 				.setUniform('uDelta', [0.0, blurForce])
@@ -269,7 +265,7 @@
 
 
 			renderer.renderToScreen();
-			ctx.clear();
+			renderer.context.clear();
 
 			blur.shader
 				.use()

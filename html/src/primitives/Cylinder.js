@@ -7,7 +7,7 @@
  *  @param {Number} height - height of the cylinder
  *  @param {Number} radius - radius of the cylinder
  *  @param {Number} segments - number of segments along the cylinder
- *  @param {Object} optins - additional options
+ *  @param {Object} options - additional options
  *
  *  @todo document the options
  *

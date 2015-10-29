@@ -100,11 +100,9 @@ SQR.Context = function(canvas, options, onError) {
 		return c;
 	}
 
-	/**
-	 *	Define clear color. 
-	 *	r, g, b, a are in [0-1] range.
-	 */
 	c.clearColor = function(r, g, b, a) {
+		// console.log('context.clearColor is deprecated, use renderer clear color instead');
+		// console.trace();
 		gl.clearColor(r, g, b, a);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		return c;
@@ -129,8 +127,8 @@ SQR.Context = function(canvas, options, onError) {
 		return c;
 	}
 
-	// Create the context and set the default black as clear color
-	c.create(options, onError).clearColor(0, 0, 0, 1);
+	// Create the context
+	c.create(options, onError);
 
 	return c;
 }

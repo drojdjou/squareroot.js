@@ -26,76 +26,76 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
 }
 
 
-SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
+// SQR.Primitives.createImage = function(img, mode, shaderSource, shaderOptions) {
 
-	if(!shaderSource && !SQR.GLSL) throw '> SQR.Primitives.createImage > sqr-glsl.js package is required to use this feature.';
-    shaderSource = shaderSource || SQR.GLSL['post/image.glsl'];
+// 	if(!shaderSource && !SQR.GLSL) throw '> SQR.Primitives.createImage > sqr-glsl.js package is required to use this feature.';
+//     shaderSource = shaderSource || SQR.GLSL['post/image.glsl'];
 
-	var pe = new SQR.Transform();
+// 	var pe = new SQR.Transform();
 
-    pe.buffer = SQR.Buffer()
-        .layout(SQR.v2u2(), 6)
-        .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
-        .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
-        .update();
+//     pe.buffer = SQR.Buffer()
+//         .layout(SQR.v2u2(), 6)
+//         .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
+//         .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
+//         .update();
 
-    var image = img;
-    var texture = SQR.Texture(image);
-    pe.shader = SQR.Shader(shaderSource, shaderOptions);
+//     var image = img;
+//     var texture = SQR.Texture(image);
+//     pe.shader = SQR.Shader(shaderSource, shaderOptions);
 
-    pe.setImage = function(img) {
-        image = img;
-        texture.setSource(img).update();
-        pe.shader.use().setUniform('uTexture', texture);
-    }
+//     pe.setImage = function(img) {
+//         image = img;
+//         texture.setSource(img).update();
+//         pe.shader.use().setUniform('uTexture', texture);
+//     }
 
-    pe.setImage(image);
+//     pe.setImage(image);
 
-    pe.size = function(w, h) {
+//     pe.size = function(w, h) {
 
-        var xl = -1, yt = 1, xr = 1, yb = -1;
-        var iw = image.width, ih = image.height;
+//         var xl = -1, yt = 1, xr = 1, yb = -1;
+//         var iw = image.width, ih = image.height;
 
-        var fw = iw / ih * h;
-        var fh = ih / iw * w;
+//         var fw = iw / ih * h;
+//         var fh = ih / iw * w;
 
-        if(mode == 'fit') {
-            if(fw > w) {
-                yb = -(fh / h);
-                yt =  (fh / h);
-            }
+//         if(mode == 'fit') {
+//             if(fw > w) {
+//                 yb = -(fh / h);
+//                 yt =  (fh / h);
+//             }
 
-            if(fh > h) {
-                xl = -(fw / w);
-                xr =  (fw / w);
-            }
-        } else if(mode == 'cover') {    
-            if(fw > w) {
-                xl = -(fw / w);
-                xr =  (fw / w);
-            }
+//             if(fh > h) {
+//                 xl = -(fw / w);
+//                 xr =  (fw / w);
+//             }
+//         } else if(mode == 'cover') {    
+//             if(fw > w) {
+//                 xl = -(fw / w);
+//                 xr =  (fw / w);
+//             }
 
-            if(fh > h) {
-                yb = -(fh / h);
-                yt =  (fh / h);
-            }
-        }
+//             if(fh > h) {
+//                 yb = -(fh / h);
+//                 yt =  (fh / h);
+//             }
+//         }
 
-        pe.buffer.data('aPosition', 
-            xl, yt,
-            xr, yt,
-            xr, yb,
+//         pe.buffer.data('aPosition', 
+//             xl, yt,
+//             xr, yt,
+//             xr, yb,
 
-            xl, yt,
-            xr, yb,
-            xl, yb
-        ).update();
+//             xl, yt,
+//             xr, yb,
+//             xl, yb
+//         ).update();
 
-        return pe;
-    }
+//         return pe;
+//     }
 
-	return pe;
-}
+// 	return pe;
+// }
 
 
 

@@ -24,7 +24,7 @@ uniform vec3 uColor;
 varying vec3 vNormal;
 
 void main() {
-	float l = max(0.0, dot(vNormal, uLightDirection));
+	float l = 0.2 + 0.8 * max(0.0, dot(vNormal, uLightDirection));
 	gl_FragColor = vec4(uColor * l, 1.0);
 }
 

@@ -2,128 +2,100 @@
  *  @namespace Mesh
  *  @memberof SQR
  *
- *  @description Utility to load meshes from J3D/Unity exported JSON files. SQR only work with this format. 
- *	It doesn't have native support for OBJ files or Collada 
- *	(though it's perfectly possible to create an OBJ or Collada importer if you need to)
- *
+ *  @description Attempt to create a decorator for a buffer that will be able to process 
+ *	the data (position, normals and tangents) as it if was a collection of faces.
  */
-SQR.Mesh = {
-
-	/**
-	 *	@method fromJSON
-	 *	@memberof SQR.Mesh
-	 *
-	 *	@description Parses the J3D JSON mesh data format and created a SQR.Buffer out of it.
-	 */	
-	fromJSON: function(data, name, options) {
-
-		var geo;
-
-		options = options || {};
-
-		if(name) {
-			geo = data[name];
-		} else if(data.vertices) {
-			geo = data;
-		} else {
-			// Unity exported mesh files can have one or more meshes. 
-			// Even if there's only one mesh, it is stored as property
-			// where the key is the mesh uuid. This code will attempt
-			// to find the first mesh, so that on JS side we don't have to 
-			// pass the uuid in the constructor
-			for(var d in data) {
-				geo = data[d];
-				break;
-			}
-		}
-
-		if(!geo) throw "> SQR.Mesh - mesh not found in data (name: " + name + ")";
-	
-		var legacyAttribute = {
-			aPosition: 'vertices',
-			aNormal: 'normals',
-			aColor: 'colors',
-			aUV: 'uv1',
-			aUV2: 'uv2',
-			aTangent: 'tangent',
-			aWeight: 'boneWeights',
-			aIndex: 'boneIndices',
-			indices: 'tris'
-		};
-
-		var getAttributeData = function(n) {
-			var d = geo[n] || geo[legacyAttribute[n]];
-			if(d && d.length > 0) return d;
-			else return null; 
-		}
-
-		var layout = options.layout || data.layout || SQR.v3n3u2();
-		var vs = options.vertexSize || layout.aPosition;
-		var size = (geo.vertices || geo.aPosition).length / vs;
-
-		var buffer = SQR.Buffer().layout(layout, size);
-
-		for(var a in layout) {
-			if(a == 'aNormal' && options.skipNormals) continue;
-			var d = getAttributeData(a);
-			if(d) buffer.data(a, d);
-		}
-
-		var i = getAttributeData('indices');
-		if(i) buffer.index(i);
-
-        return buffer.update();
-	},
-
-	calculateNormals: function(buffer) {
-
-		var index = buffer.getIndexArray();
-		var data = buffer.getDataArray();
-
-		var f = new SQR.Face().setPosition(new SQR.V3(), new SQR.V3(), new SQR.V3());
-		f.a.normal = new SQR.V3();
-		f.b.normal = new SQR.V3();
-		f.c.normal = new SQR.V3();
-		var n = new SQR.V3();
-
-		for(var i = 0; i < buffer.indexSize; i += 3) {
-			var o0 = index[i+0] * buffer.strideSize;
-			var o1 = index[i+1] * buffer.strideSize;
-			var o2 = index[i+2] * buffer.strideSize;
-
-			f.a.set(data[o0+0], data[o0+1], data[o0+2]);
-			f.b.set(data[o1+0], data[o1+1], data[o1+2]);
-			f.c.set(data[o2+0], data[o2+1], data[o2+2]);
-
-			f.a.normal.set(data[o0+3], data[o0+4], data[o0+5]);
-			f.b.normal.set(data[o1+3], data[o1+4], data[o1+5]);
-			f.c.normal.set(data[o2+3], data[o2+4], data[o2+5]);
-
-			f.calculateNormal();
-			f.normal.norm();
-			f.addNormalToVertices();
-
-			data[o0+3] = f.a.normal.x;
-			data[o0+4] = f.a.normal.y;
-			data[o0+5] = f.a.normal.z;
-
-			data[o1+3] = f.b.normal.x;
-			data[o1+4] = f.b.normal.y;
-			data[o1+5] = f.b.normal.z;
-
-			data[o2+3] = f.c.normal.x;
-			data[o2+4] = f.c.normal.y;
-			data[o2+5] = f.c.normal.z;
-		}
-
-		buffer.iterate('aNormal', function(i, data, c) {
-			n.set(data[i+0], data[i+1], data[i+2]).norm();
-
-			data[i+0] = n.x;
-			data[i+1] = n.y;
-			data[i+2] = n.z;
-		});
-
-		buffer.update();
-	} 
+SQR.Mesh = function(buffer, quads) {
+	var m = {};
+	buffer.mesh = m;
+	return m;
 }
+
+
+
+/**
+ *	@method fromJSON
+ *	@memberof SQR.Mesh
+ *
+ *	@param {Object | string} data - the mesh data or an object containing a named list of meshes 
+ *	(which is how meshes get exported from unity by default - the names are the uuids of the object)
+ *
+ *	@param {string=} name - the name of the mesh in the list. 
+ *	If data is a list of meshes and name is omitted, the function will pick the first mesh on the list.
+ *	If data is the mesh data itself, this argument will be ignored.
+ *
+ *	@param {Object=} options - advanced options for mesh construction
+ *
+ *	@description <p>Utility to load meshes from JSON files in the 
+ *	format as exported from the Unity exporter.</p>
+ *
+ *	<p>Parses the J3D JSON mesh data format and creates an instance SQR.Buffer out of it.</p>
+ *
+ *	<p>This is the best way to work with 3d models, since SQR doesn't have native support for OBJ files or Collada 
+ *	(though it's perfectly possible to create an OBJ or Collada importer if you need to).</p>
+ */	
+SQR.Mesh.fromJSON = function(data, name, options) {
+
+	var geo;
+
+	options = options || {};
+
+	if(name) {
+		// data is a list of meshesh from Unity and we provide a name
+		geo = data[name];
+	} else if(data.vertices) {
+		// data is the mesh itself
+		geo = data;
+	} else {
+		// data is a list of meshes from Unity but we didn't provide a name
+
+		// Unity exported mesh files can have one or more meshes. 
+		// Even if there's only one mesh, it is stored as property
+		// where the key is the mesh uuid. This code will attempt
+		// to find the first mesh, so that on JS side we don't have to 
+		// pass the uuid in the constructor
+		for(var d in data) {
+			geo = data[d];
+			break;
+		}
+	}
+
+	if(!geo) throw "> SQR.Mesh - mesh not found in data (name: " + name + ")";
+
+	// This is to be able to work with old JSON format. Needs to go away at some point.
+	var legacyAttribute = {
+		aPosition: 'vertices',
+		aNormal: 'normals',
+		aColor: 'colors',
+		aUV: 'uv1',
+		aUV2: 'uv2',
+		aTangent: 'tangent',
+		aWeight: 'boneWeights',
+		aIndex: 'boneIndices',
+		indices: 'tris'
+	};
+
+	var getAttributeData = function(n) {
+		var d = geo[n] || geo[legacyAttribute[n]];
+		if(d && d.length > 0) return d;
+		else return null; 
+	}
+
+	var layout = options.layout || data.layout || SQR.v3n3u2();
+	var vs = options.vertexSize || layout.aPosition;
+	var size = (geo.vertices || geo.aPosition).length / vs;
+
+	var buffer = SQR.Buffer().layout(layout, size);
+
+	for(var a in layout) {
+		var d = getAttributeData(a);
+		if(d) buffer.data(a, d);
+	}
+
+	var i = getAttributeData('indices');
+	if(i) buffer.index(i);
+
+	SQR.Mesh(buffer);
+
+    return buffer.update();
+};

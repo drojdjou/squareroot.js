@@ -1,4 +1,4 @@
- /**
+ /*
  *  @method create2DQuad
  *  @memberof SQR.Primitives
  *
@@ -11,13 +11,13 @@
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.create2DQuad = function(x, y, w, h) {
-	return SQR.Buffer()
-		.layout(SQR.v2u2(), 6)
-		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
-		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
-		.update();
-}
+// SQR.Primitives.create2DQuad = function(x, y, w, h) {
+// 	return SQR.Buffer()
+// 		.layout(SQR.v2u2(), 6)
+// 		.data('aPosition',   x, y+h,   x+w, y,     x+w, y+h,    x+w, y,    x, y+h,    x, y)
+// 		.data('aUV',         0, 0,     1,   1,     1,   0,      1,   1,    0, 0,      0, 1)
+// 		.update();
+// }
 
 /**
  *  @method createPlane
@@ -31,6 +31,8 @@ SQR.Primitives.create2DQuad = function(x, y, w, h) {
  *  @param {Number} hd - number of segments along the height
  *  @param {Number} wo - horizontal offset
  *  @param {Number} ho - vertical offset
+ *
+ *	@param {Object} options - options for the plan construction
  *
  *  @returns {SQR.Buffer}
  */
@@ -70,11 +72,7 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 			var bhStart = hStart + j * hb;
 			var ij = i * (hd+1) + j;
 
-			if(options.perQuadUV) {
-				uvs[ij] = new SQR.V2(i % 2, j % 2);
-			} else {
-				uvs[ij] = new SQR.V2(i/wd, j/hd);
-			}
+			uvs[ij] = new SQR.V2(i/wd, j/hd);
 
 			if (!options.zUp) {
 				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
@@ -113,45 +111,55 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 	geo.faces = faces;
 	geo.vertices = vertices;
 
+	var resetNormal = function(v) {
+		v.resetNormal();
+	}
+
+	var faceNormal = function(f) {
+		f.calculateNormal();
+		f.addNormalToVertices();
+	}
+
+	var po, no, uo;
+
+	var setDataFromFaces = function(i, data, c) {
+		var v = vertices[c];
+		var u = uvs[c];
+
+		data[i+0+po] = v.x;
+		data[i+1+po] = v.y;
+		data[i+2+po] = v.z;
+
+		data[i+0+no] = v.normal.x;
+		data[i+1+no] = v.normal.y;
+		data[i+2+no] = v.normal.z;
+
+		data[i+0+uo] = u.x;
+		data[i+1+uo] = u.y;
+	}
+
 	geo.recalculateNormals = function() {
-		faces.forEach(function(f) {
-			f.calculateNormal();
-			f.addNormalToVertices();
-		});
-
+		vertices.forEach(resetNormal)
+		faces.forEach(faceNormal);
 		return geo;
 	}
 
-	geo.updateFromFaces = function() {
+	geo.updateFromFaces = function(updateIndices) {
 
-		geo.iterate('aPosition', function(i, data, c) {
-			var v = vertices[c];
-			data[i+0] = v.x;
-			data[i+1] = v.y;
-			data[i+2] = v.z;
-		});
+		po = geo.attributes.aPosition.offset;
+		no = geo.attributes.aNormal.offset;
+		uo = geo.attributes.aUV.offset;
 
-		geo.iterate('aNormal', function(i, data, c) {
-			var v = vertices[c];
-			v.normal.norm();
-			data[i+0] = v.normal.x;
-			data[i+1] = v.normal.y;
-			data[i+2] = v.normal.z;
-		});
+		geo.iterate(null, setDataFromFaces);
 
-		geo.iterate('aUV', function(i, data, c) {
-			var v = uvs[c];
-			data[i+0] = v.x;
-			data[i+1] = v.y;
-		});
-
-		geo.index(indices);
+		if(updateIndices) geo.index(indices);
 
 		return geo;
 	}
 
 
-	return geo.recalculateNormals().updateFromFaces().update();
+	return geo.recalculateNormals().updateFromFaces(true).update();
+
 }
 
 

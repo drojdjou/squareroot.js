@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>3d rotating cube</title>
+<title>Template</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
-<script type="text/javascript" src="../../src/Version.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
@@ -24,6 +23,9 @@
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -32,82 +34,69 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
-	var resolution = window.devicePixelRatio;
-	var antialias = true;
-	var autorotate = true;
-
 	SQR.Loader.loadAssets([
-
-		// Load all the files you need here
-		// Each file will be availabke below from the asset object
-		// under it's name, ex. assets['normal2color.glsl']
-		// It's also possible ot specify an alias. Instead of a String, 
-		// use an Array, where [0] is the path, and [1] is the alias.
 		['normal2color.glsl', 'shader'],
-
 	], function(assets) {
 
-		// Create the context based on the #id of the canvas element
-		// (there are more options for hw to do that - check the docs)
-		// Use chaining to create the GL context and set it's clear color (r,g,b,a)
-		var ctx = SQR.Context('#gl-canvas')
-			.create({ antialias: antialias })
-			.clearColor(0, 0, 0, 1);
-
-		// Create a renderer, pass the context to it
+		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 		var renderer = new SQR.Renderer(ctx);
 
-		// There are no "scenes" in SQR. A scene is basically just a root transform 
-		// that holds the entire scene.
-		var root = new SQR.Transform();
-
-		// Create a camera, make sure to add it to the root (or any if it's children)
-		var camera = new SQR.Transform();
-		camera.position.z = 5;
-		root.add(camera);
-
-		// Create a resize handler and call it once to set the size of the viewport 
-		// and the correct projection matrix
 		var resize =function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h, resolution);
-			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+			ctx.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
 		}
 
 		window.addEventListener('resize', resize);
 		resize();
 
-		// Create an object
-		var cube = new SQR.Transform();
-		// When creating buffers, the buffers are actually populated  
-		// in the udate function, so it needs to be called on init
-		cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-		// Shaders are created from GLSL code loaded with the SQR.Loader as strings.
-		// The SQR.Shader function processes the string and compiles it into a WebGL shader.
-		cube.shader = SQR.Shader(assets.shader);
-		// Add the cube to the root
-		root.add(cube);
+		var root = new SQR.Transform();
 
-		cube.rotation.x = 0.8;
-		cube.rotation.y = 0.8;
-		// cube.position.set(2, 3, -1);
-		// cube.scale.x = 0.25;
-		// cube.scale.y = 0.25;
-		// cube.scale.z = 0.25;
+		var obj = new SQR.Transform();
+
+		// obj.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+		// obj.buffer = SQR.Primitives.createSphere(2, 16, 16).update();
+		obj.buffer = SQR.Primitives.createPlane(10, 10, 200, 200, 0, 0, { zUp: true }).update();
+		obj.buffer.drawMode = SQR.gl.DYNAMIC_DRAW;
+		SQR.Mesh(obj.buffer, true);
+
+		var phases = [];
+
+		obj.buffer.iterate('aPosition', function(i, d, c) { 
+			phases[c] = (d[i] * d[i] * 1) + (d[i+1] * d[i+1] * 1);
+		});
+
+		var moveVertices = function(i, d, c) { 
+			phases[c] -= 0.1;
+			d[i+2] = Math.sin(phases[c]) * 0.2; 
+		}
+
+		var modulate = function() {
+			obj.buffer.iterate('aPosition', moveVertices);
+			obj.buffer.mesh.calculateNormals();
+		}
+
+		modulate();
+
+		obj.shader = SQR.Shader(assets.shader);
+		root.add(obj);
+
+		var camera = new SQR.Transform();
+		camera.position.z = 4;
+		// camera.position.y = -12;
+		// camera.rotation.x = Math.PI / 2;
+		camera.lookAt = obj;
+		root.add(camera);
 
 		var render = function() {
 			requestAnimationFrame(render);
+			// obj.rotation.x += 0.01;
+			// obj.rotation.y += 0.02;
 
-			if(autorotate) {
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.02;
-			}
-			
-			// Render the scene from the root transform up, directly to screen
+			modulate();
+
 			renderer.render(root, camera);
 		}
 

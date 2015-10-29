@@ -55,23 +55,16 @@ SQR.Loader.loadAssets([
 	'bloom.glsl'
 ], function(assets) {
 
-	var w = window.innerWidth, h = window.innerHeight;
+	var renderer = SQR.Renderer('#gl-canvas', { antialias: false }).clearColor(0, 0.14, 0.18, 1);
 
-	var ctx = SQR.Context('#gl-canvas')
-		.create({ antialias: false })
-		.clearColor(0, 0.14, 0.18, 1);
-
-	var renderer = SQR.Renderer(ctx);
-
-	var rawFBO = SQR.FrameBuffer(w, h);    
-	var blurXFBO = SQR.FrameBuffer(w/2, h/2);   
-	var blurYFBO = SQR.FrameBuffer(w/2, h/2); 
+	var rawFBO = SQR.FrameBuffer(1, 1);    
+	var blurXFBO = SQR.FrameBuffer(1, 1);   
+	var blurYFBO = SQR.FrameBuffer(1, 1); 
 
 	var resize = function() {
 		w = window.innerWidth, h = window.innerHeight;
 
-		ctx.size(w, h, window.devicePixelRatio);
-		// ctx.size(w, h, 1);
+		renderer.context.size(w, h, window.devicePixelRatio);
 
 		rawFBO.resize(w, h);
 		blurXFBO.resize(w/4, h/4);
@@ -202,7 +195,6 @@ SQR.Loader.loadAssets([
 
 	var render = function() {
 		requestAnimationFrame(render);
-		ctx.clear();
 
 		globalSpeed += (globalSpeedTarget - globalSpeed) * 0.2;
 		globalSpeedTarget *= 0.99;
@@ -240,7 +232,7 @@ SQR.Loader.loadAssets([
 			renderer.render(blur);
 
 			renderer.renderToScreen();
-			ctx.gl.viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
+			renderer.context.gl.viewport(0, 0, renderer.context.canvas.width, renderer.context.canvas.height);
 			bloom.shader.use();
 			bloom.shader.setUniform('uTexture', rawFBO.texture);
 			bloom.shader.setUniform('uBlurTexture', blurYFBO.texture);

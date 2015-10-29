@@ -4,11 +4,11 @@
  *
  *	@description Represents the rendering engine
  */
-SQR.Renderer = function(c) {
+SQR.Renderer = function(c, options, onError) {
 
 	var context;
 
-	context = c && c.setAsCurrent ? c : SQR.Context(c);
+	context = c && c.setAsCurrent ? c : SQR.Context(c, options, onError);
 
 	var r = {
 		currentTime: 0,
@@ -56,6 +56,20 @@ SQR.Renderer = function(c) {
 		}
 
 		lastShader.setUniform('uTime', time);
+	}
+
+	r.clearColor = function(c, g, b, a) {
+		// c is a SQR.Color and we can ignore the rest
+		if(c.r) {
+			if(c.a == undefined) c.a = 1;
+			context.gl.clearColor(c.r, c.g, c.b, c.a);
+		} else {
+			if(a == undefined) a = 1;
+			context.gl.clearColor(c, g, b, a);
+		}
+
+		context.gl.clear(SQR.gl.COLOR_BUFFER_BIT);
+		return r;
 	}
 
 	r.render = function(root, camera, options) {
@@ -147,6 +161,9 @@ SQR.Renderer = function(c) {
 		var gl = SQR.gl;
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	}
+
+	// Default the clear color to black 
+	r.clearColor(0, 0, 0, 1);
 
 	return r;
 

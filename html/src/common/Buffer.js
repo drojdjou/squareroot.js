@@ -156,31 +156,38 @@ b.set('aPosition', 1, 	new SQR.V3(3, 5, 6));
 		return b;
 	}
 
-	b.get = function(attribute, position, array) {
-		array = array || [];
+	// Is this even useful?
 
-		var s = b.attributes[attribute];
+	// b.get = function(attribute, position, array) {
+	// 	array = array || [];
 
-		if(position < 0) position += b.size;
-		if(position >= b.size) position = position % b.size;
+	// 	var s = b.attributes[attribute];
 
-		var c = position * b.strideSize + s.offset;
-		for(var i = 0; i < b.size; i++) array[i] = data[c + i];
+	// 	if(position < 0) position += b.size;
+	// 	if(position >= b.size) position = position % b.size;
 
-		return array;
-	}
+	// 	var c = position * b.strideSize + s.offset;
+	// 	for(var i = 0; i < b.size; i++) array[i] = data[c + i];
+
+	// 	return array;
+	// }
 
 	/**
 	 *	@method iterate
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description Iterates over each value for a given attribute. 
-	 *	See example to see how to move all the vertices by 4 on the Y axis.
+	 *	@description Iterates over each value for an attribute or over every stride.
+	 *	See example below to see how to move all the vertices by 4 on the y-axis.
+	 *
+	 *	@param {string=} attribute - the name of the attribute to interate over, if null, it will iterate over entire strides
+	 *
+	 *	@param {SQR.Buffer~iterateCallback} callback - the callback function processing the data.
 	 *
 	 *	@example
 b.iterate('aPosition', function(i, data, count)) {
-	// i = x, i+1 = y, i+2 = z
-	data[i + 1] += 4;
+	// i+0 = x, i+1 = y, i+2 = z
+	// so, to increment the y value do:
+	data[i+1] += 4;
 });
 	 */
 	b.iterate = function(attribute, callback) {
@@ -194,6 +201,22 @@ b.iterate('aPosition', function(i, data, count)) {
 		}
 		return b;
 	}
+	/**
+	 *	This callback for the iterate function allowing processing of the buffer data.
+	 *
+	 *	@callback SQR.Buffer~iterateCallback
+	 *	@param {Number} i - <p>the index of the first value for this attribute in the buffer</p>
+	 *
+	 *	<p>Example: if a buffer has 2 attributes - aPosition (3d vector) and aUV (2d vector)
+	 *	this means the stride size is 3 + 2 = 5. In this case i for the first position attribute is
+	 *	0 and for the second one it is 6. This index points to the index of first component of the attribute
+	 *	- in case of a position which is a 3d vector - it points to the x component. 
+	 *	To access the next component - y - add 1 to i, so data[i+1] is the y component.</p>
+	 *
+	 *	@param {Float3dArray} data - the entire the buffer array. Use the i parameter to read/write data to this array.
+	 *
+	 *	@param {Number} count - the current index for the attribute - it is incremented by 1 at each iteration
+	 */
 
 	/**
 	 *	@method bind

@@ -19,7 +19,7 @@ SQR.Primitives.createCube = function(w, h, d, options) {
 	h = h || 1;
 	d = d || 1;
 
-	var geo = SQR.Buffer().layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, 36);
+	var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
 	
 	var 
 		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
@@ -51,6 +51,7 @@ SQR.Primitives.createCube = function(w, h, d, options) {
 	return geo.update();
 }
 
+/*
 SQR.Primitives.createSkybox = function(options) {
 
 	options = options || {};
@@ -139,6 +140,7 @@ SQR.Primitives.createSkybox = function(options) {
 
 	return skybox;
 }
+*/
 
 
 

@@ -36,85 +36,79 @@
 
 <script type="text/javascript">
 
-    var resolution = 1;// window.devicePixelRatio;
-    var antialias = false;
-    var autorotate = true;
-    var fxaapass = true;
+	var resolution = 1;//window.devicePixelRatio;
+	var antialias = false;
+	var autorotate = 0.25;
+	var fxaapass = true;
 
-    SQR.Loader.loadAssets([
-        ['normal2color.glsl', 'shader'],
-        ['fxaaPass.glsl', 'postShader'],
-        ['../../src/glsl/post/fxaa.glsl', 'fxaa']
-    ], function(assets) {
+	SQR.Loader.loadAssets([
+		['normal2color.glsl', 'shader'],
+		['fxaaPass.glsl', 'postShader'],
+		['../../src/glsl/post/fxaa.glsl', 'fxaa']
+	], function(assets) {
 
-        var ctx = SQR.Context('#gl-canvas')
-            .create({ antialias: antialias })
-            .clearColor(0, 0, 0, 1);
+		var renderer = new SQR.Renderer('#gl-canvas', { antialias: antialias });
 
-        var renderer = new SQR.Renderer(ctx);
+		var fbo = SQR.FrameBuffer(1, 1); 
+		var post = SQR.Primitives.createPostEffect(assets.postShader);  
 
-        var fbo = SQR.FrameBuffer(1, 1); 
-        var post = SQR.Primitives.createPostEffect(assets.postShader);  
+		post.uniforms = {
+			uTexture: fbo.texture
+		}
 
-        post.uniforms = {
-            uTexture: fbo.texture
-        }
+		var root = new SQR.Transform();
 
-        var root = new SQR.Transform();
+		var camera = new SQR.Transform();
+		camera.position.z = 5;
+		root.add(camera);
 
-        var camera = new SQR.Transform();
-        camera.position.z = 5;
-        root.add(camera);
+		var resize =function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+			renderer.context.size(w, h, resolution);
+			fbo.resize(w * resolution, h * resolution);
+			post.shader.use().setUniform('uResolution', [w * resolution, h * resolution]);
+			camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		}
 
-        var resize =function() {
-            var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-            ctx.size(w, h, resolution);
-            fbo.resize(w * resolution, h * resolution);
-            post.shader.use().setUniform('uResolution', [w * resolution, h * resolution]);
-            camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
-        }
+		window.addEventListener('resize', resize);
+		resize();
 
-        window.addEventListener('resize', resize);
-        resize();
+		var cube = new SQR.Transform();
+		cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
+		cube.shader = SQR.Shader(assets.shader);
+		root.add(cube);
 
-        var cube = new SQR.Transform();
-        cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-        cube.shader = SQR.Shader(assets.shader);
-        root.add(cube);
+		cube.rotation.x = 0.8;
+		cube.rotation.y = 0.8;
+		var render = function() {
+			requestAnimationFrame(render);
 
-        cube.rotation.x = 0.8;
-        cube.rotation.y = 0.8;
-        var render = function() {
-            requestAnimationFrame(render);
+			cube.rotation.x += 0.01 * autorotate;
+			cube.rotation.y += 0.02 * autorotate;
 
-            if(autorotate) {
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.02;
-            }
-            
-            if(fxaapass) {
+			if(fxaapass) {
 
-                fbo.bind();
-                renderer.render(root, camera);
+				fbo.bind();
+				renderer.render(root, camera);
 
-                renderer.renderToScreen();
-                renderer.render(post);
+				renderer.renderToScreen();
+				renderer.render(post);
 
-            } else {
-                renderer.render(root, camera);
-            }
+			} else {
+				renderer.render(root, camera);
+			}
 
-            
-        }
+			
+		}
 
-        render();
-    });
+		render();
+	});
 
 </script>
 
 <script>
 if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
 

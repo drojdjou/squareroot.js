@@ -6,9 +6,9 @@
  *
  */
 SQR.V3 = function(x, y, z) {
-    this.set(x, y, z)
-    this.size = 3;
-    SQR.V3.instances++;
+	this.set(x, y, z)
+	this.size = 3;
+	SQR.V3.instances++;
 }
 
 /**
@@ -20,11 +20,11 @@ SQR.V3 = function(x, y, z) {
  *      and leave it that way unless you really know what ypu are doing.
  */ 
 SQR.V3.prototype.set = function(x, y, z, w) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
-    this.w = w || 1;
-    return this;
+	this.x = x || 0;
+	this.y = y || 0;
+	this.z = z || 0;
+	this.w = w || 1;
+	return this;
 }
 
 /**
@@ -33,10 +33,10 @@ SQR.V3.prototype.set = function(x, y, z, w) {
  *  @param {SQR.V2|SQR.V3} p - vector to copy the values to
  */
 SQR.V3.prototype.copyTo = function(p) {
-    p.x = this.x;
-    p.y = this.y;
-    if(p.z != undefined) p.z = this.z;
-    return p;
+	p.x = this.x;
+	p.y = this.y;
+	if(p.z != undefined) p.z = this.z;
+	return p;
 }
 
 /**
@@ -45,10 +45,10 @@ SQR.V3.prototype.copyTo = function(p) {
  *  @param {SQR.V2|SQR.V3} p - vector to copy the values from
  */
 SQR.V3.prototype.copyFrom = function(p) {
-    this.x = p.x;
-    this.y = p.y;
-    this.z = p.z || 0; // in case p is SQR.V2
-    return this;
+	this.x = p.x;
+	this.y = p.y;
+	this.z = p.z || 0; // in case p is SQR.V2
+	return this;
 }
 
 /**
@@ -59,7 +59,7 @@ SQR.V3.prototype.copyFrom = function(p) {
  *  @returns {SQR.V3} a new vector that is a copy of this vector
  */
 SQR.V3.prototype.clone = function() {
-    return new SQR.V3(this.x, this.y, this.z);
+	return new SQR.V3(this.x, this.y, this.z);
 }
 
 /** 
@@ -68,7 +68,7 @@ SQR.V3.prototype.clone = function() {
  *  which can be slow if used on many vectors.
  */
 SQR.V3.prototype.magsq = function() {
-    return this.x * this.x + this.y * this.y + this.z * this.z;
+	return this.x * this.x + this.y * this.y + this.z * this.z;
 };
 
 /**
@@ -76,7 +76,7 @@ SQR.V3.prototype.magsq = function() {
  *  @returns {Number} the length of this vector
  */
 SQR.V3.prototype.mag = function() {
-    return Math.sqrt(this.magsq());
+	return Math.sqrt(this.magsq());
 };
 
 /**
@@ -84,10 +84,7 @@ SQR.V3.prototype.mag = function() {
  *  (i.e. all compoments are very small or equal to 0) The values are compared against SQR.EPSILON
  */
 SQR.V3.prototype.isZero = function() {
-    return 
-        Math.abs(this.x) < SQR.EPSILON && 
-        Math.abs(this.y) < SQR.EPSILON && 
-        Math.abs(this.z) < SQR.EPSILON;
+	return Math.abs(this.x) < SQR.EPSILON &&  Math.abs(this.y) < SQR.EPSILON && Math.abs(this.z) < SQR.EPSILON;
 };
 
 /**
@@ -98,29 +95,29 @@ SQR.V3.prototype.isZero = function() {
  *  @param {Number} s - the value to multiply the the vector by.
  */
 SQR.V3.prototype.mul = function(s) {
-    this.x *= s;
-    this.y *= s;
-    this.z *= s;
-    return this;
+	this.x *= s;
+	this.y *= s;
+	this.z *= s;
+	return this;
 }
 
 /**
  *  Negates this vector.
  */
 SQR.V3.prototype.neg = function() {
-    this.x = -this.x;
-    this.y = -this.y;
-    this.z = -this.z;
-    return this;
+	this.x = -this.x;
+	this.y = -this.y;
+	this.z = -this.z;
+	return this;
 }
 
 /**
  *  Normalizes this vector, i.e. sets its length (magnitude) to 1.
  */
 SQR.V3.prototype.norm = function() {
-    var m = 1 / this.mag();
-    this.set(this.x * m, this.y * m, this.z * m);
-    return this;
+	var m = 1 / this.mag();
+	this.set(this.x * m, this.y * m, this.z * m);
+	return this;
 }
 
 /**
@@ -136,11 +133,11 @@ a.add(a, b).add(a, c); // = a + b + c
  *  @param {SQR.V3=} b - if omitted the current vector is used, which basically means that a is added to current vector.
  */
 SQR.V3.prototype.add = function(a, b) {
-    b = b || this;
-    this.x = a.x + b.x;
-    this.y = a.y + b.y;
-    this.z = a.z + b.z;
-    return this;
+	b = b || this;
+	this.x = a.x + b.x;
+	this.y = a.y + b.y;
+	this.z = a.z + b.z;
+	return this;
 }
 
 /**
@@ -150,24 +147,24 @@ SQR.V3.prototype.add = function(a, b) {
  * @param b
  */
 SQR.V3.prototype.sub = function(a, b) {
-    this.x = a.x - b.x;
-    this.y = a.y - b.y;
-    this.z = a.z - b.z;
-    return this;
+	this.x = a.x - b.x;
+	this.y = a.y - b.y;
+	this.z = a.z - b.z;
+	return this;
 }
 
 SQR.V3.prototype.lerp = function(a, b, t) {
-    this.x = a.x + (b.x - a.x) * t;
-    this.y = a.y + (b.y - a.y) * t;
-    this.z = a.z + (b.z - a.z) * t;
-    return this;
+	this.x = a.x + (b.x - a.x) * t;
+	this.y = a.y + (b.y - a.y) * t;
+	this.z = a.z + (b.z - a.z) * t;
+	return this;
 }
 
 SQR.V3.prototype.random = function() {
-    this.x = Math.random() * 2 - 1;
-    this.y = Math.random() * 2 - 1;
-    this.z = Math.random() * 2 - 1;
-    return this;
+	this.x = Math.random() * 2 - 1;
+	this.y = Math.random() * 2 - 1;
+	this.z = Math.random() * 2 - 1;
+	return this;
 }
 
 /**
@@ -175,18 +172,18 @@ SQR.V3.prototype.random = function() {
  *  @returns {Number} result of a . b
  */
 SQR.V3.dot = function(a, b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 /**
  *  Sets this vector to the result of a cross-product of a and b (`a x b`).
  */
 SQR.V3.prototype.cross = function(a, b) {
-    var x = a.y * b.z - a.z * b.y;
-    var y = a.z * b.x - a.x * b.z;
-    var z = a.x * b.y - a.y * b.x;
-    this.set(x, y, z, this.w);
-    return this;
+	var x = a.y * b.z - a.z * b.y;
+	var y = a.z * b.x - a.x * b.z;
+	var z = a.x * b.y - a.y * b.x;
+	this.set(x, y, z, this.w);
+	return this;
 }
 
 /**
@@ -196,7 +193,7 @@ SQR.V3.prototype.cross = function(a, b) {
  *  @returns {Float32Array} array - the array holding the values of this vector
  */
 SQR.V3.prototype.toUniform = function() {
-    return this.toArray();
+	return this.toArray();
 }
 
 /**
@@ -210,11 +207,11 @@ SQR.V3.prototype.toUniform = function() {
  *  @returns {Float32Array} array - the array holding the values of this vector
  */
 SQR.V3.prototype.toArray = function() {
-    if(!this.array) this.array = new Float32Array(3);
-    this.array[0] = this.x;
-    this.array[1] = this.y;
-    this.array[2] = this.z; 
-    return this.array;
+	if(!this.array) this.array = new Float32Array(3);
+	this.array[0] = this.x;
+	this.array[1] = this.y;
+	this.array[2] = this.z; 
+	return this.array;
 }
 
 SQR.V3.prototype.toString = function toString() {
@@ -229,13 +226,13 @@ SQR.V3.prototype.toString = function toString() {
  *  @param {Number=} h - the height of the screen (defaults to `window.innerHeight`) 
  */
 SQR.V3.prototype.toScreenSpace = function(w, h) {
-    w = w || window.innerWidth;
-    h = h || window.innerHeight;
-    this.x = (this.x / this.z) * w/2 + w/2;
-    this.y = (this.y / this.z) * h/2 + h/2;
+	w = w || window.innerWidth;
+	h = h || window.innerHeight;
+	this.x = (this.x / this.z) * w/2 + w/2;
+	this.y = (this.y / this.z) * h/2 + h/2;
 
-    // TODO: make sure this is ok to be here in any case
-    this.y = h - this.y;
+	// TODO: make sure this is ok to be here in any case
+	this.y = h - this.y;
 }
 
 /**
@@ -247,18 +244,18 @@ SQR.V3.prototype.toScreenSpace = function(w, h) {
  */
 SQR.V3.prototype.addNormal = function(_n) {
 
-    if(!this.normal) {
-        this.normal = new SQR.V3();
-    }
+	if(!this.normal) {
+		this.normal = new SQR.V3();
+	}
 
-    this.normal.add(this.normal, _n);
+	this.normal.add(this.normal, _n);
 }
 
 /** 
  *  This is used to reset the normal to 0,0,0.
  */
 SQR.V3.prototype.resetNormal = function(_n) {
-    if(this.normal) this.normal.set();
+	if(this.normal) this.normal.set();
 }
 
 
