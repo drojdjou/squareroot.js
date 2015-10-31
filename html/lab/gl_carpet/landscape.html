@@ -193,12 +193,20 @@
 		window.addEventListener('resize', resize);
 		resize();
 
-		var w = 20, 
-			h = 15,
-			sw = w * 4, 
-			sh = h * 4, 
-			tileX = w * 4;
-			tileY = h * 4;
+		var w = 24, h = 15, m = 4;
+
+		if(Simplrz.touch && window.innerWidth >= 768) {
+			w = 16, h = 10, m = 4;
+		} else if(Simplrz.touch) {
+			w = 8, h = 10, m = 3;
+		}
+
+		console.log(w, h, m);
+
+		var sw = w * m, 
+			sh = h * m, 
+			tileX = w * m;
+			tileY = h * m;
 
 		var buffer = SQR.Primitives.createPlane(w, h, sw, sh);
 
