@@ -281,7 +281,7 @@
 		root.add(lines);
 
 		camera.position.z = h / 2 + 1;
-		camera.position.y = -6.0;
+		camera.position.y = Simplrz.touch && window.innerWidth < 768 ? -2 : -6;
 		camera.rotation.x = 0.3;
 
 		// camera.position.z = 0.0;
