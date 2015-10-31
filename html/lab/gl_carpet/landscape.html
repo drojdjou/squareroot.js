@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Perlin Noise Carpet</title>
+<title>Perlin Noise Landscape</title>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -39,8 +39,6 @@
 
 <script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
 
-<script type="text/javascript" src="AnimatedTexture.js"></script>
-
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 <style type="text/css">
@@ -70,16 +68,16 @@
 	.configure({
 
 		// ~hairy
-		low:  0.00, 
-		high: 1.00, 
-		octaves: [2, 4, 8], 
-		factors: [1, 1/2, 1/2]
+		// low:  0.00, 
+		// high: 1.00, 
+		// octaves: [2, 4, 8], 
+		// factors: [1, 1/2, 1/2]
 
 		//  ~watery
-		// low:  0.00, 
-		// high: 0.70, 
-		// octaves: [2, 4, 8, 16, 24], 
-		// factors: [1/4, 1, 1/2, 1/4, 1/4]
+		low:  0.12, 
+		high: 0.70, 
+		octaves: [2, 4, 8, 16, 24], 
+		factors: [1/4, 1, 1/2, 1/4, 1/4]
 
 		// ~plastic
 		// low:  0.30, 
@@ -87,21 +85,96 @@
 		// octaves: [2, 4, 8], 
 		// factors: [2, 1, 1/2]
 	})
-	.create(16, 16, true);
+	.create(32, 32, true);
 
 	// .create(16, 16, false);
 	// tt.canvas.classList.add('tt');
 	// document.body.appendChild(tt.canvas);
 	// console.log(tt.canvas);
 
-	var amplitude = 3;
+	var gridTexture = function(gridPattern) {
+
+		var grid = document.createElement('canvas');
+
+		var gs = 128;
+
+		grid.width = gs;
+		grid.height = gs;
+
+		var gtx = grid.getContext('2d');
+
+		gtx.fillStyle = 'rgb(0, 0, 0)';
+		gtx.fillRect(0, 0, gs, gs);
+
+		gtx.strokeStyle = 'rgb(255, 255, 255)';
+		gtx.fillStyle = 'rgb(255, 255, 255)';
+
+		if(gridPattern == LINES) {
+
+			var lw = 6;
+			var h = (gs / 4);
+			var hl = lw / 2;
+			
+			gtx.lineWidth = lw;
+			
+			// Frame
+			gtx.beginPath();
+			// gtx.moveTo(0, hl);
+			// gtx.lineTo(gs, hl);
+			// gtx.moveTo(hl, 0);
+			// gtx.lineTo(hl, gs);
+
+			// Cross
+			gtx.moveTo(h, 0);
+			gtx.lineTo(h, gs);
+			gtx.moveTo(0, h);
+			gtx.lineTo(gs, h);
+
+			gtx.moveTo(h * 2, 0);
+			gtx.lineTo(h * 2, gs);
+			gtx.moveTo(0, h * 2);
+			gtx.lineTo(gs, h * 2);
+
+			gtx.moveTo(h * 3, 0);
+			gtx.lineTo(h * 3, gs);
+			gtx.moveTo(0, h * 3);
+			gtx.lineTo(gs, h * 3);
+
+			gtx.stroke();
+
+			// Diagonal
+			// gtx.strokeStyle = 'rgb(255, 128, 255)';
+			gtx.beginPath();
+			// gtx.moveTo(0, 0);
+			// gtx.lineTo(gs, gs);
+			// gtx.moveTo(gs, 0)
+			// gtx.lineTo(0, gs);
+			// gtx.stroke();
+
+			// document.body.appendChild(grid);
+		}
+
+		if(gridPattern == STROKES) {
+			gtx.fillRect(0, 0, gs, gs);
+		}
+
+		
+
+		return grid;
+	}
+
+	var amplitude = 16;
+
+	var LINES = 0;
+	var STROKES = 1;
 
 	SQR.Loader.loadAssets([
 		['../../src/glsl/light/fog.glsl', 'fog'],
-		['tex.glsl', 'shader']
+		['landscape.glsl', 'shader'],
+		['blurtex.jpg', 'blurtex'],
 	], function(assets) {
 
-		var renderer = new SQR.Renderer('#gl-canvas').clearColor(0.05, 0.0, 0.1);
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(0.0, 0.0, 0.0);
 
 		var root = new SQR.Transform();
 		var camera = new SQR.Transform();
@@ -120,80 +193,94 @@
 		window.addEventListener('resize', resize);
 		resize();
 
-		var t = new SQR.Transform();
+		var w = 20, 
+			h = 15,
+			sw = w * 4, 
+			sh = h * 4, 
+			tileX = w * 4;
+			tileY = h * 4;
 
-		// size, speed, baseOffset, scale
-		// var heightMap = new AnimatedTexture(256, 10, 200, 6 / 256);
-
-		var s = 24, sd = Simplrz.touch ? 24 : 48, tile = 96;
-
-		t.buffer = SQR.Primitives.createPlane(s, s, sd, sd);
-		SQR.Mesh(t.buffer);
-		// t.buffer.cull = false;
+		var buffer = SQR.Primitives.createPlane(w, h, sw, sh);
 
 		SQR.gl.disable(SQR.gl.CULL_FACE);
 
-		var vs = t.buffer.mesh.vertices, vsl = vs.length; 
+		var vs = buffer.mesh.vertices, vsl = vs.length; 
+
+		for(var i = 0; i < vsl; i++) {
+			var f = vs[i].position;
+			f.x += Math.sin(f.z * 0.5);
+		};
 
 		var animate = function() {
 
 			for(var i = 0; i < vsl; i++) {
 				var f = vs[i].position;
-				var x = (f.x + s/2), y = (f.z + s/2);
-				f.y = tt.getValue(x, y) * amplitude;
+
+				
+				var x = (f.x + w/2), y = (f.z + h/2);
+				var g = 1 - (y / h);
+
+				g = 1 - Math.pow(1 - g, 2);
+
+				f.y = amplitude * -0.5 + tt.getValue(x, y) * amplitude * g;
 			};
 
 			// Without lighting
 			// t.buffer.mesh.update();
 
 			// With lighting
-			t.buffer.mesh.calculateNormals(true).update();
+			buffer.mesh.calculateNormals(true).update();
 
-			var dx = 0.4;
-			var dy = 0.4;
-
-			tt.offset.x -= dx / 10;
-			tt.offset.y -= dy / 10;
-
-			t.uniforms.uTextureOffset.x -= dx / 48;
-			t.uniforms.uTextureOffset.y -= dy / 48;
-
+			tt.offset.x -= 0.0010;
+			tt.offset.y += 0.0005;
+			tt.offset.z -= 0.0002;
 		}
 
-		
+		var ltx = SQR.Texture(gridTexture(LINES), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
+		var stx = SQR.Texture(gridTexture(STROKES), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
+		var btx = SQR.Texture(assets.blurtex, { wrap: SQR.gl.MIRRORED_REPEAT });
 
-		var grid = document.createElement('canvas');
-		var gs = 256, ls = 2, radius = 50;
-		grid.width = gs;
-		grid.height = gs;
-		var gtx = grid.getContext('2d');
-
-		gtx.fillStyle = SQR.Color(0.05, 0.0, 0.1).toCSS();
-		gtx.fillRect(0, 0, gs, gs);
-
-		gtx.fillStyle = 'rgb(255, 128, 255)';
-
-		gtx.beginPath();
-		gtx.arc(gs/2, gs/2, radius, 0, SQR.TWOPI);
-		gtx.fill();
-
-		t.shader = SQR.Shader(assets.shader)
+		var shader = SQR.Shader(assets.shader)
 			.use()
-			.setUniform('uTexture', SQR.Texture(grid, { mipmap: true, wrap: SQR.gl.REPEAT }))
 			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm())
-			.setUniform('uTextureTile', [tile, tile])
-			.setUniform('uFog', [4, 12])
-			.setUniform('uFogColor', [0.05, 0.0, 0.1]);
+			.setUniform('uTextureTile', [tileX, tileY])
+			.setUniform('uBlurTexture', btx)
+			.setUniform('uFog', [h/4, h-2])
+			.setUniform('uFogColor', [0.0, 0.0, 0.0]);
 
-		t.uniforms = {
-			uTextureOffset: new SQR.V2(0, 0)
+
+
+
+		var solid = new SQR.Transform();
+		solid.buffer = buffer;
+		solid.shader = shader;
+		solid.uniforms = { 
+			uAmbient: [0.2, 0.3],
+			uTexture: ltx
 		};
 
-		root.add(t);
+		root.add(solid);
 
-		camera.position.z = 4.0;
-		camera.position.y = 2.5;
-		camera.rotation.x = 0.5;
+		var lines = new SQR.Transform();
+		lines.buffer = buffer;
+		lines.shader = shader;
+		lines.drawMode = SQR.gl.LINES;
+		lines.lineWidth = 3;
+		lines.position.y = 0.001;
+		lines.uniforms = { 
+			uAmbient: [0.8, 0.2],
+			uTexture: stx
+		};
+
+		root.add(lines);
+
+		camera.position.z = h / 2 + 1;
+		camera.position.y = -6.0;
+		camera.rotation.x = 0.3;
+
+		// camera.position.z = 0.0;
+		// camera.position.y = 20.0;
+		// camera.rotation.x = Math.PI / 2;
 
 		var render = function() {
 			requestAnimationFrame(render);

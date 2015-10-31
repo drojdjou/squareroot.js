@@ -21,8 +21,12 @@
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
-<script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -37,13 +41,12 @@
 		['normal2color.glsl', 'shader'],
 	], function(assets) {
 
-		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
-		var renderer = new SQR.Renderer(ctx);
+		var renderer = new SQR.Renderer('#gl-canvas');
 
-		var resize =function() {
+		var resize = function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			ctx.size(w, h);
-			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+			renderer.context.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect);
 		}
 
 		window.addEventListener('resize', resize);
@@ -55,15 +58,38 @@
 		camera.position.z = 5;
 		root.add(camera);
 
-		var cube = new SQR.Transform();
-		cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-		cube.shader = SQR.Shader(assets.shader);
-		root.add(cube);
+		var pri = new SQR.Transform();
+		// pri.buffer = SQR.Primitives.createCube(2, 2, 2, { smooth: false, flip: true });
+
+		pri.buffer = SQR.Primitives.createSphere(1, 40, 20);
+
+		var c = 0;
+		pri.buffer.mesh.vertices.forEach(function(v) {
+			v.phase = v.position.y * 8;
+			v.speed = 0.15;
+			v.base = new SQR.V3().copyFrom(v.position);
+		});
+
+		var animateVertex = function(v) {
+			v.phase += v.speed;
+			v.position.copyFrom(v.base).mul(2 + Math.cos(v.phase) * 0.14 + Math.cos(v.phase * 0.5) * 0.07);
+		}
+
+		var animate = function() {
+			pri.rotation.x += 0.01;
+			pri.rotation.y += 0.004;
+
+			pri.buffer.mesh.vertices.forEach(animateVertex);
+			pri.buffer.mesh.calculateNormals(true).update();
+		}
+
+
+		pri.shader = SQR.Shader(assets.shader);
+		root.add(pri);
 
 		var render = function() {
 			requestAnimationFrame(render);
-			cube.rotation.x += 0.01;
-			cube.rotation.y += 0.02;
+			animate();
 			renderer.render(root, camera);
 		}
 

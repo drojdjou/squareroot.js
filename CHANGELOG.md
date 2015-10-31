@@ -210,3 +210,9 @@ Changing how disabling depth works in Transform. Not the entire DEPTH_TEST is di
 
 Very important: the welcome console message is not in color
 
+
+##### v3.0 b 136
+*Oct 29th 2015*
+
+Started reworking the mesh creation functions (aka Primitives)
+

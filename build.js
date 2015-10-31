@@ -122,7 +122,7 @@ var saveBucket = function(bucket, fileBase) {
 var logMessage = process.argv[2];
 
 if(!logMessage) {
-	console.worn('WARNING - Please provide a log message for this build or - for dev/test builds');
+	console.warn('WARNING - Please provide a log message for this build or - for dev/test builds');
 	return;
 }
 

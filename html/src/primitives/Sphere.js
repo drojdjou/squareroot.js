@@ -11,93 +11,86 @@
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.createSphere = function(radius, sw, sh, options) {
+SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 
-    var vertices = [];
-    var uvs = [];
-    var faces = [];
+	var m = new SQR.Mesh();
 
-    options = options || {};
+	radius = radius || 50;
+	segmentsX = Math.max(3, Math.floor(segmentsX) || 8);
+	segmentsY = Math.max(3, Math.floor(segmentsY) || 6);
+	options = options || {};
 
-    var radius = radius || 50;
-    var segmentsX = Math.max(3, Math.floor(sw) || 8);
-    var segmentsY = Math.max(3, Math.floor(sh) || 6);
+	var phiStart = 0;
+	var phiLength = Math.PI * 2;
+	var thetaStart = 0;
+	var thetaLength = Math.PI;
 
-    var phiStart = 0;
-    var phiLength = Math.PI * 2;
+	var x, y;
 
-    var thetaStart = 0;
-    var thetaLength = Math.PI;
+	for (y = 1; y <= segmentsY - 1; y ++) {
 
-    var x, y;
+		for (x = 0; x < segmentsX; x ++) {
 
-    for (y = 0; y <= segmentsY; y ++) {
+			var u = x / segmentsX;
+			var v = y / segmentsY;
 
-        for (x = 0; x <= segmentsX; x ++) {
+			var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+			var yp = radius * Math.cos(thetaStart + v * thetaLength);
+			var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
 
-            var u = x / segmentsX;
-            var v = y / segmentsY;
+			var i = m.V(xp, yp, zp);
+			m.T(u, 1 - v);
 
-            var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
-            var yp = radius * Math.cos(thetaStart + v * thetaLength);
-            var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+		}
+	}
 
-            vertices.push(new SQR.V3(xp, yp, zp));
-            uvs.push(new SQR.V2(u, 1 - v));
-        }
-    }
+	
 
-    for (y = 0; y < segmentsY; y ++) {
+	var northPole = m.V(0, radius, 0);
+	var southPole = m.V(0, -radius, 0);	
+	m.T(1, 1);
+	m.T(0, 0);
 
-        for (x = 0; x < segmentsX; x ++) {
+	for (y = 0; y < segmentsY; y++) {
 
-            var o = segmentsX + 1;
-            var vt1 = vertices[ y * o + x + 0 ];
-            var vt2 = vertices[ y * o + x + 1 ];
-            var vt3 = vertices[ (y + 1) * o + x + 1 ];
-            var vt4 = vertices[ (y + 1) * o + x + 0 ];
+		var isn = y == 0;
+		var iss = y == segmentsY - 1;
 
-            var uv1 = uvs[ y * o + x + 0 ];
-            var uv2 = uvs[ y * o + x + 1 ];
-            var uv3 = uvs[ (y + 1) * o + x + 1 ];
-            var uv4 = uvs[ (y + 1) * o + x + 0 ];
+		for (x = 0; x < segmentsX; x++) {
 
-            var f;
+			var y0 = y;
+			var y1 = y + 1;
 
-            if(options.reverseNormals)
-                f = new SQR.Face().setPosition(vt2, vt1, vt3, vt4).setUV(uv2, uv1, uv3, uv4);
-            else 
-                f = new SQR.Face().setPosition(vt1, vt2, vt4, vt3).setUV(uv1, uv2, uv4, uv3);
+			var x0 = x;
+			var x1 = (x + 1) % (segmentsX);
 
-            if(options.flatShading) {
-                f.calculateNormal();
-            } else {
-                vt1.normal = vt1.clone().norm();
-                vt2.normal = vt2.clone().norm();
-                vt3.normal = vt3.clone().norm();
-                vt4.normal = vt4.clone().norm();
+			var ta = y0 * segmentsX + x0 - segmentsX;
+			if(isn) ta = northPole;
 
-                if(options.reverseNormals) {
-                    vt1.normal.neg();
-                    vt2.normal.neg();
-                    vt3.normal.neg();
-                    vt4.normal.neg();
-                }
-            }
+			var tb = y0 * segmentsX + x1 - segmentsX;
+			if(isn) tb = northPole;
 
-            faces.push(f);
-        }
-    }
+			var tc = y1 * segmentsX + x0 - segmentsX;
+			if(iss) tc = southPole;
 
-    var geo = SQR.Buffer()
-        .layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, faces.length * 6);
+			var td = y1 * segmentsX + x1 - segmentsX;
+			if(iss) td = southPole;
 
-    var c = 0, t;
-    faces.forEach(function(t) {
-        c += t.toBuffer(geo, c, !options.flatShading);
-    });
+			if(isn) {
+				m.F(ta, td, tc).T(ta, td, tc);
+			} else if(iss) {
+				m.F(ta, tb, td).T(ta, tb, td);
+			} else {
+				m.F(ta, tb, tc, td).T(ta, tb, tc, td);
+			}
 
-    return geo.update();
+		}
+	}
+
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
 }
 
 

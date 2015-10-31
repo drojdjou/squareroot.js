@@ -319,7 +319,7 @@ SQR.Transform.prototype.draw = function(options) {
 	gl.depthMask(t.depthMask);
 
 	gl.lineWidth(t.lineWidth);
-	t.buffer.draw();
+	t.buffer.draw(this);
 	if(t.afterDraw) t.afterDraw();
 }
 

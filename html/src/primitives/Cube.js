@@ -12,43 +12,76 @@
  */
 SQR.Primitives.createCube = function(w, h, d, options) {
 
-
-	var V2 = this.V2, V3 = this.V3, F = this.F(options);
-
 	w = w || 1;
 	h = h || 1;
 	d = d || 1;
+	options = options || {};
 
-	var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
-	
+	var m = new SQR.Mesh();
+
+
 	var 
-		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
-		v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
-		v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
-		v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
+		v0 = m.V(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+		v1 = m.V(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+		v2 = m.V(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+		v3 = m.V(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
 
-		v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
-		v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
-		v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
-		v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
+		v4 = m.V(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+		v5 = m.V(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+		v6 = m.V(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+		v7 = m.V(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
 
-		u0 = V2(0, 1),
-		u1 = V2(1, 1),
-		u2 = V2(0, 0),
-		u3 = V2(1, 0);
+		u0 = m.T(0, 1),
+		u1 = m.T(1, 1),
+		u2 = m.T(0, 0),
+		u3 = m.T(1, 0);
 
-	F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
-	F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
-	F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
-	F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
-	F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
-	F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
 	
-	F.toBuffer(geo);
+	m.F(v0, v1, v2, v3).T(u0, u1, u2, u3);
+	m.F(v5, v4, v7, v6).T(u0, u1, u2, u3);
+	m.F(v4, v0, v6, v2).T(u0, u1, u2, u3);
+	m.F(v1, v5, v3, v7).T(u0, u1, u2, u3);
+	m.F(v4, v5, v0, v1).T(u0, u1, u2, u3);
+	m.F(v2, v3, v6, v7).T(u0, u1, u2, u3);
 
-	// SQR.Debug.traceBuffer(geo, true);
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
+
+
+	// var V2 = this.V2, V3 = this.V3, F = this.F(options);
+
+	// w = w || 1;
+	// h = h || 1;
+	// d = d || 1;
+
+	// var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
 	
-	return geo.update();
+	// var 
+	// 	v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+	// 	v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+	// 	v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+	// 	v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
+
+	// 	v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+	// 	v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+	// 	v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+	// 	v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
+
+	// 	u0 = V2(0, 1),
+	// 	u1 = V2(1, 1),
+	// 	u2 = V2(0, 0),
+	// 	u3 = V2(1, 0);
+
+	// F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
+	// F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
+	// F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
+	// F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
+	// F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
+	// F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
+	// F.toBuffer(geo);
+	// return geo.update();
 }
 
 /*

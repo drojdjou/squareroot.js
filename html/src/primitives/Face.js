@@ -4,7 +4,8 @@
  *  shader the same normal - thanks to this flat shaded materials have quads shaded
  *  the same way which is nicer than havong each triangle have a slightly different normal.
  *
- *  Currently it supports the following attributes: aPosition, aNormal, aUV.
+ *  Currently it supports the following attributes: aPosition, aNormal, aUV and aColor. 
+ *	Should support aTangent and aBinormal soon too.
  *
  *  @class Face
  *  @memberof SQR

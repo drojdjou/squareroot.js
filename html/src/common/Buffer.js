@@ -79,7 +79,7 @@ var buffer = SQR.Buffer().layout(l, 100).update();
 	 *	@method resize
 	 *	@memberof SQR.Buffer.prototype
 	 *
-	 *	@description Resizes the data 
+	 *	@description Resizes the data array and/or offsets all the data in the array.
 	 */
 	b.resize = function(size, offset) {
 		b.size = size;
@@ -144,13 +144,13 @@ b.set('aPosition', 1, 	new SQR.V3(3, 5, 6));
 			array = Array.prototype.slice.call(arguments, 2);
 		}
 
-		var s = b.attributes[attribute];
+		var s = attribute ? b.attributes[attribute].offset : 0;
 
 		if(position < 0) position += b.size;
 		if(position >= b.size) position = position % b.size;
 
 		for(var j = 0, al = array.length; j < al; j++) {
-			data[position * b.strideSize + j + s.offset] = array[j];
+			data[position * b.strideSize + j + s] = array[j];
 		}
 
 		return b;
@@ -293,13 +293,13 @@ b.iterate('aPosition', function(i, data, count)) {
 	 *	@description used by the {SQR.Renderer}, called when this geometry is drawn. 
 	 *	Will call `gl.drawArrays` or `gl.drawElements` to draw the geometry using the current shader.
 	 */
-	b.draw = function() {
+	b.draw = function(t) {
 		var gl = SQR.gl;
 
 		if(hasIndex)
-			gl.drawElements(b.mode, b.indexSize, gl.UNSIGNED_SHORT, 0);
+			gl.drawElements(t.drawMode || b.mode, b.indexSize, gl.UNSIGNED_SHORT, 0);
 		else 
-			gl.drawArrays(b.mode, 0, b.size);
+			gl.drawArrays(t.drawMode || b.mode, 0, b.size);
 	}
 
 	/**

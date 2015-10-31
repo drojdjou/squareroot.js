@@ -851,70 +851,10 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
  *
  *  @description Attempt to create a decorator for a buffer that will be able to process 
  *	the data (position, normals and tangents) as it if was a collection of faces.
- *
- *	
- *
  */
-SQR.Mesh = function(buffer) {
-
+SQR.Mesh = function(buffer, quads) {
 	var m = {};
-
-	// Create a face and a normal vector for reuse in loop below
-	var f = new SQR.Face().setPosition(new SQR.V3(), new SQR.V3(), new SQR.V3());
-	f.a.normal = new SQR.V3();
-	f.b.normal = new SQR.V3();
-	f.c.normal = new SQR.V3();
-	var n = new SQR.V3();
-
-	m.calculateNormals = function() {
-
-		var index = buffer.getIndexArray();
-		var data = buffer.getDataArray();
-
-		// This method does the assumption that the aPosition attribute is the first one
-		for(var i = 0; i < buffer.indexSize; i += 3) {
-
-			var s = buffer.strideSize;
-			var o0 = index[i+0] * s;
-			var o1 = index[i+1] * s;
-			var o2 = index[i+2] * s;
-
-			f.a.set(data[o0+0], data[o0+1], data[o0+2]);
-			f.b.set(data[o1+0], data[o1+1], data[o1+2]);
-			f.c.set(data[o2+0], data[o2+1], data[o2+2]);
-
-			f.a.normal.set(data[o0+3], data[o0+4], data[o0+5]);
-			f.b.normal.set(data[o1+3], data[o1+4], data[o1+5]);
-			f.c.normal.set(data[o2+3], data[o2+4], data[o2+5]);
-
-			f.calculateNormal();
-			f.normal.norm();
-			f.addNormalToVertices();
-
-			data[o0+3] = f.a.normal.x;
-			data[o0+4] = f.a.normal.y;
-			data[o0+5] = f.a.normal.z;
-
-			data[o1+3] = f.b.normal.x;
-			data[o1+4] = f.b.normal.y;
-			data[o1+5] = f.b.normal.z;
-
-			data[o2+3] = f.c.normal.x;
-			data[o2+4] = f.c.normal.y;
-			data[o2+5] = f.c.normal.z;
-		}
-
-		buffer.iterate('aNormal', function(i, data, c) {
-			n.set(data[i+0], data[i+1], data[i+2]).norm();
-
-			data[i+0] = n.x;
-			data[i+1] = n.y;
-			data[i+2] = n.z;
-		});
-
-		buffer.update();
-	};
-
+	buffer.mesh = m;
 	return m;
 }
 
@@ -1002,10 +942,11 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 	var i = getAttributeData('indices');
 	if(i) buffer.index(i);
 
-	buffer.mesh = SQR.Mesh(buffer);
+	SQR.Mesh(buffer);
 
     return buffer.update();
 };
+
 
 /* --- --- [primitives/Plane.js] --- --- */
 
@@ -1122,45 +1063,55 @@ SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 	geo.faces = faces;
 	geo.vertices = vertices;
 
+	var resetNormal = function(v) {
+		v.resetNormal();
+	}
+
+	var faceNormal = function(f) {
+		f.calculateNormal();
+		f.addNormalToVertices();
+	}
+
+	var po, no, uo;
+
+	var setDataFromFaces = function(i, data, c) {
+		var v = vertices[c];
+		var u = uvs[c];
+
+		data[i+0+po] = v.x;
+		data[i+1+po] = v.y;
+		data[i+2+po] = v.z;
+
+		data[i+0+no] = v.normal.x;
+		data[i+1+no] = v.normal.y;
+		data[i+2+no] = v.normal.z;
+
+		data[i+0+uo] = u.x;
+		data[i+1+uo] = u.y;
+	}
+
 	geo.recalculateNormals = function() {
-		faces.forEach(function(f) {
-			f.calculateNormal();
-			f.addNormalToVertices();
-		});
-
+		vertices.forEach(resetNormal)
+		faces.forEach(faceNormal);
 		return geo;
 	}
 
-	geo.updateFromFaces = function() {
+	geo.updateFromFaces = function(updateIndices) {
 
-		geo.iterate('aPosition', function(i, data, c) {
-			var v = vertices[c];
-			data[i+0] = v.x;
-			data[i+1] = v.y;
-			data[i+2] = v.z;
-		});
+		po = geo.attributes.aPosition.offset;
+		no = geo.attributes.aNormal.offset;
+		uo = geo.attributes.aUV.offset;
 
-		geo.iterate('aNormal', function(i, data, c) {
-			var v = vertices[c];
-			v.normal.norm();
-			data[i+0] = v.normal.x;
-			data[i+1] = v.normal.y;
-			data[i+2] = v.normal.z;
-		});
+		geo.iterate(null, setDataFromFaces);
 
-		geo.iterate('aUV', function(i, data, c) {
-			var v = uvs[c];
-			data[i+0] = v.x;
-			data[i+1] = v.y;
-		});
-
-		geo.index(indices);
+		if(updateIndices) geo.index(indices);
 
 		return geo;
 	}
 
 
-	return geo.recalculateNormals().updateFromFaces().update();
+	return geo.recalculateNormals().updateFromFaces(true).update();
+
 }
 
 
