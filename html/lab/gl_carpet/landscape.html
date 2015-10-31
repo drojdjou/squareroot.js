@@ -163,8 +163,6 @@
 		return grid;
 	}
 
-	var amplitude = 16;
-
 	var LINES = 0;
 	var STROKES = 1;
 
@@ -194,14 +192,14 @@
 		resize();
 
 		var w = 24, h = 15, m = 4;
+		var amplitude = 16;
 
 		if(Simplrz.touch && window.innerWidth >= 768) {
 			w = 16, h = 10, m = 4;
 		} else if(Simplrz.touch) {
 			w = 8, h = 10, m = 3;
+			amplitude = 8;
 		}
-
-		console.log(w, h, m);
 
 		var sw = w * m, 
 			sh = h * m, 
