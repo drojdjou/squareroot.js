@@ -27,6 +27,9 @@
 
 <script type="text/javascript" src="../../src/extras/GeometryTools.js"></script>
 
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 <script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
@@ -78,8 +81,7 @@
 		var lightRange = 7;
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		var ctx = SQR.Context('#gl-canvas').create().clearColor(sky.r, sky.g, sky.b, 1);
-		var renderer = new SQR.Renderer(ctx);
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(sky.r, sky.g, sky.b, 1);
 
 
 		var root = new SQR.Transform();
@@ -138,7 +140,7 @@
 			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
 			// ctx.size(w, h, window.devicePixelRatio);
-			ctx.size(w, h, 1);
+			renderer.context.size(w, h, 1);
 
 			renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 0.01, 10000);
 		}

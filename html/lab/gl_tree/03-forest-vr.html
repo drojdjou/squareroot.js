@@ -29,6 +29,9 @@
 
 <script type="text/javascript" src="../../src/extras/GeometryTools.js"></script>
 
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 <script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
@@ -111,8 +114,8 @@ SQR.VRApp(function(options) {
 		var sky = new SQR.Color().setRGB(0.05, 0.05, 0.08);
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		var ctx = SQR.Context('#gl-canvas').create().clearColor(sky.r, sky.g, sky.b, 1);
-		var renderer = new SQR.Renderer(ctx);
+
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(sky.r, sky.g, sky.b, 1);
 
 		// var resize =function() {
 		// 	w = window.innerWidth, h = window.innerHeight, aspect = w/h;
@@ -243,7 +246,7 @@ SQR.VRApp(function(options) {
 			camera.rotation.x = my * SQR.HALFPI;
 		}
 
-		var vr = SQR.VRPost(camera, renderer, ctx, options);
+		var vr = SQR.VRPost(camera, renderer, renderer.context, options);
 		window.addEventListener('resize', vr.size);
 		vr.size();
 

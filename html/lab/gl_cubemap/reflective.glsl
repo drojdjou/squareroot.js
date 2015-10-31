@@ -12,12 +12,15 @@ uniform mat4 uViewMatrix;
 uniform mat4 uProjection;
 uniform mat3 uNormalMatrix;
 
+uniform vec3 uEyePosition;
+
 varying vec3 vRefVec;
      
 void main() {
+	vec4 mPosition = uMatrix * vec4(aPosition, 1.0);
 	vec4 mvPosition = uViewMatrix * vec4(aPosition, 1.0);
 	vec3 normal = normalize(uNormalMatrix * aNormal);
-	vec3 incident = normalize(-mvPosition.xyz);
+	vec3 incident = normalize(mPosition.xyz - uEyePosition);
 	vRefVec = reflect(incident, normal);
 	gl_Position = uProjection * mvPosition;
 }

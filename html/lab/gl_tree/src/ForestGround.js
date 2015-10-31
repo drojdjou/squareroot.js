@@ -5,10 +5,10 @@ ForestGround = function(parent, assets, options, camera) {
 	var numTiles = 2;
 
 	var buffer = SQR.Primitives.createPlane(gSize, gSize, gRes, gRes);
-	buffer.vertices.forEach(function(v) {
+	buffer.mesh.vertices.forEach(function(v) {
 		v.y = 0.5 - Math.random() * 1;
 	});
-	buffer.recalculateNormals().updateFromFaces().update();
+	buffer.mesh.calculateNormals().update();
 
 	var shader = SQR.Shader(assets.ground)
 		.use()

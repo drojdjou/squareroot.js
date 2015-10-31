@@ -26,6 +26,9 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 <script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
 
@@ -89,8 +92,8 @@
 						.setUniform('uCubemap', cubemapBuffer.texture);
 
 		var sphere = new SQR.Transform();
-		sphere.buffer = SQR.Primitives.createSphere(5, 20, 20).update();
-		// sphere.buffer = SQR.Primitives.createCube(5, 5, 5).update();
+		sphere.buffer = SQR.Primitives.createSphere(5, 20, 20, { smooth: true });
+		// sphere.buffer = SQR.Primitives.createCube(5, 5, 5);
 		sphere.shader = reflShader
 		root.add(sphere);
 
@@ -196,15 +199,15 @@
 			ctx.gl.viewport(0, 0, w, h);
 
 			cubes.rotation.x += 0.01;
-			cubes.rotation.y += 0.01;
-			cubes.rotation.z += 0.01;
+			// cubes.rotation.y += 0.01;
+			// cubes.rotation.z += 0.01;
 
 			cubes.children.forEach(function(e) {
 				e.rotation.y += 0.01;
 				e.rotation.x += 0.02;
 			});
 
-			// camRoot.rotation.y += 0.01;
+			camRoot.rotation.y += 0.01;
 			// cubes.rotation.x += mx * 0.05;
 			// cubes.rotation.y += my * 0.05;
 
