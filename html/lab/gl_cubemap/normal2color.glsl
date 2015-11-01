@@ -11,7 +11,7 @@ uniform mat3 uNormalMatrix;
 varying vec3 vNormal;
      
 void main() {
-	vNormal = normalize(uNormalMatrix * aNormal);
+	vNormal = aNormal;
 	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
 }
 

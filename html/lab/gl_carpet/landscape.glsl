@@ -48,7 +48,7 @@ void main() {
 	vec2 uv = vUV * uTextureTile + uTextureOffset;
 
 	vec2 buv = vUV;
-	buv.y -= uTime * 0.0002;
+	buv.y -= uTime * 0.0001;
 
 	vec3 c = texture2D(uTexture, uv).r * texture2D(uBlurTexture, buv).rgb * l;
 	

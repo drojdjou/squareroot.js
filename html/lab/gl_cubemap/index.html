@@ -18,6 +18,7 @@
 <script type="text/javascript" src="../../src/common/Cubemap.js"></script>
 <script type="text/javascript" src="../../src/common/FrameBuffer.js"></script>
 
+<script type="text/javascript" src="../../src/math/Color.js"></script>
 <script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix33.js"></script>
@@ -92,10 +93,33 @@
 						.setUniform('uCubemap', cubemapBuffer.texture);
 
 		var sphere = new SQR.Transform();
-		sphere.buffer = SQR.Primitives.createSphere(5, 20, 20, { smooth: true });
-		// sphere.buffer = SQR.Primitives.createCube(5, 5, 5);
+		sphere.buffer = SQR.Primitives.createSphere(5, 30, 30, { smooth: true });
 		sphere.shader = reflShader
 		root.add(sphere);
+
+		sphere.uniforms = {
+			uColor: SQR.Color(0.4, 0.1, 0.0)
+		};
+
+		var c = 0;
+		sphere.buffer.mesh.vertices.forEach(function(v) {
+			v.phase = v.position.y * v.position.x * 0.4;
+			v.speed = 0.04;
+			v.base = new SQR.V3().copyFrom(v.position);
+		});
+
+		var animateVertex = function(v) {
+			v.phase += v.speed;
+			v.position.copyFrom(v.base).mul(1 + Math.cos(v.phase) * 0.1);
+		}
+
+		var animate = function() {
+			sphere.rotation.x += 0.01;
+			sphere.rotation.y += 0.004;
+
+			sphere.buffer.mesh.vertices.forEach(animateVertex);
+			sphere.buffer.mesh.calculateNormals(true).update();
+		}
 
 		var cubes = new SQR.Transform();
 		root.add(cubes);
@@ -144,31 +168,31 @@
 
 		var renderSide = function(name) {
 			cubemapBuffer.bind(name);
-			ctx.clearColor(0.2, 0.0, 0.2, 1);
+			ctx.clearColor(0, 0, 0, 1);
 			ctx.clear();
 			ctx.gl.viewport(0, 0, REFL_SIZE, REFL_SIZE);
 
 			switch(name) {
-				case 'front':
+				case 'back':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 1, 0, 0);
 				break;
-				case 'back':
+				case 'front':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 0, 0, 1);
 				break;
 				case 'left':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
-				qt.fromAngleAxis(Math.PI, 0, 0, 1);
-				cubemapCamera.quaternion.mul(qt);
+				// qt.fromAngleAxis(Math.PI, 0, 0, 1);
+				// cubemapCamera.quaternion.mul(qt);
 				break;
 				case 'right':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
-				qt.fromAngleAxis(Math.PI, 0, 0, -1);
-				cubemapCamera.quaternion.mul(qt);
-				break;
-				case 'up':
-				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+				// qt.fromAngleAxis(Math.PI, 0, 0, -1);
+				// cubemapCamera.quaternion.mul(qt);
 				break;
 				case 'down':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+				break;
+				case 'up':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 1, 0, 0);
 				break;
 			}
@@ -178,6 +202,7 @@
 
 		var render = function() {
 			requestAnimationFrame(render);
+
 			mx += (tx - mx) * 0.1;
 			my += (ty - my) * 0.1;
 
@@ -197,6 +222,8 @@
 			ctx.clearColor(0, 0, 0, 1);
 			ctx.clear();
 			ctx.gl.viewport(0, 0, w, h);
+
+			animate();
 
 			cubes.rotation.x += 0.01;
 			// cubes.rotation.y += 0.01;

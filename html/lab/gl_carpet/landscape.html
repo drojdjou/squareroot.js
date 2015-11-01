@@ -237,9 +237,9 @@
 			// With lighting
 			buffer.mesh.calculateNormals(true).update();
 
-			tt.offset.x -= 0.0010;
-			tt.offset.y += 0.0005;
-			tt.offset.z -= 0.0002;
+			tt.offset.x -= 0.0020;
+			tt.offset.y += 0.0006;
+			tt.offset.z -= 0.0003;
 		}
 
 		var ltx = SQR.Texture(gridTexture(LINES), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
@@ -282,7 +282,7 @@
 
 		camera.position.z = h / 2 + 1;
 		camera.position.y = Simplrz.touch && window.innerWidth < 768 ? -2 : -6;
-		camera.rotation.x = 0.3;
+		camera.rotation.x = 0.2;
 
 		// camera.position.z = 0.0;
 		// camera.position.y = 20.0;
