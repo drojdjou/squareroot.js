@@ -23,6 +23,8 @@ SQR.FrameBuffer = function(width, height, isCubemap) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
 		gl.bindTexture(gl.TEXTURE_2D, f.texture);
 
+		// gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		

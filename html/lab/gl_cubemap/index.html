@@ -46,12 +46,12 @@
 
 	SQR.Loader.loadAssets([
 		['normal2color.glsl', 'n2c'],
-		['reflective.glsl', 'refl'],
+		['glass.glsl', 'refl'],
 		['../../assets/monument.jpg', 'tex'],
 	], function(assets) {
 
 		var REFL_SIZE = Simplrz.touch ? 128 : 512;
-		var NUM_CUBES = Simplrz.touch ? 25 : 100;
+		var NUM_CUBES = Simplrz.touch ? 25 : 50;
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
@@ -89,43 +89,29 @@
 		root.add(cubemapCameraHolder);
 
 		var reflShader = SQR.Shader(assets['refl'])
-						.use()
-						.setUniform('uCubemap', cubemapBuffer.texture);
+			.use()
+			.setUniform('uCubemap', cubemapBuffer.texture)
+			.setUniform('chromaticDispertion', [0.98, 1.00, 1.02])
+			.setUniform('bias', 0.2)
+			.setUniform('scale', 0.8)
+			.setUniform('power', 1.0);
 
 		var sphere = new SQR.Transform();
-		sphere.buffer = SQR.Primitives.createSphere(5, 30, 30, { smooth: true });
+		sphere.buffer = SQR.Primitives.createSphere(6, 20, 20, { smooth: true });
 		sphere.shader = reflShader
 		root.add(sphere);
 
 		sphere.uniforms = {
-			uColor: SQR.Color(0.4, 0.1, 0.0)
+			uColor: SQR.Color(0.00, 0.15, 0.20)
 		};
-
-		var c = 0;
-		sphere.buffer.mesh.vertices.forEach(function(v) {
-			v.phase = v.position.y * v.position.x * 0.4;
-			v.speed = 0.04;
-			v.base = new SQR.V3().copyFrom(v.position);
-		});
-
-		var animateVertex = function(v) {
-			v.phase += v.speed;
-			v.position.copyFrom(v.base).mul(1 + Math.cos(v.phase) * 0.1);
-		}
-
-		var animate = function() {
-			sphere.rotation.x += 0.01;
-			sphere.rotation.y += 0.004;
-
-			sphere.buffer.mesh.vertices.forEach(animateVertex);
-			sphere.buffer.mesh.calculateNormals(true).update();
-		}
 
 		var cubes = new SQR.Transform();
 		root.add(cubes);
 
 		var cubeBuffer = SQR.Primitives.createCube(1, 1, 1).update();
-		var cubeShader = SQR.Shader(assets['n2c']);
+		var cubeShader = SQR.Shader(assets['n2c'])
+			.use()
+			.setUniform('uLight', new SQR.V3(1.0, 0.2, 0.5).norm());
 
 		var addCube = function(x, y, z, color) {
 			var c = new SQR.Transform();
@@ -149,7 +135,7 @@
 			var v = new SQR.V3().random().norm().mul(8 + Math.random() * 4);
 			var c = addCube(v.x, v.y, v.z, [1,1,1]);
 			c.rotation.set(v.x, v.y, v.z);
-			c.scale.set(0.5, 0.5, 0.5);
+			c.scale.set(0.3, 0.3, 0.3);
 		}
 
 		for(var i = 0; i < NUM_CUBES; i++) {
@@ -165,39 +151,40 @@
 
 		cubemapCamera.useQuaternion = true;
 		var qt = new SQR.Quaternion();
-
+		
 		var renderSide = function(name) {
+
 			cubemapBuffer.bind(name);
 			ctx.clearColor(0, 0, 0, 1);
 			ctx.clear();
 			ctx.gl.viewport(0, 0, REFL_SIZE, REFL_SIZE);
 
 			switch(name) {
-				case 'back':
+				case 'front':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 1, 0, 0);
 				break;
-				case 'front':
+				case 'back':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI, 0, 0, 1);
 				break;
-				case 'left':
-				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
-				// qt.fromAngleAxis(Math.PI, 0, 0, 1);
-				// cubemapCamera.quaternion.mul(qt);
-				break;
 				case 'right':
-				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
-				// qt.fromAngleAxis(Math.PI, 0, 0, -1);
-				// cubemapCamera.quaternion.mul(qt);
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, 1, 0);
+				qt.fromAngleAxis(Math.PI, 1, 0, 0);
+				cubemapCamera.quaternion.mul(qt);
 				break;
-				case 'down':
-				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+				case 'left':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 0, -1, 0);
+				qt.fromAngleAxis(Math.PI, 1, 0, 0);
+				cubemapCamera.quaternion.mul(qt);
 				break;
 				case 'up':
+				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, -1, 0, 0);
+				break;
+				case 'down':
 				cubemapCamera.quaternion.fromAngleAxis(Math.PI * 0.5, 1, 0, 0);
 				break;
 			}
 
-			renderer.render(root, cubemapCamera);//, { dontCalculateTransforms: (name == 'front') });
+			renderer.render(root, cubemapCamera);
 		}
 
 		var render = function() {
@@ -223,20 +210,15 @@
 			ctx.clear();
 			ctx.gl.viewport(0, 0, w, h);
 
-			animate();
-
-			cubes.rotation.x += 0.01;
-			// cubes.rotation.y += 0.01;
-			// cubes.rotation.z += 0.01;
-
 			cubes.children.forEach(function(e) {
 				e.rotation.y += 0.01;
 				e.rotation.x += 0.02;
 			});
 
-			camRoot.rotation.y += 0.01;
-			// cubes.rotation.x += mx * 0.05;
-			// cubes.rotation.y += my * 0.05;
+			cubes.rotation.z += 0.002 + my * 0.02;
+			cubes.rotation.y += 0.003 + mx * 0.02;
+
+			camRoot.rotation.x = 0.3;
 
 			renderer.render(root, camera);
 		}
