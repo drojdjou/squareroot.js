@@ -60,7 +60,7 @@ SQR.Renderer = function(c, options, onError) {
 
 	r.clearColor = function(c, g, b, a) {
 		// c is a SQR.Color and we can ignore the rest
-		if(c.r) {
+		if(c.r != null) {
 			if(c.a == undefined) c.a = 1;
 			context.gl.clearColor(c.r, c.g, c.b, c.a);
 		} else {

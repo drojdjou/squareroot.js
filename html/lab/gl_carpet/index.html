@@ -39,8 +39,6 @@
 
 <script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
 
-<script type="text/javascript" src="AnimatedTexture.js"></script>
-
 <link rel="stylesheet" type="text/css" href="../base.css">
 
 <style type="text/css">
@@ -98,7 +96,7 @@
 
 	SQR.Loader.loadAssets([
 		['../../src/glsl/light/fog.glsl', 'fog'],
-		['tex.glsl', 'shader']
+		['dot-ocean.glsl', 'shader']
 	], function(assets) {
 
 		var renderer = new SQR.Renderer('#gl-canvas').clearColor(0.05, 0.0, 0.1);

@@ -40,7 +40,19 @@ uniform vec2 uAmbient;
 
 uniform float uTime;
 
-//#include fog
+//#name fog
+uniform vec2 uFog;
+uniform vec3 uFogColor;
+
+vec3 fog(vec3 c) {
+	float f = (gl_FragCoord.z / gl_FragCoord.w - uFog.x) / (uFog.y - uFog.x);
+	f = clamp(f, 0.0, 1.0);
+	return mix(c, uFogColor, f);
+}
+
+float fogDepth() {
+	return (gl_FragCoord.z / gl_FragCoord.w - uFog.x) / (uFog.y - uFog.x);
+}
 
 void main() {
 	float l = uAmbient.x + uAmbient.y * max(0.0, dot(vNormal, uLight));
@@ -48,7 +60,7 @@ void main() {
 	vec2 uv = vUV * uTextureTile + uTextureOffset;
 
 	vec2 buv = vUV;
-	buv.y -= uTime * 0.0001;
+	buv.y -= uTime * TEXSPEED;
 
 	vec3 c = texture2D(uTexture, uv).r * texture2D(uBlurTexture, buv).rgb * l;
 	

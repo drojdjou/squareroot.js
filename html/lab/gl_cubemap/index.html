@@ -50,8 +50,8 @@
 		['../../assets/monument.jpg', 'tex'],
 	], function(assets) {
 
-		var REFL_SIZE = Simplrz.touch ? 128 : 512;
-		var NUM_CUBES = Simplrz.touch ? 25 : 50;
+		var REFL_SIZE = Simplrz.touch ? 128 : 1024;
+		var NUM_CUBES = Simplrz.touch ? 25 : 200;
 
 		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 
@@ -91,9 +91,9 @@
 		var reflShader = SQR.Shader(assets['refl'])
 			.use()
 			.setUniform('uCubemap', cubemapBuffer.texture)
-			.setUniform('chromaticDispertion', [0.98, 1.00, 1.02])
-			.setUniform('bias', 0.2)
-			.setUniform('scale', 0.8)
+			.setUniform('chromaticDispertion', [0.99, 1.00, 1.01])
+			.setUniform('bias', 0.0)
+			.setUniform('scale', 1.0)
 			.setUniform('power', 1.0);
 
 		var sphere = new SQR.Transform();
@@ -118,7 +118,7 @@
 			c.shader = cubeShader;
 			c.buffer = cubeBuffer;
 			c.position.set(x, y, z);
-			c.scale.set(2, 2, 2);
+			c.scale.set(1, 1, 1);
 			c.uniforms = { 'uColor': color };
 			cubes.add(c);
 			return c;
@@ -132,7 +132,16 @@
 		addCube( 0,    0,  -10, [0,1,1]);
 
 		var addMoreCube = function() {
-			var v = new SQR.V3().random().norm().mul(8 + Math.random() * 4);
+			var v = new SQR.V3();
+
+			// var a = Math.random() * SQR.TWOPI;
+			var r = 10 + 4 * Math.random();
+			// v.x = Math.sin(a) * r;
+			// v.y = Math.cos(a) * r;
+			// v.z = -1 + Math.random() * 2;
+
+			v.random().norm().mul(r);
+
 			var c = addCube(v.x, v.y, v.z, [1,1,1]);
 			c.rotation.set(v.x, v.y, v.z);
 			c.scale.set(0.3, 0.3, 0.3);

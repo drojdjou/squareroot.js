@@ -7,41 +7,16 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 
-<script type="text/javascript" src="../../lib/malibu.js"></script>
-
-<script type="text/javascript" src="../../src/SQR.js"></script>
-<script type="text/javascript" src="../../src/Version.js"></script>
-
-<script type="text/javascript" src="../../src/common/Context.js"></script>
-<script type="text/javascript" src="../../src/common/Loader.js"></script>
-<script type="text/javascript" src="../../src/common/Buffer.js"></script>
-<script type="text/javascript" src="../../src/common/Renderer.js"></script>
-<script type="text/javascript" src="../../src/common/Shader.js"></script>
-<script type="text/javascript" src="../../src/common/Transform.js"></script>
-<script type="text/javascript" src="../../src/common/Texture.js"></script>
-
-<script type="text/javascript" src="../../src/math/Vector2.js"></script>
-<script type="text/javascript" src="../../src/math/Color.js"></script>
-<script type="text/javascript" src="../../src/math/Vector3.js"></script>
-<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
-<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
-<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
-<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
-<script type="text/javascript" src="../../src/math/PerlinNoise.js"></script>
-
-<script type="text/javascript" src="../../src/primitives/Face.js"></script>
-<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
-
-<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
-<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
-<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
-<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
-
-<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
-
-<link rel="stylesheet" type="text/css" href="../base.css">
+<script type="text/javascript" src="lib/sqr.min.js"></script>
+<script type="text/javascript" src="lib/sqr-primitives.min.js"></script>
+<script type="text/javascript" src="lib/PerlinTexture.js"></script>
 
 <style type="text/css">
+
+body {
+	margin: 0;
+	background-color: #000;
+}
 
 .tt {
 	position: absolute;
@@ -58,121 +33,144 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<div class="num"></div>
-
 <script type="text/javascript">
 
-	VirtualScroll.lockTouch();
+	/** SETTINGS **/
 
-	var tt = SQR.PerlinTexture()
-	.configure({
+	var config = {
 
-		// ~hairy
-		// low:  0.00, 
-		// high: 1.00, 
-		// octaves: [2, 4, 8], 
-		// factors: [1, 1/2, 1/2]
+		// The color texture. Make sure it's size is pow of 2:
+		// ex 256x256, 1024x1024 etc...
+		colorTexture: 'blurtex.jpg',
 
-		//  ~watery
-		low:  0.12, 
-		high: 0.70, 
-		octaves: [2, 4, 8, 16, 24], 
-		factors: [1/4, 1, 1/2, 1/4, 1/4]
+		// How fast the color texture moves across the terrains
+		textureSpeed: 0.1,
 
-		// ~plastic
-		// low:  0.30, 
-		// high: 0.90, 
-		// octaves: [2, 4, 8], 
-		// factors: [2, 1, 1/2]
-	})
-	.create(32, 32, true);
+		tileSize: 128,
 
-	// .create(16, 16, false);
-	// tt.canvas.classList.add('tt');
-	// document.body.appendChild(tt.canvas);
-	// console.log(tt.canvas);
+		// Smaller value - more spikes in the terrain
+		noiseSize: 32,
 
-	var gridTexture = function(gridPattern) {
+		// How tall can the hills get
+		amplitude: 16,
 
-		var grid = document.createElement('canvas');
+		// How fast the terrain deformation moves
+		noiseVelocity: { 
+			x: -0.0020,
+			y: 0.0006,
+			z: -0.0004
+		},
 
-		var gs = 128;
+		ambientGrid: [0.2, 0.5],
+		ambientLines: [0.5, 1.0],
+		lineWidth: 3,
+		gridWidth: 6,
 
-		grid.width = gs;
-		grid.height = gs;
+		// Background color as float r, g, b values
+		background: SQR.Color(0.2, 0.0, 0.2),
 
-		var gtx = grid.getContext('2d');
+		cameraEase: 0.02,  
 
-		gtx.fillStyle = 'rgb(0, 0, 0)';
-		gtx.fillRect(0, 0, gs, gs);
-
-		gtx.strokeStyle = 'rgb(255, 255, 255)';
-		gtx.fillStyle = 'rgb(255, 255, 255)';
-
-		if(gridPattern == LINES) {
-
-			var lw = 6;
-			var h = (gs / 4);
-			var hl = lw / 2;
-			
-			gtx.lineWidth = lw;
-			
-			// Frame
-			gtx.beginPath();
-			// gtx.moveTo(0, hl);
-			// gtx.lineTo(gs, hl);
-			// gtx.moveTo(hl, 0);
-			// gtx.lineTo(hl, gs);
-
-			// Cross
-			gtx.moveTo(h, 0);
-			gtx.lineTo(h, gs);
-			gtx.moveTo(0, h);
-			gtx.lineTo(gs, h);
-
-			gtx.moveTo(h * 2, 0);
-			gtx.lineTo(h * 2, gs);
-			gtx.moveTo(0, h * 2);
-			gtx.lineTo(gs, h * 2);
-
-			gtx.moveTo(h * 3, 0);
-			gtx.lineTo(h * 3, gs);
-			gtx.moveTo(0, h * 3);
-			gtx.lineTo(gs, h * 3);
-
-			gtx.stroke();
-
-			// Diagonal
-			// gtx.strokeStyle = 'rgb(255, 128, 255)';
-			gtx.beginPath();
-			// gtx.moveTo(0, 0);
-			// gtx.lineTo(gs, gs);
-			// gtx.moveTo(gs, 0)
-			// gtx.lineTo(0, gs);
-			// gtx.stroke();
-
-			// document.body.appendChild(grid);
-		}
-
-		if(gridPattern == STROKES) {
-			gtx.fillRect(0, 0, gs, gs);
-		}
-
-		
-
-		return grid;
+		// Set to 0 to disable camera movement
+		cameraOffsetMax: 0.4
 	}
 
-	var LINES = 0;
-	var STROKES = 1;
+	
+	/** SETTINGS **/
+
+
+	
+
 
 	SQR.Loader.loadAssets([
-		['../../src/glsl/light/fog.glsl', 'fog'],
 		['landscape.glsl', 'shader'],
-		['blurtex.jpg', 'blurtex'],
+		[config.colorTexture, 'blurtex'],
 	], function(assets) {
 
-		var renderer = new SQR.Renderer('#gl-canvas').clearColor(0.0, 0.0, 0.0);
+		var LINES = 0;
+		var PLAIN = 1;
+
+		var isTouch = 'ontouchstart' in document;
+
+		var tt = SQR.PerlinTexture()
+			.configure({
+				low:  0.12, 
+				high: 0.70, 
+				octaves: [2, 4, 8, 16, 24], 
+				factors: [1/4, 1, 1/2, 1/4, 1/4]
+			})
+			.create(config.noiseSize, config.noiseSize, true);
+			// tt.canvas.classList.add('tt');
+			// document.body.appendChild(tt.canvas);
+			// console.log(tt.canvas);
+
+		document.addEventListener('touchmove', function(e) {
+			e.preventDefault(); // lock elastic overscroll on mobile
+		});
+
+		var mx = 0, tx = 0, my = 0, ty = 0;
+		if(!isTouch) {
+			document.addEventListener('mousemove', function(e) {
+				tx = (e.pageX / window.innerWidth) * 2 - 1;
+				ty = (e.pageY / window.innerHeight) * 2 - 1;
+			});
+		}
+
+		var gridTexture = function(gridPattern) {
+
+			var grid = document.createElement('canvas');
+
+			var gs = config.tileSize;
+
+			grid.width = gs;
+			grid.height = gs;
+
+			var gtx = grid.getContext('2d');
+
+			gtx.fillStyle = 'rgb(0, 0, 0)';
+			gtx.fillRect(0, 0, gs, gs);
+
+			gtx.strokeStyle = 'rgb(255, 255, 255)';
+			gtx.fillStyle = 'rgb(255, 255, 255)';
+
+			if(gridPattern == LINES) {
+
+				var lw = config.gridWidth;
+				var h = (gs / 4);
+				var hl = lw / 2;
+				
+				gtx.lineWidth = lw;
+				
+				gtx.beginPath();
+
+				gtx.moveTo(h, 0);
+				gtx.lineTo(h, gs);
+				gtx.moveTo(0, h);
+				gtx.lineTo(gs, h);
+
+				gtx.moveTo(h * 2, 0);
+				gtx.lineTo(h * 2, gs);
+				gtx.moveTo(0, h * 2);
+				gtx.lineTo(gs, h * 2);
+
+				gtx.moveTo(h * 3, 0);
+				gtx.lineTo(h * 3, gs);
+				gtx.moveTo(0, h * 3);
+				gtx.lineTo(gs, h * 3);
+
+				gtx.stroke();
+			}
+
+			if(gridPattern == PLAIN) {
+				gtx.fillRect(0, 0, gs, gs);
+			}
+
+			
+
+			return grid;
+		}
+
+		var renderer = new SQR.Renderer('#gl-canvas').clearColor(config.background);
 
 		var root = new SQR.Transform();
 		var camera = new SQR.Transform();
@@ -192,11 +190,10 @@
 		resize();
 
 		var w = 24, h = 15, m = 4;
-		var amplitude = 16;
 
-		if(Simplrz.touch && window.innerWidth >= 768) {
+		if(isTouch && window.innerWidth >= 768) {
 			w = 16, h = 10, m = 4;
-		} else if(Simplrz.touch) {
+		} else if(isTouch) {
 			w = 8, h = 10, m = 3;
 			amplitude = 8;
 		}
@@ -228,7 +225,7 @@
 
 				g = 1 - Math.pow(1 - g, 2);
 
-				f.y = amplitude * -0.5 + tt.getValue(x, y) * amplitude * g;
+				f.y = config.amplitude * -0.5 + tt.getValue(x, y) * config.amplitude * g;
 			};
 
 			// Without lighting
@@ -237,22 +234,35 @@
 			// With lighting
 			buffer.mesh.calculateNormals(true).update();
 
-			tt.offset.x -= 0.0020;
-			tt.offset.y += 0.0006;
-			tt.offset.z -= 0.0003;
+			tt.offset.add(config.noiseVelocity);
+
+			mx += (tx - mx) * config.cameraEase;
+			my += (ty - my) * config.cameraEase;
+
+			var cy = isTouch && window.innerWidth < 768 ? -2 : -6
+
+			camera.position.x = mx * config.cameraOffsetMax * 1;
+			camera.rotation.y = mx * config.cameraOffsetMax * -0.2;
+
+			camera.position.y = cy + my * config.cameraOffsetMax * 0.5;
+			camera.rotation.x = 0.2 + my * config.cameraOffsetMax * 0.1;
 		}
 
 		var ltx = SQR.Texture(gridTexture(LINES), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
-		var stx = SQR.Texture(gridTexture(STROKES), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
+		var stx = SQR.Texture(gridTexture(PLAIN), { mipmap: true, wrap: SQR.gl.REPEAT, minFilter: SQR.gl.LINEAR_MIPMAP_LINEAR });
 		var btx = SQR.Texture(assets.blurtex, { wrap: SQR.gl.MIRRORED_REPEAT });
 
-		var shader = SQR.Shader(assets.shader)
+		var shader = SQR.Shader(assets.shader, {
+				directives: [
+					{ name: 'TEXSPEED', value: config.textureSpeed / 1000 }
+				]
+			})
 			.use()
 			.setUniform('uLight', new SQR.V3(10.0, -0.75, 0.0).norm())
 			.setUniform('uTextureTile', [tileX, tileY])
 			.setUniform('uBlurTexture', btx)
 			.setUniform('uFog', [h/4, h-2])
-			.setUniform('uFogColor', [0.0, 0.0, 0.0]);
+			.setUniform('uFogColor', config.background);
 
 
 
@@ -261,7 +271,7 @@
 		solid.buffer = buffer;
 		solid.shader = shader;
 		solid.uniforms = { 
-			uAmbient: [0.2, 0.3],
+			uAmbient: config.ambientGrid,
 			uTexture: ltx
 		};
 
@@ -271,18 +281,16 @@
 		lines.buffer = buffer;
 		lines.shader = shader;
 		lines.drawMode = SQR.gl.LINES;
-		lines.lineWidth = 3;
+		lines.lineWidth = config.lineWidth;
 		lines.position.y = 0.001;
 		lines.uniforms = { 
-			uAmbient: [0.8, 0.2],
+			uAmbient: config.ambientLines,
 			uTexture: stx
 		};
 
 		root.add(lines);
 
 		camera.position.z = h / 2 + 1;
-		camera.position.y = Simplrz.touch && window.innerWidth < 768 ? -2 : -6;
-		camera.rotation.x = 0.2;
 
 		// camera.position.z = 0.0;
 		// camera.position.y = 20.0;
@@ -300,7 +308,7 @@
 </script>
 
 <script>
-if(location.host.indexOf('localhost') > -1 || location.host.indexOf('192.168') > -1) {
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
