@@ -47,7 +47,7 @@ SQR.SceneParser = (function() {
 			var getDefaultShader = (function() {
 				var d;
 				return function() {
-					if(!d) d = SQR.Shader(options.shader);
+					if(!d) d = options.shader.setUniform ? options.shader : SQR.Shader(options.shader);
 					return d;
 				}
 			})();
@@ -84,6 +84,7 @@ SQR.SceneParser = (function() {
 				t.useQuaternion = true;
 				arrayToObject(td.position, t.position);
 				arrayToObject(td.rotation, t.quaternion);
+				if(td.scale) arrayToObject(td.scale, t.scale);
 
 				t.data = td;
 				if(td.bones) skinnedMeshes.push(t);

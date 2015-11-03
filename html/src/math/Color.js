@@ -52,7 +52,7 @@ SQR.Color.prototype.setHex = function(hex) {
 
 	var c = this;
 
-	if(hex instanceof String) {
+	if(typeof(hex) == 'string') {
 		hex = (hex.indexOf('#') == 0) ? hex.substring(1) : hex;
 		hex = (hex.indexOf('0x') == -1) ? '0x' + hex : hex;
 		hex = parseInt(hex);

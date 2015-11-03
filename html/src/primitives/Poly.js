@@ -39,12 +39,15 @@ SQR.Poly.prototype.addUV = function(a, b, c, d) {
 }
 
 SQR.Poly.prototype.flip = function() {
+	var p = this;
 	var v = this.vertices;
+	
 	var tmp = v[1];
 	v[1] = v[2];
 	v[2] = tmp;
 
 	if(v.normal) v.normal.neg();
+	else if(p.normal) p.normal.neg();
 	else console.log('> SQR.Poly.flip > please consider calculating normal first, then flipping');
 }
 

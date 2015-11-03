@@ -1,3 +1,4 @@
+//#name sphar
 const float C1 = 0.429043;
 const float C2 = 0.511664;
 const float C3 = 0.743125;

@@ -216,3 +216,9 @@ Very important: the welcome console message is not in color
 
 Started reworking the mesh creation functions (aka Primitives)
 
+
+##### v3.0 b 137
+*Nov 2nd 2015*
+
+Changes in Renderer/Context classes and new Mesh API
+

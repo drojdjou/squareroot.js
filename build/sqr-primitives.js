@@ -14,43 +14,76 @@
  */
 SQR.Primitives.createCube = function(w, h, d, options) {
 
-
-	var V2 = this.V2, V3 = this.V3, F = this.F(options);
-
 	w = w || 1;
 	h = h || 1;
 	d = d || 1;
+	options = options || {};
 
-	var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
-	
+	var m = new SQR.Mesh();
+
+
 	var 
-		v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
-		v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
-		v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
-		v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
+		v0 = m.V(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+		v1 = m.V(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+		v2 = m.V(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+		v3 = m.V(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
 
-		v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
-		v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
-		v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
-		v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
+		v4 = m.V(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+		v5 = m.V(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+		v6 = m.V(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+		v7 = m.V(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
 
-		u0 = V2(0, 1),
-		u1 = V2(1, 1),
-		u2 = V2(0, 0),
-		u3 = V2(1, 0);
+		u0 = m.T(0, 1),
+		u1 = m.T(1, 1),
+		u2 = m.T(0, 0),
+		u3 = m.T(1, 0);
 
-	F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
-	F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
-	F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
-	F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
-	F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
-	F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
 	
-	F.toBuffer(geo);
+	m.F(v0, v1, v2, v3).T(u0, u1, u2, u3);
+	m.F(v5, v4, v7, v6).T(u0, u1, u2, u3);
+	m.F(v4, v0, v6, v2).T(u0, u1, u2, u3);
+	m.F(v1, v5, v3, v7).T(u0, u1, u2, u3);
+	m.F(v4, v5, v0, v1).T(u0, u1, u2, u3);
+	m.F(v2, v3, v6, v7).T(u0, u1, u2, u3);
 
-	// SQR.Debug.traceBuffer(geo, true);
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
+
+
+	// var V2 = this.V2, V3 = this.V3, F = this.F(options);
+
+	// w = w || 1;
+	// h = h || 1;
+	// d = d || 1;
+
+	// var geo = SQR.Buffer().layout(SQR.v3n3u2(), 36);
 	
-	return geo.update();
+	// var 
+	// 	v0 = V3(w * -0.5,   h *  0.5,   d *  0.5), // Top left
+	// 	v1 = V3(w *  0.5,   h *  0.5,   d *  0.5), // Top right 
+	// 	v2 = V3(w * -0.5,   h * -0.5,   d *  0.5), // Bottom left 
+	// 	v3 = V3(w *  0.5,   h * -0.5,   d *  0.5), // Bottom right
+
+	// 	v4 = V3(w * -0.5,   h *  0.5,   d * -0.5), // Top left
+	// 	v5 = V3(w *  0.5,   h *  0.5,   d * -0.5), // Top right
+	// 	v6 = V3(w * -0.5,   h * -0.5,   d * -0.5), // Bottom left
+	// 	v7 = V3(w *  0.5,   h * -0.5,   d * -0.5), // Bottom right
+
+	// 	u0 = V2(0, 1),
+	// 	u1 = V2(1, 1),
+	// 	u2 = V2(0, 0),
+	// 	u3 = V2(1, 0);
+
+	// F(v0, v1, v2, v3).uv(u0, u1, u2, u3);
+	// F(v5, v4, v7, v6).uv(u0, u1, u2, u3);
+	// F(v4, v0, v6, v2).uv(u0, u1, u2, u3);
+	// F(v1, v5, v3, v7).uv(u0, u1, u2, u3);
+	// F(v4, v5, v0, v1).uv(u0, u1, u2, u3);
+	// F(v2, v3, v6, v7).uv(u0, u1, u2, u3);
+	// F.toBuffer(geo);
+	// return geo.update();
 }
 
 /*
@@ -472,7 +505,8 @@ SQR.Extrude = function() {
  *  shader the same normal - thanks to this flat shaded materials have quads shaded
  *  the same way which is nicer than havong each triangle have a slightly different normal.
  *
- *  Currently it supports the following attributes: aPosition, aNormal, aUV.
+ *  Currently it supports the following attributes: aPosition, aNormal, aUV and aColor. 
+ *	Should support aTangent and aBinormal soon too.
  *
  *  @class Face
  *  @memberof SQR
@@ -849,14 +883,230 @@ SQR.Primitives.createIcosphere = function(radius, subdivisions, options) {
  *  @namespace Mesh
  *  @memberof SQR
  *
- *  @description Attempt to create a decorator for a buffer that will be able to process 
- *	the data (position, normals and tangents) as it if was a collection of faces.
+ *  @description <p>A higher level wrapper for buffers designed 
+ *	to make management of 3d solid objects easier.</p>
  */
-SQR.Mesh = function(buffer, quads) {
-	var m = {};
-	buffer.mesh = m;
-	return m;
-}
+
+/*
+ *	<h3>Some theory about meshesh</h3>
+ *
+ *	<p>A buffer is an array composed of an abritrary number of attributes. Their names and size can express anything 
+ *	- somtimes position, but also angle, radius, size, speed, velocity, mass... you name it. It will all work ok as long as there 
+ *	we write a shader that can interpret those attributes and translate them into a vertex position. 
+ *	This is great for for particle systems and other fancy shapes.</p>
+ *
+ *	<p>However, there are cases where we simply need to draw a mesh that is a solid object.
+ *	These meshes are not as diverse in their structure. They typically all have the same set of attributes. 
+ *	These inlude:</p>
+ *
+ *	<ol>
+ *		<li>aPosition - the 3d position of the vertex</li>
+ *		<li>aNormal - the normal of the vertex</li>
+ *		<li>aUV - the texture coordinate of the vertex</li>
+ *		<li>aUV2 - secondary texture coordinate of the vertex (for lightmapping or whatever)</li>
+ *		<li>aTangent - the tangent of the vertex for normal mapping</li>
+ *		<li>aBinormal - the binomal of the vertex for normal mapping 
+ *			(not sure if this is actually useful, maybe can be computer in the shader?)</li>
+ *		<li>aWeight - the bone weights</li>
+ *		<li>aIndex - the bone indices</li>
+ *		<li>aColor - the vertex color</li>
+ *	</ol>
+ *
+ *	<p>Now, a lot of meshes will come from the Unity exporter and they will have some or all of the above attributes. With things like
+ *	boneWieght and boneIndices it would be insane to try to create them in code (I tried).
+ *	So most cases it is best to take the exported data, push it into a buffer and not have a Mesh at all. Expect in two cases:
+ *	</p>
+ *
+ *	<ul>
+ *		<li>The mesh is supposed to be animated per-vertex in Javascript (not in shader)</li>
+ *		<li>The mesh lacks normal, tangent or binormal data and these need to be calculated before rendering</li>
+ *	</ul>
+ *
+ *	<p>So moving vertex positions around and recalculating normals (or tangents and binormals, which is similar) are the two 
+ *	most important features that the Mesh class should deal with. It's worth noting that after the vertices positions are moved, 
+ *	recalculating the normals is the necessary next step in most cases anyway - so the two are tied together. Attributes such as UVs
+ *	will almost never be animated (I can't think of a scenario where this would make sense). A color attribute can be animated, but usually
+ *	this one is very rarely used.</p>
+ *
+ *	<p>Meshes are often indexed but it's not as staightforward as it may seem. Indexing vertex positions is simple and elegant, but often 
+ *	we need to have one vertex position to have more than one different texture coordinates because every face the vertex is attached 
+ *	to will have it's own texture mapping. Same goes for normals - if we need to have 100% flat shading, every face needs to have it's 
+ *	own vertices and not share it with any other face.</p>
+ *
+ *	<p>This can get pretty involved to figure out ex. how to break the vertices based on the angle between the faces. We could implement it 
+ *	some day, but given that Unity handles this already it seems a bit overkill. Instead we can opt for calculating averaged normals for 
+ *	each vertex that is shared by more than one face for meshes imported from Unity.</p>
+ *
+ *	<p>Another category are realtime primitives (cubes, spheres, planes) and other realtime generated meshes. This is where the Mesh
+ *	class is going to be most useful. The idea here is to be able to create faces (tris or quads) based on vertex position and 
+ *	add other attributes - either manually or by some kind of computation.</p>
+ *
+ *	<p>When it comes to adding attributes based on some algorithm - in most cases it means it will be derived from vertex positions.
+ *	The most basic example is of course calculating normals, but other good example is calculating texture coordinates based on some
+ *	mapping system (cubic, spherical etc...) or vertex color also based on some sort of mapping.</p>
+ *
+ *	<p>Manually adding attributes in code seems impractical. For example it is far easier to perform a custom texture mapping in a
+ *	3d software such as C4D than to try to add the mapping in code. So let's just forget about it and focus on what code is 
+ *	good at - computation.</p>
+ *
+ *	<p>Let's examine 3 simple cases and 2 more complex ones.</p>
+ *
+ *	<p>Case 1: a plane. A plane is trivial. The normals are all the same and all point up from the surface of the plane. The UV mapping
+ *	is trivial as well - each vertex UV coordinate is based on it's porportional position in the plane and the entire plane is mapped to
+ *	texture coords going from 0 to 1 on both u and c axes. This kind of mesh could actually be indexed on the buffer level and draw using 
+ *	drawElements.</p>
+ *
+ *	<p>Case 2: a sphere. Sphere is also pretty simple - normals are basically normalized vertex positions and UV mapping is derived from 
+ *	the latitude and longitude of each vertex. Typically the vertex positions themselves are calculated from angle during the creation of
+ *	the mesh.</p>
+ *
+ *	<p>Case 3: a cube. A cube is composed of six planes, so same rules apply. Actuall the entire cube creation code can consist of creating
+ *	six planes and merging them together.</p>
+ *
+ *	<p>Case 4: a plane with a height map or vertex animation (cloth, water, terrain). It starts with a plane that is subdivided. The UV mapping is the same.
+ *	Then the vertex positions can be moved around (typically for a XZ plane, we move the Y position up and down) and normals (tangents etc)
+ *	can be recalculated. Since the plane is subdivided anbd not flat we can either average normals and make it smooth or 
+ *	make them flat shaded.</p>
+ *
+ *	<p>Case 5: pyramid, cylinder or cone, or any other primitive shape. The positions for those shapes can be generated with code and normals
+ *	can be derived from these positions. However, there is no obvious way to come up with UV coordinates. Texture mapping algorithms can be helpful
+ *  in this case, or, if we go with a low poly esthetic we can skip UVs entirely.</p>
+ *
+ *	<p>Except for Case 1, all the other meshes do not lend themselves easily to indexing. It can be done, but it will result in complex code and 
+ *	we're not sure if it is worth the effort. Instead, we can load all the vertices to the buffer separately. However, it makes total sense to keep
+ *	a list of vertices shared by faces but not duplicated for each face. This will make it possible to modulate their position without having the
+ *	mesh break and also it will make it possible to calculate smooth normals.</p>
+ *
+ *	<p>This leads to the conclusion that realtime meshes should not be indexed at all on the buffer level, but reusing vertex objects on the JS side
+ *	is a good idea.</p>
+ *
+ *	<p>PS. This about <a href='http://marcinignac.com/blog/fast-dynamic-geometry-in-webgl/'>this</a>. Honestly
+ *	it sounds very resnoable, but code tests I did now do not prove that this is the best way (not to mention
+ *	the resulting code complexity...)</p>
+ */
+SQR.Mesh = function() {
+
+	if(!(this instanceof SQR.Mesh)) return new SQR.Mesh();
+
+	var m = this;
+
+	m.polys = [];
+	m.vertices = [];
+	m.uvs = [];
+	m.size = 0;
+
+	m.addVertex = function(x, y, z) {
+		var v = new SQR.Vertex(x, y, z);
+		m.vertices.push(v);
+		return m.vertices.length - 1;
+	};
+
+	m.addUV = function(u, v) {
+		var v = new SQR.V2(u, v);
+		m.uvs.push(v);
+		return m.uvs.length - 1;
+	}
+
+	m.addFace = function() {
+		var p = new SQR.Poly(m);
+		p.V.apply(p, arguments);
+		m.polys.push(p);
+		m.size += p.triangles.length;
+		return p;
+	};
+
+	
+	m.calculateNormals = function(s) {
+
+		m.smooth = s;
+
+		for(var i = 0, l = m.polys.length; i < l; i++) {
+			m.polys[i].calculateNormal();
+		}
+
+		if(m.smooth) {
+			for(var i = 0, l = m.vertices.length; i < l; i++) {
+				if(m.vertices[i].polys) m.vertices[i].calculateNormal();
+			}
+		}
+
+		return m;
+	};
+
+	m.flip = function() {
+		for(var i = 0, l = m.polys.length; i < l; i++) {
+			m.polys[i].flip();
+		}
+
+		return m;
+	}
+
+	m.calculateTangents = function() {
+		console.log('SQR.Mesh.calculateTangents is not implemented yet!');
+	};
+
+	var createBuffer = function() {
+
+		var p = m.polys[0];
+
+		var s = m.size;
+
+		var l = { aPosition: 3 };
+		if(p.normal) l.aNormal = 3;
+		if(p.uvs.length > 0) l.aUV = 2;
+
+		m.buffer = SQR.Buffer().layout(l, s);
+		return m.buffer;
+	}
+
+	m.update = function() {
+
+		if(m.polys.length == 0) {
+			console.warn('> SQR.Mesh.update > no polys found to create buffer from.');
+			return;
+		}
+
+		var b = m.buffer || createBuffer();
+
+		var p = b.attributes.aPosition, c = 0;
+
+		var transport = [];
+		
+		for(var i = 0, ml = m.polys.length; i < ml; i++) {
+
+			var pl = m.polys[i];
+
+			for(var j = 0, vl = pl.triangles.length; j < vl; j++) {
+
+				var ti = pl.triangles[j];
+
+				var v = m.vertices[pl.vertices[ti]];
+
+				var p = v.position;
+				var n = m.smooth ? v.normal : pl.normal;
+				var t = m.uvs[pl.uvs[ti]];
+
+				transport.length = 0;
+				transport.push(p.x, p.y, p.z, n.x, n.y, n.z, t.x, t.y);
+				b.set(null, c, transport);
+
+				c++;
+			}
+		}
+
+
+		b.update();
+
+		if(!b.mesh) b.mesh = m;
+
+		return b;
+	}
+
+	// Aliases
+	m.V = m.addVertex;
+	m.F = m.addFace;
+	m.T = m.addUV;
+};
 
 
 
@@ -950,6 +1200,83 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 
 /* --- --- [primitives/Plane.js] --- --- */
 
+/**
+ *  @method createPlane
+ *  @memberof SQR.Primitives
+ *
+ *  @description Creates a plane, by default on the X/Y plane
+ *
+ *  @param {Number} w - width of the plane
+ *  @param {Number} h - height of the plane
+ *  @param {Number} wd - number of segments along the width
+ *  @param {Number} hd - number of segments along the height
+ *  @param {Number} wo - horizontal offset
+ *  @param {Number} ho - vertical offset
+ *
+ *	@param {Object} options - options for the plan construction
+ *
+ *  @returns {SQR.Buffer}
+ */
+SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
+
+	var options = options || {};
+
+	var w = w * 0.5;
+	var h = h * 0.5;
+
+	var wo = wo || 0;
+	var ho = ho || 0;
+
+	var wd = wd || 1;
+	var hd = hd || 1;
+
+	var wStart = -w + wo;
+	var hStart = -h + ho;
+
+	var wb = (w * 2) / wd;
+	var hb = (h * 2) / hd;
+
+	var i, j;
+	var m = new SQR.Mesh();
+
+	for (i = 0; i < wd+1; i++) {
+		for (j = 0; j < hd+1; j++) {
+
+			var bvStart = wStart + i * wb;
+			var bhStart = hStart + j * hb;
+
+			if (!options.zUp) {
+				m.V(bvStart, 0, bhStart);
+			} else {
+				m.V(bvStart, bhStart, 0);
+			}
+
+			m.T(i/wd, j/hd);
+		}
+	}
+
+	for (i = 0; i < wd; i++) {
+		for (j = 0; j < hd; j++) {
+
+			var bvStart = wStart + i * wb;
+			var bvEnd = bvStart + wb;
+			var bhStart = hStart + j * hb;
+			var bhEnd = bhStart + hb;
+
+			var a = (i+0) * (hd+1) + j;
+			var b = (i+1) * (hd+1) + j;
+
+			m.F(a, a+1, b, b+1).T(a, a+1, b, b+1);
+		}
+	}
+
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
+}
+
+
  /*
  *  @method create2DQuad
  *  @memberof SQR.Primitives
@@ -971,151 +1298,99 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 // 		.update();
 // }
 
-/**
- *  @method createPlane
- *  @memberof SQR.Primitives
- *
- *  @description Creates a plane, by default on the X/Y plane
- *
- *  @param {Number} w - width of the plane
- *  @param {Number} h - height of the plane
- *  @param {Number} wd - number of segments along the width
- *  @param {Number} hd - number of segments along the height
- *  @param {Number} wo - horizontal offset
- *  @param {Number} ho - vertical offset
- *
- *	@param {Object} options - options for the plan construction
- *
- *  @returns {SQR.Buffer}
- */
-SQR.Primitives.createPlane = function(w, h, wd, hd, wo, ho, options) {
 
-	var faces = [], indices = [];
 
-	var geo = new SQR.Buffer();
-	var options = options || {};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- --- [primitives/Poly.js] --- --- */
+
+SQR.Poly = function(mesh) {
+
+	var p = this;
+	p.mesh = mesh;
+	p.triangles = [];
 	
-	geo.width = w;
-	geo.height = h;
-
-	var w = w * 0.5;
-	var h = h * 0.5;
-
-	var wo = wo || 0;
-	var ho = ho || 0;
-
-	var wd = wd || 1;
-	var hd = hd || 1;
-
-	faces.length = [];
-
-	var wStart = -w + wo;
-	var hStart = -h + ho;
-
-	var wb = geo.width / wd;
-	var hb = geo.height / hd;
-
-	var i, j;
-	var vertices = [], uvs = [];
-
-	for (i = 0; i < wd+1; i++) {
-		for (j = 0; j < hd+1; j++) {
-			var bvStart = wStart + i * wb;
-			var bhStart = hStart + j * hb;
-			var ij = i * (hd+1) + j;
-
-			uvs[ij] = new SQR.V2(i/wd, j/hd);
-
-			if (!options.zUp) {
-				vertices[ij] = new SQR.V3(bvStart, 0, bhStart);
-			} else {
-				vertices[ij] = new SQR.V3(bvStart, bhStart, 0);
-			}
-		}
-	}
-
-	for (i = 0; i < wd; i++) {
-		for (j = 0; j < hd; j++) {
-
-			var bvStart = wStart + i * wb;
-			var bvEnd = bvStart + wb;
-			var bhStart = hStart + j * hb;
-			var bhEnd = bhStart + hb;
-
-			var ij = i * (hd+1) + j;
-			var ij2 = (i+1) * (hd+1) + j;
-
-			var q = new SQR.Face().setIndex(vertices, ij, ij+1, ij2, ij2+1);
-			faces.push(q);
-			indices.push(ij, ij+1, ij2,   ij2, ij+1, ij2+1);
-		}
-	}
-
-
-	layout = (options.layout) ? options.layout : {};
-
-	layout.aPosition = 3;
-	layout.aNormal = 3;
-	layout.aUV = 2;
-
-	geo.layout(layout, vertices.length);
-
-	geo.faces = faces;
-	geo.vertices = vertices;
-
-	var resetNormal = function(v) {
-		v.resetNormal();
-	}
-
-	var faceNormal = function(f) {
-		f.calculateNormal();
-		f.addNormalToVertices();
-	}
-
-	var po, no, uo;
-
-	var setDataFromFaces = function(i, data, c) {
-		var v = vertices[c];
-		var u = uvs[c];
-
-		data[i+0+po] = v.x;
-		data[i+1+po] = v.y;
-		data[i+2+po] = v.z;
-
-		data[i+0+no] = v.normal.x;
-		data[i+1+no] = v.normal.y;
-		data[i+2+no] = v.normal.z;
-
-		data[i+0+uo] = u.x;
-		data[i+1+uo] = u.y;
-	}
-
-	geo.recalculateNormals = function() {
-		vertices.forEach(resetNormal)
-		faces.forEach(faceNormal);
-		return geo;
-	}
-
-	geo.updateFromFaces = function(updateIndices) {
-
-		po = geo.attributes.aPosition.offset;
-		no = geo.attributes.aNormal.offset;
-		uo = geo.attributes.aUV.offset;
-
-		geo.iterate(null, setDataFromFaces);
-
-		if(updateIndices) geo.index(indices);
-
-		return geo;
-	}
-
-
-	return geo.recalculateNormals().updateFromFaces(true).update();
-
 }
 
+SQR.Poly.prototype.addVertices = function() {
+	var p = this;
 
+	p.size = arguments.length;
 
+	if(p.size < 3) {
+		throw '> SQR.Poly.addVertices > A poly needs at least 3 vertices.';
+	}
+
+	p.vertices = [];
+
+	for(var i = 0; i < p.size; i++) {
+		var id = arguments[i];
+		p.mesh.vertices[id].addPoly(p);
+		p.vertices.push(id);
+	}
+
+	// Attempt to form triangles for classic cases of tris and quads
+	// Above 4 vertices however, user needs to provide own mapping but populating p.triangles
+	if(p.size >= 3) p.triangles.push(0, 1, 2);
+	if(p.size >= 4) p.triangles.push(2, 1, 3);
+
+	return p;
+}
+
+SQR.Poly.prototype.addUV = function(a, b, c, d) {
+	var p = this;
+	p.uvs = [a, b, c];
+	if(d) p.uvs.push(d);
+	return p;
+}
+
+SQR.Poly.prototype.flip = function() {
+	var p = this;
+	var v = this.vertices;
+	
+	var tmp = v[1];
+	v[1] = v[2];
+	v[2] = tmp;
+
+	if(v.normal) v.normal.neg();
+	else if(p.normal) p.normal.neg();
+	else console.log('> SQR.Poly.flip > please consider calculating normal first, then flipping');
+}
+
+SQR.Poly.prototype.calculateNormal = function() {
+
+	var p = this;
+	var v = this.vertices;
+	var va = p.mesh.vertices;
+
+	var t1 = SQR.V3.__tv1;
+	var t2 = SQR.V3.__tv2;
+	p.normal = p.normal || new SQR.V3();
+
+	t1.sub(va[v[0]].position, va[v[1]].position);
+	if(t1.isZero() && p.size > 3) t1.sub(va[v[0]].position, va[v[3]].position);
+	t2.sub(va[v[2]].position, va[v[0]].position);
+
+	p.normal.cross(t1, t2).norm();
+
+	return p;
+}
+
+// Aliases
+SQR.Poly.prototype.V = SQR.Poly.prototype.addVertices;
+SQR.Poly.prototype.T = SQR.Poly.prototype.addUV;
 
 
 
@@ -1290,7 +1565,7 @@ SQR.SceneParser = (function() {
 			var getDefaultShader = (function() {
 				var d;
 				return function() {
-					if(!d) d = SQR.Shader(options.shader);
+					if(!d) d = options.shader.setUniform ? options.shader : SQR.Shader(options.shader);
 					return d;
 				}
 			})();
@@ -1327,6 +1602,7 @@ SQR.SceneParser = (function() {
 				t.useQuaternion = true;
 				arrayToObject(td.position, t.position);
 				arrayToObject(td.rotation, t.quaternion);
+				if(td.scale) arrayToObject(td.scale, t.scale);
 
 				t.data = td;
 				if(td.bones) skinnedMeshes.push(t);
@@ -1494,93 +1770,86 @@ SQR.SceneParser = (function() {
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.createSphere = function(radius, sw, sh, options) {
+SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 
-    var vertices = [];
-    var uvs = [];
-    var faces = [];
+	var m = new SQR.Mesh();
 
-    options = options || {};
+	radius = radius || 50;
+	segmentsX = Math.max(3, Math.floor(segmentsX) || 8);
+	segmentsY = Math.max(3, Math.floor(segmentsY) || 6);
+	options = options || {};
 
-    var radius = radius || 50;
-    var segmentsX = Math.max(3, Math.floor(sw) || 8);
-    var segmentsY = Math.max(3, Math.floor(sh) || 6);
+	var phiStart = 0;
+	var phiLength = Math.PI * 2;
+	var thetaStart = 0;
+	var thetaLength = Math.PI;
 
-    var phiStart = 0;
-    var phiLength = Math.PI * 2;
+	var x, y;
 
-    var thetaStart = 0;
-    var thetaLength = Math.PI;
+	for (y = 1; y <= segmentsY - 1; y ++) {
 
-    var x, y;
+		for (x = 0; x < segmentsX; x ++) {
 
-    for (y = 0; y <= segmentsY; y ++) {
+			var u = x / segmentsX;
+			var v = y / segmentsY;
 
-        for (x = 0; x <= segmentsX; x ++) {
+			var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+			var yp = radius * Math.cos(thetaStart + v * thetaLength);
+			var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
 
-            var u = x / segmentsX;
-            var v = y / segmentsY;
+			var i = m.V(xp, yp, zp);
+			m.T(u, 1 - v);
 
-            var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
-            var yp = radius * Math.cos(thetaStart + v * thetaLength);
-            var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+		}
+	}
 
-            vertices.push(new SQR.V3(xp, yp, zp));
-            uvs.push(new SQR.V2(u, 1 - v));
-        }
-    }
+	
 
-    for (y = 0; y < segmentsY; y ++) {
+	var northPole = m.V(0, radius, 0);
+	var southPole = m.V(0, -radius, 0);	
+	m.T(1, 1);
+	m.T(0, 0);
 
-        for (x = 0; x < segmentsX; x ++) {
+	for (y = 0; y < segmentsY; y++) {
 
-            var o = segmentsX + 1;
-            var vt1 = vertices[ y * o + x + 0 ];
-            var vt2 = vertices[ y * o + x + 1 ];
-            var vt3 = vertices[ (y + 1) * o + x + 1 ];
-            var vt4 = vertices[ (y + 1) * o + x + 0 ];
+		var isn = y == 0;
+		var iss = y == segmentsY - 1;
 
-            var uv1 = uvs[ y * o + x + 0 ];
-            var uv2 = uvs[ y * o + x + 1 ];
-            var uv3 = uvs[ (y + 1) * o + x + 1 ];
-            var uv4 = uvs[ (y + 1) * o + x + 0 ];
+		for (x = 0; x < segmentsX; x++) {
 
-            var f;
+			var y0 = y;
+			var y1 = y + 1;
 
-            if(options.reverseNormals)
-                f = new SQR.Face().setPosition(vt2, vt1, vt3, vt4).setUV(uv2, uv1, uv3, uv4);
-            else 
-                f = new SQR.Face().setPosition(vt1, vt2, vt4, vt3).setUV(uv1, uv2, uv4, uv3);
+			var x0 = x;
+			var x1 = (x + 1) % (segmentsX);
 
-            if(options.flatShading) {
-                f.calculateNormal();
-            } else {
-                vt1.normal = vt1.clone().norm();
-                vt2.normal = vt2.clone().norm();
-                vt3.normal = vt3.clone().norm();
-                vt4.normal = vt4.clone().norm();
+			var ta = y0 * segmentsX + x0 - segmentsX;
+			if(isn) ta = northPole;
 
-                if(options.reverseNormals) {
-                    vt1.normal.neg();
-                    vt2.normal.neg();
-                    vt3.normal.neg();
-                    vt4.normal.neg();
-                }
-            }
+			var tb = y0 * segmentsX + x1 - segmentsX;
+			if(isn) tb = northPole;
 
-            faces.push(f);
-        }
-    }
+			var tc = y1 * segmentsX + x0 - segmentsX;
+			if(iss) tc = southPole;
 
-    var geo = SQR.Buffer()
-        .layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, faces.length * 6);
+			var td = y1 * segmentsX + x1 - segmentsX;
+			if(iss) td = southPole;
 
-    var c = 0, t;
-    faces.forEach(function(t) {
-        c += t.toBuffer(geo, c, !options.flatShading);
-    });
+			if(isn) {
+				m.F(ta, td, tc).T(ta, td, tc);
+			} else if(iss) {
+				m.F(ta, tb, td).T(ta, tb, td);
+			} else {
+				m.F(ta, tb, tc, td).T(ta, tb, tc, td);
+			}
 
-    return geo.update();
+		}
+	}
+
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
 }
 
 
@@ -1593,4 +1862,28 @@ SQR.Primitives.createSphere = function(radius, sw, sh, options) {
 
 
 
+
+/* --- --- [primitives/Vertex.js] --- --- */
+
+SQR.Vertex = function(x, y, z) {
+	var v = this;
+	v.position = new SQR.V3(x, y, z);
+	v.normal = new SQR.V3();
+	
+}
+
+SQR.Vertex.prototype.addPoly = function(p) {
+	var v = this;
+	v.polys = v.polys || [];
+	v.polys.push(p);
+}
+
+SQR.Vertex.prototype.calculateNormal = function() {
+	var v = this;
+	v.normal.set();
+	for(var i = 0, l = v.polys.length; i < l; i++) {
+		v.normal.add(v.polys[i].normal);
+	}
+	v.normal.norm();
+}
 

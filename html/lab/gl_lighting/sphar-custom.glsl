@@ -3,6 +3,8 @@
 // 
 // based on float texture from http://www.pauldebevec.com/Probes/Float2/
 
+// To make a data set from a custom picture export it from PS as Portable Bitmap with 32 bits per channel
+
 // Kitchen (need to invert z in normal)
 // const float MULT = 0.1;
 // const vec3 L00  = vec3( 6.407947,  6.751896,  7.296709) * MULT;
