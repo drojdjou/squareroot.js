@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Unity lightmap test</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/Clip.js"></script>
+<script type="text/javascript" src="../../src/common/Animation.js"></script>
+
+<script type="text/javascript" src="../../src/common/Ray.js"></script>
+<script type="text/javascript" src="../../src/common/Pointer3d.js"></script>
+<script type="text/javascript" src="../../src/common/Collider.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Intersection.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+
+		['../../assets/unity-export/lightmap.json', 'mesh'],
+		['../../assets/unity-export/lightmapScene.json', 'scene'],
+		['../../assets/unity-export/lightmap0.png', 'lightmap'],
+
+		['lightmapped.glsl', 'shader']
+
+	], function(assets) {
+
+		var renderer = new SQR.Renderer('#gl-canvas');
+		var shader = SQR.Shader(assets.shader);
+
+		shader.use()
+			.setUniform('uLight', new SQR.V3(1.0, 0.2, 0).norm())
+			.setUniform('uLightmap', SQR.Texture(assets.lightmap));
+		
+		var scene = SQR.SceneParser.parse(assets, { 
+			shader: shader, 
+			context: renderer.context
+		});
+
+		var camroot = scene.root.findByName('camroot');
+		camroot.useQuaternion = false;
+
+		var resize = function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h, res = 1;
+			renderer.context.size(w, h, res);
+			scene.camera.projection.perspective(60, aspect, 0.1, 1000);
+		}
+
+		var sphere = scene.root.findByName('sphere');
+		var cube1 = scene.root.findByName('cube');
+		var cube2 = scene.root.findByName('cube_(1)');
+		var cylinder = scene.root.findByName('cylinder');
+		var plane = scene.root.findByName('plane');
+
+		var p3d = SQR.Pointer3d();
+		var defaultColor = sphere.uniforms.uColor;
+		var hitColor = SQR.Color(1, 0.5, 0);
+
+		var hitHandler = function(t) {
+			t.uniforms.uColor = t.collider.hit ? hitColor : defaultColor;
+		}
+
+		// var wasHit = false;
+		// var debugHitHandler = function(t) {
+
+		// 	if(!wasHit && t.collider.hit) {
+		// 		console.log('cylinder over');
+		// 		wasHit = true;
+		// 	}
+
+		// 	if(wasHit && !t.collider.hit) {
+		// 		console.log('cylinder out');
+		// 		wasHit = false;
+		// 	}
+
+		// 	hitHandler(t);
+		// }
+
+		sphere.beforeDraw = hitHandler;
+		cube1.beforeDraw = hitHandler;
+		cube2.beforeDraw = hitHandler;
+		cylinder.beforeDraw = hitHandler;
+
+		var render = function(t) {
+			requestAnimationFrame(render);
+			camroot.rotation.y += 0.01;
+			renderer.render(scene.root, scene.camera, { pointer3d: p3d });
+		}
+
+		resize();
+
+		renderer.render(scene.root, scene.camera);
+		render();
+
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

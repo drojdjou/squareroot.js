@@ -33,99 +33,88 @@
  *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
  *
  *  @param {Number} radius - radius of the sphere
- *  @param {Number} sw - width (longitude) segments
- *  @param {Number} sh - width (latitude) segments
- *  @param {Number} options - additional settings
+ *  @param {Number=} [sw=8] - width (longitude) segments. Minimum 3.
+ *  @param {Number=} [sh=6] - width (latitude) segments. Minimum 3.
+ *  @param {Object=} options - additional settings
  *
  *  @returns {SQR.Buffer}
  */
-SQR.Primitives.createSphere = function(radius, sw, sh, options) {
+SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 
-    var vertices = [];
-    var uvs = [];
-    var faces = [];
+	var m = new SQR.Mesh();
 
-    options = options || {};
+	radius = radius || 50;
+	segmentsX = Math.max(3, Math.floor(segmentsX) || 8);
+	segmentsY = Math.max(3, Math.floor(segmentsY) || 6);
+	options = options || {};
 
-    var radius = radius || 50;
-    var segmentsX = Math.max(3, Math.floor(sw) || 8);
-    var segmentsY = Math.max(3, Math.floor(sh) || 6);
+	var phi = Math.PI * 2;
+	var tht = Math.PI;
 
-    var phiStart = 0;
-    var phiLength = Math.PI * 2;
+	var x, y;
 
-    var thetaStart = 0;
-    var thetaLength = Math.PI;
+	for (y = 1; y &lt;= segmentsY - 1; y ++) {
 
-    var x, y;
+		for (x = 0; x &lt; segmentsX; x ++) {
 
-    for (y = 0; y &lt;= segmentsY; y ++) {
+			var u = x / segmentsX;
+			var v = y / segmentsY;
 
-        for (x = 0; x &lt;= segmentsX; x ++) {
+			var xp = -radius * Math.cos(u * phi) * Math.sin(v * tht);
+			var yp =  radius * Math.cos(v * tht);
+			var zp =  radius * Math.sin(u * phi) * Math.sin(v * tht);
 
-            var u = x / segmentsX;
-            var v = y / segmentsY;
+			var i = m.V(xp, yp, zp);
+			m.T(u, 1 - v);
 
-            var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
-            var yp = radius * Math.cos(thetaStart + v * thetaLength);
-            var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+		}
+	}
 
-            vertices.push(new SQR.V3(xp, yp, zp));
-            uvs.push(new SQR.V2(u, 1 - v));
-        }
-    }
+	var northPole = m.V(0, radius, 0);
+	var southPole = m.V(0, -radius, 0);	
+	m.T(1, 1);
+	m.T(0, 0);
 
-    for (y = 0; y &lt; segmentsY; y ++) {
+	for (y = 0; y &lt; segmentsY; y++) {
 
-        for (x = 0; x &lt; segmentsX; x ++) {
+		var isn = y == 0;
+		var iss = y == segmentsY - 1;
 
-            var o = segmentsX + 1;
-            var vt1 = vertices[ y * o + x + 0 ];
-            var vt2 = vertices[ y * o + x + 1 ];
-            var vt3 = vertices[ (y + 1) * o + x + 1 ];
-            var vt4 = vertices[ (y + 1) * o + x + 0 ];
+		for (x = 0; x &lt; segmentsX; x++) {
 
-            var uv1 = uvs[ y * o + x + 0 ];
-            var uv2 = uvs[ y * o + x + 1 ];
-            var uv3 = uvs[ (y + 1) * o + x + 1 ];
-            var uv4 = uvs[ (y + 1) * o + x + 0 ];
+			var y0 = y;
+			var y1 = y + 1;
 
-            var f;
+			var x0 = x;
+			var x1 = (x + 1) % (segmentsX);
 
-            if(options.reverseNormals)
-                f = new SQR.Face().setPosition(vt2, vt1, vt3, vt4).setUV(uv2, uv1, uv3, uv4);
-            else 
-                f = new SQR.Face().setPosition(vt1, vt2, vt4, vt3).setUV(uv1, uv2, uv4, uv3);
+			var ta = y0 * segmentsX + x0 - segmentsX;
+			if(isn) ta = northPole;
 
-            if(options.flatShading) {
-                f.calculateNormal();
-            } else {
-                vt1.normal = vt1.clone().norm();
-                vt2.normal = vt2.clone().norm();
-                vt3.normal = vt3.clone().norm();
-                vt4.normal = vt4.clone().norm();
+			var tb = y0 * segmentsX + x1 - segmentsX;
+			if(isn) tb = northPole;
 
-                if(options.reverseNormals) {
-                    vt1.normal.neg();
-                    vt2.normal.neg();
-                    vt3.normal.neg();
-                    vt4.normal.neg();
-                }
-            }
+			var tc = y1 * segmentsX + x0 - segmentsX;
+			if(iss) tc = southPole;
 
-            faces.push(f);
-        }
-    }
+			var td = y1 * segmentsX + x1 - segmentsX;
+			if(iss) td = southPole;
 
-    var geo = SQR.Buffer()
-        .layout( {'aPosition': 3, 'aNormal': 3, 'aUV': 2 }, faces.length * 6);
+			if(isn) {
+				m.F(ta, td, tc).T(ta, td, tc);
+			} else if(iss) {
+				m.F(ta, tb, td).T(ta, tb, td);
+			} else {
+				m.F(ta, tb, tc, td).T(ta, tb, tc, td);
+			}
 
-    var c = 0, t;
-    faces.forEach(function(t) {
-        c += t.toBuffer(geo, c, !options.flatShading);
-    });
+		}
+	}
 
-    return geo.update();
+	m.calculateNormals(options.smooth);
+	if(options.flip) m.flip();
+
+	return m.update();
 }
 
 
@@ -147,13 +136,13 @@ SQR.Primitives.createSphere = function(radius, sw, sh, options) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Oct 28 2015 18:07:39 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

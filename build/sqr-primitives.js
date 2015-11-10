@@ -1174,8 +1174,14 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 
 	var getAttributeData = function(n) {
 		var d = geo[n] || geo[legacyAttribute[n]];
-		if(d && d.length > 0) return d;
-		else return null; 
+
+		if(d && d.length > 0) {
+			return d;
+		} else if(d.length == 0 && n == 'aUV2') {
+			return getAttributeData('aUV');
+		} else {
+			return null; 
+		}
 	}
 
 	var layout = options.layout || data.layout || SQR.v3n3u2();
@@ -1192,7 +1198,7 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 	var i = getAttributeData('indices');
 	if(i) buffer.index(i);
 
-	SQR.Mesh(buffer);
+	// SQR.Mesh(buffer);
 
     return buffer.update();
 };
@@ -1525,7 +1531,7 @@ SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
  */
 SQR.SceneParser = (function() {
 
-	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
+	// var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
 
 	var arrayToObject = function(a, v) {
 		v.x = a[0];
@@ -1581,7 +1587,16 @@ SQR.SceneParser = (function() {
 			for(var n in meshes) {
 				var md = meshes[n];
 
-				var layout = md.boneWeights ? skinnedMeshLayout() : SQR.v3n3u2();
+				var layout = SQR.v3n3u2();
+
+				if(md.boneWeights) {
+					 layout.aWeight = 4;
+					 layout.aIndex = 4;
+				}
+
+				if(md.uv2) {
+					layout.aUV2 = 2;
+				}
 
 				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
 				buffers[n] = b;
@@ -1611,18 +1626,48 @@ SQR.SceneParser = (function() {
 					camera = t;
 					var cd = scene.cameras[td.camera];
 
-					var resize = function() {
+					// var resize = function() {
 						var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 						camera.projection = new SQR.ProjectionMatrix().perspective(cd.fov, aspect, cd.near, cd.far);
-					}
+					// }
 
-					window.addEventListener('resize', resize);
-					resize();
+					// window.addEventListener('resize', resize);
+					// resize();
+				}
+
+				if(td.lightmapTileOffset) {
+					t.uniforms = t.uniforms || {};
+					t.uniforms.uLightmapTileOffset = td.lightmapTileOffset;
 				}
 
 				if(td.mesh) {
 					t.buffer = buffers[td.meshId];
 					
+				}
+
+				if(td.collider) {
+					var c;
+					switch(td.collider.type) {
+						case 'sphere':
+							c = SQR.Collider.Sphere();
+							c.radius = td.collider.radius;
+							arrayToObject(td.collider.center, c.center);
+							
+							break;
+						case 'box':
+							c = SQR.Collider.Box();
+							var cn = td.collider.center, si = td.collider.size;
+							c.box = {
+								maxX: cn[0] + si[0]/2, minX: cn[0] - si[0]/2,
+								maxY: cn[1] + si[1]/2, minY: cn[1] - si[1]/2,
+								maxZ: cn[2] + si[2]/2, minZ: cn[2] - si[2]/2,
+							};
+							break;
+						case 'mesh':
+							c = SQR.Collider.Mesh(buffers[td.meshId]);
+							break;
+					}
+					t.collider = c;
 				}
 
 				
@@ -1764,9 +1809,9 @@ SQR.SceneParser = (function() {
  *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
  *
  *  @param {Number} radius - radius of the sphere
- *  @param {Number} sw - width (longitude) segments
- *  @param {Number} sh - width (latitude) segments
- *  @param {Number} options - additional settings
+ *  @param {Number=} [sw=8] - width (longitude) segments. Minimum 3.
+ *  @param {Number=} [sh=6] - width (latitude) segments. Minimum 3.
+ *  @param {Object=} options - additional settings
  *
  *  @returns {SQR.Buffer}
  */
@@ -1779,10 +1824,8 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 	segmentsY = Math.max(3, Math.floor(segmentsY) || 6);
 	options = options || {};
 
-	var phiStart = 0;
-	var phiLength = Math.PI * 2;
-	var thetaStart = 0;
-	var thetaLength = Math.PI;
+	var phi = Math.PI * 2;
+	var tht = Math.PI;
 
 	var x, y;
 
@@ -1793,17 +1836,15 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 			var u = x / segmentsX;
 			var v = y / segmentsY;
 
-			var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
-			var yp = radius * Math.cos(thetaStart + v * thetaLength);
-			var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+			var xp = -radius * Math.cos(u * phi) * Math.sin(v * tht);
+			var yp =  radius * Math.cos(v * tht);
+			var zp =  radius * Math.sin(u * phi) * Math.sin(v * tht);
 
 			var i = m.V(xp, yp, zp);
 			m.T(u, 1 - v);
 
 		}
 	}
-
-	
 
 	var northPole = m.V(0, radius, 0);
 	var southPole = m.V(0, -radius, 0);	

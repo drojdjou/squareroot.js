@@ -322,7 +322,13 @@ SQR.Matrix44 = function(data) {
 	this.copyTo = function(m) {
 		var a = this.data, b = m.data || m;
 		for (var i = 0; i < 16; i++) b[i] = a[i];
-		return m;
+		return this;
+	}
+
+	this.copyFrom = function(m) {
+		var a = this.data, b = m.data || m;
+		for (var i = 0; i < 16; i++) a[i] = b[i];
+		return this;
 	}
 
 	/** 
@@ -454,8 +460,7 @@ SQR.Matrix44 = function(data) {
 		a[6] = (d1 * d6 - d5 * d2) * det;
 		a[7] = (d4 * d2 - d0 * d6) * det;
 		a[8] = (d0 * d5 - d4 * d1) * det;
-		// m.transpose();
-
+		
 		// To make a NormalMatrix - doesn't need to be transposed
 		// a[0] = (d5 * d10 - d9 * d6) * det;
 		// a[3] = (d8 * d6 - d4 * d10) * det;

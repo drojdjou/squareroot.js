@@ -140,13 +140,13 @@ SQR.Loader.loadAssets([
 			renderer.render(root, camera, { replacementShader: depthShader });
 
 			rawFBO.bind();
-			renderer.render(root, camera, { drawOnly: true });
+			renderer.draw(root, camera);
 
 			renderer.renderToScreen();
 			bokeh.shader.use()
 				.setUniform('uTexture', rawFBO.texture)
 				.setUniform('uDepthTexture', depthFBO.texture);
-			renderer.render(bokeh);
+			renderer.draw(bokeh);
 
 		} else {
 

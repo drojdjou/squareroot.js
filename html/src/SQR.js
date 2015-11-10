@@ -1,6 +1,6 @@
 /**
  *	@namespace SQR
- *	@description The global engine namesapce. All classes belong to this namespace.
+ *	@description The global engine namespace. Everything in SQR belongs to this namespace.
  */
 var SQR = {
 

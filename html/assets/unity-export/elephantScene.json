@@ -1,0 +1,51 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0, "g":0, "b":0, "a":1 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"no_name": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+},
+
+"cameras": {
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-75134",
+        "name": "elephant",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "no_name",
+		"mesh": "elephant",
+		"meshId": "m-8156"
+	}
+
+]
+}
+
+
+
+

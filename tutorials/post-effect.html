@@ -5,9 +5,11 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-
 <script type="text/javascript" src="../build/sqr.js"></script>
 <script type="text/javascript" src="../build/sqr-primitives.js"></script>
+
+<link rel="icon" href="../home/assets/favicon.png" type="image/x-icon">
+<link rel="shortcut icon" href="../home/assets/favicon.png" type="image/x-icon">
 
 <link rel="stylesheet" type="text/css" href="../html/lab/base.css">
 
@@ -21,14 +23,17 @@
 <script type="text/javascript" id="gl-script">
 
 SQR.Loader.loadAssets([
-	['glsl/normal2color.glsl', 'baseShader'],
-	['glsl/blur.glsl', 'blurShader'],
+	['glsl/blur.glsl', 'blurShader']
 ], function(assets) {
 
-	var blurForce = 0.066;
+	// The force of the blur
+	var blurForce = 0.05;
 
-	var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
-	var renderer = new SQR.Renderer(ctx);
+	// General rule for blur is that we do not need to make it full res.
+	// In this case a quater ores is good enough!
+	var resolution = 0.25;
+
+	var renderer = new SQR.Renderer('#gl-canvas');
 
 	var root = new SQR.Transform();
 	var camera = new SQR.Transform();
@@ -36,24 +41,29 @@ SQR.Loader.loadAssets([
 	root.add(camera);
 
 	var cube = new SQR.Transform();
+	// cube.buffer = SQR.Primitives.createSphere(2, 16, 16).update();
 	cube.buffer = SQR.Primitives.createCube(2, 2, 2).update();
-	cube.shader = SQR.Shader(assets.baseShader);
+
+	cube.shader = SQR.Shader(SQR.GLSL.normal2color);
 	root.add(cube);
 
 	var rawFBO = SQR.FrameBuffer();    
 	var blurXFBO = SQR.FrameBuffer();
 	var blur = SQR.Primitives.createPostEffect(assets.blurShader);
 
+	blur.uniforms = {
+		uDelta: new SQR.V2()
+	};
+
 	var resize = function() {
 		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		ctx.size(w, h);
+		renderer.context.size(w, h, resolution);
+		w = w * resolution, h = h * resolution;
 		rawFBO.resize(w, h);
 		blurXFBO.resize(w, h);
+
 		camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
 	}
-
-	window.addEventListener('resize', resize);
-	resize();
 
 	var render = function() {
 		requestAnimationFrame(render);
@@ -65,18 +75,18 @@ SQR.Loader.loadAssets([
 		renderer.render(root, camera);
 
 		blurXFBO.bind();
-		blur.shader.use()
-			.setUniform('uDelta', [0.0, blurForce])
-			.setUniform('uTexture', rawFBO.texture);
+		blur.uniforms.uDelta.set(0, blurForce);
+		blur.uniforms.uTexture = rawFBO.texture;
 		renderer.render(blur);
 
 		renderer.renderToScreen();
-		blur.shader.use()
-			.setUniform('uDelta', [blurForce, 0.0])
-			.setUniform('uTexture', blurXFBO.texture);
+		blur.uniforms.uDelta.set(blurForce, 0);
+		blur.uniforms.uTexture = blurXFBO.texture;
 		renderer.render(blur);
 	}
 
+	window.addEventListener('resize', resize);
+	resize();
 	render();
 });
 

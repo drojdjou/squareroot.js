@@ -20,40 +20,42 @@ SQR.Renderer = function(c, options, onError) {
 	var renderObjects = [], transparentObjects = [];
 	var startTime, time;
 
-	var updateTransform = function(t) {
+	var updateTransform = function(t, camera, options) {
+
 		if(!t.active) return;
 
-		t.transformWorld();
+		if(!t.__transformed) {
+			t.transformWorld();
+			t.__transformed = false;
+		} 
 
-		if(t.clip) {
-			t.clip.update(t, time, r.deltaTime);
-		}
+		t.transformView(camera ? camera.inverseWorldMatrix : null);
+
+		if(t.clip) t.clip.update(t, time, r.deltaTime);
+		if(options.pointer3d) options.pointer3d.onTransform(t);
 		
 		if (t.numChildren > 0) {
 			for (var i = 0; i < t.numChildren; i++) {
-				updateTransform(t.children[i]);
+				updateTransform(t.children[i], camera, options);
 			}
 		}
 
-		if(t.transparent) transparentObjects.push(t);
-		// else if(!t.useDepth) renderObjects.unshift(t);
-		else renderObjects.push(t);
+		if(t.buffer && t.shader) {
+			if(t.transparent) transparentObjects.push(t);
+			else renderObjects.push(t);
+		}
+		
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
 	var defOpts = {};
+	var camrig = [];
 
-	var setCameraUniforms = function(camera, lastShader) {
+	var setCommonUniforms = function(camera, lastShader) {
 		if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
 
 		var p = (camera && camera.projection) ? camera.projection : r.projection;
-
-		if(p) {
-			lastShader
-				.setUniform('uProjection', p)
-				.setUniform('uNear', p.near)
-				.setUniform('uFar', p.far);
-		}
+		if(p) lastShader.setUniform('uProjection', p).setUniform('uNear', p.near).setUniform('uFar', p.far);
 
 		lastShader.setUniform('uTime', time);
 	}
@@ -73,17 +75,61 @@ SQR.Renderer = function(c, options, onError) {
 	}
 
 	r.render = function(root, camera, options) {
-		var gl = SQR.gl;
+		r.tick();
+		r.beforeDraw(camera, options);
+		r.update(root, camera, options);
+		r.draw(null, camera, options);
+		r.afterDraw(options);
+	}
 
+
+	r.tick = function() {
+		if(!startTime) startTime = new Date().getTime();
+		time = new Date().getTime() - startTime;
+		r.deltaTime = time - r.currentTime;
+		r.currentTime = time;
+		return r;
+	}
+
+	r.beforeDraw = function(camera, options) {
+		options = options || defOpts;
+		if(options.pointer3d) {
+			var p = (camera && camera.projection) ? camera.projection : r.projection;
+			options.pointer3d.fromMousePosition(camera || root, p);
+		}
+		return r;
+	}
+
+	r.update = function(root, camera, options) {
 		options = options || defOpts;
 
-		if(!startTime) startTime = new Date().getTime();
+		renderObjects.length = 0;
+		transparentObjects.length = 0;
+		camrig.length = 0;
 
-		if(!options.drawOnly) {
-			time = new Date().getTime() - startTime;
-			r.deltaTime = time - r.currentTime;
-			r.currentTime = time;
+		if(camera) {
+
+			var a = camera;
+			while(a) {
+				camrig.unshift(a);
+				a = a.parent;
+			}
+
+			for(var i = 0, l = camrig.length; i < l; i++) {
+				camrig[i].transformWorld();
+				camrig[i].__transformed = true;
+			};
+
+			camera.computeInverseMatrix();
 		}
+
+		updateTransform(root, camera, options);
+		return r;
+	}	
+
+	r.draw = function(root, camera, options) {
+		var gl = SQR.gl;
+		options = options || defOpts;
 
 		if(r.autoClear) context.clear();
 
@@ -96,13 +142,11 @@ SQR.Renderer = function(c, options, onError) {
 			options.customGLSetup(gl);
 		}
 
-		if(!options.drawOnly) {
-			renderObjects.length = 0;
-			transparentObjects.length = 0;
-			updateTransform(root);
-			if(camera) camera.computeInverseMatrix();
-			renderObjects = renderObjects.concat(transparentObjects);
+		if(root && root.buffer && root.shader) {
+			renderObjects.push(root);
 		}
+
+		renderObjects = renderObjects.concat(transparentObjects);
 
 		var objectsToRender = renderObjects.length, ro, 
 			lastBuffer = null, 
@@ -114,7 +158,7 @@ SQR.Renderer = function(c, options, onError) {
 
 		if(hasReplacementShader) {
 			lastShader = options.replacementShader.use().updateTextures();
-			setCameraUniforms(camera, lastShader);
+			setCommonUniforms(camera, lastShader);
 		}
 
 		for(var i = 0; i < objectsToRender; i++) {
@@ -122,10 +166,6 @@ SQR.Renderer = function(c, options, onError) {
 			shaderChanged = false, bufferChanged = false;
 
 			var ro = renderObjects[i];
-
-			if(!options.drawOnly) ro.transformView(camera ? camera.inverseWorldMatrix : null);
-
-			if(!ro.buffer) continue;
 
 			if(ro.transparent) {
 				if(!transparentRendering) {
@@ -143,7 +183,7 @@ SQR.Renderer = function(c, options, onError) {
 
 			if((lastShader != ro.shader) && !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
-				setCameraUniforms(camera, lastShader);
+				setCommonUniforms(camera, lastShader);
 				shaderChanged = true;
 			}
 
@@ -155,7 +195,15 @@ SQR.Renderer = function(c, options, onError) {
 		}
 
 		gl.disable(gl.BLEND);
+		return r;
 	}
+
+	r.afterDraw = function(options) {
+		options = options || defOpts;
+		if(options.pointer3d) options.pointer3d.onAfterRender();
+		return r;
+	}
+
 
 	r.renderToScreen = function() {
 		var gl = SQR.gl;

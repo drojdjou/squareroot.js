@@ -235,7 +235,6 @@
 			particles.active = false;
 			ground.active = false;
 			skybox.active = true;
-
 			renderer.render(scene.root, scene.camera);
 
 			camroot.scale.y = -1;
@@ -252,8 +251,6 @@
 			skybox.active = false;
 			renderer.render(scene.root, scene.camera, { customGLSetup: setupReflection });
 
-			
-
 			blurXFBO.bind();
 			renderer.context.clear();
 			blur.shader
@@ -263,11 +260,8 @@
 
 			renderer.render(blur);
 
-
-
 			renderer.renderToScreen();
 			renderer.context.clear();
-
 			blur.shader
 				.use()
 				.setUniform('uDelta', [blurForce, 0.0])

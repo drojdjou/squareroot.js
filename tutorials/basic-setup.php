@@ -20,99 +20,86 @@
 	 it is not necessary otherwise since it is loaded using SQR.Loader below -->
 <script type="x-shader" class="gl-shader">
 
-<?php include('glsl/normal2color.glsl') ?>
+<?php include('../html/src/glsl/builtin/normal2color.glsl') ?>
 
 </script>
 
 <script type="text/javascript" id="gl-script">
 
-// Global loader for all the assets
-SQR.Loader.loadAssets([
+// Create a renderer 
+var renderer = SQR.Renderer();
 
-	// Declare each file to load with a path and an alias
-	// The contents of this file will be available in the
-	// assets object in the callback below, by alias name
-	// ex. assets.n2c in this case
-	['glsl/normal2color.glsl', 'n2c']
+// Attach the canvas element to the document body
+document.body.appendChild(renderer.context.canvas);
 
-], function(assets) {
+// Create a resize handler and call it once to set the size of the viewport 
+// and the a projection matrix
+var resize = function() {
+	var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+	renderer.context.size(w, h);
+	// The projection matrix can be defined globally as a property of the renderer
+	// or per camera (useful if your scene uses multiple cameras).
+	// For now, we will stick to the simplest scenario:
+	renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
+}
+window.addEventListener('resize', resize);
+resize();
 
-	// Create a renderer 
-	var renderer = SQR.Renderer();
+// In SQR, the scene you render is a hierarchy of SQR.Transform objects.
+// To start, you create a transform that is the mother of all
+// the other transforms in the scene. We like to call it 'root'.
+// A transform is an invisible point in space, like an Null Object in Maya or Empty in C4D.
+var root = SQR.Transform();
 
-	// Attach the canvas element to the document body
-	document.body.appendChild(renderer.context.canvas);
+// Next, create a camera.
+// Note that a camera in SQR is just another SQR.Transform, not a special object type.
+// It's only purpose is to define the point of view of the rendering.
+// To change the point of view simply move or rotate the camera,
+// for now we will leave it at its default position of 0, 0, 0
+var camera = SQR.Transform();
 
-	// Create a resize handler and call it once to set the size of the viewport 
-	// and the a projection matrix
-	var resize = function() {
-		var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		renderer.context.size(w, h);
-		// The projection matrix can be defined globally as a property of the renderer
-		// or per camera (useful if your scene uses multiple cameras).
-		// For now, we will stick to the simplest scenario:
-		renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
-	}
-	window.addEventListener('resize', resize);
-	resize();
+// To create a 3d object, we start with another transform.
+var cube = SQR.Transform();
 
-	// In SQR, the scene you render is a hierarchy of SQR.Transform objects.
-	// To start, you create a transform that is the mother of all
-	// the other transforms in the scene. We like to call it 'root'.
-	// A transform is an invisible point in space, like an Null Object in Maya or Empty in C4D.
-	var root = SQR.Transform();
+// We move this one a bit on the z-axis so that shows up in front of the camera.
+cube.position.z = -5;
 
-	// Next, create a camera.
-	// Note that a camera in SQR is just another SQR.Transform, not a special object type.
-	// It's only purpose is to define the point of view of the rendering.
-	// To change the point of view simply move or rotate the camera,
-	// for now we will leave it at its default position of 0, 0, 0
-	var camera = SQR.Transform();
+// Since a transform is only a point in space,
+// to see a shape in 3d we need to decorate the transform
+// with two object - a buffer and a shader.
 
-	// To create a 3d object, we start with another transform.
-	var cube = SQR.Transform();
+// A buffer defines the objects geometry (i.e. its shape)
+// SQR offers a bunch functions to create simple shapes out of the box
+// such as createCube(width, height, depth) below.
+cube.buffer = SQR.Primitives.createCube(2, 2, 2);
 
-	// We move this one a bit on the z-axis so that shows up in front of the camera.
-	cube.position.z = -5;
+// A shader defines the objects color (and is often called material in other 3d software). 
+// SQR has only a couple of built-in shaders, all of which are in the global SQR.GLSL object.
+// One of them is a "debug" shader called normal2color that we use here.
+// To create a shader just pass the GLSL code as a string SQR.Shader constructor function. 
+cube.shader = SQR.Shader(SQR.GLSL.normal2color);
 
-	// Since a transform is only a point in space,
-	// to see a shape in 3d we need to decorate the transform
-	// with two object - a buffer and a shader.
+// Now we can add our objects to the root transform
+root.add(cube, camera);
 
-	// A buffer defines the objects geometry (i.e. its shape)
-	// SQR offers a bunch functions to create simple shapes out of the box
-	// such as createCube(width, height, depth) below.
-	cube.buffer = SQR.Primitives.createCube(2, 2, 2);
+// Ok, we're all setup, let the rendering begin!
+var render = function() {
 
-	// A shader defined the objects color 
-	// (and is often called material in other 3d software). 
-	// SQR does not have any built-in materials. 
-	// Instead shaders are created in GLSL code loaded from an external GLSL file 
-	// loaded with SQR.Loader above in this case.
-	// To create a shader just pass the content of that file to the SQR.Shader constructor function.
-	cube.shader = SQR.Shader(assets.n2c);
+	requestAnimationFrame(render);
 
-	// Now we can add our objects to the root transform
-	root.add(cube, camera);
+	// Rotate the cube a bit on each frame
+	cube.rotation.x += 0.005;
+	cube.rotation.y += 0.01;
 
-	// Ok, we're all setup, let the rendering begin!
-	var render = function() {
+	// The render function will render all the transforms that are
+	// added to root and it's ancestors. It takes two arguments:
+	// - the root transform itself
+	// - camera transform, so that it knows what point of view to render from
+	renderer.render(root, camera);
+}
 
-		requestAnimationFrame(render);
+render();
 
-		// Rotate the cube a bit on each frame
-		cube.rotation.x += 0.005;
-		cube.rotation.y += 0.01;
-
-		// The render function will render all the transforms that are
-		// added to root and it's ancestors. It takes two arguments:
-		// - the root transform itself
-		// - camera transform, so that it knows what point of view to render from
-		renderer.render(root, camera);
-	}
-
-	render();
-});
 </script>
 
 <header>

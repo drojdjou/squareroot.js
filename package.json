@@ -3,18 +3,17 @@
 	"description": "GL, math, rendering, animation",
 	"repository": "https://github.com/drojdjou/squareroot.js/",
 	"version": "3.0.0",
-
-	"jspm": {
-		"main": "build/sqr",
-		"format": "global"
-	},
-
 	"main": "build/sqr",
-	"format": "global",
 
 	"devDependencies": {
-	  "uglify-js":"*",
-	  "jsdoc":"*",
-	  "moment":"*"
+
+		"less": "*",
+		"less-plugin-autoprefix": "^1.4.0",
+		"livereload": "*",
+		"chokidar": "*",
+		"uglify-js":"*",
+		"jsdoc":"*",
+		"moment":"*"
+
 	}
 }

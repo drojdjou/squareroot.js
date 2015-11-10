@@ -166,3 +166,9 @@ Started reworking the mesh creation functions (aka Primitives)
 
 Changes in Renderer/Context classes and new Mesh API
 
+
+##### v3.0 b 149
+*Nov 9th 2015*
+
+Adding builtin shaders
+

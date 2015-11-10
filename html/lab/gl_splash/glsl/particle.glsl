@@ -16,7 +16,7 @@ void main() {
 
 	vColor = aColor;
 
-	float my = 25.0 + 120.0 * aVelocity.z;
+	float my = 60.0 + 100.0 * aVelocity.z;
 
 	float a = aAngle + uTime * 0.0003 * aVelocity.x;
 	float y = my + cos(aVelocity.y + uTime * 0.004 * aVelocity.y) * my * 0.5;

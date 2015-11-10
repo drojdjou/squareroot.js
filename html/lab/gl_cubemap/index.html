@@ -46,6 +46,7 @@
 
 	SQR.Loader.loadAssets([
 		['normal2color.glsl', 'n2c'],
+		['../../src/glsl/light/slm.glsl', 'slm'],
 		['glass.glsl', 'refl'],
 		['../../assets/monument.jpg', 'tex'],
 	], function(assets) {
@@ -91,18 +92,41 @@
 		var reflShader = SQR.Shader(assets['refl'])
 			.use()
 			.setUniform('uCubemap', cubemapBuffer.texture)
-			.setUniform('chromaticDispertion', [0.99, 1.00, 1.01])
-			.setUniform('bias', 0.0)
+			.setUniform('chromaticDispertion', [0.98, 1.00, 1.02])
+			.setUniform('bias',  0.0)
 			.setUniform('scale', 1.0)
 			.setUniform('power', 1.0);
 
 		var sphere = new SQR.Transform();
-		sphere.buffer = SQR.Primitives.createSphere(6, 20, 20, { smooth: true });
+		sphere.buffer = SQR.Primitives.createSphere(6, 40, 40, { smooth: true });
 		sphere.shader = reflShader
 		root.add(sphere);
 
+		var c = 0;
+		sphere.buffer.mesh.vertices.forEach(function(v) {
+			v.phase = (v.position.x * v.position.y) * 0.3;
+			v.speed = 0.05;
+			v.base = new SQR.V3().copyFrom(v.position);
+		});
+
+		var animateVertex = function(v) {
+			v.phase += v.speed;
+			v.position.copyFrom(v.base).mul(
+				1 + Math.cos(v.phase) * 0.08
+			);
+		}
+
+		var animate = function() {
+			sphere.buffer.mesh.vertices.forEach(animateVertex);
+			sphere.buffer.mesh.calculateNormals(true).update();
+		}
+
 		sphere.uniforms = {
-			uColor: SQR.Color(0.00, 0.15, 0.20)
+			uAmbient: 0.0,
+			uColor: SQR.Color(0.0, 0.7, 1.0).mul(0.7),
+			uLight: new SQR.V3(0.5, 0.2, -0.2).norm(),
+			uShininess: 64,
+			uSpecularIntensity: 2
 		};
 
 		var cubes = new SQR.Transform();
@@ -118,31 +142,43 @@
 			c.shader = cubeShader;
 			c.buffer = cubeBuffer;
 			c.position.set(x, y, z);
-			c.scale.set(1, 1, 1);
+			c.rotation.random();
+			c.speed = 0.01 + 0.02 * Math.random();
+			c.scale.set(1.6, 1.6, 1.6);
 			c.uniforms = { 'uColor': color };
 			cubes.add(c);
 			return c;
 		}
 
-		addCube(-10,   0,    0, [1,0,0]);
-		addCube( 10,   0,    0, [0,1,0]);
-		addCube( 0,   10,    0, [0,0,1]);
-		addCube( 0,  -10,    0, [1,1,0]);
-		addCube( 0,    0,   10, [1,0,1]);
-		addCube( 0,    0,  -10, [0,1,1]);
+		var d = 10;
+
+		addCube(-d,   0,    0, [1,0.5,0]);
+		addCube( d,   0,    0, [0,1,0.5]);
+		addCube( 0,   d,    0, [0,0.5,1]);
+		addCube( 0,  -d,    0, [1,1,0.5]);
+		addCube( 0,    0,   d, [1,0.5,1]);
+		addCube( 0,    0,  -d, [0.5,1,1]);
 
 		var addMoreCube = function() {
 			var v = new SQR.V3();
 
 			// var a = Math.random() * SQR.TWOPI;
-			var r = 10 + 4 * Math.random();
+			var r = 12 + 5 * Math.random();
 			// v.x = Math.sin(a) * r;
 			// v.y = Math.cos(a) * r;
 			// v.z = -1 + Math.random() * 2;
 
 			v.random().norm().mul(r);
 
-			var c = addCube(v.x, v.y, v.z, [1,1,1]);
+			var c = SQR.Color();
+			var r = Math.random();
+			if(r > 0.5) 
+				c.setRGB(0.0, 0.8, 0.6);
+			else
+				c.setRGB(0.8, 0.8, 0.8);
+
+			var c = addCube(v.x, v.y, v.z, c);
+
 			c.rotation.set(v.x, v.y, v.z);
 			c.scale.set(0.3, 0.3, 0.3);
 		}
@@ -202,6 +238,8 @@
 			mx += (tx - mx) * 0.1;
 			my += (ty - my) * 0.1;
 
+			// animate();
+
 
 			renderSide('front');
 			renderSide('back');
@@ -221,13 +259,15 @@
 
 			cubes.children.forEach(function(e) {
 				e.rotation.y += 0.01;
-				e.rotation.x += 0.02;
+				e.rotation.x += 0.03;
 			});
+
+			// sphere.rotation.x += 0.01;
+			// sphere.rotation.y += 0.02;
 
 			cubes.rotation.z += 0.002 + my * 0.02;
 			cubes.rotation.y += 0.003 + mx * 0.02;
-
-			camRoot.rotation.x = 0.3;
+			camRoot.rotation.x = -0.1;
 
 			renderer.render(root, camera);
 		}

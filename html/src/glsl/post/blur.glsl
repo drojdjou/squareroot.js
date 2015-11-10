@@ -2,7 +2,6 @@
 //#vertex
 precision mediump float;
 
-
 attribute vec2 aPosition;
 attribute vec2 aUV;
 
@@ -17,26 +16,25 @@ void main(void) {
 precision mediump float;
 
 #ifndef ITE
-#define ITE 16.0
+#define ITE 4.0
 #endif
 
 uniform sampler2D uTexture;
 uniform vec2 uDelta;
 
+const vec3 cScale = vec3(24.6546, 13.4905, 210.8789);
+const vec3 cMult = 675.5453;
+
 varying vec2 vUV;
 
-float random(vec3 scale, float seed) {
-    return fract(sin(dot(gl_FragCoord.xyz + seed, scale)) * 675.5453 + seed);
+float random() {
+    return fract(sin(dot(gl_FragCoord.xyz, cScale)) * cMult);
 }
 
 void main(void) {
-    float offset = random(vec3(24.6546, 13.4905, 210.8789), 2.0);
+    float offset = random();
     vec4 c = vec4(0.0);
     float ws = 0.0;
-
-    float d;
-
-    vec4 col = texture2D(uTexture, vUV);
 
 	for(float t = -ITE; t <= ITE; t++) {
         float p = (t + offset - 0.5) / ITE;

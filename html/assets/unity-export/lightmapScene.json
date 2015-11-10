@@ -1,0 +1,167 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.5347102, "g":0.5658728, "b":0.6323529, "a":1 },
+"background": { "r":0.04541524, "g":0.3297299, "b":0.5147059, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+},
+
+"lightmaps": [
+
+	"lightmap0.png"
+
+],
+	
+"materials": {
+	
+	"blue": { 
+		"type": "Lightmap",
+		"color": { "r":0.1463019, "g":0.6220813, "b":0.9044118, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	}
+
+},
+
+"lights": {
+	
+	"directional_light": { 
+		"type": 1,
+		"color": { "r":0.7794118, "g":0.7794118, "b":0.7794118, "a":1 },
+		"intensity": 0.5
+	}
+
+},
+
+"cameras": {
+	
+	"main_camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-64666",
+        "name": "camroot",
+		"position": [ -0.399,0,1.255 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1506",
+        "name": "main_camera",
+		"parent": "t-64666",
+		"position": [ 1.239,1.5,2.455 ],
+		"rotation": [ -0.2280089,0.2077319,-0.04997831,0.9499272 ],
+		"scale": [2,2,2],
+		"camera": "main_camera"
+	},
+	
+	{
+		"uid": "t-1518",
+        "name": "directional_light",
+		"position": [ 0,3,0 ],
+		"rotation": [ 0.0000000689,0.9063078,0.4226183,-0.0000002821 ],
+		"light": "directional_light"
+	},
+	
+	{
+		"uid": "t-4196",
+        "name": "plane",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0,0 ],
+		    "size": [ 10,0.01,10 ]
+		},
+		"renderer": "blue",
+		"mesh": "plane",
+		"meshId": "m-356",
+		"lightmapIndex": 0,
+		"lightmapTileOffset": [ 0.5859375,0.5859375,0,0 ]
+	},
+	
+	{
+		"uid": "t-6162",
+        "name": "sphere",
+		"position": [ 0,0.18,2.02 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "sphere",
+		    "center": [ 0,0,0 ],
+		    "radius": 0.5
+		},
+		"renderer": "blue",
+		"mesh": "sphere",
+		"meshId": "m-352",
+		"lightmapIndex": 0,
+		"lightmapTileOffset": [ 0.1025391,0.06704553,0.7509766,0.09375 ]
+	},
+	
+	{
+		"uid": "t-13282",
+        "name": "cube",
+		"position": [ -1.2,0.2,1.66 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0,0 ],
+		    "size": [ 1,1,1 ]
+		},
+		"renderer": "blue",
+		"mesh": "cube",
+		"meshId": "m-348",
+		"lightmapIndex": 0,
+		"lightmapTileOffset": [ 0.1415234,0.09250185,0.7509766,0 ]
+	},
+	
+	{
+		"uid": "t-15104",
+        "name": "cube_(1)",
+		"position": [ 0.27,0,1.11 ],
+		"rotation": [ -0.3233431,0.2404348,-0.1427223,0.9040303 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0,0 ],
+		    "size": [ 1,1,1 ]
+		},
+		"renderer": "blue",
+		"mesh": "cube",
+		"meshId": "m-348",
+		"lightmapIndex": 0,
+		"lightmapTileOffset": [ 0.1415234,0.09250185,0.5878906,0.1640625 ]
+	},
+	
+	{
+		"uid": "t-19502",
+        "name": "cylinder",
+		"position": [ -0.4,0.24,1.27 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cylinder"
+		},
+		"renderer": "blue",
+		"mesh": "cylinder",
+		"meshId": "m-350",
+		"lightmapIndex": 0,
+		"lightmapTileOffset": [ 0.161913,0.1623162,0.5878906,0 ]
+	}
+
+]
+}
+
+
+
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: GLSL.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: GLSL.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace GLSL
+ * @memberof SQR
+ * @description The global namespace holding GLSL code of all built-in shaders and shader chunks.
+ */
+SQR.GLSL = {
+
+	/**
+	 * @property diffspec
+	 * 
+	 * @description &lt;p>A general purpose diffuse-specular shader.&lt;/p> 
+	 * 
+	 * &lt;p>It is used internally by the Unity scene parses as the default shader. 
+	 * It works with several light related uniforms, but for now only one light per
+	 * shader is supported as well it can only be a directiona light.&lt;/p>
+	 * 
+	 * &lt;p>This shader is meant to make working with basic shading easier, but is not 
+	 * intended to be some sort of one-shader-to-rule-them-all, so in most scenarios
+	 * a custom GLSL shader might be required.&lt;/p>
+	 * 
+	 * &lt;a href='https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/diffspec.glsl'>Shader source&lt;/a>
+	 */
+	"diffspec": "/*#docs*/\n//#vertex\nprecision mediump float;\nattribute vec3 aNormal;\nattribute vec3 aPosition;\nattribute vec2 aUV;\nuniform mat4 uMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjection;\nuniform mat3 uNormalMatrix;\nuniform vec3 uEyePosition;\nvarying vec3 vNormal;\nvarying vec3 vIncident;\nvarying vec2 vUV;\nvoid main() {\n	vNormal = uNormalMatrix * aNormal;\n	vec3 p = (uMatrix * vec4(aPosition, 1.0)).xyz;\n	vIncident = normalize(p - uEyePosition);\n	vUV = aUV;\n	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);\n}\n//#fragment\nprecision mediump float;\n//#include standardLight\nuniform vec4 uEmissiveColor;\n	uniform vec3 uLightDirection;\n	uniform vec4 uDiffuseColor;\n	#ifdef USE_SPECULAR\n	uniform vec4 uSpecularColor;\n	uniform float uShininess;\n	#endif\n#ifdef USE_DIFFUSE_MAP\nuniform sampler2D uDiffuseMap;\n#endif\n#ifdef USE_SPECULAR_MAP\nuniform sampler2D uSpecularMap;\n#endif\nuniform vec4 uTextureTileOffset;\nvarying vec3 vNormal;\nvarying vec3 vIncident;\nvarying vec2 vUV;\nvec4 texture(sampler2D t, vec2 uv) {\n	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);\n}\nvoid main() {\n	#ifdef USE_DIFFUSE_MAP\n	vec3 dm = uDiffuseColor.rgb * texture(uDiffuseMap, vUV).rgb;\n	#else\n	vec3 dm = uDiffuseColor.rgb;\n	#endif\n	vec3 e = (uEmissiveColor.rgb * dm.rgb) * uEmissiveColor.a;\n	vec3 d = diffuse(vNormal, uLightDirection, dm.rgb, uDiffuseColor.a);\n	#ifdef USE_SPECULAR_MAP\n	#define SI uSpecularColor.a * texture(uSpecularMap, vUV).r\n	#else\n	#define SI uSpecularColor.a\n	#endif\n	#ifdef USE_SPECULAR\n	#define SP specular(vNormal, vIncident, uLightDirection, uSpecularColor.rgb, uShininess, SI)\n	#else \n	#define SP \n	#endif\n	gl_FragColor = vec4(e + d + SP, 1.0);\n}\n",
+
+	/**
+	 * @property normal2color
+	 * 
+	 * @description &lt;p>A simple debug shader&lt;/p> 
+	 * 
+	 * &lt;p>The direction of the normal is translated into the color for each pixel. Simple and useful for debugging.&lt;/p>
+	 * 
+	 * &lt;a href='https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/normal2color.glsl'>Shader source&lt;/a>
+	 */
+	"normal2color": "/*#docs*/\n//#vertex indicates that this is where the vertex shader starts\n//#fragment indicates that this is where the fragment shader starts\n//#vertex\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nuniform mat4 uMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjection;\nuniform mat3 uNormalMatrix;\nvarying vec3 vNormal;\nvoid main() {\n	vNormal = normalize(uNormalMatrix * aNormal);\n	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);\n}\n//#fragment\nprecision mediump float;\nvarying vec3 vNormal;\nvoid main() {\n	gl_FragColor = vec4(vec3(0.5) + vNormal * 0.5, 1.0);\n}\n",
+
+	/**
+	 * @property standardLight
+	 * 
+	 * @description &lt;p>A collection of light related functions&lt;/p> 
+	 * 
+	 * &lt;p>Includes diffuse(), specular() and brightness()&lt;/p>
+	 * 
+	 * &lt;a href='https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/standardLight.glsl'>Shader source&lt;/a>
+	 */
+	"standardLight": "/*#docs*/\nvec3 diffuse(vec3 n, vec3 l, vec3 c, float i) {\n	#ifdef HEMISPEHERE_DIFFUSE\n	return (dot(-l, n) * 0.5 + 0.5) * c * i;\n	#else\n	return max(0.0, dot(-l, n)) * c * i;\n	#endif\n}\nvec3 specular(vec3 n, vec3 v, vec3 l, vec3 c, float sh, float i) {\n	return pow(max(0.0, dot(reflect(-l, n), v)), sh) * c.rgb * i;\n}\nfloat brightness(vec3 c) {\n	return c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722;\n}\n",
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -16,6 +16,18 @@ SQR.Matrix33 = function() {
         return this;
     }
 
+    this.copyTo = function(m) {
+        var a = this.data, b = m.data || m;
+        for (var i = 0; i < 9; i++) b[i] = a[i];
+        return this;
+    }
+
+    this.copyFrom = function(m) {
+        var a = this.data, b = m.data || m;
+        for (var i = 0; i < 9; i++) a[i] = b[i];
+        return this;
+    }
+
     this.transformVector = function (v, pv) {
         var d = this.data;
         var x = v.x, y = v.y, z = v.z;

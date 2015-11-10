@@ -5,9 +5,9 @@
  *  @description Creates a simple cube geometry, 1 quad per side, with UVs, non-indexed
  *
  *  @param {Number} radius - radius of the sphere
- *  @param {Number} sw - width (longitude) segments
- *  @param {Number} sh - width (latitude) segments
- *  @param {Number} options - additional settings
+ *  @param {Number=} [sw=8] - width (longitude) segments. Minimum 3.
+ *  @param {Number=} [sh=6] - width (latitude) segments. Minimum 3.
+ *  @param {Object=} options - additional settings
  *
  *  @returns {SQR.Buffer}
  */
@@ -20,10 +20,8 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 	segmentsY = Math.max(3, Math.floor(segmentsY) || 6);
 	options = options || {};
 
-	var phiStart = 0;
-	var phiLength = Math.PI * 2;
-	var thetaStart = 0;
-	var thetaLength = Math.PI;
+	var phi = Math.PI * 2;
+	var tht = Math.PI;
 
 	var x, y;
 
@@ -34,17 +32,15 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 			var u = x / segmentsX;
 			var v = y / segmentsY;
 
-			var xp = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
-			var yp = radius * Math.cos(thetaStart + v * thetaLength);
-			var zp = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+			var xp = -radius * Math.cos(u * phi) * Math.sin(v * tht);
+			var yp =  radius * Math.cos(v * tht);
+			var zp =  radius * Math.sin(u * phi) * Math.sin(v * tht);
 
 			var i = m.V(xp, yp, zp);
 			m.T(u, 1 - v);
 
 		}
 	}
-
-	
 
 	var northPole = m.V(0, radius, 0);
 	var southPole = m.V(0, -radius, 0);	

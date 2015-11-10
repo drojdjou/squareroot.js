@@ -35,7 +35,7 @@
  */
 SQR.SceneParser = (function() {
 
-	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
+	// var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
 
 	var arrayToObject = function(a, v) {
 		v.x = a[0];
@@ -75,7 +75,7 @@ SQR.SceneParser = (function() {
 			var getDefaultShader = (function() {
 				var d;
 				return function() {
-					if(!d) d = SQR.Shader(options.shader);
+					if(!d) d = options.shader.setUniform ? options.shader : SQR.Shader(options.shader);
 					return d;
 				}
 			})();
@@ -91,7 +91,16 @@ SQR.SceneParser = (function() {
 			for(var n in meshes) {
 				var md = meshes[n];
 
-				var layout = md.boneWeights ? skinnedMeshLayout() : SQR.v3n3u2();
+				var layout = SQR.v3n3u2();
+
+				if(md.boneWeights) {
+					 layout.aWeight = 4;
+					 layout.aIndex = 4;
+				}
+
+				if(md.uv2) {
+					layout.aUV2 = 2;
+				}
 
 				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
 				buffers[n] = b;
@@ -112,6 +121,7 @@ SQR.SceneParser = (function() {
 				t.useQuaternion = true;
 				arrayToObject(td.position, t.position);
 				arrayToObject(td.rotation, t.quaternion);
+				if(td.scale) arrayToObject(td.scale, t.scale);
 
 				t.data = td;
 				if(td.bones) skinnedMeshes.push(t);
@@ -120,18 +130,48 @@ SQR.SceneParser = (function() {
 					camera = t;
 					var cd = scene.cameras[td.camera];
 
-					var resize = function() {
+					// var resize = function() {
 						var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 						camera.projection = new SQR.ProjectionMatrix().perspective(cd.fov, aspect, cd.near, cd.far);
-					}
+					// }
 
-					window.addEventListener('resize', resize);
-					resize();
+					// window.addEventListener('resize', resize);
+					// resize();
+				}
+
+				if(td.lightmapTileOffset) {
+					t.uniforms = t.uniforms || {};
+					t.uniforms.uLightmapTileOffset = td.lightmapTileOffset;
 				}
 
 				if(td.mesh) {
 					t.buffer = buffers[td.meshId];
 					
+				}
+
+				if(td.collider) {
+					var c;
+					switch(td.collider.type) {
+						case 'sphere':
+							c = SQR.Collider.Sphere();
+							c.radius = td.collider.radius;
+							arrayToObject(td.collider.center, c.center);
+							
+							break;
+						case 'box':
+							c = SQR.Collider.Box();
+							var cn = td.collider.center, si = td.collider.size;
+							c.box = {
+								maxX: cn[0] + si[0]/2, minX: cn[0] - si[0]/2,
+								maxY: cn[1] + si[1]/2, minY: cn[1] - si[1]/2,
+								maxZ: cn[2] + si[2]/2, minZ: cn[2] - si[2]/2,
+							};
+							break;
+						case 'mesh':
+							c = SQR.Collider.Mesh(buffers[td.meshId]);
+							break;
+					}
+					t.collider = c;
 				}
 
 				
@@ -272,13 +312,13 @@ SQR.SceneParser = (function() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Oct 28 2015 18:07:39 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

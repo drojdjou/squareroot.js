@@ -8,6 +8,10 @@
 <script type="text/javascript" src="../build/sqr.js"></script>
 <script type="text/javascript" src="../build/sqr-primitives.js"></script>
 
+<script type="text/javascript" src="../html/src/common/Shader.js"></script>
+<script type="text/javascript" src="../html/src/math/Color.js"></script>
+<script type="text/javascript" src="../html/src/GLSL.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../html/lab/base.css">
 
 </head>
@@ -18,17 +22,16 @@
 <script type="text/javascript" id="gl-script">
 
 SQR.Loader.loadAssets([
-	['glsl/normal2color.glsl', 'shader'],
-	['../html/assets/model/elephant.json', 'model'],
+	['../html/assets/unity-export/elephant.json', 'model'],
+	['../html/assets/textures/marble.jpg', 'diffuseTex'],
+	['../html/assets/textures/marble-spec.jpg', 'specularTex']
 ], function(assets) {
 
-	var ctx = SQR.Context('#gl').create().clearColor(0, 0, 0, 1);
-
-	var renderer = SQR.Renderer(ctx);
+	var renderer = SQR.Renderer('#gl');
 
 	var resize =function() {
 		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		ctx.size(w, h);
+		renderer.context.size(w, h);
 		renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
 	}
 
@@ -38,15 +41,37 @@ SQR.Loader.loadAssets([
 	var root = SQR.Transform();
 
 	var camera = SQR.Transform();
-	camera.position.z = 12;
-	camera.position.y = -1;
+	camera.position.z = 48;
+	camera.position.y = 0;
 	root.add(camera);
 
 	var model = new SQR.Transform();
  
 	model.buffer = SQR.Mesh.fromJSON(assets.model);
 
-	model.shader = SQR.Shader(assets.shader)
+	/**
+	 *	
+	 */
+	model.shader = SQR.Shader(SQR.GLSL.diffspec, {
+			directives: [
+				{ name: 'USE_SPECULAR' },
+				{ name: 'USE_DIFFUSE_MAP' },
+				{ name: 'USE_SPECULAR_MAP' }
+			]
+		}).use()
+
+		.setUniform('uLightDirection', new SQR.V3(-1, -1, -0.5).norm())
+
+		.setUniform('uEmissiveColor', SQR.Color('#ffffff', 0.25))
+		.setUniform('uDiffuseColor', SQR.Color('#ff8000',  0.75))
+		.setUniform('uSpecularColor', SQR.Color('#ffaa80', 2.00))
+		.setUniform('uShininess', 8)
+
+		.setUniform('uDiffuseMap', SQR.Texture(assets.diffuseTex, { wrap: SQR.gl.MIRRORED_REPEAT }))
+		.setUniform('uSpecularMap', SQR.Texture(assets.specularTex, { wrap: SQR.gl.MIRRORED_REPEAT }))
+
+		.setUniform('uTextureTileOffset', [4, 4, 0, 0]);
+
 	root.add(model);
 
 	var mx = 0, tx = 0;
@@ -60,8 +85,6 @@ SQR.Loader.loadAssets([
 		renderer.render(root, camera);
 	}
 
-	render();
-
 	var isTouch = 'ontouchstart' in document;
 	var mousemove = isTouch ? 'touchmove' : 'mousemove';
 
@@ -70,6 +93,8 @@ SQR.Loader.loadAssets([
 		tx = (e.pageX / window.innerWidth) * 2 - 1;
 		ty = (e.pageY / window.innerHeight) * 2 - 1;
 	});
+
+	render();
 
 });
 

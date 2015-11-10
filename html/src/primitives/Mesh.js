@@ -293,8 +293,14 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 
 	var getAttributeData = function(n) {
 		var d = geo[n] || geo[legacyAttribute[n]];
-		if(d && d.length > 0) return d;
-		else return null; 
+
+		if(d && d.length > 0) {
+			return d;
+		} else if(d.length == 0 && n == 'aUV2') {
+			return getAttributeData('aUV');
+		} else {
+			return null; 
+		}
 	}
 
 	var layout = options.layout || data.layout || SQR.v3n3u2();
@@ -311,7 +317,7 @@ SQR.Mesh.fromJSON = function(data, name, options) {
 	var i = getAttributeData('indices');
 	if(i) buffer.index(i);
 
-	SQR.Mesh(buffer);
+	// SQR.Mesh(buffer);
 
     return buffer.update();
 };

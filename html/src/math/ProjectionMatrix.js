@@ -159,6 +159,7 @@ SQR.ProjectionMatrix.prototype.transformVector = function(v, pv) {
 /**
  *  Inverses the matrix. Useful for projecting screen coordinates back in to 3d space.
  */
+/*
 SQR.ProjectionMatrix.prototype.inverse = function (m) {
 	var mat = this.data;
 	m = m || this.data;
@@ -212,3 +213,5 @@ SQR.ProjectionMatrix.prototype.inverse = function (m) {
 
 	return m;
 };
+
+*/

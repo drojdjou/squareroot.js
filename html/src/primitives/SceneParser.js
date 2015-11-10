@@ -7,7 +7,7 @@
  */
 SQR.SceneParser = (function() {
 
-	var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
+	// var skinnedMeshLayout = function() { return { aPosition: 3, aNormal: 3, aUV: 2, aWeight: 4, aIndex: 4 } };
 
 	var arrayToObject = function(a, v) {
 		v.x = a[0];
@@ -63,7 +63,16 @@ SQR.SceneParser = (function() {
 			for(var n in meshes) {
 				var md = meshes[n];
 
-				var layout = md.boneWeights ? skinnedMeshLayout() : SQR.v3n3u2();
+				var layout = SQR.v3n3u2();
+
+				if(md.boneWeights) {
+					 layout.aWeight = 4;
+					 layout.aIndex = 4;
+				}
+
+				if(md.uv2) {
+					layout.aUV2 = 2;
+				}
 
 				var b = SQR.Mesh.fromJSON(md, null, { layout: layout });
 				buffers[n] = b;
@@ -93,18 +102,48 @@ SQR.SceneParser = (function() {
 					camera = t;
 					var cd = scene.cameras[td.camera];
 
-					var resize = function() {
+					// var resize = function() {
 						var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 						camera.projection = new SQR.ProjectionMatrix().perspective(cd.fov, aspect, cd.near, cd.far);
-					}
+					// }
 
-					window.addEventListener('resize', resize);
-					resize();
+					// window.addEventListener('resize', resize);
+					// resize();
+				}
+
+				if(td.lightmapTileOffset) {
+					t.uniforms = t.uniforms || {};
+					t.uniforms.uLightmapTileOffset = td.lightmapTileOffset;
 				}
 
 				if(td.mesh) {
 					t.buffer = buffers[td.meshId];
 					
+				}
+
+				if(td.collider) {
+					var c;
+					switch(td.collider.type) {
+						case 'sphere':
+							c = SQR.Collider.Sphere();
+							c.radius = td.collider.radius;
+							arrayToObject(td.collider.center, c.center);
+							
+							break;
+						case 'box':
+							c = SQR.Collider.Box();
+							var cn = td.collider.center, si = td.collider.size;
+							c.box = {
+								maxX: cn[0] + si[0]/2, minX: cn[0] - si[0]/2,
+								maxY: cn[1] + si[1]/2, minY: cn[1] - si[1]/2,
+								maxZ: cn[2] + si[2]/2, minZ: cn[2] - si[2]/2,
+							};
+							break;
+						case 'mesh':
+							c = SQR.Collider.Mesh(buffers[td.meshId]);
+							break;
+					}
+					t.collider = c;
 				}
 
 				

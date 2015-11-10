@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/GLSL.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
@@ -48,12 +49,8 @@ SQR.Loader.loadAssets([
 	var trackball = SQR.Trackball();
 	var currentRotation = new SQR.Quaternion();
 
-	var ctx = SQR.Context('#gl-canvas')
-		.create()
-		.size(w, h).
-		clearColor(0, 0, 0, 1);
-
-	var renderer = new SQR.Renderer(ctx);
+	var renderer = new SQR.Renderer('#gl-canvas');
+	renderer.context.size(w, h);
 	renderer.projection = new SQR.ProjectionMatrix().perspective(70, w/h, 0.1, 1000);
 
 	var camera = new SQR.Transform();
@@ -116,12 +113,11 @@ SQR.Loader.loadAssets([
 
 	var render = function() {
 		requestAnimationFrame(render);
-		ctx.clear();
-		
+
 		skullBg.rotation.y += 0.002;
 		// camera.position.z = my * 20;
 
-		SQR.Quaternion.slerp(trackball.rotation, currentRotation, 0.05, currentRotation);
+		SQR.Quaternion.slerp(trackball.rotation, currentRotation, 0.95, currentRotation);
 
 		skullRoot.quaternion.copyFrom(currentRotation);
 		

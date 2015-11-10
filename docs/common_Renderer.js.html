@@ -48,47 +48,49 @@ SQR.Renderer = function(c, options, onError) {
 	var renderObjects = [], transparentObjects = [];
 	var startTime, time;
 
-	var updateTransform = function(t) {
+	var updateTransform = function(t, camera, options) {
+
 		if(!t.active) return;
 
-		t.transformWorld();
+		if(!t.__transformed) {
+			t.transformWorld();
+			t.__transformed = false;
+		} 
 
-		if(t.clip) {
-			t.clip.update(t, time, r.deltaTime);
-		}
+		t.transformView(camera ? camera.inverseWorldMatrix : null);
+
+		if(t.clip) t.clip.update(t, time, r.deltaTime);
+		if(options.pointer3d) options.pointer3d.onTransform(t);
 		
 		if (t.numChildren > 0) {
 			for (var i = 0; i &lt; t.numChildren; i++) {
-				updateTransform(t.children[i]);
+				updateTransform(t.children[i], camera, options);
 			}
 		}
 
-		if(t.transparent) transparentObjects.push(t);
-		// else if(!t.useDepth) renderObjects.unshift(t);
-		else renderObjects.push(t);
+		if(t.buffer &amp;&amp; t.shader) {
+			if(t.transparent) transparentObjects.push(t);
+			else renderObjects.push(t);
+		}
+		
 	}
 
 	var lastBuffer, lastShader, shaderChanged, bufferChanged;
 	var defOpts = {};
+	var camrig = [];
 
-	var setCameraUniforms = function(camera, lastShader) {
+	var setCommonUniforms = function(camera, lastShader) {
 		if(camera) lastShader.setUniform('uEyePosition', camera.globalPosition);
 
 		var p = (camera &amp;&amp; camera.projection) ? camera.projection : r.projection;
-
-		if(p) {
-			lastShader
-				.setUniform('uProjection', p)
-				.setUniform('uNear', p.near)
-				.setUniform('uFar', p.far);
-		}
+		if(p) lastShader.setUniform('uProjection', p).setUniform('uNear', p.near).setUniform('uFar', p.far);
 
 		lastShader.setUniform('uTime', time);
 	}
 
 	r.clearColor = function(c, g, b, a) {
 		// c is a SQR.Color and we can ignore the rest
-		if(c.r) {
+		if(c.r != null) {
 			if(c.a == undefined) c.a = 1;
 			context.gl.clearColor(c.r, c.g, c.b, c.a);
 		} else {
@@ -101,17 +103,61 @@ SQR.Renderer = function(c, options, onError) {
 	}
 
 	r.render = function(root, camera, options) {
-		var gl = SQR.gl;
+		r.tick();
+		r.beforeDraw(camera, options);
+		r.update(root, camera, options);
+		r.draw(null, camera, options);
+		r.afterDraw(options);
+	}
 
+
+	r.tick = function() {
+		if(!startTime) startTime = new Date().getTime();
+		time = new Date().getTime() - startTime;
+		r.deltaTime = time - r.currentTime;
+		r.currentTime = time;
+		return r;
+	}
+
+	r.beforeDraw = function(camera, options) {
+		options = options || defOpts;
+		if(options.pointer3d) {
+			var p = (camera &amp;&amp; camera.projection) ? camera.projection : r.projection;
+			options.pointer3d.fromMousePosition(camera || root, p);
+		}
+		return r;
+	}
+
+	r.update = function(root, camera, options) {
 		options = options || defOpts;
 
-		if(!startTime) startTime = new Date().getTime();
+		renderObjects.length = 0;
+		transparentObjects.length = 0;
+		camrig.length = 0;
 
-		if(!options.drawOnly) {
-			time = new Date().getTime() - startTime;
-			r.deltaTime = time - r.currentTime;
-			r.currentTime = time;
+		if(camera) {
+
+			var a = camera;
+			while(a) {
+				camrig.unshift(a);
+				a = a.parent;
+			}
+
+			for(var i = 0, l = camrig.length; i &lt; l; i++) {
+				camrig[i].transformWorld();
+				camrig[i].__transformed = true;
+			};
+
+			camera.computeInverseMatrix();
 		}
+
+		updateTransform(root, camera, options);
+		return r;
+	}	
+
+	r.draw = function(root, camera, options) {
+		var gl = SQR.gl;
+		options = options || defOpts;
 
 		if(r.autoClear) context.clear();
 
@@ -124,13 +170,11 @@ SQR.Renderer = function(c, options, onError) {
 			options.customGLSetup(gl);
 		}
 
-		if(!options.drawOnly) {
-			renderObjects.length = 0;
-			transparentObjects.length = 0;
-			updateTransform(root);
-			if(camera) camera.computeInverseMatrix();
-			renderObjects = renderObjects.concat(transparentObjects);
+		if(root &amp;&amp; root.buffer &amp;&amp; root.shader) {
+			renderObjects.push(root);
 		}
+
+		renderObjects = renderObjects.concat(transparentObjects);
 
 		var objectsToRender = renderObjects.length, ro, 
 			lastBuffer = null, 
@@ -142,7 +186,7 @@ SQR.Renderer = function(c, options, onError) {
 
 		if(hasReplacementShader) {
 			lastShader = options.replacementShader.use().updateTextures();
-			setCameraUniforms(camera, lastShader);
+			setCommonUniforms(camera, lastShader);
 		}
 
 		for(var i = 0; i &lt; objectsToRender; i++) {
@@ -150,10 +194,6 @@ SQR.Renderer = function(c, options, onError) {
 			shaderChanged = false, bufferChanged = false;
 
 			var ro = renderObjects[i];
-
-			if(!options.drawOnly) ro.transformView(camera ? camera.inverseWorldMatrix : null);
-
-			if(!ro.buffer) continue;
 
 			if(ro.transparent) {
 				if(!transparentRendering) {
@@ -171,7 +211,7 @@ SQR.Renderer = function(c, options, onError) {
 
 			if((lastShader != ro.shader) &amp;&amp; !hasReplacementShader) {
 				lastShader = ro.shader.use().updateTextures();
-				setCameraUniforms(camera, lastShader);
+				setCommonUniforms(camera, lastShader);
 				shaderChanged = true;
 			}
 
@@ -183,7 +223,15 @@ SQR.Renderer = function(c, options, onError) {
 		}
 
 		gl.disable(gl.BLEND);
+		return r;
 	}
+
+	r.afterDraw = function(options) {
+		options = options || defOpts;
+		if(options.pointer3d) options.pointer3d.onAfterRender();
+		return r;
+	}
+
 
 	r.renderToScreen = function() {
 		var gl = SQR.gl;
@@ -205,13 +253,13 @@ SQR.Renderer = function(c, options, onError) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Wed Oct 28 2015 18:07:39 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

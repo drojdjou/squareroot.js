@@ -13,8 +13,14 @@
  */
 SQR.Color = function(r, g, b, a) {
 	if(!(this instanceof SQR.Color)) return new SQR.Color(r, g, b, a);
-	this.setRGB(r, g, b);
-	this.a = (a == undefined) ? 1 : a;
+	
+	if(typeof(r) == 'string') {
+		this.setHex(r);
+		this.a = (g == undefined) ? 1 : g; // if r is a hex color code, the next argument will be alpha
+	} else {
+		this.setRGB(r, g, b);
+		this.a = (a == undefined) ? 1 : a;
+	}
 }
 
 /**
@@ -161,12 +167,16 @@ SQR.Color.prototype.lerp  = function(a, b, t) {
 	return c;
 }
 
-SQR.Color.prototype.toUniform = function(size) {
+SQR.Color.prototype.toUniform = function(type) {
+
+	var alpha = type == SQR.gl.FLOAT_VEC4;
+
 	var c = this;
-	if(!c._array) c._array = new Float32Array(3);
+	if(!c._array) c._array = new Float32Array(alpha ? 4 : 3);
 	c._array[0] = c.r;
 	c._array[1] = c.g;
 	c._array[2] = c.b; 
+	if(alpha) c._array[3] = c.a;
 	return c._array;
 }
 
