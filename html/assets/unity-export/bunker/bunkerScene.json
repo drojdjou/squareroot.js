@@ -1,0 +1,7525 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.1, "g":0.1, "b":0.1, "a":1 },
+"background": { "r":0.1692653, "g":0.1586099, "b":0.2388059, "a":1 },
+
+"quaternions": true,
+
+"textures": {
+	
+	"securitycam": { 
+		"file": ""
+	},
+	
+	"light_metal": { 
+		"file": "light_metal.jpg"
+	},
+	
+	"files": { 
+		"file": "files.jpg"
+	},
+	
+	"concrete_wall": { 
+		"file": "concrete_wall.jpg"
+	},
+	
+	"greenleaking": { 
+		"file": "greenleaking.jpg"
+	},
+	
+	"cabinetfront": { 
+		"file": "cabinetfront.jpg"
+	},
+	
+	"ceiling_panel": { 
+		"file": "ceiling_panel.jpg"
+	},
+	
+	"bareplankslight": { 
+		"file": "bareplankslight.jpg"
+	},
+	
+	"plywood": { 
+		"file": "plywood.jpg"
+	},
+	
+	"brownwood": { 
+		"file": "brownwood.jpg"
+	},
+	
+	"floor": { 
+		"file": "floor.jpg"
+	},
+	
+	"concrete_fill": { 
+		"file": "concrete_fill.jpg"
+	},
+	
+	"rivets": { 
+		"file": "rivets.jpg"
+	},
+	
+	"misc": { 
+		"file": "misc.jpg"
+	},
+	
+	"base": { 
+		"file": "base.jpg"
+	},
+	
+	"roofwindow": { 
+		"file": "roofwindow.jpg"
+	},
+	
+	"fence": { 
+		"file": "fence.jpg"
+	},
+	
+	"phonedial": { 
+		"file": "phonedial.jpg"
+	},
+	
+	"floor_panel": { 
+		"file": "floor_panel.jpg"
+	},
+	
+	"rus_certificate": { 
+		"file": "rus_certificate.jpg"
+	},
+	
+	"beamed_planks": { 
+		"file": "beamed_planks.jpg"
+	},
+	
+	"concrete_wall_bicol": { 
+		"file": "concrete_wall_bicol.jpg"
+	},
+	
+	"whitewood": { 
+		"file": "whitewood.jpg"
+	},
+	
+	"leakingmetal": { 
+		"file": "leakingmetal.jpg"
+	},
+	
+	"rust": { 
+		"file": "rust.jpg"
+	},
+	
+	"rivets2": { 
+		"file": "rivets2.jpg"
+	},
+	
+	"riveteddoor": { 
+		"file": "riveteddoor.jpg"
+	},
+	
+	"roughwood": { 
+		"file": "roughwood.jpg"
+	}
+
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"securitycam": { 
+		"type": "Selflit",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0.4995,
+        "shininess": 0.447528,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "securitycam"
+	},
+	
+	"files": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "files"
+	},
+	
+	"concrete_wall": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "concrete_wall"
+	},
+	
+	"greenleaking": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "greenleaking"
+	},
+	
+	"bareplanks": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "bareplankslight"
+	},
+	
+	"redshiny": { 
+		"type": "Phong",
+		"color": { "r":0.6940298, "g":0.1657384, "b":0.1657384, "a":1 },
+		"specularIntensity": 0.999,
+        "shininess": 0.1815578,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "base"
+	},
+	
+	"greymetal": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0.999,
+        "shininess": 0.09290113,
+		"textureTile": [ 2,2 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "light_metal"
+	},
+	
+	"beamedplanks": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 2,2 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "beamed_planks"
+	},
+	
+	"plywwod": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "plywood"
+	},
+	
+	"brownwood": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "brownwood"
+	},
+	
+	"floor": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0.7157015,
+        "shininess": 0.1520056,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "floor"
+	},
+	
+	"floorpanel": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "floor_panel"
+	},
+	
+	"concrete_fill": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "concrete_fill"
+	},
+	
+	"chrome": { 
+		"type": "Phong",
+		"color": { "r":0.3134328, "g":0.3134328, "b":0.3134328, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"black": { 
+		"type": "Phong",
+		"color": { "r":0, "g":0, "b":0, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"misc": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "misc"
+	},
+	
+	"base": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "base"
+	},
+	
+	"roofwindow": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "roofwindow"
+	},
+	
+	"ruscert": { 
+		"type": "Phong",
+		"color": { "r":0.5970149, "g":0.5970149, "b":0.5970149, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "rus_certificate"
+	},
+	
+	"phonedial": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "phonedial"
+	},
+	
+	"rivets": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "rivets"
+	},
+	
+	"khakimetal": { 
+		"type": "Phong",
+		"color": { "r":0.5310557, "g":0.5820895, "b":0.4778347, "a":1 },
+		"specularIntensity": 0.8126194,
+        "shininess": 0.06334888,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "base"
+	},
+	
+	"darkmetal": { 
+		"type": "Phong",
+		"color": { "r":0.641791, "g":0.641791, "b":0.641791, "a":1 },
+		"specularIntensity": 0.4995,
+        "shininess": 0.078125,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "light_metal"
+	},
+	
+	"litwhite": { 
+		"type": "Selflit",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"concrete_wall_bicol": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "concrete_wall_bicol"
+	},
+	
+	"default_material": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"fence": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "fence"
+	},
+	
+	"chromehallsafe": { 
+		"type": "Phong",
+		"color": { "r":0.3955224, "g":0.3955224, "b":0.3955224, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"whitewood": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "whitewood"
+	},
+	
+	"leakingmetal": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0.999,
+        "shininess": 0.2111101,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "leakingmetal"
+	},
+	
+	"white": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [  ],
+		"textureOffset": [  ]
+	},
+	
+	"ceilingpanel": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "ceiling_panel"
+	},
+	
+	"rust": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "rust"
+	},
+	
+	"rivets2": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0.999,
+        "shininess": 0.3145429,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "rivets2"
+	},
+	
+	"riveteddoor": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "riveteddoor"
+	},
+	
+	"filecabfront": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "cabinetfront"
+	},
+	
+	"roughwood": { 
+		"type": "Phong",
+		"color": { "r":1, "g":1, "b":1, "a":1 },
+		"specularIntensity": 0,
+        "shininess": 0,
+		"textureTile": [ 1,1 ],
+		"textureOffset": [ 0,0 ],
+		"colorTexture": "roughwood"
+	}
+
+},
+
+"lights": {
+	
+	"spotlight": { 
+		"type": 3,
+		"color": { "r":1, "g":0.9968688, "b":0.7761194, "a":1 },
+		"intensity": 1.5,
+		"angle": 1.472622,
+		"angleFalloff": 0.09817477
+	},
+	
+	"glow": { 
+		"type": 2,
+		"color": { "r":0.7557362, "g":0.8491635, "b":0.880597, "a":1 },
+		"intensity": 3.4
+	},
+	
+	"spotlight": { 
+		"type": 3,
+		"color": { "r":1, "g":0.9509445, "b":0.6492537, "a":1 },
+		"intensity": 4,
+		"angle": 1.647155,
+		"angleFalloff": 0.09817477
+	},
+	
+	"spotlight": { 
+		"type": 3,
+		"color": { "r":1, "g":0.9509445, "b":0.6492537, "a":1 },
+		"intensity": 4,
+		"angle": 1.647155,
+		"angleFalloff": 0.09817477
+	}
+
+},
+
+"cameras": {
+	
+	"camera": { 
+		"fov": 60,
+		"near": 0.1,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t17608",
+        "name": "fps",
+		"position": [ -1.48832,-5.320198,10.65861 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17606",
+        "name": "camera",
+		"parent": "t17608",
+		"position": [ 0,0.6,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "camera"
+	},
+	
+	{
+		"uid": "t17582",
+        "name": "spotlight",
+		"parent": "t17606",
+		"position": [ 0,-0.0000001192,0 ],
+		"rotation": [ -0.1818914,0,0,0.9833186 ],
+		"light": "spotlight"
+	},
+	
+	{
+		"uid": "t17610",
+        "name": "bunkerstatic",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17244",
+        "name": "bucket_hall",
+		"parent": "t17610",
+		"position": [ 0.719268,-5.946923,4.402842 ],
+		"rotation": [ 0,-0.5007002,0,0.8656208 ]
+	},
+	
+	{
+		"uid": "t17246",
+        "name": "bucketflat",
+		"parent": "t17244",
+		"position": [ 0,-0.2325469,0.0000000139 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "darkmetal",
+		"mesh": "bucketflat",
+		"meshId": "m-22092"
+	},
+	
+	{
+		"uid": "t15976",
+        "name": "bucket_prison",
+		"parent": "t17610",
+		"position": [ 20.47885,-5.962809,-6.781011 ],
+		"rotation": [ 0,-0.5007002,0,0.8656208 ]
+	},
+	
+	{
+		"uid": "t15974",
+        "name": "bucketflat",
+		"parent": "t15976",
+		"position": [ 0,-0.2325469,0.0000000139 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "darkmetal",
+		"mesh": "bucketflat",
+		"meshId": "m-22092"
+	},
+	
+	{
+		"uid": "t17116",
+        "name": "filecabinets",
+		"parent": "t17610",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17050",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-11.84874 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17046",
+        "name": "bottom",
+		"parent": "t17050",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16524",
+        "name": "front1",
+		"parent": "t17050",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17048",
+        "name": "fronts",
+		"parent": "t17050",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16692",
+        "name": "handles",
+		"parent": "t17050",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17044",
+        "name": "labelholders",
+		"parent": "t17050",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16608",
+        "name": "sides",
+		"parent": "t17050",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17002",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6890547,-6.110297,-5.624884 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16998",
+        "name": "bottom",
+		"parent": "t17002",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16590",
+        "name": "front1",
+		"parent": "t17002",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17000",
+        "name": "fronts",
+		"parent": "t17002",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16704",
+        "name": "handles",
+		"parent": "t17002",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16996",
+        "name": "labelholders",
+		"parent": "t17002",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16620",
+        "name": "sides",
+		"parent": "t17002",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16988",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6807907,-6.110297,-8.122136 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16992",
+        "name": "bottom",
+		"parent": "t16988",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16588",
+        "name": "front1",
+		"parent": "t16988",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16990",
+        "name": "fronts",
+		"parent": "t16988",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16758",
+        "name": "handles",
+		"parent": "t16988",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16994",
+        "name": "labelholders",
+		"parent": "t16988",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16674",
+        "name": "sides",
+		"parent": "t16988",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16780",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.266838,-6.110297,-14.33177 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16784",
+        "name": "bottom",
+		"parent": "t16780",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16586",
+        "name": "front1",
+		"parent": "t16780",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16782",
+        "name": "fronts",
+		"parent": "t16780",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16756",
+        "name": "handles",
+		"parent": "t16780",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16786",
+        "name": "labelholders",
+		"parent": "t16780",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16672",
+        "name": "sides",
+		"parent": "t16780",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16794",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.862509,-6.110297,-14.3312 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16790",
+        "name": "bottom",
+		"parent": "t16794",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16584",
+        "name": "front1",
+		"parent": "t16794",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16792",
+        "name": "fronts",
+		"parent": "t16794",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16754",
+        "name": "handles",
+		"parent": "t16794",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16788",
+        "name": "labelholders",
+		"parent": "t16794",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16670",
+        "name": "sides",
+		"parent": "t16794",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16796",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.862509,-6.110297,-13.78019 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16800",
+        "name": "bottom",
+		"parent": "t16796",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16582",
+        "name": "front1",
+		"parent": "t16796",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16798",
+        "name": "fronts",
+		"parent": "t16796",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16752",
+        "name": "handles",
+		"parent": "t16796",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16802",
+        "name": "labelholders",
+		"parent": "t16796",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16668",
+        "name": "sides",
+		"parent": "t16796",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16810",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.266838,-6.110297,-13.78076 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16806",
+        "name": "bottom",
+		"parent": "t16810",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16580",
+        "name": "front1",
+		"parent": "t16810",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16808",
+        "name": "fronts",
+		"parent": "t16810",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16750",
+        "name": "handles",
+		"parent": "t16810",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16804",
+        "name": "labelholders",
+		"parent": "t16810",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16666",
+        "name": "sides",
+		"parent": "t16810",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16812",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.265014,-6.110297,-13.22975 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16816",
+        "name": "bottom",
+		"parent": "t16812",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16578",
+        "name": "front1",
+		"parent": "t16812",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16814",
+        "name": "fronts",
+		"parent": "t16812",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16748",
+        "name": "handles",
+		"parent": "t16812",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16818",
+        "name": "labelholders",
+		"parent": "t16812",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16664",
+        "name": "sides",
+		"parent": "t16812",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16826",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.860686,-6.110297,-13.22918 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16822",
+        "name": "bottom",
+		"parent": "t16826",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16576",
+        "name": "front1",
+		"parent": "t16826",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16824",
+        "name": "fronts",
+		"parent": "t16826",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16746",
+        "name": "handles",
+		"parent": "t16826",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16820",
+        "name": "labelholders",
+		"parent": "t16826",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16662",
+        "name": "sides",
+		"parent": "t16826",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16828",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.860686,-6.110297,-10.64933 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16832",
+        "name": "bottom",
+		"parent": "t16828",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16574",
+        "name": "front1",
+		"parent": "t16828",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16830",
+        "name": "fronts",
+		"parent": "t16828",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16744",
+        "name": "handles",
+		"parent": "t16828",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16834",
+        "name": "labelholders",
+		"parent": "t16828",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16660",
+        "name": "sides",
+		"parent": "t16828",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16842",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.265015,-6.110297,-10.6499 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16838",
+        "name": "bottom",
+		"parent": "t16842",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16572",
+        "name": "front1",
+		"parent": "t16842",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16840",
+        "name": "fronts",
+		"parent": "t16842",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16742",
+        "name": "handles",
+		"parent": "t16842",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16836",
+        "name": "labelholders",
+		"parent": "t16842",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16658",
+        "name": "sides",
+		"parent": "t16842",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16844",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.266838,-6.110297,-11.2009 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16848",
+        "name": "bottom",
+		"parent": "t16844",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16570",
+        "name": "front1",
+		"parent": "t16844",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16846",
+        "name": "fronts",
+		"parent": "t16844",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16740",
+        "name": "handles",
+		"parent": "t16844",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16850",
+        "name": "labelholders",
+		"parent": "t16844",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16656",
+        "name": "sides",
+		"parent": "t16844",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16858",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.86251,-6.110297,-11.20033 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16854",
+        "name": "bottom",
+		"parent": "t16858",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16568",
+        "name": "front1",
+		"parent": "t16858",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16856",
+        "name": "fronts",
+		"parent": "t16858",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16738",
+        "name": "handles",
+		"parent": "t16858",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16852",
+        "name": "labelholders",
+		"parent": "t16858",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16654",
+        "name": "sides",
+		"parent": "t16858",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16860",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.86251,-6.110297,-11.75134 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16864",
+        "name": "bottom",
+		"parent": "t16860",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16566",
+        "name": "front1",
+		"parent": "t16860",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16862",
+        "name": "fronts",
+		"parent": "t16860",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16736",
+        "name": "handles",
+		"parent": "t16860",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16866",
+        "name": "labelholders",
+		"parent": "t16860",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16652",
+        "name": "sides",
+		"parent": "t16860",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16874",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.266838,-6.110297,-11.75191 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16870",
+        "name": "bottom",
+		"parent": "t16874",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16564",
+        "name": "front1",
+		"parent": "t16874",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16872",
+        "name": "fronts",
+		"parent": "t16874",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16734",
+        "name": "handles",
+		"parent": "t16874",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16868",
+        "name": "labelholders",
+		"parent": "t16874",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16650",
+        "name": "sides",
+		"parent": "t16874",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16876",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.258632,-6.110297,-9.272264 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16880",
+        "name": "bottom",
+		"parent": "t16876",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16562",
+        "name": "front1",
+		"parent": "t16876",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16878",
+        "name": "fronts",
+		"parent": "t16876",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16732",
+        "name": "handles",
+		"parent": "t16876",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16882",
+        "name": "labelholders",
+		"parent": "t16876",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16648",
+        "name": "sides",
+		"parent": "t16876",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16890",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.854304,-6.110297,-9.271694 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16886",
+        "name": "bottom",
+		"parent": "t16890",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16560",
+        "name": "front1",
+		"parent": "t16890",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16888",
+        "name": "fronts",
+		"parent": "t16890",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16730",
+        "name": "handles",
+		"parent": "t16890",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16884",
+        "name": "labelholders",
+		"parent": "t16890",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16646",
+        "name": "sides",
+		"parent": "t16890",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16892",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.854304,-6.110297,-8.720683 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16896",
+        "name": "bottom",
+		"parent": "t16892",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16558",
+        "name": "front1",
+		"parent": "t16892",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16894",
+        "name": "fronts",
+		"parent": "t16892",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16728",
+        "name": "handles",
+		"parent": "t16892",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16898",
+        "name": "labelholders",
+		"parent": "t16892",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16644",
+        "name": "sides",
+		"parent": "t16892",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16906",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.258632,-6.110297,-8.721253 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16902",
+        "name": "bottom",
+		"parent": "t16906",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16556",
+        "name": "front1",
+		"parent": "t16906",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16904",
+        "name": "fronts",
+		"parent": "t16906",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16726",
+        "name": "handles",
+		"parent": "t16906",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16900",
+        "name": "labelholders",
+		"parent": "t16906",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16642",
+        "name": "sides",
+		"parent": "t16906",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16908",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.256809,-6.110297,-8.170248 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16912",
+        "name": "bottom",
+		"parent": "t16908",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16554",
+        "name": "front1",
+		"parent": "t16908",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16910",
+        "name": "fronts",
+		"parent": "t16908",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16724",
+        "name": "handles",
+		"parent": "t16908",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16914",
+        "name": "labelholders",
+		"parent": "t16908",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16640",
+        "name": "sides",
+		"parent": "t16908",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16922",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -2.85248,-6.110297,-8.169678 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16918",
+        "name": "bottom",
+		"parent": "t16922",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16552",
+        "name": "front1",
+		"parent": "t16922",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16920",
+        "name": "fronts",
+		"parent": "t16922",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16722",
+        "name": "handles",
+		"parent": "t16922",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16916",
+        "name": "labelholders",
+		"parent": "t16922",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16638",
+        "name": "sides",
+		"parent": "t16922",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16930",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6602306,-6.110297,-14.33478 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16926",
+        "name": "bottom",
+		"parent": "t16930",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16550",
+        "name": "front1",
+		"parent": "t16930",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16928",
+        "name": "fronts",
+		"parent": "t16930",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16720",
+        "name": "handles",
+		"parent": "t16930",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16924",
+        "name": "labelholders",
+		"parent": "t16930",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16636",
+        "name": "sides",
+		"parent": "t16930",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16932",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6620786,-6.110297,-13.77635 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16936",
+        "name": "bottom",
+		"parent": "t16932",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16548",
+        "name": "front1",
+		"parent": "t16932",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16934",
+        "name": "fronts",
+		"parent": "t16932",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16718",
+        "name": "handles",
+		"parent": "t16932",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16938",
+        "name": "labelholders",
+		"parent": "t16932",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16634",
+        "name": "sides",
+		"parent": "t16932",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16940",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6638811,-6.110297,-13.23189 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16944",
+        "name": "bottom",
+		"parent": "t16940",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16546",
+        "name": "front1",
+		"parent": "t16940",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16942",
+        "name": "fronts",
+		"parent": "t16940",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16716",
+        "name": "handles",
+		"parent": "t16940",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16946",
+        "name": "labelholders",
+		"parent": "t16940",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16632",
+        "name": "sides",
+		"parent": "t16940",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16954",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.672462,-6.110297,-10.63859 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16950",
+        "name": "bottom",
+		"parent": "t16954",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16544",
+        "name": "front1",
+		"parent": "t16954",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16952",
+        "name": "fronts",
+		"parent": "t16954",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16714",
+        "name": "handles",
+		"parent": "t16954",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16948",
+        "name": "labelholders",
+		"parent": "t16954",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16630",
+        "name": "sides",
+		"parent": "t16954",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16962",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6706591,-6.110297,-11.18305 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16958",
+        "name": "bottom",
+		"parent": "t16962",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16542",
+        "name": "front1",
+		"parent": "t16962",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16960",
+        "name": "fronts",
+		"parent": "t16962",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16712",
+        "name": "handles",
+		"parent": "t16962",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16956",
+        "name": "labelholders",
+		"parent": "t16962",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16628",
+        "name": "sides",
+		"parent": "t16962",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16964",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6688132,-6.110297,-11.74149 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16968",
+        "name": "bottom",
+		"parent": "t16964",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16540",
+        "name": "front1",
+		"parent": "t16964",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16966",
+        "name": "fronts",
+		"parent": "t16964",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16710",
+        "name": "handles",
+		"parent": "t16964",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16970",
+        "name": "labelholders",
+		"parent": "t16964",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16626",
+        "name": "sides",
+		"parent": "t16964",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16978",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.677139,-6.110297,-9.225025 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16974",
+        "name": "bottom",
+		"parent": "t16978",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16538",
+        "name": "front1",
+		"parent": "t16978",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16976",
+        "name": "fronts",
+		"parent": "t16978",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16708",
+        "name": "handles",
+		"parent": "t16978",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16972",
+        "name": "labelholders",
+		"parent": "t16978",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16624",
+        "name": "sides",
+		"parent": "t16978",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16980",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6789899,-6.110297,-8.666595 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t16984",
+        "name": "bottom",
+		"parent": "t16980",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16536",
+        "name": "front1",
+		"parent": "t16980",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t16982",
+        "name": "fronts",
+		"parent": "t16980",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16706",
+        "name": "handles",
+		"parent": "t16980",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t16986",
+        "name": "labelholders",
+		"parent": "t16980",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16622",
+        "name": "sides",
+		"parent": "t16980",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17010",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6872501,-6.110297,-6.169345 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t17006",
+        "name": "bottom",
+		"parent": "t17010",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16534",
+        "name": "front1",
+		"parent": "t17010",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17008",
+        "name": "fronts",
+		"parent": "t17010",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16702",
+        "name": "handles",
+		"parent": "t17010",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17004",
+        "name": "labelholders",
+		"parent": "t17010",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16618",
+        "name": "sides",
+		"parent": "t17010",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17012",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ 0.6854029,-6.110297,-6.727779 ],
+		"rotation": [ 0,0.7082759,0,0.7059358 ]
+	},
+	
+	{
+		"uid": "t17016",
+        "name": "bottom",
+		"parent": "t17012",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16532",
+        "name": "front1",
+		"parent": "t17012",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17014",
+        "name": "fronts",
+		"parent": "t17012",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16700",
+        "name": "handles",
+		"parent": "t17012",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17018",
+        "name": "labelholders",
+		"parent": "t17012",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16616",
+        "name": "sides",
+		"parent": "t17012",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17026",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-13.24311 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17022",
+        "name": "bottom",
+		"parent": "t17026",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16530",
+        "name": "front1",
+		"parent": "t17026",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17024",
+        "name": "fronts",
+		"parent": "t17026",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16698",
+        "name": "handles",
+		"parent": "t17026",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17020",
+        "name": "labelholders",
+		"parent": "t17026",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16614",
+        "name": "sides",
+		"parent": "t17026",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17028",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-13.80154 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17032",
+        "name": "bottom",
+		"parent": "t17028",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16528",
+        "name": "front1",
+		"parent": "t17028",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17030",
+        "name": "fronts",
+		"parent": "t17028",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16696",
+        "name": "handles",
+		"parent": "t17028",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17034",
+        "name": "labelholders",
+		"parent": "t17028",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16612",
+        "name": "sides",
+		"parent": "t17028",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17036",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-14.346 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17040",
+        "name": "bottom",
+		"parent": "t17036",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16526",
+        "name": "front1",
+		"parent": "t17036",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17038",
+        "name": "fronts",
+		"parent": "t17036",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16694",
+        "name": "handles",
+		"parent": "t17036",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17042",
+        "name": "labelholders",
+		"parent": "t17036",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16610",
+        "name": "sides",
+		"parent": "t17036",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17058",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-11.30428 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17054",
+        "name": "bottom",
+		"parent": "t17058",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16522",
+        "name": "front1",
+		"parent": "t17058",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "black",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17056",
+        "name": "fronts",
+		"parent": "t17058",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16690",
+        "name": "handles",
+		"parent": "t17058",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17052",
+        "name": "labelholders",
+		"parent": "t17058",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16606",
+        "name": "sides",
+		"parent": "t17058",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17060",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677236,-6.110297,-10.74584 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17064",
+        "name": "bottom",
+		"parent": "t17060",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16520",
+        "name": "front1",
+		"parent": "t17060",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17062",
+        "name": "fronts",
+		"parent": "t17060",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16688",
+        "name": "handles",
+		"parent": "t17060",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17066",
+        "name": "labelholders",
+		"parent": "t17060",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16604",
+        "name": "sides",
+		"parent": "t17060",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17074",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-8.229371 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17070",
+        "name": "bottom",
+		"parent": "t17074",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16518",
+        "name": "front1",
+		"parent": "t17074",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17072",
+        "name": "fronts",
+		"parent": "t17074",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16686",
+        "name": "handles",
+		"parent": "t17074",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17068",
+        "name": "labelholders",
+		"parent": "t17074",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16602",
+        "name": "sides",
+		"parent": "t17074",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17076",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-8.787807 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17080",
+        "name": "bottom",
+		"parent": "t17076",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16516",
+        "name": "front1",
+		"parent": "t17076",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17078",
+        "name": "fronts",
+		"parent": "t17076",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16684",
+        "name": "handles",
+		"parent": "t17076",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17082",
+        "name": "labelholders",
+		"parent": "t17076",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16600",
+        "name": "sides",
+		"parent": "t17076",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17084",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-9.332269 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17088",
+        "name": "bottom",
+		"parent": "t17084",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16514",
+        "name": "front1",
+		"parent": "t17084",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17086",
+        "name": "fronts",
+		"parent": "t17084",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16682",
+        "name": "handles",
+		"parent": "t17084",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17090",
+        "name": "labelholders",
+		"parent": "t17084",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16598",
+        "name": "sides",
+		"parent": "t17084",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17098",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-6.738958 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17094",
+        "name": "bottom",
+		"parent": "t17098",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16512",
+        "name": "front1",
+		"parent": "t17098",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17096",
+        "name": "fronts",
+		"parent": "t17098",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16680",
+        "name": "handles",
+		"parent": "t17098",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17092",
+        "name": "labelholders",
+		"parent": "t17098",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16596",
+        "name": "sides",
+		"parent": "t17098",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17106",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-6.194496 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17102",
+        "name": "bottom",
+		"parent": "t17106",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16510",
+        "name": "front1",
+		"parent": "t17106",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17104",
+        "name": "fronts",
+		"parent": "t17106",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16678",
+        "name": "handles",
+		"parent": "t17106",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17100",
+        "name": "labelholders",
+		"parent": "t17106",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16594",
+        "name": "sides",
+		"parent": "t17106",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t17108",
+        "name": "filecabinet",
+		"parent": "t17116",
+		"position": [ -5.677237,-6.110297,-5.63606 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17112",
+        "name": "bottom",
+		"parent": "t17108",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "bottom",
+		"meshId": "m-11662"
+	},
+	
+	{
+		"uid": "t16508",
+        "name": "front1",
+		"parent": "t17108",
+		"position": [ 0.2499999,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front1",
+		"meshId": "m-11666"
+	},
+	
+	{
+		"uid": "t17110",
+        "name": "fronts",
+		"parent": "t17108",
+		"position": [ 0.25,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "fronts",
+		"meshId": "m-11668"
+	},
+	
+	{
+		"uid": "t16676",
+        "name": "handles",
+		"parent": "t17108",
+		"position": [ 0.06619205,0.140821,-0.3129749 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handles",
+		"meshId": "m-11670"
+	},
+	
+	{
+		"uid": "t17114",
+        "name": "labelholders",
+		"parent": "t17108",
+		"position": [ 0,2.263455,-0.2949442 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholders",
+		"meshId": "m-11658"
+	},
+	
+	{
+		"uid": "t16592",
+        "name": "sides",
+		"parent": "t17108",
+		"position": [ 0.2500004,0,-0.3 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "sides",
+		"meshId": "m-11664"
+	},
+	
+	{
+		"uid": "t16762",
+        "name": "filecabinet_drawer",
+		"parent": "t17116",
+		"position": [ -5.675947,-6.111964,-11.30515 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16770",
+        "name": "drawer",
+		"parent": "t16762",
+		"position": [ 0.2360419,2.009173,-0.5699123 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "drawer",
+		"meshId": "m-22292"
+	},
+	
+	{
+		"uid": "t16506",
+        "name": "drawerbottom",
+		"parent": "t16770",
+		"position": [ 0,0.007494211,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "base",
+		"mesh": "drawerbottom",
+		"meshId": "m-22272"
+	},
+	
+	{
+		"uid": "t16764",
+        "name": "files",
+		"parent": "t16770",
+		"position": [ -0.01546959,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "files",
+		"mesh": "files",
+		"meshId": "m-22280"
+	},
+	
+	{
+		"uid": "t16766",
+        "name": "front",
+		"parent": "t16770",
+		"position": [ 0,0,-0.01002502 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "filecabfront",
+		"mesh": "front",
+		"meshId": "m-22284"
+	},
+	
+	{
+		"uid": "t16760",
+        "name": "handle",
+		"parent": "t16770",
+		"position": [ -0.2348501,0.1112711,-0.04534904 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "handle",
+		"meshId": "m-22276"
+	},
+	
+	{
+		"uid": "t16768",
+        "name": "labelholder",
+		"parent": "t16770",
+		"position": [ -0.2360419,0.2542819,-0.01157303 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chrome",
+		"mesh": "labelholder",
+		"meshId": "m-22288"
+	},
+	
+	{
+		"uid": "t16022",
+        "name": "_crates",
+		"parent": "t17610",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16014",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ 0.5535249,-6.2,7.092216 ],
+		"rotation": [ 0,0.7131755,0,0.7009855 ]
+	},
+	
+	{
+		"uid": "t16012",
+        "name": "crate",
+		"parent": "t16014",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15994",
+        "name": "cratelogo",
+		"parent": "t16014",
+		"position": [ -0.002,0.394,-0.376 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t16010",
+        "name": "wickets",
+		"parent": "t16014",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t15982",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ 16.69051,-8.577829,2.564399 ],
+		"rotation": [ 0,-0.4366135,0,-0.8996491 ]
+	},
+	
+	{
+		"uid": "t15980",
+        "name": "crate",
+		"parent": "t15982",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15984",
+        "name": "cratelogo",
+		"parent": "t15982",
+		"position": [ -0.001383919,0.2078304,-0.445564 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t15978",
+        "name": "wickets",
+		"parent": "t15982",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t15998",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ -3.45558,-6.2,2.564655 ],
+		"rotation": [ 0,-0.6719094,0,0.7406333 ]
+	},
+	
+	{
+		"uid": "t16000",
+        "name": "crate",
+		"parent": "t15998",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15992",
+        "name": "cratelogo",
+		"parent": "t15998",
+		"position": [ -0.001383919,0.2078304,-0.445564 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t16002",
+        "name": "wickets",
+		"parent": "t15998",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t16024",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ 0.1873605,-6.2,10.55093 ],
+		"rotation": [ 0,0.02096369,0,0.9997802 ]
+	},
+	
+	{
+		"uid": "t16026",
+        "name": "crate",
+		"parent": "t16024",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15990",
+        "name": "cratelogo",
+		"parent": "t16024",
+		"position": [ -0.001383919,0.2078304,-0.445564 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t16028",
+        "name": "wickets",
+		"parent": "t16024",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t16004",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ 0.1874144,-5.321181,10.55093 ],
+		"rotation": [ 0,0.001691492,0,-0.9999986 ]
+	},
+	
+	{
+		"uid": "t16006",
+        "name": "crate",
+		"parent": "t16004",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15988",
+        "name": "cratelogo",
+		"parent": "t16004",
+		"position": [ -0.001383919,0.2078304,-0.445564 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t16008",
+        "name": "wickets",
+		"parent": "t16004",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t16020",
+        "name": "crateclosed",
+		"parent": "t16022",
+		"position": [ 0.1873508,-5.761497,10.55086 ],
+		"rotation": [ 0,0.9999214,0,-0.01253505 ]
+	},
+	
+	{
+		"uid": "t16018",
+        "name": "crate",
+		"parent": "t16020",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.2000001,-0.0004974753 ],
+		    "size": [ 1,0.4400001,0.6409951 ]
+		},
+		"renderer": "bareplanks",
+		"mesh": "crate",
+		"meshId": "m-11496"
+	},
+	
+	{
+		"uid": "t15986",
+        "name": "cratelogo",
+		"parent": "t16020",
+		"position": [ -0.001383919,0.2078304,-0.445564 ],
+		"rotation": [ 0,-0.9999629,0,-0.008619722 ]
+	},
+	
+	{
+		"uid": "t16016",
+        "name": "wickets",
+		"parent": "t16020",
+		"position": [ -0.2499574,0.4273163,0.2176546 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "base",
+		"mesh": "wickets",
+		"meshId": "m-11498"
+	},
+	
+	{
+		"uid": "t16492",
+        "name": "monitor_hall",
+		"parent": "t17610",
+		"position": [ 0.5250116,-5.382939,-1.802964 ],
+		"rotation": [ 0,-0.9863224,0,0.1648276 ]
+	},
+	
+	{
+		"uid": "t16496",
+        "name": "box",
+		"parent": "t16492",
+		"position": [ 0,-0.0000102002,-0.1329288 ],
+		"rotation": [ -0.04924826,0,0,0.9987866 ],
+		"renderer": "base",
+		"mesh": "box",
+		"meshId": "m-22256"
+	},
+	
+	{
+		"uid": "t16488",
+        "name": "glow",
+		"parent": "t16492",
+		"position": [ -0.00968688,0.2179413,0.2024453 ],
+		"rotation": [ 0,0.9999772,0,0.006754303 ],
+		"light": "glow"
+	},
+	
+	{
+		"uid": "t16494",
+        "name": "screen",
+		"parent": "t16492",
+		"position": [ 0,-0.0000102002,-0.1329288 ],
+		"rotation": [ -0.04924826,0,0,0.9987866 ],
+		"renderer": "securitycam",
+		"mesh": "screen",
+		"meshId": "m-22252"
+	},
+	
+	{
+		"uid": "t16504",
+        "name": "phone_hall",
+		"parent": "t17610",
+		"position": [ -0.1447981,-5.382162,-1.701275 ],
+		"rotation": [ 0,0.2320722,0,0.9726986 ]
+	},
+	
+	{
+		"uid": "t16498",
+        "name": "dial",
+		"parent": "t16504",
+		"position": [ 0,0.08224945,-0.03658658 ],
+		"rotation": [ -0.1771918,0,0,0.9841763 ],
+		"renderer": "phonedial",
+		"mesh": "dial",
+		"meshId": "m-22260"
+	},
+	
+	{
+		"uid": "t16502",
+        "name": "earpiece",
+		"parent": "t16504",
+		"position": [ 0,0.07600754,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "earpiece",
+		"meshId": "m-22268"
+	},
+	
+	{
+		"uid": "t16500",
+        "name": "handle",
+		"parent": "t16504",
+		"position": [ 0,0.07032715,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "handle",
+		"meshId": "m-22264"
+	},
+	
+	{
+		"uid": "t16040",
+        "name": "ladder",
+		"parent": "t17610",
+		"position": [ 16.90009,-7.34557,-3.633173 ],
+		"rotation": [ -0.09554769,-0.7006217,0.09554769,0.7006216 ]
+	},
+	
+	{
+		"uid": "t16044",
+        "name": "leftleg",
+		"parent": "t16040",
+		"position": [ 0,0,-0.2939598 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "roughwood",
+		"mesh": "leftleg",
+		"meshId": "m-22104"
+	},
+	
+	{
+		"uid": "t16046",
+        "name": "rightleg",
+		"parent": "t16040",
+		"position": [ 0,0,0.29396 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "roughwood",
+		"mesh": "rightleg",
+		"meshId": "m-22108"
+	},
+	
+	{
+		"uid": "t16042",
+        "name": "steps",
+		"parent": "t16040",
+		"position": [ 0,-0.9381384,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "roughwood",
+		"mesh": "steps",
+		"meshId": "m-22100"
+	},
+	
+	{
+		"uid": "t16484",
+        "name": "singlepaper_hall",
+		"parent": "t17610",
+		"position": [ -0.1249603,-5.3808,-2.063335 ],
+		"rotation": [ 0,-0.06135777,0,0.9981158 ],
+		"renderer": "ruscert",
+		"mesh": "plane",
+		"meshId": "m-22248"
+	},
+	
+	{
+		"uid": "t16486",
+        "name": "singlepaper_hall",
+		"parent": "t17610",
+		"position": [ -0.1828317,-5.381,-2.046872 ],
+		"rotation": [ 0,-0.1275592,0,-0.9918309 ],
+		"renderer": "ruscert",
+		"mesh": "plane",
+		"meshId": "m-22248"
+	},
+	
+	{
+		"uid": "t17232",
+        "name": "lamp_hall",
+		"parent": "t17610",
+		"position": [ -0.5168672,-5.368745,-1.599046 ],
+		"rotation": [ 0,0.9642039,0,0.265162 ]
+	},
+	
+	{
+		"uid": "t17226",
+        "name": "lamp",
+		"parent": "t17232",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17228",
+        "name": "base",
+		"parent": "t17226",
+		"position": [ 0,-0.0002431488,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "base",
+		"meshId": "m-13898"
+	},
+	
+	{
+		"uid": "t17224",
+        "name": "stem",
+		"parent": "t17226",
+		"position": [ -0.009898948,0.01331375,-0.0006131363 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "stem",
+		"meshId": "m-13896"
+	},
+	
+	{
+		"uid": "t17222",
+        "name": "top",
+		"parent": "t17226",
+		"position": [ -0.0006003752,0.4090109,0.1360053 ],
+		"rotation": [ -0.3371013,-0.0000000068,-0.0000000036,0.9414684 ],
+		"renderer": "white",
+		"mesh": "top",
+		"meshId": "m-13894"
+	},
+	
+	{
+		"uid": "t17230",
+        "name": "topint",
+		"parent": "t17222",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "topint",
+		"meshId": "m-13892"
+	},
+	
+	{
+		"uid": "t17220",
+        "name": "bulb",
+		"parent": "t17230",
+		"position": [ -0.000376339,-0.05694314,-0.0001768761 ],
+		"rotation": [ 0.0009765624,0,0,0.9999995 ],
+		"renderer": "litwhite",
+		"mesh": "bulb",
+		"meshId": "m-13890"
+	},
+	
+	{
+		"uid": "t17234",
+        "name": "spotlight",
+		"parent": "t17220",
+		"position": [ -0.000000168,-0.02235806,-0.023228 ],
+		"rotation": [ -0.7946645,0.0000000052,-0.0000001316,0.6070489 ],
+		"light": "spotlight"
+	},
+	
+	{
+		"uid": "t16776",
+        "name": "chair_lib",
+		"parent": "t17610",
+		"position": [ -5.02595,-6.20005,-11.27107 ],
+		"rotation": [ 0,-0.0974412,0,0.9952413 ]
+	},
+	
+	{
+		"uid": "t16772",
+        "name": "chair",
+		"parent": "t16776",
+		"position": [ 0,-0.0000000182,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"scale": [1,1,1],
+		"renderer": "whitewood",
+		"mesh": "chair",
+		"meshId": "m-10494"
+	},
+	
+	{
+		"uid": "t17238",
+        "name": "lamp_qroom",
+		"parent": "t17610",
+		"position": [ -7.137269,-5.368745,6.944796 ],
+		"rotation": [ 0,0.9280031,0,-0.3725724 ]
+	},
+	
+	{
+		"uid": "t17214",
+        "name": "lamp",
+		"parent": "t17238",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17216",
+        "name": "base",
+		"parent": "t17214",
+		"position": [ 0,-0.0002431488,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "base",
+		"meshId": "m-13898"
+	},
+	
+	{
+		"uid": "t17212",
+        "name": "stem",
+		"parent": "t17214",
+		"position": [ -0.009898948,0.01331375,-0.0006131363 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "stem",
+		"meshId": "m-13896"
+	},
+	
+	{
+		"uid": "t17210",
+        "name": "top",
+		"parent": "t17214",
+		"position": [ -0.0006003529,0.4084778,0.1364426 ],
+		"rotation": [ -0.3371013,-0.0000000068,-0.0000000036,0.9414684 ],
+		"renderer": "white",
+		"mesh": "top",
+		"meshId": "m-13894"
+	},
+	
+	{
+		"uid": "t17218",
+        "name": "topint",
+		"parent": "t17210",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "redshiny",
+		"mesh": "topint",
+		"meshId": "m-13892"
+	},
+	
+	{
+		"uid": "t17208",
+        "name": "bulb",
+		"parent": "t17218",
+		"position": [ -0.000376339,-0.05694314,-0.0001768761 ],
+		"rotation": [ 0.0009765624,0,0,0.9999995 ],
+		"renderer": "litwhite",
+		"mesh": "bulb",
+		"meshId": "m-13890"
+	},
+	
+	{
+		"uid": "t17236",
+        "name": "spotlight",
+		"parent": "t17208",
+		"position": [ -0.000000168,-0.02235806,-0.023228 ],
+		"rotation": [ -0.7946645,0.0000000052,-0.0000001316,0.6070489 ],
+		"light": "spotlight"
+	},
+	
+	{
+		"uid": "t17260",
+        "name": "chair_hall",
+		"parent": "t17610",
+		"position": [ 0,-6.20005,-2.434288 ],
+		"rotation": [ 0,-0.9976434,0,-0.0686122 ]
+	},
+	
+	{
+		"uid": "t17264",
+        "name": "chair",
+		"parent": "t17260",
+		"position": [ 0,-0.0000000182,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"scale": [1,1,1],
+		"renderer": "brownwood",
+		"mesh": "chair",
+		"meshId": "m-10494"
+	},
+	
+	{
+		"uid": "t17118",
+        "name": "safe",
+		"parent": "t17610",
+		"position": [ -4.06764,-6.197649,-2.710624 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17120",
+        "name": "bottom",
+		"parent": "t17118",
+		"position": [ -0.007548141,1.036009,-0.3577883 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "khakimetal",
+		"mesh": "bottom",
+		"meshId": "m-22296"
+	},
+	
+	{
+		"uid": "t17124",
+        "name": "door",
+		"parent": "t17118",
+		"position": [ -0.09254814,1.036009,-0.6660364 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "khakimetal",
+		"mesh": "door",
+		"meshId": "m-22304"
+	},
+	
+	{
+		"uid": "t17128",
+        "name": "handle",
+		"parent": "t17118",
+		"position": [ -0.08314413,0.9832031,-0.6545425 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "chromehallsafe",
+		"mesh": "handle",
+		"meshId": "m-22312"
+	},
+	
+	{
+		"uid": "t17126",
+        "name": "knob",
+		"parent": "t17118",
+		"position": [ -0.09309375,1.100432,-0.7161172 ],
+		"rotation": [ -0.7071068,0,0,0.7071068 ],
+		"scale": [1,0.9999998,0.9999998],
+		"renderer": "chromehallsafe",
+		"mesh": "knob",
+		"meshId": "m-22308"
+	},
+	
+	{
+		"uid": "t17122",
+        "name": "main",
+		"parent": "t17118",
+		"position": [ -0.007548141,1.036009,-0.3577883 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0,-0.0000000149 ],
+		    "size": [ 1.19,1.87,0.5525 ]
+		},
+		"renderer": "khakimetal",
+		"mesh": "main",
+		"meshId": "m-22300"
+	},
+	
+	{
+		"uid": "t17266",
+        "name": "table_hall",
+		"parent": "t17610",
+		"position": [ 0.1034225,-6.20005,-1.830937 ],
+		"rotation": [ 0,-0.01578014,0.0000000019,0.9998755 ]
+	},
+	
+	{
+		"uid": "t17268",
+        "name": "table",
+		"parent": "t17266",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "brownwood",
+		"mesh": "table",
+		"meshId": "m-10492"
+	},
+	
+	{
+		"uid": "t17252",
+        "name": "table_qroom",
+		"parent": "t17610",
+		"position": [ -6.942553,-6.20005,6.290534 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t17250",
+        "name": "table",
+		"parent": "t17252",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "brownwood",
+		"mesh": "table",
+		"meshId": "m-10492"
+	},
+	
+	{
+		"uid": "t17258",
+        "name": "chair_qroom",
+		"parent": "t17610",
+		"position": [ -7.802176,-6.20005,6.300288 ],
+		"rotation": [ 0,-0.7624292,0,0.6470716 ]
+	},
+	
+	{
+		"uid": "t17254",
+        "name": "chair",
+		"parent": "t17258",
+		"position": [ 0,-0.0000000182,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"scale": [1,1,1],
+		"renderer": "brownwood",
+		"mesh": "chair",
+		"meshId": "m-10494"
+	},
+	
+	{
+		"uid": "t17282",
+        "name": "shelve_hall",
+		"parent": "t17610",
+		"position": [ 0.1191046,-6.189036,-4.819839 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.7941753,0 ],
+		    "size": [ 0.2429183,1.601934,0.8500001 ]
+		}
+	},
+	
+	{
+		"uid": "t17284",
+        "name": "legsl_instance",
+		"parent": "t17282",
+		"position": [ 0,0,0.385128 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17286",
+        "name": "legsl",
+		"parent": "t17284",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "legsl",
+		"meshId": "m-12844"
+	},
+	
+	{
+		"uid": "t17300",
+        "name": "legsl_2",
+		"parent": "t17282",
+		"position": [ 0,0,-0.3849998 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "legsl_2",
+		"meshId": "m-12840"
+	},
+	
+	{
+		"uid": "t17296",
+        "name": "shelve1_instance",
+		"parent": "t17282",
+		"position": [ 0,0.7,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17298",
+        "name": "shelve1_3",
+		"parent": "t17296",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_3",
+		"meshId": "m-12848"
+	},
+	
+	{
+		"uid": "t17292",
+        "name": "shelve1_instance_1",
+		"parent": "t17282",
+		"position": [ 0,1,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17294",
+        "name": "shelve1_2",
+		"parent": "t17292",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_2",
+		"meshId": "m-12842"
+	},
+	
+	{
+		"uid": "t17288",
+        "name": "shelve1_instance_2",
+		"parent": "t17282",
+		"position": [ 0,1.3,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17290",
+        "name": "shelve1",
+		"parent": "t17288",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1",
+		"meshId": "m-12846"
+	},
+	
+	{
+		"uid": "t17302",
+        "name": "shelve1_4",
+		"parent": "t17282",
+		"position": [ 0,0.4,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_4",
+		"meshId": "m-12836"
+	},
+	
+	{
+		"uid": "t17590",
+        "name": "shelve_bunker",
+		"parent": "t17610",
+		"position": [ 1.657814,-12.39852,2.746551 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0,0.7941753,0 ],
+		    "size": [ 0.2429183,1.601934,0.8500001 ]
+		}
+	},
+	
+	{
+		"uid": "t17418",
+        "name": "legsl_instance",
+		"parent": "t17590",
+		"position": [ 0,0,0.385128 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17416",
+        "name": "legsl",
+		"parent": "t17418",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "legsl",
+		"meshId": "m-12844"
+	},
+	
+	{
+		"uid": "t17402",
+        "name": "legsl_2",
+		"parent": "t17590",
+		"position": [ 0,0,-0.3849998 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greymetal",
+		"mesh": "legsl_2",
+		"meshId": "m-12840"
+	},
+	
+	{
+		"uid": "t17406",
+        "name": "shelve1_instance",
+		"parent": "t17590",
+		"position": [ 0,0.7,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17404",
+        "name": "shelve1_3",
+		"parent": "t17406",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_3",
+		"meshId": "m-12848"
+	},
+	
+	{
+		"uid": "t17410",
+        "name": "shelve1_instance_1",
+		"parent": "t17590",
+		"position": [ 0,1,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17408",
+        "name": "shelve1_2",
+		"parent": "t17410",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_2",
+		"meshId": "m-12842"
+	},
+	
+	{
+		"uid": "t17414",
+        "name": "shelve1_instance_2",
+		"parent": "t17590",
+		"position": [ 0,1.3,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17412",
+        "name": "shelve1",
+		"parent": "t17414",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1",
+		"meshId": "m-12846"
+	},
+	
+	{
+		"uid": "t17400",
+        "name": "shelve1_4",
+		"parent": "t17590",
+		"position": [ 0,0.4,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "plywwod",
+		"mesh": "shelve1_4",
+		"meshId": "m-12836"
+	},
+	
+	{
+		"uid": "t17420",
+        "name": "bunker",
+		"parent": "t17610",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16450",
+        "name": "antiskybox",
+		"parent": "t17420",
+		"position": [ 13.7,3.194772,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "antiskybox"
+		},
+		"renderer": "default_material",
+		"mesh": "antiskybox",
+		"meshId": "m-22224"
+	},
+	
+	{
+		"uid": "t15930",
+        "name": "barrierrow1",
+		"parent": "t17420",
+		"position": [ 18.65363,-4.75,5.03 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t15928",
+        "name": "barriern",
+		"parent": "t15930",
+		"position": [ -9.983847,0,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barriern"
+		},
+		"renderer": "rust",
+		"mesh": "barriern",
+		"meshId": "m-22028"
+	},
+	
+	{
+		"uid": "t15926",
+        "name": "gridn",
+		"parent": "t15930",
+		"position": [ -9.983847,0,-7.036147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "gridn"
+		},
+		"renderer": "fence",
+		"mesh": "gridn",
+		"meshId": "m-22024"
+	},
+	
+	{
+		"uid": "t16424",
+        "name": "barrierrow2",
+		"parent": "t17420",
+		"position": [ 18.65363,-1.75,5.03 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t15932",
+        "name": "barrier_6",
+		"parent": "t16424",
+		"position": [ -9.983847,0,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier_6"
+		},
+		"renderer": "rust",
+		"mesh": "barrier_6",
+		"meshId": "m-22032"
+	},
+	
+	{
+		"uid": "t15948",
+        "name": "grid_4",
+		"parent": "t16424",
+		"position": [ -9.983847,0,-7.036147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "grid_4"
+		},
+		"renderer": "fence",
+		"mesh": "grid_4",
+		"meshId": "m-22048"
+	},
+	
+	{
+		"uid": "t16426",
+        "name": "barrierrow3",
+		"parent": "t17420",
+		"position": [ 18.65363,1.260568,5.03 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t15934",
+        "name": "barrier_5",
+		"parent": "t16426",
+		"position": [ -9.983847,0,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier_5"
+		},
+		"renderer": "rust",
+		"mesh": "barrier_5",
+		"meshId": "m-22036"
+	},
+	
+	{
+		"uid": "t16412",
+        "name": "grid_3",
+		"parent": "t16426",
+		"position": [ -9.983847,0,-7.036147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "grid_3"
+		},
+		"renderer": "fence",
+		"mesh": "grid_3",
+		"meshId": "m-22144"
+	},
+	
+	{
+		"uid": "t17542",
+        "name": "bars",
+		"parent": "t17420",
+		"position": [ -7.364557,-6.2,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17540",
+        "name": "bar",
+		"parent": "t17542",
+		"position": [ 2.124418,-5.491036,2.030619 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "bar"
+		},
+		"renderer": "rust",
+		"mesh": "bar",
+		"meshId": "m-22552"
+	},
+	
+	{
+		"uid": "t17242",
+        "name": "bars_hall",
+		"parent": "t17420",
+		"position": [ -3.252,-4.7,3.699724 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "bars_hall"
+		},
+		"renderer": "rust",
+		"mesh": "bars_hall",
+		"meshId": "m-22348"
+	},
+	
+	{
+		"uid": "t17454",
+        "name": "beam",
+		"parent": "t17420",
+		"position": [ 0.0000109863,-9.691909,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam",
+		"meshId": "m-22452"
+	},
+	
+	{
+		"uid": "t17456",
+        "name": "beam_1",
+		"parent": "t17420",
+		"position": [ 2.880906,-9.691909,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_1"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_1",
+		"meshId": "m-22456"
+	},
+	
+	{
+		"uid": "t17458",
+        "name": "beam_2",
+		"parent": "t17420",
+		"position": [ -2.895635,-9.691909,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_2"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_2",
+		"meshId": "m-22460"
+	},
+	
+	{
+		"uid": "t17352",
+        "name": "beam_3",
+		"parent": "t17420",
+		"position": [ -6.15,-3.491909,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_3"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_3",
+		"meshId": "m-22388"
+	},
+	
+	{
+		"uid": "t17354",
+        "name": "beam_4",
+		"parent": "t17420",
+		"position": [ -8.349999,-3.491909,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_4"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_4",
+		"meshId": "m-22392"
+	},
+	
+	{
+		"uid": "t17312",
+        "name": "beam_5",
+		"parent": "t17420",
+		"position": [ -1.506859,-3.292202,-2.52601 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_5"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_5",
+		"meshId": "m-22368"
+	},
+	
+	{
+		"uid": "t17314",
+        "name": "beam_6",
+		"parent": "t17420",
+		"position": [ -1.506859,-3.292202,0.06963104 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_6"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_6",
+		"meshId": "m-22372"
+	},
+	
+	{
+		"uid": "t17304",
+        "name": "beam_7",
+		"parent": "t17420",
+		"position": [ -1.506859,-3.292202,2.518346 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_7"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_7",
+		"meshId": "m-22352"
+	},
+	
+	{
+		"uid": "t17306",
+        "name": "beam_8",
+		"parent": "t17420",
+		"position": [ -1.506859,-3.292202,4.771168 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_8"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_8",
+		"meshId": "m-22356"
+	},
+	
+	{
+		"uid": "t17308",
+        "name": "beam_9",
+		"parent": "t17420",
+		"position": [ -1.506859,-3.292202,7.26886 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_9"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_9",
+		"meshId": "m-22360"
+	},
+	
+	{
+		"uid": "t17310",
+        "name": "beam_10",
+		"parent": "t17420",
+		"position": [ -1.506858,-3.292202,9.786474 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "beam_10"
+		},
+		"renderer": "roughwood",
+		"mesh": "beam_10",
+		"meshId": "m-22364"
+	},
+	
+	{
+		"uid": "t17428",
+        "name": "ceiling",
+		"parent": "t17420",
+		"position": [ -4,-12.4,-2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "ceiling"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "ceiling",
+		"meshId": "m-22408"
+	},
+	
+	{
+		"uid": "t17202",
+        "name": "columns1",
+		"parent": "t17420",
+		"position": [ 0.8887416,-1.767567,-7.500078 ],
+		"rotation": [ 0,0,1,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "columns1"
+		},
+		"renderer": "base",
+		"mesh": "columns1",
+		"meshId": "m-22332"
+	},
+	
+	{
+		"uid": "t16138",
+        "name": "columns1_1",
+		"parent": "t17420",
+		"position": [ -9.213861,-7.967944,-4.667001 ],
+		"rotation": [ -0.7071068,0,-0.7071068,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "columns1_1"
+		},
+		"renderer": "base",
+		"mesh": "columns1_1",
+		"meshId": "m-22124"
+	},
+	
+	{
+		"uid": "t17204",
+        "name": "columns2",
+		"parent": "t17420",
+		"position": [ 0.8887416,-1.767567,-9.995803 ],
+		"rotation": [ 0,0,1,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "columns2"
+		},
+		"renderer": "base",
+		"mesh": "columns2",
+		"meshId": "m-22336"
+	},
+	
+	{
+		"uid": "t17206",
+        "name": "columns3",
+		"parent": "t17420",
+		"position": [ 0.8887416,-1.767567,-12.50041 ],
+		"rotation": [ 0,0,1,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "columns3"
+		},
+		"renderer": "base",
+		"mesh": "columns3",
+		"meshId": "m-22340"
+	},
+	
+	{
+		"uid": "t17550",
+        "name": "corridor",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "corridor"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "corridor",
+		"meshId": "m-22568"
+	},
+	
+	{
+		"uid": "t16140",
+        "name": "corridorfloor",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "corridorfloor"
+		},
+		"renderer": "floor",
+		"mesh": "corridorfloor",
+		"meshId": "m-22128"
+	},
+	
+	{
+		"uid": "t17552",
+        "name": "corridorroof",
+		"parent": "t17420",
+		"position": [ 4.6,-4.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "corridorroof"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "corridorroof",
+		"meshId": "m-22572"
+	},
+	
+	{
+		"uid": "t16098",
+        "name": "door_hall",
+		"parent": "t17420",
+		"position": [ -1.94,-5.155,3.725 ],
+		"rotation": [ 0.0000000897,-0.8746199,-0.0000001497,0.4848092 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "door_hall"
+		},
+		"renderer": "base",
+		"mesh": "door_hall",
+		"meshId": "m-22116"
+	},
+	
+	{
+		"uid": "t16096",
+        "name": "knob",
+		"parent": "t16098",
+		"position": [ 0.8019553,0.05048822,-0.02528091 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knob"
+		},
+		"renderer": "chrome",
+		"mesh": "knob",
+		"meshId": "m-22112"
+	},
+	
+	{
+		"uid": "t17460",
+        "name": "floor",
+		"parent": "t17420",
+		"position": [ -4.099999,-12.4,3 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "floor"
+		},
+		"renderer": "floor",
+		"mesh": "floor",
+		"meshId": "m-22464"
+	},
+	
+	{
+		"uid": "t17426",
+        "name": "floor_2",
+		"parent": "t17420",
+		"position": [ 4,-12.4,2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "floor_2"
+		},
+		"renderer": "floor",
+		"mesh": "floor_2",
+		"meshId": "m-22404"
+	},
+	
+	{
+		"uid": "t17424",
+        "name": "floorhole",
+		"parent": "t17420",
+		"position": [ 4,-12.4,2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "floorhole"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "floorhole",
+		"meshId": "m-22400"
+	},
+	
+	{
+		"uid": "t17422",
+        "name": "floorpanel",
+		"parent": "t17420",
+		"position": [ 2.8,-12.4,0.7 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "floorpanel"
+		},
+		"renderer": "floorpanel",
+		"mesh": "floorpanel",
+		"meshId": "m-22396"
+	},
+	
+	{
+		"uid": "t17240",
+        "name": "frame_hall",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3.7 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "frame_hall"
+		},
+		"renderer": "rust",
+		"mesh": "frame_hall",
+		"meshId": "m-22344"
+	},
+	
+	{
+		"uid": "t17556",
+        "name": "hall",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "hall"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "hall",
+		"meshId": "m-22580"
+	},
+	
+	{
+		"uid": "t16100",
+        "name": "hall_wicket",
+		"parent": "t17420",
+		"position": [ -1.944969,-5.651531,3.72565 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "hall_wicket"
+		},
+		"renderer": "chrome",
+		"mesh": "hall_wicket",
+		"meshId": "m-22120"
+	},
+	
+	{
+		"uid": "t17348",
+        "name": "hallceiling",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "hallceiling"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "hallceiling",
+		"meshId": "m-22380"
+	},
+	
+	{
+		"uid": "t17346",
+        "name": "hallceilingpanel",
+		"parent": "t17420",
+		"position": [ -1.05,-3.2,-4.008698 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "hallceilingpanel"
+		},
+		"renderer": "ceilingpanel",
+		"mesh": "hallceilingpanel",
+		"meshId": "m-22376"
+	},
+	
+	{
+		"uid": "t17554",
+        "name": "hallfloor",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "hallfloor"
+		},
+		"renderer": "floor",
+		"mesh": "hallfloor",
+		"meshId": "m-22576"
+	},
+	
+	{
+		"uid": "t16470",
+        "name": "largepipe",
+		"parent": "t17420",
+		"position": [ -4.287782,-12.47251,-1.791028 ],
+		"rotation": [ 0.5,-0.5,0.5,0.5000001 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "largepipe"
+		},
+		"renderer": "darkmetal",
+		"mesh": "largepipe",
+		"meshId": "m-22208"
+	},
+	
+	{
+		"uid": "t16468",
+        "name": "largepipe_2",
+		"parent": "t17420",
+		"position": [ -4.287782,-12.47251,-2.080709 ],
+		"rotation": [ 0.5,-0.5,0.5,0.5000001 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "largepipe_2"
+		},
+		"renderer": "darkmetal",
+		"mesh": "largepipe_2",
+		"meshId": "m-22228"
+	},
+	
+	{
+		"uid": "t16442",
+        "name": "largepiped",
+		"parent": "t17420",
+		"position": [ -4.287782,-12.47251,-1.791028 ],
+		"rotation": [ 0.5,-0.5,0.5,0.5000001 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "largepiped"
+		},
+		"renderer": "darkmetal",
+		"mesh": "largepiped",
+		"meshId": "m-22204"
+	},
+	
+	{
+		"uid": "t16440",
+        "name": "largepiped_2",
+		"parent": "t17420",
+		"position": [ -4.287782,-12.47251,-2.080709 ],
+		"rotation": [ 0.5,-0.5,0.5,0.5000001 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "largepiped_2"
+		},
+		"renderer": "darkmetal",
+		"mesh": "largepiped_2",
+		"meshId": "m-22200"
+	},
+	
+	{
+		"uid": "t17194",
+        "name": "libraryceiling",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "libraryceiling"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "libraryceiling",
+		"meshId": "m-22316"
+	},
+	
+	{
+		"uid": "t17548",
+        "name": "libraryfloor",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "libraryfloor"
+		},
+		"renderer": "floor",
+		"mesh": "libraryfloor",
+		"meshId": "m-22564"
+	},
+	
+	{
+		"uid": "t17196",
+        "name": "librarywalls",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "librarywalls"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "librarywalls",
+		"meshId": "m-22320"
+	},
+	
+	{
+		"uid": "t17452",
+        "name": "pipeholders",
+		"parent": "t17420",
+		"position": [ 0,-12.4,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17450",
+        "name": "pipeholder",
+		"parent": "t17452",
+		"position": [ 2.635289,2.20949,-1.936754 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeholder"
+		},
+		"renderer": "rust",
+		"mesh": "pipeholder",
+		"meshId": "m-22448"
+	},
+	
+	{
+		"uid": "t17448",
+        "name": "pipeholder_2",
+		"parent": "t17452",
+		"position": [ -2.664787,2.20949,-1.936754 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeholder_2"
+		},
+		"renderer": "rust",
+		"mesh": "pipeholder_2",
+		"meshId": "m-22444"
+	},
+	
+	{
+		"uid": "t17446",
+        "name": "pipeholder_3",
+		"parent": "t17452",
+		"position": [ 0.2068555,2.20949,-1.936754 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeholder_3"
+		},
+		"renderer": "rust",
+		"mesh": "pipeholder_3",
+		"meshId": "m-22440"
+	},
+	
+	{
+		"uid": "t17444",
+        "name": "pipes",
+		"parent": "t17420",
+		"position": [ 0,-12.4,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17442",
+        "name": "pipe",
+		"parent": "t17444",
+		"position": [ -3.871164,1.401682,1.962562 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipe"
+		},
+		"renderer": "rivets2",
+		"mesh": "pipe",
+		"meshId": "m-22436"
+	},
+	
+	{
+		"uid": "t17440",
+        "name": "pipe_2",
+		"parent": "t17444",
+		"position": [ -3.871164,1.401682,1.819982 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipe_2"
+		},
+		"renderer": "rivets2",
+		"mesh": "pipe_2",
+		"meshId": "m-22432"
+	},
+	
+	{
+		"uid": "t17438",
+        "name": "pipeending",
+		"parent": "t17444",
+		"position": [ 3.899651,2.338494,-2.081014 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeending"
+		},
+		"renderer": "rust",
+		"mesh": "pipeending",
+		"meshId": "m-22428"
+	},
+	
+	{
+		"uid": "t17436",
+        "name": "pipeending_2",
+		"parent": "t17444",
+		"position": [ -4,2.33849,-2.081014 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeending_2"
+		},
+		"renderer": "rust",
+		"mesh": "pipeending_2",
+		"meshId": "m-22424"
+	},
+	
+	{
+		"uid": "t17434",
+        "name": "pipeending_3",
+		"parent": "t17444",
+		"position": [ -4,2.338494,-1.791439 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeending_3"
+		},
+		"renderer": "rust",
+		"mesh": "pipeending_3",
+		"meshId": "m-22420"
+	},
+	
+	{
+		"uid": "t17432",
+        "name": "pipeending_4",
+		"parent": "t17444",
+		"position": [ 3.899652,2.338494,-1.791198 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "pipeending_4"
+		},
+		"renderer": "rust",
+		"mesh": "pipeending_4",
+		"meshId": "m-22416"
+	},
+	
+	{
+		"uid": "t17492",
+        "name": "platform",
+		"parent": "t17420",
+		"position": [ -9.099999,-10.2,3 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17490",
+        "name": "platform_2",
+		"parent": "t17492",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "platform_2"
+		},
+		"renderer": "floor",
+		"mesh": "platform_2",
+		"meshId": "m-22500"
+	},
+	
+	{
+		"uid": "t17476",
+        "name": "platform_3",
+		"parent": "t17420",
+		"position": [ -9.099999,-8.2,-2 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "platform_3"
+		},
+		"renderer": "floor",
+		"mesh": "platform_3",
+		"meshId": "m-22484"
+	},
+	
+	{
+		"uid": "t17464",
+        "name": "platform_4",
+		"parent": "t17420",
+		"position": [ -4.1,-6.2,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "platform_4"
+		},
+		"renderer": "floor",
+		"mesh": "platform_4",
+		"meshId": "m-22468"
+	},
+	
+	{
+		"uid": "t16482",
+        "name": "prisonceiling",
+		"parent": "t17420",
+		"position": [ 13.7,2.12725,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonceiling"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "prisonceiling",
+		"meshId": "m-22244"
+	},
+	
+	{
+		"uid": "t16430",
+        "name": "prisoncrate",
+		"parent": "t17420",
+		"position": [ 17.65709,-6.264301,-3.198631 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisoncrate"
+		},
+		"renderer": "floorpanel",
+		"mesh": "prisoncrate",
+		"meshId": "m-22176"
+	},
+	
+	{
+		"uid": "t16428",
+        "name": "prisoncrateopening",
+		"parent": "t17420",
+		"position": [ 16.1,-6.2,-3.2 ],
+		"rotation": [ 0,0,0.8386706,0.544639 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisoncrateopening"
+		},
+		"renderer": "floorpanel",
+		"mesh": "prisoncrateopening",
+		"meshId": "m-22172"
+	},
+	
+	{
+		"uid": "t16038",
+        "name": "prisoncrateopeningholder",
+		"parent": "t17420",
+		"position": [ 15.76536,-5.392752,-4.009952 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisoncrateopeningholder"
+		},
+		"renderer": "darkmetal",
+		"mesh": "prisoncrateopeningholder",
+		"meshId": "m-22096"
+	},
+	
+	{
+		"uid": "t16436",
+        "name": "prisonexternalwall",
+		"parent": "t17420",
+		"position": [ 13.7,2.12725,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonexternalwall"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "prisonexternalwall",
+		"meshId": "m-22192"
+	},
+	
+	{
+		"uid": "t16438",
+        "name": "prisonextrawall",
+		"parent": "t17420",
+		"position": [ 13.7,2.12725,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonextrawall"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "prisonextrawall",
+		"meshId": "m-22196"
+	},
+	
+	{
+		"uid": "t16434",
+        "name": "prisonfloor",
+		"parent": "t17420",
+		"position": [ 13.7,-6.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonfloor"
+		},
+		"renderer": "floor",
+		"mesh": "prisonfloor",
+		"meshId": "m-22184"
+	},
+	
+	{
+		"uid": "t16476",
+        "name": "prisonlevel",
+		"parent": "t17420",
+		"position": [ 13.7,-0.2,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16474",
+        "name": "prisonlevel_2",
+		"parent": "t16476",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonlevel_2"
+		},
+		"renderer": "floor",
+		"mesh": "prisonlevel_2",
+		"meshId": "m-22236"
+	},
+	
+	{
+		"uid": "t16168",
+        "name": "prisonlevelside",
+		"parent": "t16474",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonlevelside"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "prisonlevelside",
+		"meshId": "m-22136"
+	},
+	
+	{
+		"uid": "t16472",
+        "name": "prisonlevel_3",
+		"parent": "t17420",
+		"position": [ 13.7,-3.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonlevel_3"
+		},
+		"renderer": "floor",
+		"mesh": "prisonlevel_3",
+		"meshId": "m-22232"
+	},
+	
+	{
+		"uid": "t16166",
+        "name": "prisonlevelside_2",
+		"parent": "t16472",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonlevelside_2"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "prisonlevelside_2",
+		"meshId": "m-22132"
+	},
+	
+	{
+		"uid": "t16448",
+        "name": "prisonroofwindow",
+		"parent": "t17420",
+		"position": [ 17.7,3.111404,4 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonroofwindow"
+		},
+		"renderer": "roofwindow",
+		"mesh": "prisonroofwindow",
+		"meshId": "m-22220"
+	},
+	
+	{
+		"uid": "t15972",
+        "name": "prisonstaircase",
+		"parent": "t17420",
+		"position": [ 18.7,-4.709817,1.100339 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonstaircase"
+		},
+		"renderer": "floor",
+		"mesh": "prisonstaircase",
+		"meshId": "m-22088"
+	},
+	
+	{
+		"uid": "t15950",
+        "name": "prisonmidlevelside_2",
+		"parent": "t15972",
+		"position": [ 3,0,4 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonmidlevelside_2"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "prisonmidlevelside_2",
+		"meshId": "m-22052"
+	},
+	
+	{
+		"uid": "t15956",
+        "name": "stairsa_2",
+		"parent": "t15972",
+		"position": [ -0.464779,-1.669686,3.450124 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ]
+	},
+	
+	{
+		"uid": "t15954",
+        "name": "stairsb_3",
+		"parent": "t15956",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsb_3"
+		},
+		"renderer": "misc",
+		"mesh": "stairsb_3",
+		"meshId": "m-22060"
+	},
+	
+	{
+		"uid": "t15952",
+        "name": "stairsb_4",
+		"parent": "t15972",
+		"position": [ -1.534779,-0.160083,-0.5500579 ],
+		"rotation": [ 0,-0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsb_4"
+		},
+		"renderer": "misc",
+		"mesh": "stairsb_4",
+		"meshId": "m-22056"
+	},
+	
+	{
+		"uid": "t15958",
+        "name": "stairsholder_2",
+		"parent": "t15972",
+		"position": [ -0.1768079,-0.1020227,1.499656 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsholder_2"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "stairsholder_2",
+		"meshId": "m-22064"
+	},
+	
+	{
+		"uid": "t15960",
+        "name": "prisonstaircase2",
+		"parent": "t17420",
+		"position": [ 18.7,-1.713194,1.100339 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonstaircase2"
+		},
+		"renderer": "floor",
+		"mesh": "prisonstaircase2",
+		"meshId": "m-22068"
+	},
+	
+	{
+		"uid": "t15964",
+        "name": "prisonmidlevelside",
+		"parent": "t15960",
+		"position": [ 3,0.0000018311,4 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonmidlevelside"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "prisonmidlevelside",
+		"meshId": "m-22076"
+	},
+	
+	{
+		"uid": "t15970",
+        "name": "stairsa",
+		"parent": "t15960",
+		"position": [ -0.464779,-1.669686,3.450124 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ]
+	},
+	
+	{
+		"uid": "t15968",
+        "name": "stairsb",
+		"parent": "t15970",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsb"
+		},
+		"renderer": "misc",
+		"mesh": "stairsb",
+		"meshId": "m-22084"
+	},
+	
+	{
+		"uid": "t15966",
+        "name": "stairsb_2",
+		"parent": "t15960",
+		"position": [ -1.534779,-0.160083,-0.5500579 ],
+		"rotation": [ 0,-0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsb_2"
+		},
+		"renderer": "misc",
+		"mesh": "stairsb_2",
+		"meshId": "m-22080"
+	},
+	
+	{
+		"uid": "t15962",
+        "name": "stairsholder",
+		"parent": "t15960",
+		"position": [ -0.1768079,-0.1020227,1.499656 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stairsholder"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "stairsholder",
+		"meshId": "m-22072"
+	},
+	
+	{
+		"uid": "t16432",
+        "name": "prisonsubwalls",
+		"parent": "t17420",
+		"position": [ 13.7,-6.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonsubwalls"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "prisonsubwalls",
+		"meshId": "m-22180"
+	},
+	
+	{
+		"uid": "t16480",
+        "name": "prisonwalls",
+		"parent": "t17420",
+		"position": [ 13.7,-0.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonwalls"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "prisonwalls",
+		"meshId": "m-22188"
+	},
+	
+	{
+		"uid": "t16478",
+        "name": "prisonwalls_2",
+		"parent": "t17420",
+		"position": [ 13.7,-3.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonwalls_2"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "prisonwalls_2",
+		"meshId": "m-22240"
+	},
+	
+	{
+		"uid": "t16410",
+        "name": "prisonwalls_3",
+		"parent": "t17420",
+		"position": [ 13.7,-6.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "prisonwalls_3"
+		},
+		"renderer": "concrete_wall_bicol",
+		"mesh": "prisonwalls_3",
+		"meshId": "m-22140"
+	},
+	
+	{
+		"uid": "t17546",
+        "name": "qroom",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "qroom"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "qroom",
+		"meshId": "m-22560"
+	},
+	
+	{
+		"uid": "t17544",
+        "name": "qroomfloor",
+		"parent": "t17420",
+		"position": [ -1.5,-4.7,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "qroomfloor"
+		},
+		"renderer": "floor",
+		"mesh": "qroomfloor",
+		"meshId": "m-22556"
+	},
+	
+	{
+		"uid": "t17538",
+        "name": "rail",
+		"parent": "t17420",
+		"position": [ 0,-6.86,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17536",
+        "name": "rail_2",
+		"parent": "t17538",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_2"
+		},
+		"renderer": "rust",
+		"mesh": "rail_2",
+		"meshId": "m-22548"
+	},
+	
+	{
+		"uid": "t17534",
+        "name": "cap_1",
+		"parent": "t17536",
+		"position": [ -5.2,-5,2.03 ],
+		"rotation": [ -0.1649016,-0.6876099,-0.1649016,0.68761 ],
+		"scale": [1,1,1],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_1"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_1",
+		"meshId": "m-22544"
+	},
+	
+	{
+		"uid": "t17532",
+        "name": "cap_2",
+		"parent": "t17536",
+		"position": [ -5.1,1,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_2"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_2",
+		"meshId": "m-22540"
+	},
+	
+	{
+		"uid": "t17528",
+        "name": "railpath",
+		"parent": "t17536",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17530",
+        "name": "railprofile",
+		"parent": "t17536",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17526",
+        "name": "rail_3",
+		"parent": "t17420",
+		"position": [ 0,-6.53,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17524",
+        "name": "rail_4",
+		"parent": "t17526",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_4"
+		},
+		"renderer": "rust",
+		"mesh": "rail_4",
+		"meshId": "m-22536"
+	},
+	
+	{
+		"uid": "t17522",
+        "name": "cap_1_2",
+		"parent": "t17524",
+		"position": [ -5.2,-5,2.03 ],
+		"rotation": [ -0.1649016,-0.6876099,-0.1649016,0.68761 ],
+		"scale": [1,1,1],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_1_2"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_1_2",
+		"meshId": "m-22532"
+	},
+	
+	{
+		"uid": "t17520",
+        "name": "cap_2_2",
+		"parent": "t17524",
+		"position": [ -5.1,1,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_2_2"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_2_2",
+		"meshId": "m-22528"
+	},
+	
+	{
+		"uid": "t17516",
+        "name": "railpath_2",
+		"parent": "t17524",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17518",
+        "name": "railprofile_2",
+		"parent": "t17524",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17514",
+        "name": "rail_5",
+		"parent": "t17420",
+		"position": [ 0,-6.2,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_5"
+		},
+		"renderer": "rust",
+		"mesh": "rail_5",
+		"meshId": "m-22524"
+	},
+	
+	{
+		"uid": "t17512",
+        "name": "cap_1_3",
+		"parent": "t17514",
+		"position": [ -5.2,-5,2.03 ],
+		"rotation": [ -0.1649016,-0.6876099,-0.1649016,0.68761 ],
+		"scale": [1,1,1],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_1_3"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_1_3",
+		"meshId": "m-22520"
+	},
+	
+	{
+		"uid": "t17510",
+        "name": "cap_2_3",
+		"parent": "t17514",
+		"position": [ -5.1,1,3 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "cap_2_3"
+		},
+		"renderer": "default_material",
+		"mesh": "cap_2_3",
+		"meshId": "m-22516"
+	},
+	
+	{
+		"uid": "t17506",
+        "name": "railpath_3",
+		"parent": "t17514",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17508",
+        "name": "railprofile_3",
+		"parent": "t17514",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t15944",
+        "name": "shortbarier",
+		"parent": "t17420",
+		"position": [ 17.73161,-6.210062,-0.8694299 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16422",
+        "name": "barrier",
+		"parent": "t15944",
+		"position": [ -7.030692,1.477418,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier"
+		},
+		"renderer": "rust",
+		"mesh": "barrier",
+		"meshId": "m-22164"
+	},
+	
+	{
+		"uid": "t15942",
+        "name": "shortbarier_2",
+		"parent": "t17420",
+		"position": [ 16.72824,-6.210062,0.04723125 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ]
+	},
+	
+	{
+		"uid": "t16418",
+        "name": "barrier_2",
+		"parent": "t15942",
+		"position": [ -7.030693,1.477418,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier_2"
+		},
+		"renderer": "rust",
+		"mesh": "barrier_2",
+		"meshId": "m-22156"
+	},
+	
+	{
+		"uid": "t15940",
+        "name": "singlebarrier",
+		"parent": "t17420",
+		"position": [ 16.72824,-4.73038,0.04723125 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ]
+	},
+	
+	{
+		"uid": "t16414",
+        "name": "barrier_3",
+		"parent": "t15940",
+		"position": [ -7.030693,1.477418,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier_3"
+		},
+		"renderer": "rust",
+		"mesh": "barrier_3",
+		"meshId": "m-22148"
+	},
+	
+	{
+		"uid": "t16420",
+        "name": "grid",
+		"parent": "t15940",
+		"position": [ -7.030693,1.477418,-7.036147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "grid"
+		},
+		"renderer": "fence",
+		"mesh": "grid",
+		"meshId": "m-22160"
+	},
+	
+	{
+		"uid": "t15938",
+        "name": "singlebarrier_2",
+		"parent": "t17420",
+		"position": [ 17.73086,-4.73038,-0.8693734 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t15936",
+        "name": "barrier_4",
+		"parent": "t15938",
+		"position": [ -7.030692,1.477418,-9.986147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "barrier_4"
+		},
+		"renderer": "rust",
+		"mesh": "barrier_4",
+		"meshId": "m-22040"
+	},
+	
+	{
+		"uid": "t16416",
+        "name": "grid_2",
+		"parent": "t15938",
+		"position": [ -7.030692,1.477418,-7.036147 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "grid_2"
+		},
+		"renderer": "fence",
+		"mesh": "grid_2",
+		"meshId": "m-22152"
+	},
+	
+	{
+		"uid": "t17350",
+        "name": "staircaseceiling",
+		"parent": "t17420",
+		"position": [ -4,-6.2,-2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "staircaseceiling"
+		},
+		"renderer": "beamedplanks",
+		"mesh": "staircaseceiling",
+		"meshId": "m-22384"
+	},
+	
+	{
+		"uid": "t15946",
+        "name": "staircasecolumn_1",
+		"parent": "t17420",
+		"position": [ 17.70198,-3.973783,0.9997833 ],
+		"rotation": [ 0,0,1,-0.0000000437 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "staircasecolumn_1"
+		},
+		"renderer": "base",
+		"mesh": "staircasecolumn_1",
+		"meshId": "m-22044"
+	},
+	
+	{
+		"uid": "t17504",
+        "name": "stairs",
+		"parent": "t17420",
+		"position": [ -9.099999,-10.2,3 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ]
+	},
+	
+	{
+		"uid": "t17502",
+        "name": "stairs_2",
+		"parent": "t17504",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17498",
+        "name": "rail_6",
+		"parent": "t17502",
+		"position": [ 0,0,0.95 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17496",
+        "name": "rail_7",
+		"parent": "t17498",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_7"
+		},
+		"renderer": "base",
+		"mesh": "rail_7",
+		"meshId": "m-22508"
+	},
+	
+	{
+		"uid": "t17494",
+        "name": "rail_8",
+		"parent": "t17502",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_8"
+		},
+		"renderer": "base",
+		"mesh": "rail_8",
+		"meshId": "m-22504"
+	},
+	
+	{
+		"uid": "t17500",
+        "name": "stair",
+		"parent": "t17502",
+		"position": [ -3.450001,-1.849999,0.5000003 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stair"
+		},
+		"renderer": "misc",
+		"mesh": "stair",
+		"meshId": "m-22512"
+	},
+	
+	{
+		"uid": "t17488",
+        "name": "stairs_3",
+		"parent": "t17420",
+		"position": [ -10.1,-8.2,-2 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ]
+	},
+	
+	{
+		"uid": "t17486",
+        "name": "stairs_4",
+		"parent": "t17488",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17482",
+        "name": "rail_9",
+		"parent": "t17486",
+		"position": [ 0,0,0.95 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17480",
+        "name": "rail_10",
+		"parent": "t17482",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_10"
+		},
+		"renderer": "base",
+		"mesh": "rail_10",
+		"meshId": "m-22492"
+	},
+	
+	{
+		"uid": "t17478",
+        "name": "rail_11",
+		"parent": "t17486",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_11"
+		},
+		"renderer": "base",
+		"mesh": "rail_11",
+		"meshId": "m-22488"
+	},
+	
+	{
+		"uid": "t17484",
+        "name": "stair_2",
+		"parent": "t17486",
+		"position": [ -3.450001,-1.849999,0.5 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stair_2"
+		},
+		"renderer": "misc",
+		"mesh": "stair_2",
+		"meshId": "m-22496"
+	},
+	
+	{
+		"uid": "t17474",
+        "name": "stairs_5",
+		"parent": "t17420",
+		"position": [ -5.1,-6.2,-3 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17470",
+        "name": "rail_12",
+		"parent": "t17474",
+		"position": [ 0,0,0.95 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t17468",
+        "name": "rail_13",
+		"parent": "t17470",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_13"
+		},
+		"renderer": "base",
+		"mesh": "rail_13",
+		"meshId": "m-22476"
+	},
+	
+	{
+		"uid": "t17466",
+        "name": "rail_14",
+		"parent": "t17474",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "rail_14"
+		},
+		"renderer": "base",
+		"mesh": "rail_14",
+		"meshId": "m-22472"
+	},
+	
+	{
+		"uid": "t17472",
+        "name": "stair_3",
+		"parent": "t17474",
+		"position": [ -3.45,-1.85,0.5 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "stair_3"
+		},
+		"renderer": "misc",
+		"mesh": "stair_3",
+		"meshId": "m-22480"
+	},
+	
+	{
+		"uid": "t17198",
+        "name": "tbeamlarge",
+		"parent": "t17420",
+		"position": [ -1.267479,-1.377257,-10.10266 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "tbeamlarge"
+		},
+		"renderer": "rivets",
+		"mesh": "tbeamlarge",
+		"meshId": "m-22324"
+	},
+	
+	{
+		"uid": "t16446",
+        "name": "tbeamlarge_1",
+		"parent": "t17420",
+		"position": [ 14.9248,2.80414,-0.1012408 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "tbeamlarge_1"
+		},
+		"renderer": "rivets",
+		"mesh": "tbeamlarge_1",
+		"meshId": "m-22216"
+	},
+	
+	{
+		"uid": "t17200",
+        "name": "tbeamsmall",
+		"parent": "t17420",
+		"position": [ -6.05,-1.676086,-12.5 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "tbeamsmall"
+		},
+		"renderer": "rivets",
+		"mesh": "tbeamsmall",
+		"meshId": "m-22328"
+	},
+	
+	{
+		"uid": "t16444",
+        "name": "tbeamsmall_1",
+		"parent": "t17420",
+		"position": [ 10.14228,2.859668,-2.498577 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "tbeamsmall_1"
+		},
+		"renderer": "rivets",
+		"mesh": "tbeamsmall_1",
+		"meshId": "m-22212"
+	},
+	
+	{
+		"uid": "t17462",
+        "name": "walls",
+		"parent": "t17420",
+		"position": [ -4,-6.2,-2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "walls"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "walls",
+		"meshId": "m-22168"
+	},
+	
+	{
+		"uid": "t17430",
+        "name": "walls_2",
+		"parent": "t17420",
+		"position": [ -4,-12.4,-2.932499 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "walls_2"
+		},
+		"renderer": "concrete_wall",
+		"mesh": "walls_2",
+		"meshId": "m-22412"
+	},
+	
+	{
+		"uid": "t17586",
+        "name": "doors",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16094",
+        "name": "prisondoor",
+		"parent": "t17586",
+		"position": [ 13.70374,-5.164804,-7.048263 ],
+		"rotation": [ 0,-1,0,-0.0000002821 ]
+	},
+	
+	{
+		"uid": "t16086",
+        "name": "door",
+		"parent": "t16094",
+		"position": [ -0.4300041,-0.03999996,0.01260104 ],
+		"rotation": [ 0.0000001499,0.1183309,0.0000000179,0.9929742 ],
+		"renderer": "riveteddoor",
+		"mesh": "door",
+		"meshId": "m-11796"
+	},
+	
+	{
+		"uid": "t16088",
+        "name": "braces",
+		"parent": "t16086",
+		"position": [ 0.5050038,0.5499416,0.02757591 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "riveteddoor",
+		"mesh": "braces",
+		"meshId": "m-11800"
+	},
+	
+	{
+		"uid": "t16084",
+        "name": "frame",
+		"parent": "t16094",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greenleaking",
+		"mesh": "frame",
+		"meshId": "m-11802"
+	},
+	
+	{
+		"uid": "t16080",
+        "name": "mask",
+		"parent": "t16094",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "black",
+		"mesh": "mask",
+		"meshId": "m-11808"
+	},
+	
+	{
+		"uid": "t16082",
+        "name": "wicket",
+		"parent": "t16094",
+		"position": [ -0.43011,-0.6000013,0.01260342 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "chrome",
+		"mesh": "wicket",
+		"meshId": "m-11810"
+	},
+	
+	{
+		"uid": "t16090",
+        "name": "prisondoor",
+		"parent": "t17586",
+		"position": [ 10.19043,-5.164804,-7.048264 ],
+		"rotation": [ 0,-1,0,-0.0000002821 ]
+	},
+	
+	{
+		"uid": "t16076",
+        "name": "door",
+		"parent": "t16090",
+		"position": [ -0.4300041,-0.03999996,0.01260104 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "riveteddoor",
+		"mesh": "door",
+		"meshId": "m-11796"
+	},
+	
+	{
+		"uid": "t16078",
+        "name": "braces",
+		"parent": "t16076",
+		"position": [ 0.5050038,0.5499416,0.02757591 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "riveteddoor",
+		"mesh": "braces",
+		"meshId": "m-11800"
+	},
+	
+	{
+		"uid": "t16074",
+        "name": "frame",
+		"parent": "t16090",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greenleaking",
+		"mesh": "frame",
+		"meshId": "m-11802"
+	},
+	
+	{
+		"uid": "t16070",
+        "name": "mask",
+		"parent": "t16090",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "black",
+		"mesh": "mask",
+		"meshId": "m-11808"
+	},
+	
+	{
+		"uid": "t16072",
+        "name": "wicket",
+		"parent": "t16090",
+		"position": [ -0.43011,-0.6000013,0.01260342 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "chrome",
+		"mesh": "wicket",
+		"meshId": "m-11810"
+	},
+	
+	{
+		"uid": "t16092",
+        "name": "prisondoor",
+		"parent": "t17586",
+		"position": [ 17.18543,-5.164804,-7.048262 ],
+		"rotation": [ 0,-1,0,-0.0000002821 ]
+	},
+	
+	{
+		"uid": "t16066",
+        "name": "door",
+		"parent": "t16092",
+		"position": [ -0.4300041,-0.03999996,0.01260104 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "riveteddoor",
+		"mesh": "door",
+		"meshId": "m-11796"
+	},
+	
+	{
+		"uid": "t16068",
+        "name": "braces",
+		"parent": "t16066",
+		"position": [ 0.5050038,0.5499416,0.02757591 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "riveteddoor",
+		"mesh": "braces",
+		"meshId": "m-11800"
+	},
+	
+	{
+		"uid": "t16064",
+        "name": "frame",
+		"parent": "t16092",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "greenleaking",
+		"mesh": "frame",
+		"meshId": "m-11802"
+	},
+	
+	{
+		"uid": "t16060",
+        "name": "mask",
+		"parent": "t16092",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"renderer": "black",
+		"mesh": "mask",
+		"meshId": "m-11808"
+	},
+	
+	{
+		"uid": "t16062",
+        "name": "wicket",
+		"parent": "t16092",
+		"position": [ -0.43011,-0.6000013,0.01260342 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"renderer": "chrome",
+		"mesh": "wicket",
+		"meshId": "m-11810"
+	},
+	
+	{
+		"uid": "t16128",
+        "name": "halltolibrary",
+		"parent": "t17586",
+		"position": [ -1.51152,-5.174573,-5.047341 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16136",
+        "name": "door",
+		"parent": "t16128",
+		"position": [ -0.4299998,0.9399996,0.06260103 ],
+		"rotation": [ -0.0000231402,0.8143311,0.0000294107,-0.5804007 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "door"
+		},
+		"renderer": "brownwood",
+		"mesh": "door",
+		"meshId": "m-13678"
+	},
+	
+	{
+		"uid": "t16134",
+        "name": "knob",
+		"parent": "t16136",
+		"position": [ 0.8152633,-0.9791258,-0.01321973 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knob"
+		},
+		"renderer": "chrome",
+		"mesh": "knob",
+		"meshId": "m-13682"
+	},
+	
+	{
+		"uid": "t16132",
+        "name": "frame",
+		"parent": "t16128",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "frame"
+		},
+		"renderer": "brownwood",
+		"mesh": "frame",
+		"meshId": "m-13676"
+	},
+	
+	{
+		"uid": "t16130",
+        "name": "wicket",
+		"parent": "t16132",
+		"position": [ -0.4301116,-0.6,0.06960516 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "wicket"
+		},
+		"renderer": "chrome",
+		"mesh": "wicket",
+		"meshId": "m-13680"
+	},
+	
+	{
+		"uid": "t17558",
+        "name": "bunkertostaircase",
+		"parent": "t17586",
+		"position": [ -4.057924,-12.4,0.7 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16144",
+        "name": "doorframe",
+		"parent": "t17558",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "doorframe"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "doorframe",
+		"meshId": "m-10382"
+	},
+	
+	{
+		"uid": "t17392",
+        "name": "doorleft",
+		"parent": "t17558",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584937,1.025,0.365 ],
+		    "size": [ 0.04683013,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorleft",
+		"meshId": "m-10378"
+	},
+	
+	{
+		"uid": "t16116",
+        "name": "knobs",
+		"parent": "t17392",
+		"position": [ -0.00217247,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knobs"
+		},
+		"renderer": "chrome",
+		"mesh": "knobs",
+		"meshId": "m-10380"
+	},
+	
+	{
+		"uid": "t16114",
+        "name": "plate",
+		"parent": "t17392",
+		"position": [ -0.0003018379,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "plate"
+		},
+		"renderer": "chrome",
+		"mesh": "plate",
+		"meshId": "m-10372"
+	},
+	
+	{
+		"uid": "t17394",
+        "name": "doorright",
+		"parent": "t17558",
+		"position": [ 0,0,-1.4 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584913,1.025,0.365 ],
+		    "size": [ 0.04683018,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorright",
+		"meshId": "m-10384"
+	},
+	
+	{
+		"uid": "t17560",
+        "name": "doortrigger",
+		"parent": "t17558",
+		"position": [ -0.6252747,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0.55,1,0.7 ],
+		    "size": [ 2.6,2,2 ]
+		}
+	},
+	
+	{
+		"uid": "t16126",
+        "name": "halltolqroom",
+		"parent": "t17586",
+		"position": [ -4.055904,-5.174573,6.251626 ],
+		"rotation": [ 0,0.7071069,0,0.7071067 ]
+	},
+	
+	{
+		"uid": "t16118",
+        "name": "door",
+		"parent": "t16126",
+		"position": [ -0.4299998,0.9399996,0.06260103 ],
+		"rotation": [ -0.0000231402,0.8143311,0.0000294107,-0.5804007 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "door"
+		},
+		"renderer": "brownwood",
+		"mesh": "door",
+		"meshId": "m-13678"
+	},
+	
+	{
+		"uid": "t16120",
+        "name": "knob",
+		"parent": "t16118",
+		"position": [ 0.8151309,-0.9791253,-0.01321936 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knob"
+		},
+		"renderer": "chrome",
+		"mesh": "knob",
+		"meshId": "m-13682"
+	},
+	
+	{
+		"uid": "t16122",
+        "name": "frame",
+		"parent": "t16126",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "frame"
+		},
+		"renderer": "brownwood",
+		"mesh": "frame",
+		"meshId": "m-13676"
+	},
+	
+	{
+		"uid": "t16124",
+        "name": "wicket",
+		"parent": "t16122",
+		"position": [ -0.4301116,-0.6,0.06960516 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "wicket"
+		},
+		"renderer": "chrome",
+		"mesh": "wicket",
+		"meshId": "m-13680"
+	},
+	
+	{
+		"uid": "t16156",
+        "name": "corridortoprison",
+		"parent": "t17586",
+		"position": [ 6.648084,-6.196201,0.7 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16148",
+        "name": "doorframe",
+		"parent": "t16156",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "doorframe"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "doorframe",
+		"meshId": "m-10382"
+	},
+	
+	{
+		"uid": "t16150",
+        "name": "doorleft",
+		"parent": "t16156",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584937,1.025,0.365 ],
+		    "size": [ 0.04683013,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorleft",
+		"meshId": "m-10378"
+	},
+	
+	{
+		"uid": "t16112",
+        "name": "knobs",
+		"parent": "t16150",
+		"position": [ -0.00217247,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knobs"
+		},
+		"renderer": "chrome",
+		"mesh": "knobs",
+		"meshId": "m-10380"
+	},
+	
+	{
+		"uid": "t16110",
+        "name": "plate",
+		"parent": "t16150",
+		"position": [ -0.0003018379,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "plate"
+		},
+		"renderer": "chrome",
+		"mesh": "plate",
+		"meshId": "m-10372"
+	},
+	
+	{
+		"uid": "t16152",
+        "name": "doorright",
+		"parent": "t16156",
+		"position": [ 0,0,-1.4 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584913,1.025,0.365 ],
+		    "size": [ 0.04683018,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorright",
+		"meshId": "m-10384"
+	},
+	
+	{
+		"uid": "t16154",
+        "name": "doortrigger",
+		"parent": "t16156",
+		"position": [ -0.6252747,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0.55,1,0.7 ],
+		    "size": [ 2.6,2,2 ]
+		}
+	},
+	
+	{
+		"uid": "t16158",
+        "name": "halltocorridor",
+		"parent": "t17586",
+		"position": [ 1.044865,-6.196201,0.7 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16146",
+        "name": "doorframe",
+		"parent": "t16158",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "doorframe"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "doorframe",
+		"meshId": "m-10382"
+	},
+	
+	{
+		"uid": "t16164",
+        "name": "doorleft",
+		"parent": "t16158",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584937,1.025,0.365 ],
+		    "size": [ 0.04683013,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorleft",
+		"meshId": "m-10378"
+	},
+	
+	{
+		"uid": "t16108",
+        "name": "knobs",
+		"parent": "t16164",
+		"position": [ -0.00217247,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knobs"
+		},
+		"renderer": "chrome",
+		"mesh": "knobs",
+		"meshId": "m-10380"
+	},
+	
+	{
+		"uid": "t16106",
+        "name": "plate",
+		"parent": "t16164",
+		"position": [ -0.0003018379,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "plate"
+		},
+		"renderer": "chrome",
+		"mesh": "plate",
+		"meshId": "m-10372"
+	},
+	
+	{
+		"uid": "t16162",
+        "name": "doorright",
+		"parent": "t16158",
+		"position": [ 0,0,-1.4 ],
+		"rotation": [ 0,-1,0,-0.0000000437 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584913,1.025,0.365 ],
+		    "size": [ 0.04683018,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorright",
+		"meshId": "m-10384"
+	},
+	
+	{
+		"uid": "t16160",
+        "name": "doortrigger",
+		"parent": "t16158",
+		"position": [ -0.6252747,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0.55,1,0.7 ],
+		    "size": [ 2.6,2,2 ]
+		}
+	},
+	
+	{
+		"uid": "t17588",
+        "name": "staircasetohall",
+		"parent": "t17586",
+		"position": [ -4.049013,-6.196201,0.7 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t16142",
+        "name": "doorframe",
+		"parent": "t17588",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "doorframe"
+		},
+		"renderer": "concrete_fill",
+		"mesh": "doorframe",
+		"meshId": "m-10382"
+	},
+	
+	{
+		"uid": "t17396",
+        "name": "doorleft",
+		"parent": "t17588",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584937,1.025,0.365 ],
+		    "size": [ 0.04683013,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorleft",
+		"meshId": "m-10378"
+	},
+	
+	{
+		"uid": "t16104",
+        "name": "knobs",
+		"parent": "t17396",
+		"position": [ -0.00217247,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "knobs"
+		},
+		"renderer": "chrome",
+		"mesh": "knobs",
+		"meshId": "m-10380"
+	},
+	
+	{
+		"uid": "t16102",
+        "name": "plate",
+		"parent": "t17396",
+		"position": [ -0.0003018379,0.9473562,-0.6254598 ],
+		"rotation": [ 0,0.7071068,0,0.7071068 ],
+		"collider": {
+		    "type": "mesh",
+		    "mesh": "plate"
+		},
+		"renderer": "chrome",
+		"mesh": "plate",
+		"meshId": "m-10372"
+	},
+	
+	{
+		"uid": "t17398",
+        "name": "doorright",
+		"parent": "t17588",
+		"position": [ 0,0,-1.4 ],
+		"rotation": [ 0,-0.7071069,0,0.7071067 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ -0.006584913,1.025,0.365 ],
+		    "size": [ 0.04683018,1.95,0.73 ]
+		},
+		"renderer": "leakingmetal",
+		"mesh": "doorright",
+		"meshId": "m-10384"
+	},
+	
+	{
+		"uid": "t17584",
+        "name": "doortrigger",
+		"parent": "t17588",
+		"position": [ -0.6252747,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+		    "type": "box",
+		    "center": [ 0.55,1,0.7 ],
+		    "size": [ 2.6,2,2 ]
+		}
+	}
+
+]
+}
+
+
+
+

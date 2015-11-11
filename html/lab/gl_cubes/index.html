@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>A lot of 3d rotating cubes</title>
+<title>Template</title>
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -21,13 +21,12 @@
 <script type="text/javascript" src="../../src/math/Quaternion.js"></script>
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
-<script type="text/javascript" src="../../src/primitives/Face.js"></script>
-<script type="text/javascript" src="../../src/primitives/Cube.js"></script> 
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
 
-<!-- 
-<script type="text/javascript" src="../../../build/sqr.js"></script>
-<script type="text/javascript" src="../../../build/sqr-primitives.js"></script>
- -->
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
 
@@ -38,84 +37,60 @@
 
 <script type="text/javascript">
 
-	var resolution = window.devicePixelRatio;
-    var antialias = true;
-    var autorotate = false;
-    // var fxaapass = true;
-    var staticTransforms = false;
-
-    var numSquares = parseInt(document.location.search.substring(1)) || 7000;
-
 	SQR.Loader.loadAssets([
-		['basicLight.glsl', 'shader']
+		['normal2color.glsl', 'shader'],
 	], function(assets) {
 
-		var renderer = new SQR.Renderer('#gl-canvas', { antialias: antialias }).clearColor(1, 1, 1, 1);
-		
-		var resize =function() {
+		var renderer = new SQR.Renderer('#gl-canvas');
+
+		var resize = function() {
 			var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-			renderer.context.size(w, h, resolution);
-			renderer.projection = new SQR.ProjectionMatrix().perspective(60, aspect, 1, 1000);
+			renderer.context.size(w, h);
+			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect);
 		}
 
 		window.addEventListener('resize', resize);
 		resize();
 
-		var buffer = SQR.Primitives
-			.createCube(2, 2, 2)
-			.update();
-
-		var shader = SQR.Shader(assets['shader'])
-			.use()
-			.setUniform('uLightDirection', new SQR.V3(-1, 0, 0).norm())
-			.setUniform('uColor', [1.0, 0.5, 0.0]);
-
 		var root = new SQR.Transform();
 
 		var camera = new SQR.Transform();
-		var camRoot = new SQR.Transform();
+		camera.position.z = 5;
+		root.add(camera);
 
-		camera.position.z = 100;
-		
-		camRoot.add(camera);
-		root.add(camRoot);
+		var pri = new SQR.Transform();
+		// pri.buffer = SQR.Primitives.createCube(2, 2, 2, { smooth: false, flip: true });
 
-		var cubes = new SQR.Transform();
-		root.add(cubes);
+		pri.buffer = SQR.Primitives.createSphere(1, 40, 20);
 
-		for(var i = 0; i < numSquares; i++) {
-			var t = new SQR.Transform();
-			var sp = (0.5 + 0.5 * Math.random()) * 80;
-			t.position.random().norm().mul(sp);
-			t.rotation.random().mul(SQR.TWOPI);
-			t.buffer = buffer;
-			t.shader = shader;
-			t.isStatic = staticTransforms;
-			cubes.add(t);
+		var c = 0;
+		pri.buffer.mesh.vertices.forEach(function(v) {
+			v.phase = v.position.y * 8;
+			v.speed = 0.15;
+			v.base = new SQR.V3().copyFrom(v.position);
+		});
+
+		var animateVertex = function(v) {
+			v.phase += v.speed;
+			v.position.copyFrom(v.base).mul(2 + Math.cos(v.phase) * 0.14 + Math.cos(v.phase * 0.5) * 0.07);
 		}
 
-		var my = 0, mx = 0, tx = 0, ty = 0;
-		var isTouch = 'ontouchstart' in document;
-		var mousemove = isTouch ? 'touchmove' : 'mousemove';
-		document.addEventListener(mousemove, function(e) {
-			e = isTouch ? e.targetTouches[0] : e;
-			tx = e.pageX / window.innerWidth;
-			ty = e.pageY / window.innerHeight;
-		});
+		var animate = function() {
+			pri.rotation.x += 0.01;
+			pri.rotation.y += 0.004;
+
+			pri.buffer.mesh.vertices.forEach(animateVertex);
+			pri.buffer.mesh.calculateNormals(true).update();
+		}
+
+
+		pri.shader = SQR.Shader(assets.shader);
+		root.add(pri);
 
 		var render = function() {
 			requestAnimationFrame(render);
-
-			mx += (tx - mx) * 0.1;
-			my += (ty - my) * 0.1;
-
-			if(autorotate) {
-				camRoot.rotation.y += 0.002;
-			}
-
-			camera.position.z = my * 200;
-
-			renderer.render(root, camera);			
+			animate();
+			renderer.render(root, camera);
 		}
 
 		render();
@@ -128,6 +103,7 @@ if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1)
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
 }
 </script>
+
 </body>
 </head>
 

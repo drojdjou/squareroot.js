@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 <script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/GLSl.js"></script>
 
 <script type="text/javascript" src="../../src/common/Context.js"></script>
 <script type="text/javascript" src="../../src/common/Loader.js"></script>
@@ -38,7 +39,7 @@
 <script type="text/javascript">
 
 	SQR.Loader.loadAssets([
-		['normal2color.glsl', 'shader'],
+		['normal2color.glsl', 'shader']
 	], function(assets) {
 
 		var renderer = new SQR.Renderer('#gl-canvas');
@@ -49,50 +50,26 @@
 			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect);
 		}
 
-		window.addEventListener('resize', resize);
-		resize();
-
 		var root = new SQR.Transform();
 
 		var camera = new SQR.Transform();
 		camera.position.z = 5;
 		root.add(camera);
 
-		var pri = new SQR.Transform();
-		// pri.buffer = SQR.Primitives.createCube(2, 2, 2, { smooth: false, flip: true });
-
-		pri.buffer = SQR.Primitives.createSphere(1, 40, 20);
-
-		var c = 0;
-		pri.buffer.mesh.vertices.forEach(function(v) {
-			v.phase = v.position.y * 8;
-			v.speed = 0.15;
-			v.base = new SQR.V3().copyFrom(v.position);
-		});
-
-		var animateVertex = function(v) {
-			v.phase += v.speed;
-			v.position.copyFrom(v.base).mul(2 + Math.cos(v.phase) * 0.14 + Math.cos(v.phase * 0.5) * 0.07);
-		}
-
-		var animate = function() {
-			pri.rotation.x += 0.01;
-			pri.rotation.y += 0.004;
-
-			pri.buffer.mesh.vertices.forEach(animateVertex);
-			pri.buffer.mesh.calculateNormals(true).update();
-		}
-
-
-		pri.shader = SQR.Shader(assets.shader);
-		root.add(pri);
+		var o = new SQR.Transform();
+		o.buffer = SQR.Primitives.createCube(2, 2, 2, { smooth: false });
+		o.shader = SQR.Shader(assets.shader);
+		root.add(o);
 
 		var render = function() {
 			requestAnimationFrame(render);
-			animate();
+			o.rotation.x += 0.005;
+			o.rotation.y += 0.01;
 			renderer.render(root, camera);
 		}
 
+		window.addEventListener('resize', resize);
+		resize();
 		render();
 	});
 

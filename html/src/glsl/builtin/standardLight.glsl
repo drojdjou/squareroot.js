@@ -9,7 +9,7 @@
 */
 
 vec3 diffuse(vec3 n, vec3 l, vec3 c, float i) {
-	#ifdef HEMISPEHERE_DIFFUSE
+	#ifdef HEMISPHERE_DIFFUSE
 	return (dot(-l, n) * 0.5 + 0.5) * c * i;
 	#else
 	return max(0.0, dot(-l, n)) * c * i;

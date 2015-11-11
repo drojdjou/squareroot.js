@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Unity lightmap test</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/Version.js"></script>
+<script type="text/javascript" src="../../src/GLSL.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+<script type="text/javascript" src="../../src/common/Clip.js"></script>
+<script type="text/javascript" src="../../src/common/Animation.js"></script>
+
+<script type="text/javascript" src="../../src/common/Ray.js"></script>
+<script type="text/javascript" src="../../src/common/Pointer3d.js"></script>
+<script type="text/javascript" src="../../src/common/Collider.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+<script type="text/javascript" src="../../src/math/Bezier.js"></script>
+<script type="text/javascript" src="../../src/math/Intersection.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+</head>
+<body>
+
+<canvas id="gl-canvas"></canvas>
+
+<div class="num"></div>
+
+<script type="text/javascript">
+
+	SQR.Loader.loadAssets([
+
+		['../../assets/unity-export/bunker/bunker.json', 'mesh'],
+		['../../assets/unity-export/bunker/bunkerScene.json', 'scene'],
+
+		['../../assets/unity-export/bunker/floor.jpg', 'floor'],
+		['../../assets/unity-export/bunker/concrete_wall_bicol.jpg', 'concrete_wall_bicol'],
+		['../../assets/unity-export/bunker/concrete_wall.jpg', 'concrete_wall'],
+		['../../assets/unity-export/bunker/rust.jpg', 'rust'],
+		['../../assets/unity-export/bunker/roughwood.jpg', 'roughwood'],
+		['../../assets/unity-export/bunker/bareplankslight.jpg', 'bareplankslight'],
+		['../../assets/unity-export/bunker/beamed_planks.jpg', 'beamed_planks'],
+		['../../assets/unity-export/bunker/brownwood.jpg', 'brownwood'],
+		['../../assets/unity-export/bunker/light_metal.jpg', 'light_metal'],
+		['../../assets/unity-export/bunker/base.jpg', 'base'],
+		['../../assets/unity-export/bunker/leakingmetal.jpg', 'leakingmetal'],
+		['../../assets/unity-export/bunker/ceiling_panel.jpg', 'ceiling_panel'],
+
+	], function(assets) {
+
+		var renderer = new SQR.Renderer('#gl-canvas');
+
+		var scene = SQR.SceneParser.parse(assets, {
+			context: renderer.context
+		});
+
+		var resize = function() {
+			var w = window.innerWidth, h = window.innerHeight, aspect = w/h, res = 1;
+			renderer.context.size(w, h, res);
+			scene.camera.projection.perspective(60, aspect, 0.1, 1000);
+			scene.camera.useQuaternion = false;
+		}
+
+
+		var tx = 0, mx = 0, ty = 0, my = 0;
+		document.addEventListener('mousemove', function(e) {
+			tx = (e.pageX / window.innerWidth) * 2 - 1;
+			ty = (e.pageY / window.innerHeight) * 2 - 1;
+		});
+
+		var render = function(t) {
+			requestAnimationFrame(render);
+
+			mx += (tx - mx) * 0.1;
+			my += (ty - my) * 0.1;
+
+			scene.camera.rotation.y = mx * -1;
+			scene.camera.rotation.x = my * -1;
+
+			scene.camera.position.z -= 0.01;
+			renderer.render(scene.root, scene.camera);
+		}
+
+		resize();
+		render();
+
+	});
+
+</script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

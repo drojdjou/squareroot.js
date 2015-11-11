@@ -57,21 +57,21 @@ uniform vec4 uEmissiveColor;
 
 #ifdef USE_DIFFUSE_MAP
 uniform sampler2D uDiffuseMap;
+uniform vec4 uTextureTileOffset;
+
+vec4 texture(sampler2D t, vec2 uv) {
+	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
+}
+
 #endif
 
 #ifdef USE_SPECULAR_MAP
 uniform sampler2D uSpecularMap;
 #endif
 
-uniform vec4 uTextureTileOffset;
-
 varying vec3 vNormal;
 varying vec3 vIncident;
 varying vec2 vUV;
-
-vec4 texture(sampler2D t, vec2 uv) {
-	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
-}
 
 void main() {
 
@@ -82,7 +82,7 @@ void main() {
 	vec3 dm = uDiffuseColor.rgb;
 	#endif
 
-	vec3 e = (uEmissiveColor.rgb * dm.rgb) * uEmissiveColor.a;
+	vec3 e = (uEmissiveColor.rgb* dm.rgb) * uEmissiveColor.a;
 	vec3 d = diffuse(vNormal, uLightDirection, dm.rgb, uDiffuseColor.a);
 
 
@@ -96,7 +96,7 @@ void main() {
 	#ifdef USE_SPECULAR
 	#define SP specular(vNormal, vIncident, uLightDirection, uSpecularColor.rgb, uShininess, SI)
 	#else 
-	#define SP 
+	#define SP vec3(0.0) 
 	#endif
 	
 	gl_FragColor = vec4(e + d + SP, 1.0);

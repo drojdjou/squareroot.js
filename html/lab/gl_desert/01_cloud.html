@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Template</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+
+
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/PerlinNoise.js"></script>
+<script type="text/javascript" src="../../src/math/Interpolation.js"></script>
+
+<script type="text/javascript" src="../../src/extras/PerlinTexture.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+body {
+	background-image: url(assets/desert-bg.jpg);
+	background-size: cover;
+}
+
+.preview {
+	position: static;
+	margin: 10px;
+	width: 512px !important;
+	height: 512px !important;
+}
+
+
+.preview-wide {
+	position: static;
+	margin: 10px;
+	width: 512px !important;
+	height: 256px !important;
+}
+
+.preview-main {
+	position: static;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- <canvas id="canvas-2d"></canvas> -->
+
+<script type="text/javascript">
+
+	var size = 64;
+	var contrast = 2;
+
+	var grain = SQR.PerlinTexture()
+		.configure({
+			low:  0.12, 
+			high: 0.70, 
+			octaves: [2, 4, 8], 
+			factors: [1/2, 1, 1/2],
+			seed: 287
+		})
+		.create(size, size)
+		.draw();
+
+		grain.canvas.classList.add('preview');
+		// document.body.appendChild(grain.canvas);
+
+	var shape = SQR.PerlinTexture()
+		.configure({
+			low:  0.20, 
+			high: 0.80, 
+			octaves: [2, 4], 
+			factors: [1, 1],
+			seed: 849
+		})
+		.create(size, size)
+		.draw();
+
+		shape.canvas.classList.add('preview');
+		// document.body.appendChild(shape.canvas);
+
+	var tx = 0, cx = 0, mx = 0;
+	document.addEventListener('mousemove', function(e) {
+		tx = (e.pageX / window.innerWidth);
+	});
+
+	var multiply = new SQR.CanvasRenderer()
+		.setSize(size, size);
+
+	var cloud = new SQR.Transform2d();
+
+	cloud.shape = function(ctx) {
+		var data = ctx.getImageData(0, 0, size, size);
+
+		var l = size * size * 4;
+		var center = new SQR.V2(size / 2, size / 2);
+
+		for(var i = 0; i < l; i += 4) {
+
+
+			var v = new SQR.V2(
+				((i/4) % size) | 0, 
+				((i/4) / size) | 0
+			);
+
+			var gr = grain.getValue(v.x, v.y);
+			var sh = shape.getPixel(v.x, v.y);
+
+			sh = SQR.Interpolation.smoothStep(sh);
+
+			v.sub(center);
+			var fo = 1 - v.mag() / (size / 2);
+
+			var alpha = fo * sh * contrast;
+			var col = gr;
+
+			alpha = (alpha * 255) | 0;
+			col = (160 + col * 80 + Math.random() * 2) | 0;
+
+			data.data[i+0] = col * 1;
+			data.data[i+1] = col * 0.75;
+			data.data[i+2] = col * 0.60;
+
+			data.data[i+3] = alpha * (0.3 + 0.4 * mx);
+			
+		}
+		
+		ctx.putImageData(data, 0, 0);
+	}
+
+	multiply.canvas.classList.add('preview-wide');
+	// document.body.appendChild(multiply.canvas);
+
+	var main = new SQR.CanvasRenderer()
+		.setSize(window.innerWidth, window.innerHeight)
+		// .setClearColor('#73b3d8');
+
+	var stage = new SQR.Transform2d();
+
+	var numParticles = 25;
+
+	for(var i = 0; i < numParticles; i++) {
+		var c = new SQR.Transform2d();
+		var s = 8 + 4 * Math.random();
+		c.scale.set(s, s);
+		c.rotation = Math.random() * Math.PI;
+		c.position.x = -size * 4 + Math.random() * (window.innerWidth + size);
+		c.position.y = window.innerHeight / 2  + Math.random() * (window.innerHeight / 2 - size);
+		c.speed = 8 + 6 * i / numParticles;
+		c.rotSpeed = (-1 + 2 * Math.random()) * 0.002;
+		c.shape = function(ctx, tr) {
+
+			tr.position.x += tr.speed * mx;
+			tr.rotation += tr.rotSpeed * mx;
+			if(tr.position.x > window.innerWidth + size * 4) tr.position.x = -size * 4;
+
+			ctx.drawImage(multiply.canvas, -size/2, -size/2);
+		}
+
+		stage.add(c);
+	}
+
+	main.canvas.classList.add('preview-main');
+	document.body.appendChild(main.canvas);
+
+	var animTexture = function() {
+		requestAnimationFrame(animTexture);
+
+		cx += (tx - cx) * 0.1;
+
+		mx = 0.2 + 0.8 * cx;
+
+		grain.offset.x += 0.4 * mx;
+		grain.offset.z += 0.02 * mx;
+		multiply.render(cloud);
+
+		main.render(stage);
+	}
+
+	animTexture();
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

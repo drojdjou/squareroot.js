@@ -172,3 +172,9 @@ Changes in Renderer/Context classes and new Mesh API
 
 Adding builtin shaders
 
+
+##### v3.0 b 150
+*Nov 10th 2015*
+
+Realizing that we need to rewrite the SceneParser from scratch. Otherwise, some minor fixes
+

@@ -82,6 +82,7 @@ SQR.V2.prototype.add = function(a, b) {
  * @param b
  */
 SQR.V2.prototype.sub = function(a, b) {
+    b = b || this;
     this.x = a.x - b.x;
     this.y = a.y - b.y;
     return this;

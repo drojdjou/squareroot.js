@@ -17,6 +17,13 @@ SQR.Color = function(r, g, b, a) {
 	if(typeof(r) == 'string') {
 		this.setHex(r);
 		this.a = (g == undefined) ? 1 : g; // if r is a hex color code, the next argument will be alpha
+	} else if(r && r.r) {
+		this.setRGB(r.r, r.g, r.b);
+
+		if(r.a != undefined) this.a = r.a;
+		else if(g != undefined) this.a = g;
+		else this.a = 1; 
+
 	} else {
 		this.setRGB(r, g, b);
 		this.a = (a == undefined) ? 1 : a;

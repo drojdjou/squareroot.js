@@ -4,7 +4,7 @@
  *
  *  @description Utility to generate procedural textures based on Perlin noise.
  */
-SQR.PerlinTexture = function(canvas) {
+SQR.PerlinTexture = function(canvas, options) {
 
 	var BADCTX = "> SQR.PerlinTexture - Invalid canvas reference.";
 
@@ -79,13 +79,12 @@ SQR.PerlinTexture = function(canvas) {
 
 		col = col / ol;
 		col = interpolate(col, cf.low, cf.high);
-
 		return col;
 	}
 
 	tt.getPixel = function(x, y) {
-		var i = y * width + x;
-		return data.data[i+0]; // Just return red
+		var i = (y * width + x) * 4;
+		return data.data[i+0] / 255; // Just return red
 	}
 
 	tt.draw = function() {
