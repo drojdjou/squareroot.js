@@ -46,23 +46,19 @@ precision mediump float;
 
 //#include standardLight
 
-uniform vec4 uEmissiveColor;
-
-	uniform vec3 uLightDirection;
-	uniform vec4 uDiffuseColor;
-	#ifdef USE_SPECULAR
-	uniform vec4 uSpecularColor;
-	uniform float uShininess;
-	#endif
+uniform vec3 uAmbient;
+uniform vec3 uColor;
+uniform float uEmissive;
+uniform vec3 uLightDirection;
 
 #ifdef USE_DIFFUSE_MAP
-uniform sampler2D uDiffuseMap;
+uniform sampler2D uTexture;
 uniform vec4 uTextureTileOffset;
+#endif
 
-vec4 texture(sampler2D t, vec2 uv) {
-	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
-}
-
+#ifdef USE_SPECULAR
+uniform vec4 uSpecularColor;
+uniform float uShininess;
 #endif
 
 #ifdef USE_SPECULAR_MAP
@@ -73,17 +69,21 @@ varying vec3 vNormal;
 varying vec3 vIncident;
 varying vec2 vUV;
 
+vec4 texture(sampler2D t, vec2 uv) {
+	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
+}
+
 void main() {
 
 	// Diffuse and emissive terms
 	#ifdef USE_DIFFUSE_MAP
-	vec3 dm = uDiffuseColor.rgb * texture(uDiffuseMap, vUV).rgb;
+	vec3 dm = uColor * texture(uTexture, vUV).rgb;
 	#else
-	vec3 dm = uDiffuseColor.rgb;
+	vec3 dm = uColor;
 	#endif
 
-	vec3 e = (uEmissiveColor.rgb* dm.rgb) * uEmissiveColor.a;
-	vec3 d = diffuse(vNormal, uLightDirection, dm.rgb, uDiffuseColor.a);
+	vec3 e = dm * uEmissive;
+	vec3 d = diffuse(vNormal, uLightDirection, dm, 1.0);
 
 
 	// Specular term
@@ -99,7 +99,7 @@ void main() {
 	#define SP vec3(0.0) 
 	#endif
 	
-	gl_FragColor = vec4(e + d + SP, 1.0);
+	gl_FragColor = vec4(uAmbient + e + d + SP, 1.0);
 }
 
 

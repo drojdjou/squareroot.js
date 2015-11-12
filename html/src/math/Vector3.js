@@ -45,9 +45,15 @@ SQR.V3.prototype.copyTo = function(p) {
  *  @param {SQR.V2|SQR.V3} p - vector to copy the values from
  */
 SQR.V3.prototype.copyFrom = function(p) {
-	this.x = p.x;
-	this.y = p.y;
-	this.z = p.z || 0; // in case p is SQR.V2
+	if(p instanceof Array) {
+		this.x = p[0];
+		this.y = p[1];
+		this.z = p[2] || 0; // in case p is SQR.V2
+	} else {
+		this.x = p.x;
+		this.y = p.y;
+		this.z = p.z || 0; // in case p is SQR.V2
+	}
 	return this;
 }
 

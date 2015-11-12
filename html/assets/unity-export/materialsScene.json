@@ -1,0 +1,150 @@
+{
+	
+"path" : "",
+"ambient": { "r":0.212, "g":0.227, "b":0.259, "a":1 },
+"background": { "r":0.2384299, "g":0.2457889, "b":0.2573529, "a":0.01960784 },
+
+"quaternions": true,
+
+"textures": {
+	
+	"rust": { 
+		"file": "rust.jpg"
+	}
+
+},
+
+"lightmaps": [
+],
+	
+"materials": {
+	
+	"red_diffuse": { 
+		"type": "standard",
+		"uColor": { "r":1, "g":0, "b":0 }
+	},
+	
+	"green_specular": { 
+		"type": "standard",
+		"uColor": { "r":0, "g":0.7279412, "b":0.005020243 }
+	},
+	
+	"rust": { 
+		"type": "standard",
+		"uColor": { "r":1, "g":1, "b":1 },
+		"uTexture": "rust",
+		"uTextureTileOffset": [ 1,1,0,0 ]
+	},
+	
+	"blue_selflit": { 
+		"type": "legacy_shaders/self_illumin/diffuse",
+		"uColor": { "r":0.484, "g":0, "b":1 }
+	}
+
+},
+
+"lights": {
+	
+	"directional_light": { 
+		"type": 1,
+		"color": { "r":1, "g":0.9568627, "b":0.8392157, "a":1 },
+		"intensity": 1
+	}
+
+},
+
+"cameras": {
+	
+	"main_camera": { 
+		"fov": 60,
+		"near": 0.3,
+		"far": 1000
+	}
+
+},
+
+"transforms": [
+	
+	{
+		"uid": "t-1074",
+		"name": "directional_light",
+		"position": [ 0,3,0 ],
+		"rotation": [ -0.408218,0.2345698,0.1093817,0.875426 ],
+		"light": "directional_light"
+	},
+	
+	{
+		"uid": "t-1062",
+		"name": "main_camera",
+		"position": [ 0,0,6 ],
+		"rotation": [ 0,0,0,1 ],
+		"camera": "main_camera"
+	},
+	
+	{
+		"uid": "t-49666",
+		"name": "center",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ]
+	},
+	
+	{
+		"uid": "t-1552",
+		"name": "cube",
+		"parent": "t-49666",
+		"position": [ -2,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"scale": [1.1,1.1,1.1],
+		"collider": {
+			"type": "box",
+			"center": [ 0,0,0 ],
+			"size": [ 1,1,1 ]
+		},
+		"material": "red_diffuse",
+		"meshId": "m-348"
+	},
+	
+	{
+		"uid": "t-1770",
+		"name": "sphere",
+		"parent": "t-49666",
+		"position": [ 0,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+			"type": "sphere",
+			"center": [ 0,0,0 ],
+			"radius": 0.5
+		},
+		"material": "green_specular",
+		"meshId": "m-352"
+	},
+	
+	{
+		"uid": "t-1834",
+		"name": "capsule",
+		"parent": "t-49666",
+		"position": [ 2,0,0 ],
+		"rotation": [ 0,0,0,1 ],
+		"collider": {
+			"type": "capsule"
+		},
+		"material": "blue_selflit",
+		"meshId": "m-354"
+	},
+	
+	{
+		"uid": "t-31500",
+		"name": "cylinder",
+		"parent": "t-49666",
+		"position": [ 0,-1.93,0 ],
+		"rotation": [ 0.1642127,0.3333913,0.4101294,0.8328735 ],
+		"material": "rust",
+		"meshId": "m-350"
+	}
+
+]
+}
+
+
+
+

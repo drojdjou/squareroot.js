@@ -139,7 +139,7 @@
 
 		var skybox = new SQR.Transform();
 		skybox.buffer = SQR.Primitives.createCube(far, far, far, { reverseNormals: true });
-		skybox.shader = SQR.Shader(assets.skyboxShader).use().setUniform('uRamp', rampTexBlur);
+		skybox.shader = SQR.Shader(assets.skyboxShader, { includes: assets }).use().setUniform('uRamp', rampTexBlur);
 		scene.root.add(skybox);
 
 		// skybox.setBlending(true);
@@ -151,7 +151,7 @@
 			.setUniform('uLight', new SQR.V3(-1.0, 0.0, 0.0));
 
 		var ground = scene.root.findByName('ground');	
-		ground.shader = SQR.Shader(assets.groundShader)
+		ground.shader = SQR.Shader(assets.groundShader, { includes: assets })
 			.use()
 			.setUniform('uTexture', grid(256, 8))
 			.setUniform('uTextureTile', [80, 80])
@@ -161,7 +161,7 @@
 
 
 		var particles = new SQR.Transform();
-		particles.shader = SQR.Shader(assets.particleShader, { directives: [
+		particles.shader = SQR.Shader(assets.particleShader, { includes: assets, directives: [
 			{ name: 'POINT_SIZE', value: '64.0' }
 		] }).use()
 			.setUniform('uRadius', 500)

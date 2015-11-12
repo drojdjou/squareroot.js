@@ -193,7 +193,7 @@ b.iterate('aPosition', function(i, data, count)) {
 	b.iterate = function(attribute, callback) {
 		var s = b.attributes[attribute];
 
-		if(!s) throw "> SQR.Buffer.iterate > no such attribute: " + attribute;
+		if(attribute && !s) throw "> SQR.Buffer.iterate > no such attribute: " + attribute;
 
 		var o = attribute ? s.offset : 0;
 		var c = 0;

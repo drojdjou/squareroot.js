@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Desert effects study | 01 | Sand in the wind</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/GLSl.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+<script type="text/javascript" src="../../src/primitives/Sphere.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+.bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url(assets/desert-bg.jpg);
+	background-size: cover;
+}
+
+.preview {
+	position: static;
+	margin: 10px;
+	width: 512px !important;
+	height: 512px !important;
+}
+
+
+.preview-wide {
+	position: static;
+	margin: 10px;
+	width: 512px !important;
+	height: 256px !important;
+}
+
+.preview-main {
+	position: static;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class='bg'></div>
+
+<!-- <canvas id="canvas-2d"></canvas> -->
+
+<script type="text/javascript">
+
+SQR.Loader.loadAssets([
+	['glsl/sand.glsl', 'shader'],
+], function(assets) {
+
+	var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+
+	var renderer = new SQR.Renderer().clearColor(0, 0, 0, 0);
+	document.body.appendChild(renderer.context.canvas);
+
+	var root = new SQR.Transform();
+
+	var camera = new SQR.Transform();
+	camera.position.z = 100;
+	root.add(camera);
+
+	var bounds;
+
+	var resize =function() {
+		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
+		renderer.context.size(w, h);
+		camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
+		bounds = SQR.ProjectionMatrix.getBoundsAtDistance(70, 120, w, h);
+	}
+
+	window.addEventListener('resize', resize);
+	resize();
+
+	var t = new SQR.Transform();
+
+	t.shader = SQR.Shader(assets['shader']).use().setUniform('uColor', [1.00, 0.75, 0.66]);
+
+	t.scale.set(bounds.w, bounds.h, 1);
+
+	t.buffer = SQR.Buffer()
+		.layout({ aPosition: 3, aColor: 3, aSpeed: 1 }, 10000)
+		.setMode(SQR.gl.POINTS)
+		.iterate('aPosition', function(i, data, c) {
+			data[i+0] = (Math.random() * 2 - 1);
+			data[i+1] = (Math.random() * 2 - 1);
+			data[i+2] = 0;
+		})
+		.iterate('aColor', function(i, data, c) {
+			data[i+0] = 0.90 + 0.1 * Math.random();
+			data[i+1] = 0.65 + 0.1 * Math.random();
+			data[i+2] = 0.50;
+		})
+		.iterate('aSpeed', function(i, data, c) {
+			data[i+0] = Math.random() * 0.001;
+		})
+		.update();
+
+	root.add(t);
+
+	var render = function() {
+		requestAnimationFrame(render);
+		renderer.render(root, camera);
+	}
+
+	render();
+});
+	
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -66,8 +66,10 @@ SQR.Shader = function(source, options) {
 
 				if(SQR.GLSL && SQR.GLSL[p]) {
 					inc = SQR.GLSL[p];
-				} else {
-					inc = SQR.Loader.assets[p];
+				} else if(SQR.GLSLInclude && SQR.GLSLInclude[p]) {
+					inc = SQR.GLSLInclude[p];
+				} else if(options && options.includes) {
+					inc = options.includes[p];
 				}
 
 				if(!inc) throw "> SQR.Shader.parseGLSL - Include not found: " + p;

@@ -20,8 +20,8 @@ SQR.Texture = function(_source, _options) {
 		source = _source;
 		options = _options || {};
 		
-		var wrapS = options.wrapS || options.wrap || gl.CLAMP_TO_EDGE;
-		var wrapT = options.wrapT || options.wrap || gl.CLAMP_TO_EDGE;
+		var wrapS = options.wrapS || options.wrap;
+		var wrapT = options.wrapT || options.wrap;
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, options.flip !== undefined ? options.flip : true);
@@ -33,8 +33,12 @@ SQR.Texture = function(_source, _options) {
 			if(options.mipmap) gl.generateMipmap(gl.TEXTURE_2D);
 			mif = options.mipmap ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR;
 			mgf = gl.LINEAR;
+			if(!wrapS) wrapS = gl.REPEAT;
+			if(!wrapT) wrapT = gl.REPEAT;
 		} else {
 			mif = mgf = gl.LINEAR;
+			if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
+			if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
 		}
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, options.magFilter || options.filter || mgf);

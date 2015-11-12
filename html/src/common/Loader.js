@@ -48,8 +48,9 @@ SQR.Loader = {
 	 *	@description Load an image file and return it's contents in the callback
 	 *	as Image object.
 	 */
-	loadImage: function(path, callback){
+	loadImage: function(path, callback, errorCallback){
 		var img = new Image();
+
 		if(callback) {
 			var onload = function() {
 				img.removeEventListener('load', onload);
@@ -57,6 +58,17 @@ SQR.Loader = {
 			}
 			img.addEventListener('load', onload);
 		}
+
+		if(errorCallback) {
+			var onerror = function() {
+				img.src = '';
+				img.removeEventListener('error', onerror);
+				errorCallback(null, path);
+				return false;
+			}
+			img.addEventListener('error', onerror);
+		}
+
 		img.src = path;
 		return img;
 	},
@@ -163,8 +175,12 @@ SQR.Loader.loadAssets([
 	 *	The assets are passed as argument as in the example below.
 	 *	@param {function} progressCallback - called each time when on of the files is loaded
      */
-	loadAssets: function(paths, callback, progressCallback) {
+	loadAssets: function(paths, callback, progressCallback, options) {
+
+		options = options || {};
+
 		var toLoad = paths.length;
+		var assets = {};
 
 		if(toLoad == 0) {
 			if(progressCallback) progressCallback(1, 1);
@@ -172,11 +188,16 @@ SQR.Loader.loadAssets([
 			return;
 		}
 
-		SQR.Loader.assets = {};
 		var aliases = {}, includes = {};
 
+		var onShader = function(asset, p) {
+			SQR.GLSLInclude = SQR.GLSLInclude || {};
+			SQR.GLSLInclude[aliases[p]] = asset;
+			onAsset(asset, p);
+		}
+
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[aliases[p]] = asset;
+			assets[aliases[p]] = asset;
 			toLoad--;
 
 			if(progressCallback) {
@@ -184,7 +205,7 @@ SQR.Loader.loadAssets([
 			}
 
 			if(toLoad == 0) {
-				callback(SQR.Loader.assets);
+				callback(assets);
 			}
 		}
 		
@@ -200,7 +221,7 @@ SQR.Loader.loadAssets([
 			
 			switch(fileType) {
 				case 'glsl':
-					SQR.Loader.loadText(file, onAsset);
+					SQR.Loader.loadText(file, onShader);
 					break;
 				case 'png':
 				case 'jpg':

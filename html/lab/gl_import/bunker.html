@@ -19,8 +19,6 @@
 <script type="text/javascript" src="../../src/common/Clip.js"></script>
 <script type="text/javascript" src="../../src/common/Animation.js"></script>
 
-<script type="text/javascript" src="../../src/common/Ray.js"></script>
-<script type="text/javascript" src="../../src/common/Pointer3d.js"></script>
 <script type="text/javascript" src="../../src/common/Collider.js"></script>
 
 <script type="text/javascript" src="../../src/math/Color.js"></script>
@@ -34,10 +32,12 @@
 <script type="text/javascript" src="../../src/math/Bezier.js"></script>
 <script type="text/javascript" src="../../src/math/Intersection.js"></script>
 
-<script type="text/javascript" src="../../src/primitives/Face.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
 <script type="text/javascript" src="../../src/primitives/Cube.js"></script>
 <script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
-<script type="text/javascript" src="../../src/primitives/SceneParser.js"></script>
+
+<script type="text/javascript" src="../../src/scene/Scene.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
 
@@ -54,59 +54,55 @@
 
 	SQR.Loader.loadAssets([
 
-		['../../assets/unity-export/bunker/bunker.json', 'mesh'],
-		['../../assets/unity-export/bunker/bunkerScene.json', 'scene'],
-
-		['../../assets/unity-export/bunker/floor.jpg', 'floor'],
-		['../../assets/unity-export/bunker/concrete_wall_bicol.jpg', 'concrete_wall_bicol'],
-		['../../assets/unity-export/bunker/concrete_wall.jpg', 'concrete_wall'],
-		['../../assets/unity-export/bunker/rust.jpg', 'rust'],
-		['../../assets/unity-export/bunker/roughwood.jpg', 'roughwood'],
-		['../../assets/unity-export/bunker/bareplankslight.jpg', 'bareplankslight'],
-		['../../assets/unity-export/bunker/beamed_planks.jpg', 'beamed_planks'],
-		['../../assets/unity-export/bunker/brownwood.jpg', 'brownwood'],
-		['../../assets/unity-export/bunker/light_metal.jpg', 'light_metal'],
-		['../../assets/unity-export/bunker/base.jpg', 'base'],
-		['../../assets/unity-export/bunker/leakingmetal.jpg', 'leakingmetal'],
-		['../../assets/unity-export/bunker/ceiling_panel.jpg', 'ceiling_panel'],
+		['../../assets/unity-export/materials.json', 'mesh'],
+		['../../assets/unity-export/materialsScene.json', 'scene'],
+		// ['../../assets/unity-export/bunker/floor.jpg', 'floor'],
+		// ['../../assets/unity-export/bunker/concrete_wall_bicol.jpg', 'concrete_wall_bicol'],
+		// ['../../assets/unity-export/bunker/concrete_wall.jpg', 'concrete_wall'],
+		// ['../../assets/unity-export/bunker/rust.jpg', 'rust'],
+		// ['../../assets/unity-export/bunker/roughwood.jpg', 'roughwood'],
+		// ['../../assets/unity-export/bunker/bareplankslight.jpg', 'bareplankslight'],
+		// ['../../assets/unity-export/bunker/beamed_planks.jpg', 'beamed_planks'],
+		// ['../../assets/unity-export/bunker/brownwood.jpg', 'brownwood'],
+		// ['../../assets/unity-export/bunker/light_metal.jpg', 'light_metal'],
+		// ['../../assets/unity-export/bunker/base.jpg', 'base'],
+		// ['../../assets/unity-export/bunker/leakingmetal.jpg', 'leakingmetal'],
+		// ['../../assets/unity-export/bunker/ceiling_panel.jpg', 'ceiling_panel']
 
 	], function(assets) {
 
-		var renderer = new SQR.Renderer('#gl-canvas');
+		assets.scene.path = '../../assets/unity-export/bunker/';
 
-		var scene = SQR.SceneParser.parse(assets, {
-			context: renderer.context
-		});
+		var renderer = SQR.Renderer();
+		renderer.context.size(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.context.canvas);
 
-		var resize = function() {
-			var w = window.innerWidth, h = window.innerHeight, aspect = w/h, res = 1;
-			renderer.context.size(w, h, res);
-			scene.camera.projection.perspective(60, aspect, 0.1, 1000);
-			scene.camera.useQuaternion = false;
+
+		var onSceneReady = function() {
+			scene.cameras[0].useQuaternion = false;
+
+			var ld = scene.root.findByName('directional_light').position.norm().neg();
+
+			scene.root.recurse(function(t) {
+				if(t.uniforms) t.uniforms.uLightDirection = ld;
+			});
+
+			render();
 		}
-
-
-		var tx = 0, mx = 0, ty = 0, my = 0;
-		document.addEventListener('mousemove', function(e) {
-			tx = (e.pageX / window.innerWidth) * 2 - 1;
-			ty = (e.pageY / window.innerHeight) * 2 - 1;
-		});
 
 		var render = function(t) {
 			requestAnimationFrame(render);
-
-			mx += (tx - mx) * 0.1;
-			my += (ty - my) * 0.1;
-
-			scene.camera.rotation.y = mx * -1;
-			scene.camera.rotation.x = my * -1;
-
-			scene.camera.position.z -= 0.01;
-			renderer.render(scene.root, scene.camera);
+			// camera.rotation.y += 0.1;
+			renderer.render(scene.root, scene.cameras[0]);
 		}
 
-		resize();
-		render();
+		var scene = SQR.Scene(renderer)
+			.data(assets.mesh, assets.scene)
+			.shaders({ 
+				default: SQR.Shader(SQR.GLSL.diffspec),
+				textured: SQR.Shader(SQR.GLSL.diffspec, { directives: [ { name: 'USE_DIFFUSE_MAP' } ] }),
+			})
+			.create(onSceneReady);
 
 	});
 

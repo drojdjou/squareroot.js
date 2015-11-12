@@ -62,12 +62,13 @@ SQR.Loader.loadAssets([
 
 		.setUniform('uLightDirection', new SQR.V3(-1, -1, -0.5).norm())
 
-		.setUniform('uEmissiveColor', SQR.Color('#ffffff', 0.25))
-		.setUniform('uDiffuseColor', SQR.Color('#ff8000',  0.75))
-		.setUniform('uSpecularColor', SQR.Color('#ffaa80', 2.00))
-		.setUniform('uShininess', 8)
+		.setUniform('uAmbient', SQR.Color('#ffffff').mul(0.02))
+		.setUniform('uEmissive', 0.2)
+		.setUniform('uColor', SQR.Color('#ff8000'))
+		.setUniform('uTexture', SQR.Texture(assets.diffuseTex, { wrap: SQR.gl.MIRRORED_REPEAT }))
 
-		.setUniform('uDiffuseMap', SQR.Texture(assets.diffuseTex, { wrap: SQR.gl.MIRRORED_REPEAT }))
+		.setUniform('uSpecularColor', SQR.Color('#ffaa80').mul(2.00))
+		.setUniform('uShininess', 8)
 		.setUniform('uSpecularMap', SQR.Texture(assets.specularTex, { wrap: SQR.gl.MIRRORED_REPEAT }))
 
 		.setUniform('uTextureTileOffset', [4, 4, 0, 0]);

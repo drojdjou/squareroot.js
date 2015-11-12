@@ -42,10 +42,17 @@ SQR.Quaternion.prototype.copyTo = function(p) {
  *  @param q the quaternion to copy values from
  */
 SQR.Quaternion.prototype.copyFrom = function(q) {
-    this.w = q.w;
-    this.x = q.x;
-    this.y = q.y;
-    this.z = q.z;
+    if(q instanceof Array) {
+        this.x = q[0];
+        this.y = q[1];
+        this.z = q[2];
+        this.w = q[3];
+    } else {
+        this.x = q.x;
+        this.y = q.y;
+        this.z = q.z;
+        this.w = q.w;
+    }
     return this;
 }
 
