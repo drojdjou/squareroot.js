@@ -17,17 +17,17 @@ public class J3DExport : ScriptableWizard
 	public Extension extenstion;
 	public Transform[] transforms;
 	
-	public float jpegQuality = 75.0f;
-	public float lightmapBrightness = 8.0f;
-	public float lightmapContrast = 1.1f;
+	public int jpegQuality = 93;
+	public float lightmapBrightness = 2.0f;
+	public float lightmapContrast = 1.0f;
 	
 	public bool useQuaternions = true;
-	public bool exportAnimation = true;
+	public bool exportAnimation = false;
 	public bool exportTextures = true;
 
 	public bool exportNormals = true;
 	public bool exportTangents = false;
-	public bool exportUV2 = false;
+	public bool exportUV2 = true;
 
 	public bool useConsole = false;
 	//public ReportLevel level = ReportLevel.Warning;

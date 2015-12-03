@@ -5,7 +5,7 @@ A 2d/3d engine for WebGL and Canvas drawing and animation.
 ####Most important links
 
 - [Home page](http://sqr.holotype.co)
-- [Github repo](https://github.com/drojdjou/squareroot.js/tree/brandnew)
+- [Github repo](https://github.com/drojdjou/squareroot.js/)
 - [Examples and tests](../html/lab/)
 
 ####Tutorials

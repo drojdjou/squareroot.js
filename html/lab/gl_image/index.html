@@ -5,6 +5,8 @@
 
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+<script type="text/javascript" src="../../lib/malibu.js"></script>
+
 <script type="text/javascript" src="../../src/SQR.js"></script>
 <script type="text/javascript" src="../../src/Version.js"></script>
 
@@ -25,138 +27,111 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/primitives/PostEffect.js"></script>
+<script type="text/javascript" src="../../src/primitives/Plane.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+
+
+</style>
 
 </head>
 <body>
 
+<div class='reg'></div>
+<div class='gl'></div>
+
 <script type="text/javascript">
 
-    SQR.Loader.loadAssets([
-        ['../../src/glsl/post/image.glsl', 'image-shader'],
-        ['../../src/glsl/post/blur.glsl', 'blur-shader'],
-        ['vignette.glsl', 'vignette-shader'],
-        ['../../assets/times-square.jpg', 'image']
-        // ['../../assets/golden-gate.jpg', 'image']
-        // ['../../assets/empire.jpg', 'image']
-    ], function(assets) {
+	SQR.Loader.loadAssets([
 
-        var w = window.innerWidth, h = window.innerHeight;
+		['image.glsl', 'image-shader'],
 
-        var ctx = SQR.Context().create().clearColor(0, 0, 0, 1);
+		['../../assets/times-square.jpg', 'image']
+		// ['../../assets/golden-gate.jpg', 'image']
+		// ['../../assets/empire.jpg', 'image']
 
-        document.body.appendChild(ctx.canvas);
+	], function(assets) {
 
-        var renderer = new SQR.Renderer(ctx);
-        var image = SQR.Primitives.createImage(assets['image'], 'cover', assets['image-shader']);
+		var regimage = assets.image
+		var rect = Util.fullbleed(regimage);
 
-        var rawFBO = SQR.FrameBuffer(w, h);    
-        var blurXFBO = SQR.FrameBuffer(w, h);
-        var blurYFBO = SQR.FrameBuffer(w, h);
+		Util.resizeTo(regimage, rect);
+		EXT.select('.reg').appendChild(regimage);
 
-        var vignette = SQR.Primitives.createPostEffect(assets['vignette-shader']);
-        var blur = SQR.Primitives.createPostEffect(assets['blur-shader'], { directives: [ { name: 'ITE', value: '12.0' } ] });
+		var renderer = SQR.Renderer()
+		var gl = EXT.select('.gl');
+		gl.appendChild(renderer.context.canvas);
 
-        var blurForce = 0.01;
-        var blurForceStatic = 0.02;
+	
+		var w = window.innerWidth, h = window.innerHeight;
 
-        var resize = function() {
-            var w = window.innerWidth, h = window.innerHeight;
-            ctx.size(w, h);
-            image.size(w, h);
-            rawFBO.resize(w, h);
-            blurXFBO.resize(w, h);
-            blurYFBO.resize(w, h);
-        }
+		renderer.context
+			.size(w, h)
+			.clearColor(0, 0, 0, 1);
+		
+		renderer.projection = new SQR.ProjectionMatrix().screenPixels2d();
 
-        var mode = document.location.search.substring(1);
+		var gli = new SQR.Transform();
+		gli.buffer = SQR.Primitives.createPlane(rect[2], rect[3], 1, 1, 0, 0, { zUp: true });
+		gli.rotation.y = -Math.PI;
+		gli.position.set(w/2 + rect[0], h/2 + rect[1], -1);
 
-        document.addEventListener('mousemove', function(e) {
-            blurForce = e.pageY / window.innerHeight * 0.01;
-        });
+		gli.shader = SQR.Shader(assets['image-shader'])
+			.use()
+			.setUniform('uTexture', SQR.Texture(assets.image));
 
-        document.addEventListener('click', function(e) {
-            mode = mode == 1 ? 4 : 1;
-        });
+		gli.uniforms = {
+			uLensCorrection: 0, uZoom: 1
+		};
 
-        var render = function() {
-            requestAnimationFrame(render);
-            ctx.clear();
+		var lcTarget = 0, zoomTarget = 1;
+		var lcEase = 0.2, zoomEase = 0.01;
 
-            switch(mode) {
-                case '1':
+		document.addEventListener('keydown', function(e) {
+			if(e.keyCode == 32) {
+				if(gl.ext.visible()) gl.ext.hide();
+				else gl.ext.show();
+				console.log('gl', gl.ext.visible());
+			}
 
-                    renderer.render(image);
+			if(e.keyCode == 'Q'.charCodeAt(0)) {
 
-                    break;
+				if(lcTarget == 0) { 
+					lcTarget = 0.1;
+					zoomTarget = 0.95;
+					lcEase = 0.03;
+					zoomEase = 0.01;
+				} else {
+					lcTarget = 0;
+					zoomTarget = 1;
+					lcEase = 0.3;
+					zoomEase = 0.2;
+				}
 
-                case '2':
+			}
+		});
 
-                    rawFBO.bind();
-                    renderer.render(image);
+		var root = new SQR.Transform();
+		root.add(gli);
 
-                    renderer.renderToScreen();
-                    blur.shader.use();
-                    blur.shader.setUniform('uDelta', [blurForceStatic, 0.0]);
-                    blur.shader.setUniform('uTexture', rawFBO.texture);
-                    renderer.render(blur);
+		var render = function() {
 
-                    break;
+			gli.uniforms.uLensCorrection += (lcTarget - gli.uniforms.uLensCorrection) * lcEase;
+			gli.uniforms.uZoom += (zoomTarget - gli.uniforms.uZoom) * zoomEase;
 
-                case '3':
+			requestAnimationFrame(render);
+			// gli.rotation.x += 0.1;
+			renderer.render(gli);
+		}
 
-                    rawFBO.bind();
-                    renderer.render(image);
-
-                    blurXFBO.bind();
-                    blur.shader.use();
-                    blur.shader.setUniform('uDelta', [blurForceStatic, 0.0]);
-                    blur.shader.setUniform('uTexture', rawFBO.texture);
-                    renderer.render(blur);
-
-                    renderer.renderToScreen();
-                    blur.shader.setUniform('uDelta', [0.0, blurForce]);
-                    blur.shader.setUniform('uTexture', blurXFBO.texture);
-                    renderer.render(blur);
-
-                    break;
-
-                default:
-
-                    rawFBO.bind();
-                    renderer.render(image);
-
-                    blurXFBO.bind();
-                    blur.shader.use();
-                    blur.shader.setUniform('uDelta', [blurForce, 0.0]);
-                    blur.shader.setUniform('uTexture', rawFBO.texture);
-                    renderer.render(blur);
-
-                    blurYFBO.bind();
-                    blur.shader.setUniform('uDelta', [0.0, blurForce]);
-                    blur.shader.setUniform('uTexture', blurXFBO.texture);
-                    renderer.render(blur);
-
-                    renderer.renderToScreen();
-                    vignette.shader.use();
-                    vignette.shader.setUniform('uTexture', rawFBO.texture);
-                    vignette.shader.setUniform('uBlurTexture', blurYFBO.texture);
-                    renderer.render(vignette);
-
-                    break;
-            }
-
-            return;
-
-            
-        }
-
-
-        window.addEventListener('resize', resize);
-        resize();
-        render();
-    });
+		render();
+	});
 
 </script>
 

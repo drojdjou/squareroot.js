@@ -44,17 +44,18 @@ public class TextureExportData
 		get { return t is Texture2D; }
 	}
 	
-	private byte[] getBytes(float quality)
+	private byte[] getBytes(int quality)
 	{
 		if(Format == TextureImporterFormat.ARGB32) {
 			return t2d.EncodeToPNG (); 
 		} else {
-			JPGEncoder j = new JPGEncoder(t2d, quality);
-			return j.GetBytes();
+			//JPGEncoder j = new JPGEncoder(t2d, quality);
+			//return j.GetBytes();
+			return t2d.EncodeToJPG (quality); 
 		}
 	}
 	
-	public void Save(string path, float jpegQuality) {
+	public void Save(string path, int jpegQuality) {
 		if (IsImage) {
 			//if (Format != TextureImporterFormat.ARGB32 && Format != TextureImporterFormat.RGB24) {
 			//	Report.error ("Texture not exported. '" + Name + "' has wrong format: " + Format.ToString () + ", should be ARGB32 or RGB24");

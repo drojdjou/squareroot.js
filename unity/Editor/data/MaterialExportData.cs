@@ -55,6 +55,18 @@ public class MaterialExportData
 			return new string[] { (p.x).ToString (ExporterProps.LN), (p.y).ToString (ExporterProps.LN) };
 		}
 	}
+
+	public bool HasMainTexture {
+		get {
+			return m.HasProperty ("_MainTex") && m.GetTexture ("_MainTex") != null;
+		}
+	}
+
+	public string MainTexture {
+		get {
+			return NamesUtil.CleanLc (m.GetTexture ("_MainTex").name);
+		}
+	}
 	
 	public string[] Textures {
 		get {
@@ -73,7 +85,7 @@ public class MaterialExportData
 	
 	public string Shininess {
 		get {
-			return (m.HasProperty ("_Shininess")) ? (m.GetFloat ("_Shininess")).ToString (ExporterProps.LN) : "0";
+			return (m.HasProperty ("_Smoothness")) ? (m.GetFloat ("_Smoothness")).ToString (ExporterProps.LN) : "0";
 		}
 	}
 	

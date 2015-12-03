@@ -24,14 +24,13 @@ $lightmaps:{
 $materials:{	
 	"$it.Name$": { 
 		"type": "$it.Type$",
-		"color": { "r":$it.Color.r$, "g":$it.Color.g$, "b":$it.Color.b$, "a":$it.Color.a$ },
-		"specularIntensity": $it.SpecularIntensity$,
-        "shininess": $it.Shininess$,
-		"textureTile": [ $it.TextureScale; separator=","$ ],
-		"textureOffset": [ $it.TextureOffset; separator=","$ ],
-		$if(it.HasEmissiveColor)$
-		"emissive": { "r":$it.EmissiveColor.r$, "g":$it.EmissiveColor.g$, "b":$it.EmissiveColor.b$, "a":$it.EmissiveColor.a$ },$endif$
-		$if(exportTextures)$$it.Textures; separator=",\n"$$endif$
+		"uColor": { "r":$it.Color.r$, "g":$it.Color.g$, "b":$it.Color.b$ },
+		$if(exportTextures)$
+		$if(it.HasMainTexture)$
+		"uTexture": "$it.MainTexture$",
+		"uTextureTileOffset": [ $it.TextureScale; separator=","$,$it.TextureOffset; separator=","$ ]
+		$endif$
+		$endif$
 	},
 }$
 },
@@ -63,7 +62,7 @@ $cameras:{
 $transforms:{	
 	{
 		"uid": "$it.UID$",
-        "name": "$it.name$",
+		"name": "$it.name$",
 		$if(it.HasParent)$
 		"parent": "$it.Parent$",$endif$
 		"position": [ $it.Position; separator=","$ ],
@@ -75,15 +74,15 @@ $transforms:{
 		"animationId": "$it.AnimationId$",$endif$
 		$if(it.HasCollider)$
 		"collider": {
-		    "type": "$it.Collider.Type$",
-		    $if(it.Collider.HasCenter)$
-		    "center": [ $it.Collider.Center; separator=","$ ],$endif$
-		    $if(it.Collider.HasSize)$
-		    "size": [ $it.Collider.Size; separator=","$ ],$endif$
-		    $if(it.Collider.HasRadius)$
-		    "radius": $it.Collider.Radius$,$endif$
-		    $if(it.Collider.HasMesh)$
-		    "mesh": "$it.Collider.MeshName$",$endif$
+			"type": "$it.Collider.Type$",
+			$if(it.Collider.HasCenter)$
+			"center": [ $it.Collider.Center; separator=","$ ],$endif$
+			$if(it.Collider.HasSize)$
+			"size": [ $it.Collider.Size; separator=","$ ],$endif$
+			$if(it.Collider.HasRadius)$
+			"radius": $it.Collider.Radius$,$endif$
+			$if(it.Collider.HasMesh)$
+			"mesh": "$it.Collider.MeshName$",$endif$
 		},$endif$
 		$if(it.HasBones)$
 		"bones": ["$it.Bones; separator="\",\""$"],
@@ -93,8 +92,7 @@ $transforms:{
 		$if(it.HasCamera)$
 		"camera": "$it.CameraName$",$endif$
 		$if(it.HasRenderer)$
-		"renderer": "$it.MaterialName$",
-		"mesh": "$it.MeshName$",
+		"material": "$it.MaterialName$",
 		"meshId": "$it.MeshId$",$endif$
 		$if(it.HasLightmap)$
 		"lightmapIndex": $it.LightmapIndex$,

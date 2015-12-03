@@ -12,7 +12,7 @@ public class LightmapExportData
 	public LightmapExportData (int index)
 	{
 		this.index = index;
-		this.fileName = NAME_BASE + index + ".jpg";
+		this.fileName = NAME_BASE + index + ".png";
 	}
 	
 	public int Index {
@@ -51,14 +51,15 @@ public class LightmapExportData
 			c[j].r = Convert.ToByte(ur);
 			c[j].g = Convert.ToByte(ug);
 			c[j].b = Convert.ToByte(ub);
-			c[j].a = 255;
+			c[j].a = Convert.ToByte(c[j].a);
 		}
 		
 		tf.SetPixels32(c);			
 
-		JPGEncoder je = new JPGEncoder(tf, jpegQuality);
-		byte[] bytes = je.GetBytes();
-		
+		//JPGEncoder je = new JPGEncoder(tf, jpegQuality);
+		//byte[] bytes = je.GetBytes();
+
+		byte[] bytes = tf.EncodeToPNG();
 		File.WriteAllBytes (path + fileName, bytes);
 		
 		Texture2D.DestroyImmediate(tf);

@@ -8,7 +8,7 @@
  *	@property {string} date - the date of the build
  */
 // DO NOT EDIT. Updated from version.json
-var Framework = {"version":"4","build":75,"date":"2015-10-15T23:36:18.359Z"}
+var Framework = {"version":"4","build":83,"date":"2015-12-03T21:05:07.022Z"}
 
 /* --- --- [Simplrz] --- --- */
 
@@ -388,9 +388,10 @@ var Trigger = function() {
 	 *	@param {Object=} context - the context in which to invoke the function
 	 *	@description Adds a listener to this trigger
 	 */
-	t.on = function (callback, context) {
+	t.on = function (callback, context, callOnInit) {
 		callback.context = context;
 		listeners.push(callback);
+		if(callOnInit) callback();
 	};
 
 	/**
@@ -934,21 +935,35 @@ var Application = (function() {
 
 		params = params || {};
 
-		router = HistoryRouter(app, params);
-		router.init();
-
-		window.addEventListener('resize', function(e) {
-			app.resize.trigger(e);
-		});
-
-		window.addEventListener('orientationchange', function(e) {
-			app.resize.trigger(e);
-		});
-
-		console.log('Malibu v' + 
+		console.log('%cMalibu v' + 
 			Framework.version + 
 			' b' + Framework.build + 
-			' (history:' + !params.disableHistoryAPI + ')');
+			' (history:' + !params.disableHistoryAPI + ')'
+			, 'background: #ff3600; color: #ffdede; padding: 4px 10px 4px 10px');
+
+		var r = {
+			width: 0,
+			height: 0,
+			aspect: 0,
+			orientation: -1,
+			event: null
+		}
+
+		window.addEventListener('resize', function(e) {
+			r.width = window.innerWidth;
+			r.height = window.innerHeight;
+			r.aspect = r.width / r.height;
+			r.orientation = window.orientation;
+			r.event = e;
+			app.resize.trigger(r);
+		});
+
+		// window.addEventListener('orientationchange', function(e) {
+		// 	app.resize.trigger(e);
+		// });	
+
+		router = HistoryRouter(app, params);
+		router.init();	
 	}
 	
 	return app;
@@ -975,8 +990,9 @@ var DomExtend = (function() {
 	 *	@description Created a HTMLElement of type defined by the tag. It first calls <code>document.createElement(tag)</code> 
 	 *	and the extends this element with DomExtend functionality.
 	 */
-	that.create = function(tag) {
+	that.create = function(tag, cssclass) {
 		var e = document.createElement(tag);
+		if(cssclass) e.classList.add(cssclass);
 		that.extend(e);
 		return e;
 	};
@@ -997,6 +1013,16 @@ var DomExtend = (function() {
 		return e;
 	};
 
+	/**
+	 *	The equivalent of <code>document.querySelectorAll</code>. It extends the objects
+	 *	with DomExtend functionality before returning the result and it returns them as regular Array (yay!)
+	 *
+	 *	@method select
+	 *	@memberof DomExtend
+	 *	@static
+	 *	@param {string} sel - the CSS selector to query
+	 *	@param {HTMLElement=} element - the HTML element to query on, defaults to document 
+	 */
 	that.selectAll = function(sel, element) {
 		var es = (element || document).querySelectorAll(sel);
 		var nes = es.length, r = [];
@@ -1008,30 +1034,63 @@ var DomExtend = (function() {
 		return r;
 	};
 
+	/**
+	 *	@method extend
+	 *	@memberof DomExtend
+	 *	@static
+	 *	@param {HTMLElement} element - the tag to extend
+	 *	@description adds the .ext property to the element, with all the DomExtend functionality. This method should be rarely used and if you 
+	 *	find yourself using it a lot, you need to rethink the code. All element selected with EXT.select or element.ext.select 
+	 *	or created with EXT.create will be already extended.
+	 */
 	that.extend = function(element) {
 
 		if(element.ext) return element;
 
 		var ext = {};
 
-		ext.create = function(tag) {
-			return that.create(tag);
-		};
-
+		/**
+		 *	The equivalent of <code>element.querySelector</code>. It extends the object
+		 *	with DomExtend functionality before returning the result.
+		 *
+		 *	@method select
+		 *	@memberof DomExtend.prototype
+		 *	@param {string} sel - the CSS selector to query
+		 */
 		ext.select = function(sel) {
 			return that.select(sel, element);
 		};
 
+		/**
+		 *	The equivalent of <code>element.querySelectorAll</code>. It extends the objects
+		 *	with DomExtend functionality before returning the result and it returns them as regular Array (yay!)
+		 *
+		 *	@method select
+		 *	@memberof DomExtend.prototype
+		 *	@param {string} sel - the CSS selector to query
+		 */
 		ext.selectAll = function(sel) {
 			return that.selectAll(sel, element);
 		};
 
+		/**
+		 *	@method detach
+		 *	@memberof DomExtend.prototype
+		 *	@description Safely removes the element from it's parent node. It is the same as saying 
+		 *	element.parentNode.removeChild(element) but will not throw an error if parentNode is null.
+		 */
 		ext.detach = function() {
 			var p = element.parentNode;
 			if(!p) return;
 			p.removeChild(element);
 		};
 
+		/**
+		 *	@method attachTo
+		 *	@memberof DomExtend.prototype
+		 *	@description Safely attaches the element to a parent node. It is the same as saying 
+		 *	parent.appednChild(element) but will not throw an error if child is already added to parent.
+		 */
 		ext.attachTo = function(parent) {
 			if(element.parentNode == parent) return;
 			else parent.appendChild(element);
@@ -1054,7 +1113,6 @@ var DomExtend = (function() {
 		return element;
 	};
 
-	that.extend(document);
 	window.EXT = that;
 
 	return that;
@@ -1078,7 +1136,7 @@ var ExtState = function(ext, element) {
 	 *	@description Sets the display CSS property of the object to the display type specified in the argument. Defaults to "block".
 	 */
 	ext.show = function(display) {
-		element.style.display = display || "block";
+		element.style.display = display || element.ext.__defaultDisplay || "block";
 	};
 
 	/**
@@ -1087,6 +1145,8 @@ var ExtState = function(ext, element) {
 	 *	@description Sets the display CSS property of the object to "none".
 	 */
 	ext.hide = function() {
+		var d = ext.readCss('display');
+		element.ext.__defaultDisplay = d == 'none' ? 'block' : d;
 		element.style.display = "none";
 	};
 
@@ -1099,6 +1159,11 @@ var ExtState = function(ext, element) {
 		return ext.readCss('display') != "none";
 	};
 
+	/**
+	 *	@method on
+	 *	@memberof DomExtend.prototype
+	 *	@description Equivalent of element.addEventListener but shorter and has a special touch handler for 'click' events.
+	 */	
 	ext.on = function(event, callback, useCapture) {
 		if(Simplrz.touch && event == 'click') {
 			callback.___thProxy = Util.handleTap(element, callback);
@@ -1108,6 +1173,11 @@ var ExtState = function(ext, element) {
 		}
 	};
 
+	/**
+	 *	@method off
+	 *	@memberof DomExtend.prototype
+	 *	@description Equivalent of element.removeEventListener but shorter and works witht the special touch handler for 'click' events.
+	 */	
 	ext.off = function(event, callback, useCapture) {
 		if(callback.___thProxy) {
 			Util.clearTapHandler(element, callback.___thProxy);
@@ -1135,6 +1205,16 @@ var ExtState = function(ext, element) {
 		return (notCalculated) ? element.style[property] : getComputedStyle(element).getPropertyValue(property);
 	}
 
+	/**
+	 *	@method bg
+	 *	@memberof DomExtend.prototype
+	 *	@description Loads and sets a backgroung image for the element. Passing the onLoad function allows to make 
+	 *	animated transitions (ex. fade in) when the background images are loaded. 
+	 *
+	 *	@param {string} path - the path to the image
+	 *	@param {Function} onLoad - the load callback to be exectued. It is called after the image was loaded but before
+	 *	it has been set as background image.
+	 */
 	ext.bg = function(path, onLoad) {
 
 		if(onLoad) {
@@ -1170,10 +1250,16 @@ var ExtTransform = function(ext, element) {
 	var zeroRect = { width: 0, height: 0, top: 0, left: 0 };
 
 	/**
-	 *	IE10 tends to throw and "unspecified error" here, so handle
-	 *	the exception and just return a zero rect to avoid further damage
-	 */
+	 *	@method rect
+	 *	@memberof DomExtend.prototype
+	 *	@description Returns the screen position and dimensions of the element. 
+	 *
+	 *	@returns {Object} An object with 4 properties:
+	 *	left, top, width, height.
+	 */	
 	ext.rect = function() {
+		// IE10 tends to throw and "unspecified error" here, so handle
+		// the exception and just return a zero rect to avoid further damage
 		try {
 			return element.getBoundingClientRect();
 		} catch(e) {
@@ -1183,8 +1269,9 @@ var ExtTransform = function(ext, element) {
 	};
 
 	/**
-	 *	The 'else' below is because IE somehow throws an error 
-	 *	when the value is set and then rect() is called immediately after
+	 *	@method width
+	 *	@memberof DomExtend.prototype
+	 *	@description Shorthand for element.ext.rect().width 
 	 */
 	ext.width = function(v) {
 		if(v) {
@@ -1195,6 +1282,11 @@ var ExtTransform = function(ext, element) {
 		}
 	};
 
+	/**
+	 *	@method height
+	 *	@memberof DomExtend.prototype
+	 *	@description Shorthand for element.ext.rect().height 
+	 */
 	ext.height = function(v) {
 		if(v) {
 			element.style.height = v + "px";
@@ -1204,16 +1296,85 @@ var ExtTransform = function(ext, element) {
 		}
 	};
 
+	/**
+	 *	@member x
+	 *	@memberof DomExtend.prototype
+	 *	@description The x position of the element. It is not the absolute position of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically moved
+	 *	using the element.ext.transform function.
+	 */
 	ext.x = 0;
+
+	/**
+	 *	@member y
+	 *	@memberof DomExtend.prototype
+	 *	@description The y position of the element. It is not the absolute position of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically moved
+	 *	using the element.ext.transform function.
+	 */
 	ext.y = 0;
+
+	/**
+	 *	@member z
+	 *	@memberof DomExtend.prototype
+	 *	@description The z position of the element. It is not the absolute position of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically moved
+	 *	using the element.ext.transform function.
+	 */
 	ext.z = 0;
 
+	/**
+	 *	@member rotX
+	 *	@memberof DomExtend.prototype
+	 *	@description The x rotation of the element in DEGREES. It is not the absolute rotation of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically rotated
+	 *	using the element.ext.transform function.
+	 */
 	ext.rotX = 0;
+
+	/**
+	 *	@member rotY
+	 *	@memberof DomExtend.prototype
+	 *	@description The y rotation of the element in DEGREES. It is not the absolute rotation of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically rotated
+	 *	using the element.ext.transform function.
+	 */
 	ext.rotY = 0;
+
+	/**
+	 *	@member rotZ
+	 *	@memberof DomExtend.prototype
+	 *	@description The z rotation of the element in DEGREES. It is not the absolute rotation of the element on the screen.
+	 *	It always starts with 0 and only relates to the offset by which this element has been programatically rotated
+	 *	using the element.ext.transform function.
+	 */
 	ext.rotZ = 0;
 
+	/**
+	 *	@member scaleX
+	 *	@memberof DomExtend.prototype
+	 *	@description The x scale of the element. It is not the absolute scale of the element on the screen.
+	 *	It always starts with 1 and only relates to the offset by which this element has been programatically scaled
+	 *	using the element.ext.transform function.
+	 */
 	ext.scaleX = 1;
+
+	/**
+	 *	@member scaleY
+	 *	@memberof DomExtend.prototype
+	 *	@description The y scale of the element. It is not the absolute scale of the element on the screen.
+	 *	It always starts with 1 and only relates to the offset by which this element has been programatically scaled
+	 *	using the element.ext.transform function.
+	 */
 	ext.scaleY = 1;
+
+	/**
+	 *	@member scaleZ
+	 *	@memberof DomExtend.prototype
+	 *	@description The z scale of the element. It is not the absolute scale of the element on the screen.
+	 *	It always starts with 1 and only relates to the offset by which this element has been programatically scaled
+	 *	using the element.ext.transform function.
+	 */
 	ext.scaleZ = 1;
 
 	ext.setX = function(v) { ext.x = v; return ext; };
@@ -1241,6 +1402,39 @@ var ExtTransform = function(ext, element) {
 		return t;
 	};
 
+
+	/**
+	 *	@method transform
+	 *	@memberof DomExtend.prototype
+	 *	@description <p>Applies the transformation values to the elements CSS transform property. The values can either be set via
+	 *	the member variables: x, y, z, rotX, rotY, rotZ, scaleX, scaleY, scaleZ or canbe passed as parameter to this function. Please see
+	 *	the documentation for the indivdual properties above to see what they do (thought it should be pretty obvious based on their names :)</p>
+	 *
+	 *	<p>Please also read carefully <a href='http://www.html5rocks.com/en/tutorials/speed/high-performance-animations/'>this article</a>.
+	 * 
+	 *	@param {Object=} values An object literal containing the properties to be affected. The naming convention is the same as 
+	 *	the transformtion properties of DomExtend objects, i.e. x, y, z, rotX, rotY, rotZ, scaleX, scaleY, scaleZ.
+	 *
+	 * @example
+// First select the object
+var e = EXT.select('#someElement');
+
+// Move the element 10px to the right of it's original position
+e.ext.x = 10;
+e.ext.transform();
+
+// Move the element 10px down from it's original position
+e.ext.transform({ y: 10 });
+
+// Increase the elements x position by 20
+e.ext.x += 20;
+e.ext.transform();
+
+// Rotate the element in 3d around the y axis by 45deg
+// (note that for 3d to work, you need to setup the persepctive on the parent element in CSS)
+e.ext.transform({ rotY: 45 });
+
+	 */
 	ext.transform = function(values) {
 		if(values) {
 			for(var i in values) {
@@ -1386,6 +1580,47 @@ var ExtTransition = function(ext, element) {
 
 	};
 
+	/** 
+	 *	@method transition
+	 *	@memberof DomExtend.prototype
+	 *	@description Creates and starts a CSS transition animation on the element.
+	 *
+	 *	@param {Object} properties - the properties to animate, See examples below.
+	 *	@param {Number} time - the duration of the animation in milliseconds
+	 *	@param {string} ease - the ease. See Util.cssEase for list of easing functions available.
+	 *	@param {Number=} delay - the delay before the animation starts in milliseconds, defaults to 0
+	 *	@param {Function=} callback - the function to be invoked when the animation is finished
+	 *
+	 *	@example
+// Animate the opacity property
+element.style.opacity = 0;
+element.ext.transtion({ opacity: 1 }, 1000, 'ease');
+
+// Animate the opacity with custom easing and listen for when the animation is over
+element.style.opacity = 0;
+element.ext.transtion({ opacity: 1 }, 1000, Util.cssEase.quadIn, 0, function() {
+	console.log('Animation is over!');
+});
+
+// Animate the x, y position and z rotation 
+
+// 1. Define start values 
+// If this is omitted the transtions will start 
+// from the current state of the object.
+element.ext.x = 0;
+element.ext.y = 0;
+element.ext.rotZ = 0;
+element.ext.transform();
+
+// 2. Start the animation
+// Note that the transform values are passed as object, 
+// not as properties of the "properties" argument
+element.ext.transition({
+	transform: {
+		x: 100, y: 100, rotZ: 20
+	}
+}, 1000, 'ease');
+	 */
 	ext.transition = function(properties, time, ease, delay, callback) {
 		var t = ext.createTransition();
 
@@ -1502,7 +1737,11 @@ var ExtAnimation = function(ext, element, globalExt) {
 /**
  *	@namespace FrameImpulse
  *
- *	@description A utility to handle <code>requestAnimationFrame</code> loops.
+ *	@description <p>A utility to handle <code>requestAnimationFrame</code> loops. It really only exists to eliminate a  common but hard debug problem: 
+ *	since RaF is sort of a recurent function, sometimes the code can accidentally start the loop twice (or even more times). This has diastrous 
+ *	conseuences for perofrmance, but it is not easy to spot at all.</p>
+ *
+ 	<p>With <code>FrameImpulse</code> you will not get into this kind of trouble easily.</p>
  *
  *	@example
 var render = function() {
@@ -1573,7 +1812,9 @@ var FrameImpulse = (function() {
 	 *	@static
 	 *
 	 *	@param {Function} callback - the function used as callback for the listener
-	 *	@description Adds a listener to be called on every frame
+	 *	@description Adds a listener to be called on every frame. The cool thing about this function, 
+	 *	is that the same function is added twice, it will not be called twice later on. However, this 
+	 *	does not work with anonymous functions, so we suggest to never use anonnymous functions with this.
 	 */
 	r.on = function(f) {
 		if(listeners.indexOf(f) > -1) { return; }
@@ -1606,6 +1847,13 @@ var FrameImpulse = (function() {
 		numListeners = listeners.length;
 	}
 
+	/**
+	 *	@method getListeners
+	 *	@memberof FrameImpulse
+	 *	@static
+	 *
+	 *	@description Returns a list of all currently registered functions. Useful for debugging.
+	 */
 	r.getListeners = function() {
 		return listeners;
 	}
@@ -1634,8 +1882,7 @@ var HistoryRouter = function (app, params) {
 	app.navigate = new Trigger();
 	app.hijackLinks = new Trigger();
 
-	var routeHistory = [];
-	app.historyBack = new Trigger();
+	Application.history = [];
 
 	var hijackLinks = function (element) {
 
@@ -1717,7 +1964,7 @@ var HistoryRouter = function (app, params) {
 		r.lastPart = r.parts[r.parts.length - 1];
 
 		if(r.route == app.route.value.route) return;
-		routeHistory.push(r);
+		Application.history.push(r);
 		app.route.value = r;
 	}
 
@@ -1732,10 +1979,6 @@ var HistoryRouter = function (app, params) {
 		history.pushState(null, null, href);
 		notify();
 	});
-
-	// app.historyBack.on(function() {
-	// 	console.log(arguments)
-	// });
 
 	return {
 
@@ -1824,7 +2067,13 @@ var Loader = {
  *
  *	@description World Famous VirtualScroll &copy;
  *
- *	<p><a href='http://www.everyday3d.com/blog/index.php/2014/08/18/smooth-scrolling-with-virtualscroll/'>How to use</a>.
+ *	<p>
+ *	<a href='http://www.everyday3d.com/blog/index.php/2014/08/18/smooth-scrolling-with-virtualscroll/'>How to use</a><br>
+ *	<a href='http://work.bartekdrozdz.com/malibu/test/wheel-simple.html'>Simple example</a><br>
+ *	<a href='http://work.bartekdrozdz.com/malibu/test/wheel-multi.html'>Paralax example</a>
+ *	</p>
+ *
+ *	<p>Within the context of the DomExtend functionality, VirtualScroll works best with the element.ext.transform() function.</p>
  *
  *	@example
 var onSroll = function(e) {
@@ -1836,8 +2085,35 @@ VirtualScroll.on(onScroll);
 
 // ...and when it needs to stop
 VirtualScroll.off(onScroll);
+ *
+ *	@example
+// Using VS with DomExtend
+
+var scroll = 0, targetScroll = 0;
+
+// typically the limit of scrolling will be defined by the height of the object minus the height of the window
+var MAX_SCROLL = element.ext.height() - window.innerHeight;
+
+var onScroll = function(e) {
+	targetScroll += e.deltaY;
+
+	// Clamp the scroll to limit values
+	targetScroll = Math.max(0, targetScroll);
+	targetScroll = Math.min(MAX_SCROLL, targetScroll);
+}
+
+var onFrame = function() {
+	// Add some easing
+	scroll += (targetScroll - scrol) * 0.1; 
+
+	// Apply the scroll value
+	element.ext.transform({ y: -scroll });
+}
+
+VirtualScroll.on(onScroll);
+FrameImpulse.on(onFrame);
  */
-var VirtualScroll = (function(document) {
+var VirtualScroll = (function() {
 
 	var vs = {};
 
@@ -2049,7 +2325,8 @@ var VirtualScroll = (function(document) {
 	}
 
 	return vs;
-})(document);
+	
+})();
 
 
 

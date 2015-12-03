@@ -6,13 +6,14 @@ public class MaterialMapper
 	{
 		int i = t.gameObject.GetComponent<Renderer>().lightmapIndex;
 		if (t.gameObject.isStatic && i < 255 && i > -1)
-			return "Lightmap";
-		
-		if(m.shader.name.IndexOf("Self-Illumin") > -1 || m.shader.name.IndexOf("Unlit") > -1) return "Selflit";
+			return "Lightmapped";
 
-		if(m.shader.name == "VertexLit") return "Gouraud";
+		/*
+		if(m.shader.name.IndexOf("Self-Illumin") > -1 || m.shader.name.IndexOf("Unlit") > -1) return "diffuse";
+		if(m.shader.name == "VertexLit") return "diffuse";
+		*/
 		
-		return "Phong";
+		return NamesUtil.CleanLc(m.shader.name);
 	}
 	
 	public static string GetJ3DTextureName (string t)

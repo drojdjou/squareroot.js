@@ -117,7 +117,7 @@ public class TransformExportData
 	}
 	
 	public bool HasCollider {
-		get { return c != null && c.Type != ""; }
+		get { return c != null && c.Type != "" && c.Active == true; }
 	}
 	
 	public ColliderExportData Collider {

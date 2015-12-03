@@ -25,6 +25,7 @@ SQR.CanvasRenderer = function(canvas) {
 	if(!ctx.setLineDash) ctx.setLineDash = function() {};
 
 	r.canvas = canvas;
+	r.context = ctx;
 
 	/** 
 	 *	Set the size of the underlying canvas element.

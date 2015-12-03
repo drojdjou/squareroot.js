@@ -12,6 +12,12 @@ public class ColliderExportData
 			this.c = t.GetComponent<Collider>();
 		}
 	}
+
+	public bool Active {
+		get {
+			return this.c.enabled;
+		}
+	}
 	
 	public string Type {
 		get {
@@ -23,6 +29,8 @@ public class ColliderExportData
 				return "sphere";
 			} else if(c is MeshCollider) {
 				return "mesh";
+			} else if(c is CapsuleCollider) {
+				return "capsule";
 			} else {
 				Debug.LogWarning("Unsupported collider on " + t.name + ": " + c);
 				return "";

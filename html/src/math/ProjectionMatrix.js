@@ -44,7 +44,7 @@ SQR.ProjectionMatrix.prototype.identity = function() {
  *  Returns an orthographic projection matrix that is set in screen coordinates.
  */
 SQR.ProjectionMatrix.prototype.screenPixels2d = function() {
-	this.orthographic(0, window.innerWidth, 0, window.innerHeight, -1, 1000);
+	this.orthographic(window.innerWidth, 0, window.innerHeight, 0, -1, 1000);
 	return this;
 }
 
