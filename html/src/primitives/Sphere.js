@@ -25,11 +25,12 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 
 	var x, y;
 
-	for (y = 1; y <= segmentsY - 1; y ++) {
+	// for (y = 1; y <= segmentsY - 1; y++) {
+	for (y = 0; y <= segmentsY; y++) {
 
-		for (x = 0; x < segmentsX; x ++) {
+		for (x = 0; x < segmentsX; x++) {
 
-			var u = x / segmentsX;
+			var u = x / (segmentsX - 1);
 			var v = y / segmentsY;
 
 			var xp = -radius * Math.cos(u * phi) * Math.sin(v * tht);
@@ -42,10 +43,10 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 		}
 	}
 
-	var northPole = m.V(0, radius, 0);
-	var southPole = m.V(0, -radius, 0);	
-	m.T(1, 1);
-	m.T(0, 0);
+	// var northPole = m.V(0, radius, 0);
+	// var southPole = m.V(0, -radius, 0);	
+	// m.T(1, 1);
+	// m.T(0, 0);
 
 	for (y = 0; y < segmentsY; y++) {
 
@@ -60,17 +61,17 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 			var x0 = x;
 			var x1 = (x + 1) % (segmentsX);
 
-			var ta = y0 * segmentsX + x0 - segmentsX;
-			if(isn) ta = northPole;
+			var ta = y0 * segmentsX + x0;// - segmentsX;
+			// if(isn) ta = northPole;
 
-			var tb = y0 * segmentsX + x1 - segmentsX;
-			if(isn) tb = northPole;
+			var tb = y0 * segmentsX + x1;// - segmentsX;
+			// if(isn) tb = northPole;
 
-			var tc = y1 * segmentsX + x0 - segmentsX;
-			if(iss) tc = southPole;
+			var tc = y1 * segmentsX + x0;// - segmentsX;
+			// if(iss) tc = southPole;
 
-			var td = y1 * segmentsX + x1 - segmentsX;
-			if(iss) td = southPole;
+			var td = y1 * segmentsX + x1;// - segmentsX;
+			// if(iss) td = southPole;
 
 			if(isn) {
 				m.F(ta, td, tc).T(ta, td, tc);

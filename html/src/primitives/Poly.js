@@ -41,10 +41,17 @@ SQR.Poly.prototype.addUV = function(a, b, c, d) {
 SQR.Poly.prototype.flip = function() {
 	var p = this;
 	var v = this.vertices;
+	var u = this.uvs;
 	
 	var tmp = v[1];
 	v[1] = v[2];
 	v[2] = tmp;
+
+	if(u) {
+		tmp = u[1];	
+		u[1] = u[2];
+		u[2] = tmp;
+	}
 
 	if(v.normal) v.normal.neg();
 	else if(p.normal) p.normal.neg();
