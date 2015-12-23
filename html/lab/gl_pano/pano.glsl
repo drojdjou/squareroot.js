@@ -15,7 +15,9 @@ varying vec2 vUV;
 void main() {
 	// vNormal = uNormalMatrix * aNormal;
 	vNormal = aNormal;
-	vUV = aUV;
+
+	vUV.x = 1.0 - aUV.x;
+	vUV.y = aUV.y;
 
 	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
 }
