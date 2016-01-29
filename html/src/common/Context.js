@@ -60,7 +60,7 @@ SQR.Context = function(canvas, options, onError) {
 		if(options.antialias === undefined) options.antialias = true;
 		if(options.stencil === undefined) options.stencil = false;
 
-		if(!window.WebGLRenderingContext) onError()
+		if(!window.WebGLRenderingContext) onError();
 
 		try {
 			gl = canvas.getContext('webgl', options) || canvas.getContext('experimental-webgl', options);

@@ -178,3 +178,9 @@ Adding builtin shaders
 
 Realizing that we need to rewrite the SceneParser from scratch. Otherwise, some minor fixes
 
+
+##### v3.0 b 153
+*Jan 29th 2016*
+
+Recovering updates [1]
+

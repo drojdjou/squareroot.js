@@ -56,8 +56,7 @@ SQR.Pointer3d = function(options) {
 			camera.globalMatrix.transformVector(ray.origin);
 			ray.direction.sub(ray.origin, camera.globalPosition).norm();
 			hitObjects.length = 0;
+			return ray;
 		}
 	}
 };
-
-

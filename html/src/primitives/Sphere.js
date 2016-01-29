@@ -89,13 +89,3 @@ SQR.Primitives.createSphere = function(radius, segmentsX, segmentsY, options) {
 
 	return m.update();
 }
-
-
-
-
-
-
-
-
-
-

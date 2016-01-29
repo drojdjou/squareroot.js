@@ -266,7 +266,7 @@ sh.setUniform('uLighPosition', light.position)
 			return s;
 		}
 
-		if(v.toUniform) v = v.toUniform(n.type);
+		if(v && v.toUniform) v = v.toUniform(n.type);
 
 		switch (n.type) {
 			case gl.BYTE:
@@ -347,8 +347,14 @@ sh.setUniform('uLighPosition', light.position)
 		var gl = SQR.gl, id = uniform.texId;
 		uniform.texref = texture;
 	    gl.activeTexture(gl.TEXTURE0 + id); // 33984
-		gl.bindTexture(gl.TEXTURE_2D, texture.tex || texture);
-		if(texture.isAnimated) texture.update();
+
+	    if(texture) {
+			gl.bindTexture(gl.TEXTURE_2D, texture.tex || texture);
+			if(texture.isAnimated) texture.update();
+		} else {
+			gl.bindTexture(gl.TEXTURE_2D, null);
+		}
+
 		gl.uniform1i(uniform.location, id);
 	}
 

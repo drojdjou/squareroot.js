@@ -11,3 +11,4 @@ demo/ig-*
 npm-debug.log
 *.sublime-*
 lib.sh
+backup

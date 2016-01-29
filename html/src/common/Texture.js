@@ -33,13 +33,17 @@ SQR.Texture = function(_source, _options) {
 			if(options.mipmap) gl.generateMipmap(gl.TEXTURE_2D);
 			mif = options.mipmap ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR;
 			mgf = gl.LINEAR;
-			if(!wrapS) wrapS = gl.REPEAT;
-			if(!wrapT) wrapT = gl.REPEAT;
+			// if(!wrapS) wrapS = gl.REPEAT;
+			// if(!wrapT) wrapT = gl.REPEAT;
 		} else {
+			if(options.mipmap) console.warn('Only power-of-2 texture can use mipmaps\n', _source);
 			mif = mgf = gl.LINEAR;
-			if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
-			if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
+			// if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
+			// if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
 		}
+
+		if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
+		if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, options.magFilter || options.filter || mgf);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, options.minFilter || options.filter || mif);
@@ -66,6 +70,10 @@ SQR.Texture = function(_source, _options) {
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 		return t;
+	}
+
+	t.destroy = function() {
+		gl.deleteTexture(t.tex);
 	}
 
 	var texture = gl.createTexture();
