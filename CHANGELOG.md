@@ -184,3 +184,15 @@ Realizing that we need to rewrite the SceneParser from scratch. Otherwise, some 
 
 Recovering updates [1]
 
+
+##### v3.0 b 154
+*Mar 11th 2016*
+
+Adding custom mouse position param to Pointer3d.fromMousePosition
+
+
+##### v3.0 b 155
+*Mar 29th 2016*
+
+Shader is not mandatory when creating a postEffect
+

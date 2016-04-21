@@ -48,9 +48,13 @@ SQR.Pointer3d = function(options) {
 			}
 		},
 
-		fromMousePosition: function(camera, projection) {
+		fromMousePosition: function(camera, projection, mp) {
 			var m = SQR.Ray._mt;
-			ray.origin.set(mx, my * -1, 0);
+
+			var lx = mp ? mp.x : mx;
+			var ly = mp ? mp.y : my;
+
+			ray.origin.set(lx, ly * -1, 0);
 			m.copyFrom(projection).inverse();
 			m.transformVector(ray.origin);
 			camera.globalMatrix.transformVector(ray.origin);

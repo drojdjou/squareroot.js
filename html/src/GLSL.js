@@ -43,4 +43,15 @@ SQR.GLSL = {
 	 * <a href='https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/standardLight.glsl'>Shader source</a>
 	 */
 	"standardLight": "/*#docs*/\nvec3 diffuse(vec3 n, vec3 l, vec3 c, float i) {\n	#ifdef HEMISPHERE_DIFFUSE\n	return (dot(-l, n) * 0.5 + 0.5) * c * i;\n	#else\n	return max(0.0, dot(-l, n)) * c * i;\n	#endif\n}\nvec3 specular(vec3 n, vec3 v, vec3 l, vec3 c, float sh, float i) {\n	return pow(max(0.0, dot(reflect(-l, n), v)), sh) * c.rgb * i;\n}\nfloat brightness(vec3 c) {\n	return c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722;\n}\n",
+
+	/**
+	 * @property texture
+	 * 
+	 * @description <p>A simple textured shader</p> 
+	 * 
+	 * <p>The shader accepts a single texture and UV channel to map it to.</p>
+	 * 
+	 * <a href='https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/texture.glsl'>Shader source</a>
+	 */
+	"texture": "/*#docs*/\nattribute vec3 aPosition;\nattribute vec2 aUV;\nuniform mat4 uMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjection;\nuniform mat3 uNormalMatrix;\nvarying vec2 vUV;\nvoid main() {\n	vUV = aUV;\n	gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);\n}\n//#fragment\nprecision mediump float;\nuniform sampler2D uTexture;\nvarying vec2 vUV;\nvoid main() {\n	gl_FragColor = texture2D(uTexture, vUV);\n}\n",
 };

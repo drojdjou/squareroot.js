@@ -139,14 +139,54 @@ if(logMessage != '-') {
 
 updateVersionFile();
 
-var core = createBucket(['common', 'math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js', baseUrl + 'GLSL.js']);
+var core = createBucket(['common', 'math', 'two', 'primitives'], [baseUrl + 'SQR.js', baseUrl + 'Version.js', baseUrl + 'GLSL.js']);
 saveBucket(core, 'sqr');
 
 var two = createBucket(['math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);
 saveBucket(two, 'sqr-two');
 
-saveBucket(createBucket('primitives'), 'sqr-primitives');
 saveBucket(createBucket('vr'), 'sqr-vr');
+
+// #### Custom build for Kuula ###
+var k = function() {
+	var ffs = [];
+	Array.prototype.slice.call(arguments).forEach(function(f) { 
+		var p = baseUrl + f + '.js';
+		ffs.push(p); 
+	});
+	return ffs;
+}
+
+var kuula = createBucket([], k(
+	'SQR', 
+	'Version',
+	'GLSL',
+	'common/Buffer',
+	'common/Context',
+	'common/Loader',
+	'common/Pointer3d',
+	'common/Ray',
+	'common/Renderer',
+	'common/Shader',
+	'common/Texture',
+	'common/Transform',
+	'math/Color',
+	'math/Math',
+	'math/Matrix33',
+	'math/Matrix44',
+	'math/ProjectionMatrix',
+	'math/Quaternion',
+	'math/Vector2',
+	'math/Vector3',
+	'primitives/Mesh',
+	'primitives/Poly',
+	'primitives/PostEffect',
+	'primitives/Sphere',
+	'primitives/Vertex',
+	'vr/Gyro'
+));
+
+saveBucket(kuula, 'sqr-kuula')
 
 
 
