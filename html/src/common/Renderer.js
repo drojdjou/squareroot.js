@@ -75,6 +75,7 @@ SQR.Renderer = function(c, options, onError) {
 	}
 
 	r.render = function(root, camera, options) {
+		context.setAsCurrent();
 		r.tick();
 		r.beforeDraw(camera, options);
 		r.update(root, camera, options);
