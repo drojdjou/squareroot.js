@@ -170,8 +170,10 @@ var kuula = createBucket([], k(
 	'common/Shader',
 	'common/Texture',
 	'common/Transform',
+	'common/FrameBuffer',
 	'math/Color',
 	'math/Math',
+	'math/Matrix2D',
 	'math/Matrix33',
 	'math/Matrix44',
 	'math/ProjectionMatrix',
@@ -182,7 +184,10 @@ var kuula = createBucket([], k(
 	'primitives/Poly',
 	'primitives/PostEffect',
 	'primitives/Sphere',
+	'primitives/Cube',
 	'primitives/Vertex',
+	'two/CanvasRenderer',
+	'two/Transform2d',
 	'vr/Gyro'
 ));
 

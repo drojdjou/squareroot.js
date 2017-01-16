@@ -104,7 +104,7 @@ SQR.Shader = function(source, options) {
 	};
 
 	s.compile = function() {
-		var sc = source = parseGLSL(source);
+		var sc = parseGLSL(source);
 		var gl = SQR.gl;
 		var vs = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vs, sc.vertex);

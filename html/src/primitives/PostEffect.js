@@ -11,15 +11,20 @@
  *
  *	@returns {SQR.Transform} a transform representing this post effect
  */
-SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions) {
-    SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()
+SQR.Primitives.createPostEffect = function(shaderSource, shaderOptions, fullScreenQuad) {
+
+    // SQR.fullScreenQuad = SQR.fullScreenQuad || SQR.Buffer()
+   fullScreenQuad = fullScreenQuad || SQR.Buffer()
         .layout(SQR.v2u2(), 6)
         .data('aPosition', -1, 1,   1, 1,   1, -1,   -1, 1,   1, -1,   -1, -1)
         .data('aUV',        0, 1,   1, 1,   1,  0,    0, 1,   1,  0,    0,  0)
         .update();
 
     var pe = new SQR.Transform('post-effect');
-    pe.buffer = SQR.fullScreenQuad;
+
+    // pe.buffer = SQR.fullScreenQuad;
+    pe.buffer = fullScreenQuad;
+    
     if(shaderSource) pe.shader = SQR.Shader(shaderSource, shaderOptions);
 
     return pe;

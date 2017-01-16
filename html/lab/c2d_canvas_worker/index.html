@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Canvas worker</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/GLSL.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/two/CanvasRenderer.js"></script>
+<script type="text/javascript" src="../../src/two/Transform2d.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style type="text/css">
+
+body {
+	overflow: auto;
+}
+	
+img, canvas {
+	position: static;
+	max-width: 100%;
+	display: block;
+}
+
+</style>
+
+</head>
+<body>
+
+<img id="input" src="../../assets/pano-wawa-ricoh.jpg">
+
+<canvas id="c2d"></canvas>
+
+<script type="text/javascript">
+
+window.addEventListener('load', function() {
+
+	var input = document.querySelector('#input');
+	var canvas = document.querySelector('#c2d');
+
+	canvas.width = input.naturalWidth, canvas.height = input.naturalHeight;
+	canvas.style.left = (input.width + 1) + 'px';
+
+	var ctx = canvas.getContext('2d');
+
+	ctx.drawImage(input, 0, 0);
+
+	var data = ctx.getImageData(0, 0, input.naturalWidth, input.naturalHeight);
+
+	var w = new Worker("worker.js");
+
+	w.onmessage = function(e) {
+		ctx.putImageData(e.data, 0, 0);
+	}
+
+	w.postMessage(data);
+
+});
+
+
+</script>
+
+<script>
+if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {
+	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>');
+}
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

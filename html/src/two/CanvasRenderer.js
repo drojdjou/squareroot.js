@@ -33,10 +33,12 @@ SQR.CanvasRenderer = function(canvas) {
 	 *	@memberof SQR.CanvasRenderer.prototype
 	 *	@param {Number} w - the width of the canvas
 	 *	@param {Number} h - the height of the canvas
+	 *	@param {Number} r - the resolution (aka pixel ratio)
 	 */
-	r.setSize = function(w, h) {
-		canvas.width = w;
-		canvas.height = h;
+	r.setSize = function(w, h, r) {
+		r = r || 1;
+		canvas.width = w * r;
+		canvas.height = h * r;
 		canvas.style.width = w + 'px';
 		canvas.style.height = h + 'px';
 		return r;

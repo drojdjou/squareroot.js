@@ -13,7 +13,7 @@ SQR.Texture = function(_source, _options) {
 	t.setSource = function(_source, _options) {
 		
 		if(!(_source instanceof HTMLVideoElement || _source instanceof Image || _source instanceof HTMLCanvasElement)) {
-			console.error('Invalid source: ' + s);
+			console.error('Invalid source: ' + _source);
 			throw 'SQR.Texture > provided source is not a valid source for texture';
 		}
 
@@ -25,6 +25,7 @@ SQR.Texture = function(_source, _options) {
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, options.flip !== undefined ? options.flip : true);
+		// gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 
 		var mif, mgf;

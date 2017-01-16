@@ -42,12 +42,6 @@
 
 <canvas id="gl-canvas"></canvas>
 
-<section class='title'>
-	<h1>NORTH</h1>
-	<h2><img class="vr-icon" src="vr.svg">VR FILM</h2>
-	<h3>coming soon to your headset</h3>
-</section>
-
 <script type="text/javascript">
 
 	SQR.Loader.loadAssets([
@@ -104,7 +98,8 @@
 			my += (ty - my) * 0.006;
 
 			camera.rotation.x = 0.4 * my;
-			mount.rotation.y = Math.PI / 2 + 0.8 * mx
+			// mount.rotation.y = Math.PI / 2 + 0.8 * mx
+			mount.rotation.y += 0.01;
 
 			rawFBO.bind();
 			renderer.render(root, camera);

@@ -43,7 +43,7 @@ varying vec3 vRefVec;
 varying vec3 vIncident;
 
 const float cAmbient = 0.05;
-const vec3 cLight = vec3(0.0, 0.0, 1.0);
+const vec3 cLight = vec3(-1.0, 0.0, 0.0);
 const vec4 cLightColor = vec4(1.0, 0.9, 0.8, 0.4);
 
 uniform sampler2D uTexture;

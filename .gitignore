@@ -5,6 +5,7 @@ node_modules
 *node_modules
 out
 demo/ig-*
+html/lab/ig_*
 **/*.mp4
 **/*.mp3
 **/*.webm

@@ -11,8 +11,10 @@ SQR.Gyro = (function() {
 	var quaternion = { x:0, y:0, z:0, w:1 };
 	var gyro = {};
 	var gotReading = false;
+	var initialized = false;
 
 	gyro.getOrientation = function() {
+		if(!initialized) init();
 		return quaternion;
 	};
 
@@ -80,7 +82,10 @@ SQR.Gyro = (function() {
 		}, true);
 	}
 
-	window.addEventListener('deviceorientation', deviceOrientationListener, true);
+	var init = function() {
+		window.addEventListener('deviceorientation', deviceOrientationListener, true);
+		initialized = true;
+	}
 
 	return gyro;
 

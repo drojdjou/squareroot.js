@@ -89,8 +89,10 @@ SQR.Context = function(canvas, options, onError) {
 
 		c.viewport(0, 0, w * res, h * res);
 
-		canvas.style.width =  w + 'px';
-		canvas.style.height = h + 'px';
+		// canvas.style.width =  w + 'px';
+		// canvas.style.height = h + 'px';
+		// var s = 1 / res;
+		// canvas.ext.transform({ scaleX: s, scaleY: s });
 
 		return c;
 	}
@@ -125,6 +127,11 @@ SQR.Context = function(canvas, options, onError) {
 	c.setAsCurrent = function() {
 		SQR.gl = gl;
 		return c;
+	}
+
+	c.destroy = function() {
+		gl = null;
+		canvas = null;
 	}
 
 	// Create the context
