@@ -340,3 +340,9 @@ Adding one option to FrameBuffer to leave all binded after creation
 
 Testing different texture formsts for an iOS bug [2]
 
+
+##### v3.0 b 200
+*Mar 7th 2017*
+
+Fixing Gyro to work ok on Desktops with no actual gyroscope
+

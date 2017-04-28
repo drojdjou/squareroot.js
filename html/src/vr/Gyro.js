@@ -12,7 +12,11 @@ SQR.Gyro = (function() {
 	var initialized = false;
 
 	gyro.getOrientation = function() {
-		if(!initialized) init();
+
+		if(!initialized) {
+			init();
+		}
+
 		return quaternion;
 	};
 
@@ -56,6 +60,8 @@ SQR.Gyro = (function() {
 
 		e.target.removeEventListener('deviceorientation', deviceOrientationListener, true);
 		e.target.addEventListener('deviceorientation', function(e) {
+			if(e.alpha != null) gotReading = true;
+			else return;
 
 			var raw = eulerToQuaternion(
 				e.alpha / 180 * Math.PI, 
@@ -74,8 +80,6 @@ SQR.Gyro = (function() {
 			quaternion = raw;
 			quaternion = quaternionMultiply(worldFix, quaternion);
 			quaternion = quaternionMultiply(orientFix, quaternion);
-
-			if(e.alpha != null) gotReading = true;
 
 		}, true);
 	}
