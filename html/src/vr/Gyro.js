@@ -56,33 +56,30 @@ SQR.Gyro = (function() {
 		w: Math.cos(wo * 0.5),
 	};
 
-	var deviceOrientationListener = function (e) {
+	var deviceOrientationListener = function(e) {
 
-		e.target.removeEventListener('deviceorientation', deviceOrientationListener, true);
-		e.target.addEventListener('deviceorientation', function(e) {
-			if(e.alpha != null) gotReading = true;
-			else return;
+		if(e.alpha != null && window.orientation != null) gotReading = true;
+		else return;
 
-			var raw = eulerToQuaternion(
-				e.alpha / 180 * Math.PI, 
-				e.beta / 180 * Math.PI, 
-				e.gamma / 180 * Math.PI
-			);
+		var raw = eulerToQuaternion(
+			e.alpha / 180 * Math.PI, 
+			e.beta / 180 * Math.PI, 
+			e.gamma / 180 * Math.PI
+		);
 
-			var wo = window.orientation / 180 * Math.PI;
-			var orientFix = {
-				x: 0,
-				y: 0,
-				z: Math.sin(wo * 0.5),
-				w: Math.cos(wo * 0.5)
-			};
+		var wo = window.orientation / 180 * Math.PI;
+		var orientFix = {
+			x: 0,
+			y: 0,
+			z: Math.sin(wo * 0.5),
+			w: Math.cos(wo * 0.5)
+		};
 
-			quaternion = raw;
-			quaternion = quaternionMultiply(worldFix, quaternion);
-			quaternion = quaternionMultiply(orientFix, quaternion);
+		quaternion = raw;
+		quaternion = quaternionMultiply(worldFix, quaternion);
+		quaternion = quaternionMultiply(orientFix, quaternion);
 
-		}, true);
-	}
+	};
 
 	var init = function() {
 		window.addEventListener('deviceorientation', deviceOrientationListener, true);

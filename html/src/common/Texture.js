@@ -8,7 +8,7 @@ SQR.Texture = function(_source, _options) {
 
 	var t = {};
 	var gl = SQR.gl;
-	var source, options;
+	var source, options = _options || {};
 
 	t.setSource = function(_source, _options) {
 		
@@ -18,14 +18,14 @@ SQR.Texture = function(_source, _options) {
 		}
 
 		source = _source;
-		options = _options || {};
+		options = _options || options;
 		
 		var wrapS = options.wrapS || options.wrap;
 		var wrapT = options.wrapT || options.wrap;
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, options.flip !== undefined ? options.flip : true);
-		// gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, options.premultiplyAlpha !== undefined ? options.premultiplyAlpha : false);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 
 		var mif, mgf;

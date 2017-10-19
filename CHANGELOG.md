@@ -346,3 +346,27 @@ Testing different texture formsts for an iOS bug [2]
 
 Fixing Gyro to work ok on Desktops with no actual gyroscope
 
+
+##### v3.0 b 208
+*Apr 28th 2017*
+
+Fixing a bug in Gyro on hybrind screens
+
+
+##### v3.0 b 209
+*Apr 28th 2017*
+
+Fixing a bug in Gyro on hybrind screens
+
+
+##### v3.0 b 211
+*Oct 18th 2017*
+
+Adding premultiply alpha option to textures
+
+
+##### v3.0 b 212
+*Oct 18th 2017*
+
+Fixing bug where options passed to constructor would be ignored in textures with no source
+
