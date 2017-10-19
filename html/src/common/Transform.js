@@ -347,6 +347,8 @@ SQR.Transform.prototype.transformWorld = function() {
 
 	if(t.lookAt) {
 		t.matrix.lookAt(t.lookAt.position);
+		// Look at erases scale so let's put that back in
+		t.matrix.scale(s.x, s.y, s.z);
 	}
 
 	if (t.parent) {

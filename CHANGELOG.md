@@ -370,3 +370,21 @@ Adding premultiply alpha option to textures
 
 Fixing bug where options passed to constructor would be ignored in textures with no source
 
+
+##### v3.0 b 213
+*Oct 18th 2017*
+
+Adding Face to Kuula build
+
+
+##### v3.0 b 214
+*Oct 18th 2017*
+
+Adding PLane insteas of Face to Kuula build
+
+
+##### v3.0 b 215
+*Oct 19th 2017*
+
+Matrix after lookAt was not correctly preserving scale
+

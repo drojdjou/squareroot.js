@@ -182,6 +182,7 @@ var kuula = createBucket([], k(
 	'math/Vector3',
 	'primitives/Mesh',
 	'primitives/Poly',
+	'primitives/Plane',
 	'primitives/PostEffect',
 	'primitives/Sphere',
 	'primitives/Cube',
