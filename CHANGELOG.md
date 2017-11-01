@@ -388,3 +388,21 @@ Adding PLane insteas of Face to Kuula build
 
 Matrix after lookAt was not correctly preserving scale
 
+
+##### v3.0 b 216
+*Oct 25th 2017*
+
+Enabling Gyro to accept external data
+
+
+##### v3.0 b 217
+*Oct 25th 2017*
+
+Enabling Gyro to accept external data
+
+
+##### v3.0 b 218
+*Oct 30th 2017*
+
+Adding collider and intersection to Kuula build
+

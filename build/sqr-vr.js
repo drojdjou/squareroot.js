@@ -13,9 +13,9 @@ SQR.Gyro = (function() {
 	var gotReading = false;
 	var initialized = false;
 
-	gyro.getOrientation = function() {
+	gyro.getOrientation = function(dontinit) {
 
-		if(!initialized) {
+		if(!initialized && !dontinit) {
 			init();
 		}
 
@@ -25,6 +25,10 @@ SQR.Gyro = (function() {
 	gyro.hasGyro = function() {
 		return gotReading;
 	};
+
+	gyro.externalProcess = function(alpha, beta, gamma, orientation) {
+		processGyroData(alpha, beta, gamma, orientation);
+	}
 
 	var eulerToQuaternion = function(alpha, beta, gamma) {
 		var x = -beta, y = -alpha; z = gamma;
@@ -59,14 +63,21 @@ SQR.Gyro = (function() {
 	};
 
 	var deviceOrientationListener = function(e) {
+		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);
+	}
 
-		if(e.alpha != null && window.orientation != null) gotReading = true;
-		else return;
+	var processGyroData = function(alpha, beta, gamma, orientation) {
+
+		if(alpha != null && window.orientation != null) {
+			gotReading = true;
+		} else {
+			return;
+		}
 
 		var raw = eulerToQuaternion(
-			e.alpha / 180 * Math.PI, 
-			e.beta / 180 * Math.PI, 
-			e.gamma / 180 * Math.PI
+			alpha / 180 * Math.PI, 
+			beta / 180 * Math.PI, 
+			gamma / 180 * Math.PI
 		);
 
 		var wo = window.orientation / 180 * Math.PI;
