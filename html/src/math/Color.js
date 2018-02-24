@@ -89,7 +89,9 @@ SQR.Color.prototype.toCSS = function() {
 	var ri = (c.r * 255) | 0;
 	var gi = (c.g * 255) | 0;
 	var bi = (c.b * 255) | 0;
-	return 'rgb(' + ri + ', ' + gi + ', ' + bi + ')';
+	var ai = c.a ? ', ' + c.a.toPrecision(2) : '';
+	var h = c.a ? 'rgba' : 'rgb';
+	return h + '(' + ri + ', ' + gi + ', ' + bi + '' + ai + ')';
 }
 
 /**

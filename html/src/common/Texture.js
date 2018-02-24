@@ -37,7 +37,7 @@ SQR.Texture = function(_source, _options) {
 			// if(!wrapS) wrapS = gl.REPEAT;
 			// if(!wrapT) wrapT = gl.REPEAT;
 		} else {
-			if(options.mipmap) console.warn('Only power-of-2 texture can use mipmaps\n', _source);
+			// if(options.mipmap) console.warn('Only power-of-2 texture can use mipmaps\n', _source);
 			mif = mgf = gl.LINEAR;
 			// if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
 			// if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;

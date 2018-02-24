@@ -406,3 +406,21 @@ Enabling Gyro to accept external data
 
 Adding collider and intersection to Kuula build
 
+
+##### v3.0 b 219
+*Dec 1st 2017*
+
+Color CSS value now returns alpha
+
+
+##### v3.0 b 220
+*Dec 1st 2017*
+
+Removed an annoying warning in Texture re; mipmaps
+
+
+##### v3.0 b 221
+*Dec 1st 2017*
+
+Turns out that Color stuff was a bit more tricky
+

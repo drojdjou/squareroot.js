@@ -42,17 +42,17 @@ SQR.V3.prototype.copyTo = function(p) {
 /**
  *  Copies values from vector p into this vector
  *
- *  @param {SQR.V2|SQR.V3} p - vector to copy the values from
+ *  @param {SQR.V2|SQR.V3} p - vector to copy the values from if available, otherwise defaults to zero
  */
 SQR.V3.prototype.copyFrom = function(p) {
 	if(p instanceof Array) {
-		this.x = p[0];
-		this.y = p[1];
-		this.z = p[2] || 0; // in case p is SQR.V2
+		this.x = p[0] || 0;
+		this.y = p[1] || 0;
+		this.z = p[2] || 0;
 	} else {
-		this.x = p.x;
-		this.y = p.y;
-		this.z = p.z || 0; // in case p is SQR.V2
+		this.x = p.x || 0;
+		this.y = p.y || 0;
+		this.z = p.z || 0;
 	}
 	return this;
 }

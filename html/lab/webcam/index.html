@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Webcam</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/GLSL.js"></script>
+
+<script type="text/javascript" src="../../src/common/Context.js"></script>
+<script type="text/javascript" src="../../src/common/Loader.js"></script>
+<script type="text/javascript" src="../../src/common/Buffer.js"></script>
+<script type="text/javascript" src="../../src/common/Renderer.js"></script>
+<script type="text/javascript" src="../../src/common/Shader.js"></script>
+<script type="text/javascript" src="../../src/common/Transform.js"></script>
+<script type="text/javascript" src="../../src/common/Texture.js"></script>
+
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
+<script type="text/javascript" src="../../src/math/Vector3.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix33.js"></script>
+<script type="text/javascript" src="../../src/math/Matrix44.js"></script>
+<script type="text/javascript" src="../../src/math/Quaternion.js"></script>
+<script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
+
+<script type="text/javascript" src="../../src/primitives/Cube.js"></script>
+
+<script type="text/javascript" src="../../src/dev/Debug.js"></script>
+
+<script type="text/javascript" src="../../src/extras/Trackball.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../base.css">
+
+<style>
+
+body {
+	margin: 0;
+	background-color: #000;
+}
+
+#user-stream {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	transform: scaleX(-1);
+}
+
+#user-stream video {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div id="user-stream"></div>
+<canvas id="gl-canvas"></canvas>
+
+<script type="text/javascript" id="gl-script">
+
+var userStreamContainer = document.querySelector('#user-stream');
+
+SQR.Loader.loadAssets([
+	'webcam'
+], function(assets) {
+	var v = assets['webcam'];
+	userStreamContainer.appendChild(v);
+
+	setTimeout(function() {
+		console.log(v.width, v.height);
+		console.log(v.naturalWidth, v.naturalHeight);
+	}, 0);
+});
+
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
