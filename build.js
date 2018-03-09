@@ -139,7 +139,7 @@ if(logMessage != '-') {
 
 updateVersionFile();
 
-var core = createBucket(['common', 'math', 'two', 'primitives'], [baseUrl + 'SQR.js', baseUrl + 'Version.js', baseUrl + 'GLSL.js']);
+var core = createBucket(['common', 'math', 'two', 'primitives', 'scene'], [baseUrl + 'SQR.js', baseUrl + 'Version.js', baseUrl + 'GLSL.js']);
 saveBucket(core, 'sqr');
 
 var two = createBucket(['math', 'two'], [baseUrl + 'SQR.js', baseUrl + 'Version.js']);

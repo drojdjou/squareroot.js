@@ -424,3 +424,15 @@ Removed an annoying warning in Texture re; mipmaps
 
 Turns out that Color stuff was a bit more tricky
 
+
+##### v3.0 b 222
+*Feb 26th 2018*
+
+Small fix to SceneParser
+
+
+##### v3.0 b 223
+*Feb 26th 2018*
+
+Including scene folder in the main build
+
