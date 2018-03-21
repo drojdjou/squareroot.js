@@ -69,6 +69,10 @@ SQR.Context = function(canvas, options, onError) {
 			onError();
 		} 
 
+		if(!gl) {
+			onError();
+		}
+
 		c.gl = gl;
 		c.setAsCurrent();
 

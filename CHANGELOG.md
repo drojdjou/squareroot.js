@@ -436,3 +436,15 @@ Small fix to SceneParser
 
 Including scene folder in the main build
 
+
+##### v3.0 b 224
+*Mar 14th 2018*
+
+Adding a few more methods to the Color object
+
+
+##### v3.0 b 230
+*Mar 15th 2018*
+
+Added one more check in context creation
+

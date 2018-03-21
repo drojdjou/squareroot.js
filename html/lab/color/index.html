@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>squareroot.js demos</title>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+</head>
+<body>
+
+<script type="text/javascript" src="../../src/SQR.js"></script>
+<script type="text/javascript" src="../../src/math/Color.js"></script>
+
+<script>
+
+var cs = function(c) {
+    return "[" + c.r.toPrecision(2) + ", " + c.g.toPrecision(2) + ", " + c.b.toPrecision(2) + ", " + c.a.toPrecision(2) + "]";
+}
+
+// 
+var c = new SQR.Color().setCSS('rgba(255, 136, 0, 0.21)');
+console.log(cs(c));
+console.log(c.toCSS());
+console.log(c.toHex(), c.a);
+
+</script>
+
+</body>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
