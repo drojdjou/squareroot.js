@@ -448,3 +448,21 @@ Adding a few more methods to the Color object
 
 Added one more check in context creation
 
+
+##### v3.0 b 231
+*Mar 21st 2018*
+
+Adding frequency control to Gyro (related to Android Chromium bug)
+
+
+##### v3.0 b 241
+*May 7th 2018*
+
+Added getParameter function to Texture and FrameBuffer
+
+
+##### v3.0 b 247
+*May 22nd 2018*
+
+Fixed issue with Marth.clamp when start was > than end
+

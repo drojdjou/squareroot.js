@@ -1,4 +1,8 @@
 Math.clamp = function(v, s, e) {
+
+	// https://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
+	if(s > e) e = [s, s = e][0];
+
 	if(v <= s) return s;
 	if(v >= e) return e;
 	return v;

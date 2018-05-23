@@ -66,6 +66,12 @@ SQR.Texture = function(_source, _options) {
 		return source;
 	}
 
+	t.setParameter = function(key, value) {
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, key, value);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
 	t.update = function() {
 		var gl = SQR.gl;
 		gl.bindTexture(gl.TEXTURE_2D, texture);

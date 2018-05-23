@@ -11,7 +11,8 @@ SQR.Gyro = (function() {
 	var gotReading = false;
 	var initialized = false;
 
-	var lastTime, deltaTime = 0, maxFreq = 40; // if event fires less often than this, do not process
+	var lastTime, deltaTime = 0, numReadings = 0, sumDelta = 0, maxFreq = 60; 
+	// if event fires less often than this, consider it beign to slow (60ms = 16.66Hz / fps)
 
 	gyro.getOrientation = function(dontinit) {
 
@@ -27,11 +28,11 @@ SQR.Gyro = (function() {
 	};
 
 	gyro.isSlow = function() {
-		return deltaTime > maxFreq;
+		return initialized && (numReadings < 3 || gyro.delta() > maxFreq);
 	}
 
 	gyro.delta = function() {
-		return deltaTime;
+		return numReadings == 0 ? 0 : parseInt(sumDelta / numReadings);
 	}
 
 	gyro.externalProcess = function(alpha, beta, gamma, orientation) {
@@ -71,8 +72,15 @@ SQR.Gyro = (function() {
 	};
 
 	var deviceOrientationListener = function(e) {
-		if(lastTime) deltaTime = new Date().getTime() - lastTime;
+
+		if(lastTime) {
+			deltaTime = new Date().getTime() - lastTime;
+			numReadings++;
+			sumDelta += deltaTime;
+		}
+
 		lastTime = new Date().getTime();
+
 		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);
 	}
 

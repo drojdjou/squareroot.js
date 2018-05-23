@@ -95,6 +95,12 @@ SQR.FrameBuffer = function(width, height, isCubemap, options) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 	}
 
+	f.setParameter = function(key, value) {
+		gl.bindTexture(gl.TEXTURE_2D, f.texture);
+		gl.texParameteri(gl.TEXTURE_2D, key, value);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
 	f.unbind = function() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
