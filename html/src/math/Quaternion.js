@@ -42,7 +42,7 @@ SQR.Quaternion.prototype.copyTo = function(p) {
  *  @param q the quaternion to copy values from
  */
 SQR.Quaternion.prototype.copyFrom = function(q) {
-    if(q instanceof Array) {
+    if(q instanceof Array || q instanceof Float32Array) {
         this.x = q[0];
         this.y = q[1];
         this.z = q[2];
@@ -163,7 +163,7 @@ SQR.Quaternion.prototype.normalize = function() {
 
 
 /**
- *  Inverses the quaternion.
+ *  Negates the quaternion.
  */
 SQR.Quaternion.prototype.neg = function() {
     this.x *= -1;
@@ -171,6 +171,17 @@ SQR.Quaternion.prototype.neg = function() {
     this.z *= -1;
     this.w *= -1;
     return this;
+}
+
+/**
+ *  Inverses the quaternion.
+ */
+SQR.Quaternion.prototype.inverse = function() {
+	var d = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+    this.x = -this.x / d;
+    this.y = -this.y / d;
+    this.z = -this.z / d;
+    this.w = this.w / d;
 }
 
 /**

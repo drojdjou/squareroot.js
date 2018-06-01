@@ -466,3 +466,9 @@ Added getParameter function to Texture and FrameBuffer
 
 Fixed issue with Marth.clamp when start was > than end
 
+
+##### v3.0 b 248
+*May 31st 2018*
+
+Adding functionality to Quaternion for webvr support
+
