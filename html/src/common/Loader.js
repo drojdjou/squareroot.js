@@ -50,6 +50,7 @@ SQR.Loader = {
 	 */
 	loadImage: function(path, callback, errorCallback){
 		var img = new Image();
+		img.crossOrigin = "Anonymous";
 
 		if(callback) {
 			var onload = function() {

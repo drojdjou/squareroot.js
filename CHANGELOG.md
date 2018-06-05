@@ -472,3 +472,9 @@ Fixed issue with Marth.clamp when start was > than end
 
 Adding functionality to Quaternion for webvr support
 
+
+##### v3.0 b 249
+*Jun 5th 2018*
+
+Added CORS support to image loading in Loader
+
