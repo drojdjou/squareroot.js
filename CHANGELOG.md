@@ -478,3 +478,9 @@ Adding functionality to Quaternion for webvr support
 
 Added CORS support to image loading in Loader
 
+
+##### v3.0 b 250
+*Aug 29th 2018*
+
+Adding Kuula/SHA related code in Gyro
+
