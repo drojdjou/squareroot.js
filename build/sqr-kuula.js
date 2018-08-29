@@ -6228,6 +6228,7 @@ SQR.Gyro = (function() {
 	var gyro = {};
 	var gotReading = false;
 	var initialized = false;
+	
 
 	var lastTime, deltaTime = 0, numReadings = 0, sumDelta = 0, maxFreq = 60; 
 	// if event fires less often than this, consider it beign to slow (60ms = 16.66Hz / fps)
@@ -6256,6 +6257,31 @@ SQR.Gyro = (function() {
 	gyro.externalProcess = function(alpha, beta, gamma, orientation) {
 		processGyroData(alpha, beta, gamma, orientation);
 	}
+	
+	// -SHA
+	var offset = null;
+
+	gyro.getOffset = function() {
+		return offset ? offset : 0;
+	}
+
+	gyro.resetOffset = function() {
+		offset = null;
+	}
+
+	var calculateOffset = function() {
+		var q = quaternion;
+		var x = 2 * (q.x * q.z + q.w * q.y);
+		// var y = 2 * (q.y * q.z - q.w * q.x);
+		var z = 1 - 2 * (q.x * q.x + q.y * q.y);
+		return Math.atan2(z, x);
+	}
+
+	var logOffset = function(o, prefix) {
+		prefix = prefix || "";
+		var d = Math.round(o / Math.PI * 180);
+		console.log(prefix + 'gyro.offset: ' + d + 'deg (' + o + 'rad)');  
+	} 
 
 	var eulerToQuaternion = function(alpha, beta, gamma) {
 		var x = -beta, y = -alpha; z = gamma;
@@ -6300,6 +6326,13 @@ SQR.Gyro = (function() {
 		lastTime = new Date().getTime();
 
 		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);
+
+		if(offset == null && numReadings > 2) {
+			offset = calculateOffset();
+			// logOffset(offset);
+		} else if(numReadings % 100 == 0) {
+			// logOffset(calculateOffset(), "----- ");
+		}
 	}
 
 	var processGyroData = function(alpha, beta, gamma, orientation) {
@@ -6338,4 +6371,3 @@ SQR.Gyro = (function() {
 	return gyro;
 
 })();
-
