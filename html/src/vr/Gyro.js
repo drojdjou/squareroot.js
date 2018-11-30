@@ -97,6 +97,10 @@ SQR.Gyro = (function() {
 	};
 
 	var deviceOrientationListener = function(e) {
+		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);		
+	}
+
+	var processGyroData = function(alpha, beta, gamma, orientation) {
 
 		if(lastTime) {
 			deltaTime = new Date().getTime() - lastTime;
@@ -105,18 +109,6 @@ SQR.Gyro = (function() {
 		}
 
 		lastTime = new Date().getTime();
-
-		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);		
-		
-		if(offset == null && numReadings > 2) {
-			offset = calculateOffset();
-			// logOffset(offset);
-		} else if(numReadings % 100 == 0) {
-			// logOffset(calculateOffset(), "----- ");
-		}
-	}
-
-	var processGyroData = function(alpha, beta, gamma, orientation) {
 
 		if(alpha != null && window.orientation != null) {
 			gotReading = true;
@@ -142,6 +134,12 @@ SQR.Gyro = (function() {
 		quaternion = quaternionMultiply(worldFix, quaternion);
 		quaternion = quaternionMultiply(orientFix, quaternion);
 
+		if(offset == null && numReadings > 2) {
+			offset = calculateOffset();
+			// logOffset(offset);
+		} else if(numReadings % 100 == 0) {
+			// logOffset(calculateOffset(), "----- ");
+		}
 	};
 
 	var init = function() {

@@ -14,6 +14,11 @@ Math.clamp01 = function(v) {
 	return v;
 }
 
+Math.smoothstep = function(v, s, e) {
+	v = Math.map(v, s, e); 
+	return v * v * (3 - 2 * v);
+},
+
 Math.absMin = function(a, b) {
 	if(a <= -b || a >= b) return a;
 	else if(a >= 0) return b;
