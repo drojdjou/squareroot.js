@@ -51,7 +51,7 @@ SQR.Texture = function(_source, _options) {
 		if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
 		if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
 
-		if(options.aniso)
+		if(options.aniso) {
 			var aniso = (
 				gl.getExtension('EXT_texture_filter_anisotropic') ||
 				gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
@@ -59,9 +59,12 @@ SQR.Texture = function(_source, _options) {
 			);
 
 			if(aniso) {
-				var v = options.anisoLevel != null ? options.anisoLevel : gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, v);
+				var m = gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+				var v = options.anisoLevel || 16;
+				v = Math.min(m, v);
+				gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, v);
 			}
+		}
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, options.magFilter || options.filter || mgf);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, options.minFilter || options.filter || mif);
