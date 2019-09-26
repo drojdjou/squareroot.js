@@ -484,3 +484,9 @@ Added CORS support to image loading in Loader
 
 Adding Kuula/SHA related code in Gyro
 
+
+##### v3.0 b 251
+*Sep 26th 2019*
+
+Added anisothropy level setting for textures
+

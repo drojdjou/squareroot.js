@@ -12,7 +12,12 @@ SQR.Texture = function(_source, _options) {
 
 	t.setSource = function(_source, _options) {
 		
-		if(!(_source instanceof HTMLVideoElement || _source instanceof Image || _source instanceof HTMLCanvasElement)) {
+		if(!(
+			_source instanceof HTMLVideoElement || 
+			_source instanceof Image || 
+			_source instanceof HTMLCanvasElement || 
+			('ImageBitmap' in window && _source instanceof window.ImageBitmap)
+		)) {
 			console.error('Invalid source: ' + _source);
 			throw 'SQR.Texture > provided source is not a valid source for texture';
 		}
@@ -45,6 +50,18 @@ SQR.Texture = function(_source, _options) {
 
 		if(!wrapS) wrapS = gl.CLAMP_TO_EDGE;
 		if(!wrapT) wrapT = gl.CLAMP_TO_EDGE;
+
+		if(options.aniso)
+			var aniso = (
+				gl.getExtension('EXT_texture_filter_anisotropic') ||
+				gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
+				gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
+			);
+
+			if(aniso) {
+				var v = options.anisoLevel != null ? options.anisoLevel : gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, v);
+			}
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, options.magFilter || options.filter || mgf);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, options.minFilter || options.filter || mif);

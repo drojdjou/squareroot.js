@@ -4,16 +4,13 @@
 	"repository": "https://github.com/drojdjou/squareroot.js/",
 	"version": "3.0.0",
 	"main": "build/sqr",
-
 	"devDependencies": {
-
 		"less": "*",
 		"less-plugin-autoprefix": "^1.4.0",
 		"livereload": "*",
 		"chokidar": "*",
-		"uglify-js":"*",
-		"jsdoc":"*",
-		"moment":"*"
-
+		"uglify-js": "*",
+		"jsdoc": "*",
+		"moment": "*"
 	}
 }
