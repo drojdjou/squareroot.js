@@ -502,3 +502,9 @@ Adding option to change FrameBuffer parameters after creating it
 
 Gyro: Moved offset calculation to another function so that external processing also allows for offset to be calculated
 
+
+##### v3.0 b 255
+*Sep 26th 2019*
+
+Added anisothropy level setting for textures
+
