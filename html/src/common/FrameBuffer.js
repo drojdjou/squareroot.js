@@ -18,9 +18,7 @@ SQR.FrameBuffer = function(width, height, isCubemap, options) {
 	f.texture = gl.createTexture();
 	f.depthBuffer = gl.createRenderbuffer();
 
-	// bind & setup texture
-	if(!isCubemap) {
-		f.fbo = gl.createFramebuffer();
+	var setupTexture = function() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
 		gl.bindTexture(gl.TEXTURE_2D, f.texture);
 		// gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -34,9 +32,16 @@ SQR.FrameBuffer = function(width, height, isCubemap, options) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, options.wrapS || options.wrap || gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, options.wrapT || options.wrap || gl.CLAMP_TO_EDGE);
 
-		// bind render buffer
 		gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
 		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+	}
+
+	// bind & setup texture
+	if(!isCubemap) {
+		f.fbo = gl.createFramebuffer();
+
+		// setup texture and renderbuffer size and texture parameters
+		setupTexture();
 
 		// attach texture and render buffer to fbo
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, f.texture, 0);
@@ -108,17 +113,11 @@ SQR.FrameBuffer = function(width, height, isCubemap, options) {
 		if(options.mipmap) gl.generateMipmap(gl.TEXTURE_2D);
 	}
 
-	f.resize = function(w, h) {
+	f.resize = function(w, h, o) {
 		width = w;
 		height = h;
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, f.fbo);
-		gl.bindTexture(gl.TEXTURE_2D, f.texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-		gl.bindRenderbuffer(gl.RENDERBUFFER, f.depthBuffer);
-		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-
+		options = o || options || {};
+		setupTexture();
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 	}

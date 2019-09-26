@@ -486,7 +486,19 @@ Adding Kuula/SHA related code in Gyro
 
 
 ##### v3.0 b 251
-*Sep 26th 2019*
+*Aug 31st 2018*
 
-Added anisothropy level setting for textures
+Added smoothstep to Math util functions
+
+
+##### v3.0 b 252
+*Sep 21st 2018*
+
+Adding option to change FrameBuffer parameters after creating it
+
+
+##### v3.0 b 253
+*Nov 30th 2018*
+
+Gyro: Moved offset calculation to another function so that external processing also allows for offset to be calculated
 
