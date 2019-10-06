@@ -95,6 +95,8 @@ SQR.Texture = function(_source, _options) {
 	t.update = function() {
 		var gl = SQR.gl;
 		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, options.flip !== undefined ? options.flip : true);
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, options.premultiplyAlpha !== undefined ? options.premultiplyAlpha : false);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 		return t;
 	}
