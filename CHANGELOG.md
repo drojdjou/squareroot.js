@@ -508,3 +508,9 @@ Gyro: Moved offset calculation to another function so that external processing a
 
 Added anisothropy level setting for textures
 
+
+##### v3.0 b 257
+*Oct 6th 2019*
+
+Added some teture paramaters setup to update() as well
+
