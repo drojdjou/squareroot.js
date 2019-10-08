@@ -514,3 +514,9 @@ Added anisothropy level setting for textures
 
 Added some teture paramaters setup to update() as well
 
+
+##### v3.0 b 258
+*Oct 8th 2019*
+
+Fied a bug in SQR.Loader with uppercase file extensions
+
