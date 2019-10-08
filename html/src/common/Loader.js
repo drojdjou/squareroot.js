@@ -216,7 +216,7 @@ SQR.Loader.loadAssets([
 			var hasAlias = typeof(p) != 'string';
 			var file = hasAlias ? p[0] : p;
 			var alias = hasAlias ? p[1] : p;
-			var fileType = file.substring(file.lastIndexOf('.') + 1);
+			var fileType = file.substring(file.lastIndexOf('.') + 1).toLowerCase();
 
 			aliases[file] = alias;
 			
@@ -239,6 +239,9 @@ SQR.Loader.loadAssets([
 					break;
 				case 'webcam':
 					SQR.Loader.loadWebcam(onAsset);
+					break;
+				default:
+					console.warn("SQR.Loader / Unknown asset type: " + file);
 					break;
 			}
 		}
