@@ -16,7 +16,7 @@ SQR.Gyro = (function() {
 	var lastTime, deltaTime = 0, numReadings = 0, sumDelta = 0, maxFreq = 60; 
 	// if event fires less often than this, consider it beign to slow (60ms = 16.66Hz / fps)
 
-	gyro.getOrientation = function(dontinit) {
+	gyro.getOrientation = function(dontinit, permissionFunc) {
 
 		if(!initialized && !dontinit) {
 			if(permissionFunc) {
