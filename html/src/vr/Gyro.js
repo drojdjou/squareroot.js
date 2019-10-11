@@ -17,7 +17,11 @@ SQR.Gyro = (function() {
 	gyro.getOrientation = function(dontinit) {
 
 		if(!initialized && !dontinit) {
-			init();
+			if(permissionFunc) {
+				permissionFunc(init);
+			} else {
+				init();
+			}
 		}
 
 		return quaternion;

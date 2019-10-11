@@ -520,3 +520,9 @@ Added some teture paramaters setup to update() as well
 
 Fied a bug in SQR.Loader with uppercase file extensions
 
+
+##### v3.0 b 259
+*Oct 11th 2019*
+
+Added handler for Permissions API in Gyro
+
