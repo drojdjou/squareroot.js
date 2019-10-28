@@ -526,3 +526,9 @@ Fied a bug in SQR.Loader with uppercase file extensions
 
 Added handler for Permissions API in Gyro
 
+
+##### v3.0 b 261
+*Oct 28th 2019*
+
+Added jpeg extension to Loader (with an 'e')
+
