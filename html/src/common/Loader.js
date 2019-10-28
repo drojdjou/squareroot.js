@@ -226,6 +226,7 @@ SQR.Loader.loadAssets([
 					break;
 				case 'png':
 				case 'jpg':
+				case 'jpeg':
 				case 'gif':
 					SQR.Loader.loadImage(file, onAsset);
 					break;
