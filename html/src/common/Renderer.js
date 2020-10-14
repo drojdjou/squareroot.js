@@ -130,6 +130,7 @@ SQR.Renderer = function(c, options, onError) {
 
 	r.draw = function(root, camera, options) {
 		var gl = SQR.gl;
+		if(!gl) return;
 		options = options || defOpts;
 
 		if(r.autoClear) context.clear();

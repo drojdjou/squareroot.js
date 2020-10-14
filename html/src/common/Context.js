@@ -120,7 +120,7 @@ SQR.Context = function(canvas, options, onError) {
 	 *	For custom clearing options use SQR.gl.clear()
 	 */
 	c.clear = function() {
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+		if(gl) gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 		return c;
 	}
 

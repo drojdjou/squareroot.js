@@ -151,6 +151,7 @@ SQR.Gyro = (function() {
 	var init = function() {
 		window.addEventListener('deviceorientation', deviceOrientationListener, true);
 		initialized = true;
+		if(gyro.onInit) gyro.onInit();
 	}
 
 	return gyro;
