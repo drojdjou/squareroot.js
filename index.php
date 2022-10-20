@@ -52,7 +52,9 @@
 		
 		<p>The structure is loosely based on Unity3d API, including the central concept of 'Transforms' as building blocks. It also features a Unity-to-WebGL exporter that can export meshes and skinned meshes, textures, animations and even entire scenes.</p>
 		
-		<p>The library was initially used in many of our <a href='https://holotype.co/work'>projects</a>, most notably it is used in the <a href="https://kuula.co">Kuula</a> as the basis for the 360 Virtual Tour player. Founded in 2016, Kuula is used by over 300,000 people woirldwide and hosts over 10 million panoramic photos (and counting!).</p>
+		<p>The library was initially used in many of our <a href='https://holotype.co/work'>projects</a>.</p>
+		
+		<p>Currently, it is used in the <a href="https://kuula.co">Kuula Virtual Tour Software</a> as the basis for the 360 panorama player. Founded in 2016, Kuula is used by over 300,000 people woirldwide and hosts over 10 million panoramic photos (and counting!).</p>
 	</article>
 
 	<article>
@@ -66,10 +68,10 @@
 		<h1>Basic Examples</h1>
 
 		<ul class='grid'>
-			<li><a href='tutorials/basic-setup.php' target='_blank'><img src='home/thumbs/examples/cube.jpg'>Hello World!</a></li>
-			<li><a href='tutorials/understanding-buffers.html' target='_blank'><img src='home/thumbs/examples/buffer.jpg'>Custom geometry</a></li>
-			<li><a href='tutorials/post-effect.html' target='_blank'><img src='home/thumbs/examples/post.jpg'>Post effect</a></li>
-			<li><a href='tutorials/mesh.html' target='_blank'><img src='home/thumbs/examples/mesh.jpg'>Loading a mesh</a></li>
+			<li><a href='tutorials/basic-setup.php'><img src='home/thumbs/examples/cube.jpg'>Hello World!</a></li>
+			<li><a href='tutorials/understanding-buffers.html'><img src='home/thumbs/examples/buffer.jpg'>Custom geometry</a></li>
+			<li><a href='tutorials/post-effect.html'><img src='home/thumbs/examples/post.jpg'>Post effect</a></li>
+			<li><a href='tutorials/mesh.html'><img src='home/thumbs/examples/mesh.jpg'>Loading a mesh</a></li>
 		</ul>
 	</article>
 
@@ -77,15 +79,15 @@
 		<h1>Demos</h1>
 
 		<ul class='grid'>
-			<li><a href='html/lab/gl_tree/03-forest-vr.html' target='_blank'><img src='home/thumbs/demos/vr.jpg'>WebVR (Rift/Cardboard)</a></li>
-			<li><a href='html/lab/gl_carpet/' target='_blank'><img src='home/thumbs/demos/carpet.jpg'>Perlin Noise Animation</a></li>
-			<li><a href='html/lab/gl_cubemap/' target='_blank'><img src='home/thumbs/demos/cuberefl.jpg'>Real-time reflections</a></li>
-			<li><a href='html/lab/gl_dof/' target='_blank'><img src='home/thumbs/demos/dof.jpg'>Depth-of-field effect</a></li>
-			<li><a href='html/lab/gl_lines/' target='_blank'><img src='home/thumbs/demos/fish.jpg'>Animation aling splines</a></li>
-			<li><a href='html/lab/gl_tree/02-forest-batch.html' target='_blank'><img src='home/thumbs/demos/forest.jpg'>Dynamic geometry</a></li>
-			<li><a href='html/lab/gl_dust/' target='_blank'><img src='home/thumbs/demos/nodegarden.jpg'>2D animation</a></li>
-			<li><a href='html/lab/gl_bones/hand.html' target='_blank'><img src='home/thumbs/demos/hand.jpg'>Skinned mesh</a></li>
-			<li><a href='html/lab/webcam_reflection' target='_blank'><img src='home/thumbs/demos/webcam-refl.jpg'>Live webcam reflection</a></li>
+			<li><a href='html/lab/gl_carpet/'><img src='home/thumbs/demos/carpet.jpg'>Perlin Noise Animation</a></li>
+			<li><a href='html/lab/gl_cubemap/'><img src='home/thumbs/demos/cuberefl.jpg'>Real-time reflections</a></li>
+			<li><a href='html/lab/gl_dof/'><img src='home/thumbs/demos/dof.jpg'>Depth-of-field effect</a></li>
+			<li><a href='html/lab/gl_lines/'><img src='home/thumbs/demos/fish.jpg'>Animation aling splines</a></li>
+			<li><a href='html/lab/gl_tree/02-forest-batch.html'><img src='home/thumbs/demos/forest.jpg'>Dynamic geometry</a></li>
+			<li><a href='html/lab/gl_dust/'><img src='home/thumbs/demos/nodegarden.jpg'>2D animation</a></li>
+			<li><a href='html/lab/gl_bones/hand.html'><img src='home/thumbs/demos/hand.jpg'>Skinned mesh</a></li>
+			<li><a href='html/lab/webcam_reflection'><img src='home/thumbs/demos/webcam-refl.jpg'>Live webcam reflection</a></li>
+			<li><a href='html/lab'><img src='home/thumbs/demos/bird.jpg'>More demos...</a></li>
 		</ul>
 	</article>
 

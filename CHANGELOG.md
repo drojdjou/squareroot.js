@@ -538,3 +538,9 @@ Added jpeg extension to Loader (with an 'e')
 
 Rebuilding after a longer pause!
 
+
+##### v3.0 b 267
+*Oct 20th 2022*
+
+Refreshing the demos, some small bugs fixed
+

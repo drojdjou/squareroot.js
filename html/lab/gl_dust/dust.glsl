@@ -23,7 +23,7 @@ void main() {
 	g.y += aSize * 0.01;
 	g *= l;
 
-	vec2 p = aPosition + l * aEnergy + g * g;
+	vec2 p = aPosition - l * aEnergy - g * g;
 	gl_Position = uProjection * uViewMatrix * vec4(p, 0.0, 1.0);
 	gl_PointSize = 2.0 + aSize * 6.0;
 }

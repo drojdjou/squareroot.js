@@ -30,8 +30,8 @@ SQR.Loader.loadAssets([
 	var blurForce = 0.05;
 
 	// General rule for blur is that we do not need to make it full res.
-	// In this case a quater ores is good enough!
-	var resolution = 0.25;
+	// In this case a quater of the res is good enough!
+	var preBlurResolution = 0.25;
 
 	var renderer = new SQR.Renderer('#gl-canvas');
 
@@ -57,9 +57,8 @@ SQR.Loader.loadAssets([
 
 	var resize = function() {
 		w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-		renderer.context.size(w, h, resolution);
-		w = w * resolution, h = h * resolution;
-		rawFBO.resize(w, h);
+		renderer.context.size(w, h);
+		rawFBO.resize(w * preBlurResolution, h * preBlurResolution);
 		blurXFBO.resize(w, h);
 
 		camera.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
@@ -74,11 +73,13 @@ SQR.Loader.loadAssets([
 		rawFBO.bind();
 		renderer.render(root, camera);
 
+		// Y blur
 		blurXFBO.bind();
 		blur.uniforms.uDelta.set(0, blurForce);
 		blur.uniforms.uTexture = rawFBO.texture;
 		renderer.render(blur);
 
+		// X blur
 		renderer.renderToScreen();
 		blur.uniforms.uDelta.set(blurForce, 0);
 		blur.uniforms.uTexture = blurXFBO.texture;
