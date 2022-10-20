@@ -6,31 +6,25 @@ var livereload = require('livereload');
 var chokidar = require('chokidar');
 var less = require('less');
 var fs = require('fs');
-var LessPluginAutoPrefix = require('less-plugin-autoprefix');
 
 var GLSL_HOME = __dirname + '/html/src/glsl/builtin/';
 var LRPORT = 35934;
 var SHADER_REPO_BASE = 'https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/';
 
 var compileLessFile = function(name) {
-	fs.readFile('dev/less/' + name + '.less', 'utf8', function (err, data) {
+	fs.readFile('home/less/' + name + '.less', 'utf8', function (err, data) {
 
 		if (err) return console.log(err);
 
 		console.log('..recompiling styles: ' + name);
 
-		var autoprefixPlugin = new LessPluginAutoPrefix({
-			browsers: ['last 2 versions']
-		});
-
 		less.render(data, {
-			paths: ['dev/less'],
-			filename: 'dev/less/' + name + '.less',
-			plugins: [autoprefixPlugin],
+			paths: ['home/less'],
+			filename: 'home/less/' + name + '.less',
 			compress: false
 		}, function (err, output) {
 			if (err) return console.log(err);
-			fs.writeFile('dev/css/' + name + '.css', output.css, function(err) { if(err) return console.log(err); });
+			fs.writeFile('home/css/' + name + '.css', output.css, function(err) { if(err) return console.log(err); });
 		});
 
 	});
@@ -136,7 +130,7 @@ var rebuildShaders = function(event, filename) {
 // watch('dev/less', recompileStyles);
 // watch('dev/glsl', rebuildShaders);
 
-chokidar.watch('dev/less', {ignored: /[\/\\]\./}).on('all', recompileStyles);
+chokidar.watch('home/less', {ignored: /[\/\\]\./}).on('all', recompileStyles);
 chokidar.watch(GLSL_HOME, {ignored: /[\/\\]\./}).on('all', rebuildShaders);
 
 var lrserver = livereload.createServer({ port: LRPORT });

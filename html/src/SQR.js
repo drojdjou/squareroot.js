@@ -52,10 +52,10 @@ var SQR = {
 	 */
 	Primitives: {
 
-		V2: function(x, y) { return new SQR.V2(x, y); },
-		V3: function(x, y, z) { return new SQR.V3(x, y, z); },
-		Q:  function(x, y, z, w) { return new SQR.Quaternion(x, y, z, w); },
-		M4: function() { return new SQR.Matrix44(); },
+		V2: (x, y) => { return new SQR.V2(x, y); },
+		V3: (x, y, z) => { return new SQR.V3(x, y, z); },
+		Q:  (x, y, z, w) => { return new SQR.Quaternion(x, y, z, w); },
+		M4: () => { return new SQR.Matrix44(); },
 
 		F: 	function(options) { 
 
