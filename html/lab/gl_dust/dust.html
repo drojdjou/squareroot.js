@@ -69,8 +69,8 @@
 		document.addEventListener(event, function(e) {
 			e.preventDefault();
 			e = e.targetTouches ? e.targetTouches[0] : e;
-			mouseTarget.x = e.pageX;
-			mouseTarget.y = e.pageY;
+			mouseTarget.x = (window.innerWidth - e.pageX);
+			mouseTarget.y = (window.innerHeight - e.pageY);
 		});
 
 		var isMouseDown = true;

@@ -93,7 +93,7 @@
 			var res = 121;
 
 			line.buffer = SQR.Buffer()
-				.layout({ aPosition: 3, aCycle: 1 }, res)
+				.layout({ aPosition: 3 }, res)
 				.iterate('aPosition', function(i, d, c) {
 					var v = path.valueAt(c / (res-1));
 					d[i+0] = v.x;

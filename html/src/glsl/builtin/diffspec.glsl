@@ -54,6 +54,9 @@ uniform vec3 uLightDirection;
 #ifdef USE_DIFFUSE_MAP
 uniform sampler2D uTexture;
 uniform vec4 uTextureTileOffset;
+vec4 texture(sampler2D t, vec2 uv) {
+	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
+}
 #endif
 
 #ifdef USE_SPECULAR
@@ -63,15 +66,17 @@ uniform float uShininess;
 
 #ifdef USE_SPECULAR_MAP
 uniform sampler2D uSpecularMap;
+uniform vec4 uTextureTileOffset;
+vec4 texture(sampler2D t, vec2 uv) {
+	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
+}
 #endif
 
 varying vec3 vNormal;
 varying vec3 vIncident;
 varying vec2 vUV;
 
-vec4 texture(sampler2D t, vec2 uv) {
-	return texture2D(t, uv * uTextureTileOffset.xy + uTextureTileOffset.zw);
-}
+
 
 void main() {
 

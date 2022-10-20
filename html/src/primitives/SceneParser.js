@@ -81,7 +81,7 @@ SQR.SceneParser = (function() {
 
 			for(var m in scene.materials) {
 				var mat = scene.materials[m];
-				mat.uColor = SQR.Color().setRGB(mat.color.r, mat.color.g, mat.color.b);
+				mat.color = SQR.Color().setRGB(mat.color.r, mat.color.g, mat.color.b);
 			}
 
 			var root = new SQR.Transform();

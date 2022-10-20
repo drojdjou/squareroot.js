@@ -47,7 +47,7 @@
 		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 		var renderer = new SQR.Renderer(ctx);
 
-		var resize =function() {
+		var resize = function() {
 			w = window.innerWidth, h = window.innerHeight, aspect = w/h;
 			ctx.size(w, h);
 			renderer.projection = new SQR.ProjectionMatrix().perspective(70, aspect, 1, 1000);
@@ -113,8 +113,6 @@
 	});
 
 </script>
-
-<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35934/livereload.js?snipver=1"></' + 'script>')</script>
 
 </body>
 </head>

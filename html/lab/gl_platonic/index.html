@@ -31,7 +31,7 @@
 
 <script type="text/javascript" src="../../src/extras/WirePlatonic.js"></script>
 <script type="text/javascript" src="../../src/extras/DiscoBall.js"></script>
-<script type="text/javascript" src="../../src/extras/ParticleStream.js"></script>
+<!-- <script type="text/javascript" src="../../src/extras/ParticleStream.js"></script> -->
 
 <!-- <link rel="stylesheet" type="text/css" href="../base.css"> -->
 
@@ -270,19 +270,21 @@ canvas {
 		
 		var addStream = function(start, end, color) {
 
-			var stream = SQR.ParticleStream({
-				shader: SQR.Shader(assets['stream-shader']),
-				size: 100
-			});
+			// ParticleStream.js was removed, so...
 
-			stream.shader.use()
-				.setUniform('uDotSize', isTouch ? 5 : 3)
-				.setUniform('uStart', start)
-				.setUniform('uEnd',   end)
-				.setUniform('uOffset',new SQR.V3(0.33, 0, 0))
-				.setUniform('uColor', color);
+			// var stream = SQR.ParticleStream({
+			// 	shader: SQR.Shader(assets['stream-shader']),
+			// 	size: 100
+			// });
 
-			root.add(stream);
+			// stream.shader.use()
+			// 	.setUniform('uDotSize', isTouch ? 5 : 3)
+			// 	.setUniform('uStart', start)
+			// 	.setUniform('uEnd',   end)
+			// 	.setUniform('uOffset',new SQR.V3(0.33, 0, 0))
+			// 	.setUniform('uColor', color);
+
+			// root.add(stream);
 		}
 
 		addStream(new SQR.V3(3, 9, 0), new SQR.V3(3, 6, 0), green);

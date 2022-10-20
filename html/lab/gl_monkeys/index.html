@@ -40,7 +40,7 @@ SQR.Loader.loadAssets([
 
     var w = window.innerWidth, h = window.innerHeight;
 
-    ctx = SQR.Context('#gl-canvas')
+    var ctx = SQR.Context('#gl-canvas')
         .create()
         .size(w, h).
         clearColor(1, 1, 1, 1);
@@ -51,7 +51,7 @@ SQR.Loader.loadAssets([
 
     var model = assets['../../assets/model/monkey.json'];
     
-    geo = SQR.Buffer()
+    var geo = SQR.Buffer()
         .layout(SQR.v3n3(), model.vertices.length / 3)
         .data('aPosition', model.vertices)
         .data('aNormal',  model.normals)
@@ -98,6 +98,8 @@ SQR.Loader.loadAssets([
         ty = e.pageY / window.innerHeight;
     });
 
+    var tdr = {};
+
     var render = function() {
         requestAnimationFrame(render);
 
@@ -118,7 +120,7 @@ SQR.Loader.loadAssets([
             shader.setUniform('uMatrix', m);
             shader.setUniform('uNormalMatrix', m.inverseMat3(n));
             
-            geo.draw();
+            geo.draw(tdr);
 
             
         }

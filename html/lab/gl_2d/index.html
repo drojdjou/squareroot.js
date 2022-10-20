@@ -24,7 +24,6 @@
 
 <script type="text/javascript" src="../../src/primitives/Face.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
-<script type="text/javascript" src="../../src/primitives/Basic.js"></script>
 
 <script type="text/javascript" src="../../src/extras/SpriteSheet.js"></script>
 
@@ -48,7 +47,7 @@
     ], function(assets) {
 
         var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
-        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
+        var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 1, 0, 1);
         var renderer = new SQR.Renderer(ctx);
 
         var resize = function() {
@@ -67,7 +66,7 @@
         root.add(camera);
 
         var particle = new SQR.Transform();
-        particle.buffer = SQR.Primitives.createPoint(0, 0);
+        particle.buffer = SQR.Buffer().layout(SQR.v3(), 1).data("aPosition", [0, 0, 0]).update();
         particle.shader = SQR.Shader(assets['particle'])
             .use()
             .setUniform('uSize', 64)
@@ -76,22 +75,22 @@
         particle.setBlending(true);
         root.add(particle);
 
-        var quad = new SQR.Transform();
-        quad.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
-        quad.shader = SQR.Shader(assets['color'])
-            .use()
-            .setUniform('uColor', [0, 0.2, 0.5]);
-        quad.position.set(w/6 * 2, h/2, -2);
-        root.add(quad);
+        // var quad = new SQR.Transform();
+        // quad.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
+        // quad.shader = SQR.Shader(assets['color'])
+        //     .use()
+        //     .setUniform('uColor', [0, 0.2, 0.5]);
+        // quad.position.set(w/6 * 2, h/2, -2);
+        // root.add(quad);
 
-        var sprite = new SQR.Transform();
-        sprite.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
-        sprite.shader = SQR.Shader(assets['sprite'])
-            .use()
-            .setUniform('uTexture', SQR.Texture(assets['play']));
-        sprite.position.set(w/6 * 2, h/2, 0);
-        sprite.setBlending(true);
-        root.add(sprite);
+        // var sprite = new SQR.Transform();
+        // sprite.buffer = SQR.Primitives.create2DQuad(-30, -30, 60, 60).update();
+        // sprite.shader = SQR.Shader(assets['sprite'])
+        //     .use()
+        //     .setUniform('uTexture', SQR.Texture(assets['play']));
+        // sprite.position.set(w/6 * 2, h/2, 0);
+        // sprite.setBlending(true);
+        // root.add(sprite);
 
         var sheet = SQR.SpriteSheet().layout(2, 100, 60).options({
             webglFlipY: true
@@ -113,32 +112,32 @@
             ctx.stroke();
         });
 
-        var animSprite = new SQR.Transform('anim-sprite');
-        animSprite.buffer = SQR.Primitives.create2DQuad(-30, -30, sheet.size, sheet.size).update();
-        animSprite.shader = SQR.Shader(assets['sprite-sheet']);
+        // var animSprite = new SQR.Transform('anim-sprite');
+        // animSprite.buffer = SQR.Primitives.create2DQuad(-30, -30, sheet.size, sheet.size).update();
+        // animSprite.shader = SQR.Shader(assets['sprite-sheet']);
 
-        animSprite.shader.use()
-            .setUniform('uTexture', SQR.Texture(sheet.canvas))
-            .setUniform('uSize', [sheet.cols, sheet.rows]);
+        // animSprite.shader.use()
+        //     .setUniform('uTexture', SQR.Texture(sheet.canvas))
+        //     .setUniform('uSize', [sheet.cols, sheet.rows]);
 
-        animSprite.position.set(w/6 * 3, h/2, 0);
-        animSprite.setBlending(true);
-        root.add(animSprite);
+        // animSprite.position.set(w/6 * 3, h/2, 0);
+        // animSprite.setBlending(true);
+        // root.add(animSprite);
 
-        var f = 0, setFrame = function() {
-            animSprite.shader.use().setUniform('uFrame', f);
-            f++;
-            if(f > sheet.numFrames) f = 0;
-        }
+        // var f = 0, setFrame = function() {
+        //     animSprite.shader.use().setUniform('uFrame', f);
+        //     f++;
+        //     if(f > sheet.numFrames) f = 0;
+        // }
 
-        setInterval(setFrame, 1000/30);
+        // setInterval(setFrame, 1000/30);
 
         var render = function() {
             requestAnimationFrame(render);
             ctx.clear();
-            quad.rotation.z += 0.1;
+            // quad.rotation.z += 0.1;
             // particle.rotation.z += 0.1; // can't rotate a particle!
-            sprite.rotation.z -= 0.1;
+            // sprite.rotation.z -= 0.1;
             // animSprite.rotation.z += 0.01;
             renderer.render(root, camera);
         }

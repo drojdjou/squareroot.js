@@ -93,7 +93,7 @@ var SQR = {
 	 *	@method v2
 	 *	@memberof SQR
 	 *
-	 *	Shorthand for { aPosition: 2 }
+	 *	Shorthand for { aPosition: 3 }
 	 */
 	v3: function() { return { aPosition: 3 }; },
 

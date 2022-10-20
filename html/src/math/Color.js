@@ -170,6 +170,7 @@ SQR.Color.prototype.lighten = function(v) {
  *	@returns {Object} a new SQR.Color instance
  */
 SQR.Color.prototype.clone = function() {
+	var c = this;
 	return new SQR.Color(c.r, c.g, c.b);
 }
 
