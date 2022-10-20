@@ -16,6 +16,7 @@
 <script type="text/javascript" src="../../src/common/Transform.js"></script>
 <script type="text/javascript" src="../../src/common/Texture.js"></script>
 
+<script type="text/javascript" src="../../src/math/Vector2.js"></script>
 <script type="text/javascript" src="../../src/math/Vector3.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix33.js"></script>
 <script type="text/javascript" src="../../src/math/Matrix44.js"></script>
@@ -23,6 +24,9 @@
 <script type="text/javascript" src="../../src/math/ProjectionMatrix.js"></script>
 
 <script type="text/javascript" src="../../src/dev/Debug.js"></script>
+<script type="text/javascript" src="../../src/primitives/Vertex.js"></script>
+<script type="text/javascript" src="../../src/primitives/Poly.js"></script>
+<script type="text/javascript" src="../../src/primitives/Mesh.js"></script>
 <script type="text/javascript" src="../../src/primitives/Plane.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../base.css">
@@ -107,20 +111,20 @@
         }
 
 
-        var background = new SQR.Transform();
-        background.useDepth = false;
-        background.buffer = SQR.Primitives.create2DQuad(0, 0, w, w);
+        // var background = new SQR.Transform();
+        // background.useDepth = false;
+        // background.buffer = SQR.Primitives.createPlane(100, 100);
 
-        var backgroundMatrix = new SQR.Matrix44(); 
-        backgroundMatrix.identity().multiply(new SQR.ProjectionMatrix().screenPixels2d()).translate(0, h/-2, 0);
+        // var backgroundMatrix = new SQR.Matrix44(); 
+        // backgroundMatrix.identity().multiply(new SQR.ProjectionMatrix().screenPixels2d()).translate(0, h/-2, 0);
 
-        background.shader = SQR.Shader(assets['background.glsl'])
-                .use()
-                .setUniform('uConcatMatrix', backgroundMatrix.data)
-                .setUniform('uTexture', SQR.Texture(assets['narrowpath.jpg']))
-                .attribPointers(background.buffer);
+        // background.shader = SQR.Shader(assets['background.glsl'])
+        //         .use()
+        //         .setUniform('uConcatMatrix', backgroundMatrix.data)
+        //         .setUniform('uTexture', SQR.Texture(assets['narrowpath.jpg']))
+        //         .attribPointers(background.buffer);
 
-        root.add(background);
+        // root.add(background);
 
         // SQR.Debug.traceBuffer(backgroundBuffer, true);
 

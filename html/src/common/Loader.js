@@ -100,10 +100,7 @@ SQR.Loader = {
 
 	    var onVideo = function(stream) {
 	    	video.srcObject = stream;
-
-			video.onloadedmetadata = () => { stream.play(); };
-
-			// video.play();
+			video.onloadedmetadata = () => { video.play(); };
 	        video.addEventListener('canplaythrough', videoReady, false);
 	    }
 
