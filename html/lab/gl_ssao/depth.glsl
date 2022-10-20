@@ -15,12 +15,13 @@ void main() {
 precision mediump float;
 #endif
 
-uniform float uFar;
-uniform float uNear;
+uniform float uDofFar;
+uniform float uDofNear;
 
 varying vec4 vPosition;
 
 void main() {
-	float w = (gl_FragCoord.z / gl_FragCoord.w - uNear) / (uFar - uNear);
+	float w = (gl_FragCoord.z / gl_FragCoord.w - uDofNear) / (uDofFar - uDofNear);
+	w = clamp(w, 0.0, 1.0);
 	gl_FragColor = vec4(w, w, w, 1.0);
 }

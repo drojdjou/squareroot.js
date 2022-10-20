@@ -183,6 +183,6 @@ void main(void)
   
   vec3 final = color * vec3(ao);
 
-  gl_FragColor = vec4(final,1.0); 
+  gl_FragColor = vec4(final, 1.0); 
   
 }

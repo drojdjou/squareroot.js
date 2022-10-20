@@ -51,6 +51,8 @@ SQR.Loader.loadAssets([
 
     var w = window.innerWidth, h = window.innerHeight;
 
+    var renderAO = true;
+
     var ctx = SQR.Context('#gl-canvas')
         .create()
         .size(w, h)
@@ -107,18 +109,14 @@ SQR.Loader.loadAssets([
 
     var depth = SQR.Shader(assets['depth.glsl'])
         .use()
-        .setUniform('uProjection', renderer.projection)
-        .setUniform('uNear', 0.3)
-        .setUniform('uFar',  40);  
+        .setUniform('uDofNear', 0.3)
+        .setUniform('uDofFar',  40);  
 
     var rawFBO = SQR.FrameBuffer(w, h);     
     var normalFBO = SQR.FrameBuffer(w, h);     
     var depthFBO = SQR.FrameBuffer(w, h);   
 
     var noise = SQR.Texture(SQR.TextureGenerator.noise(256)); 
-
-    var inverseProj = new SQR.ProjectionMatrix();
-    renderer.projection.inverse(inverseProj); 
 
     var sao = SQR.Primitives.createPostEffect(assets['sao.glsl']);
 
@@ -128,8 +126,6 @@ SQR.Loader.loadAssets([
         .setUniform('uTextureHeight', h);
 
     var my = 0.4, mx = 0.4, tx = mx, ty = my;
-
-    var renderAO = true;
 
     document.addEventListener('keydown', function(e) {
 
