@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>
-        
-        Matrix2D
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>Matrix2D<span class="signature">()</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -43,18 +40,18 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
+    
     <h4 class="name" id="Matrix2D"><span class="type-signature"></span>new Matrix2D<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    A matrix that implements 2D affine transformations. 
- Most of the method return the current instance for chaining.
+    <p>A matrix that implements 2D affine transformations.
+Most of the method return the current instance for chaining.</p>
 </div>
 
 
@@ -131,6 +128,10 @@
 
 
 
+
+
+
+
     
     </div>
 
@@ -140,7 +141,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -154,14 +157,16 @@
 
     
 
+    
     <h4 class="name" id="copyFrom"><span class="type-signature"></span>copyFrom<span class="signature">(m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Copies values from m into the current matrix
+    <p>Copies values from m into the current matrix</p>
 </div>
 
 
@@ -213,12 +218,13 @@
 
             
 
-            <td class="description last">matrix to copy values from. Can be  or {Float32Array}</td>
+            <td class="description last"><p>matrix to copy values from. Can be  or {Float32Array}</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -279,19 +285,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="copyTo"><span class="type-signature"></span>copyTo<span class="signature">(m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Copies current matrix values to m
+    <p>Copies current matrix values to m</p>
 </div>
 
 
@@ -343,12 +355,13 @@
 
             
 
-            <td class="description last">matrix to copy values to. Can be  or {Float32Array}</td>
+            <td class="description last"><p>matrix to copy values to. Can be  or {Float32Array}</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -409,19 +422,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="getTranslation"><span class="type-signature"></span>getTranslation<span class="signature">(v)</span><span class="type-signature"> &rarr; {<a href="SQR.V2.html">SQR.V2</a>}</span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Returns the translation value as 2d vector.
+    <p>Returns the translation value as 2d vector.</p>
 </div>
 
 
@@ -473,12 +492,13 @@
 
             
 
-            <td class="description last">vector to use to return values in, if ommited a new vector object is returned</td>
+            <td class="description last"><p>vector to use to return values in, if ommited a new vector object is returned</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -536,11 +556,13 @@
 
 
 
+
+
 <h5>Returns:</h5>
 
         
 <div class="param-desc">
-    2d vector with translation values
+    <p>2d vector with translation values</p>
 </div>
 
 
@@ -561,19 +583,23 @@
 
 
 
+
+
         
             
 
     
 
+    
     <h4 class="name" id="identity"><span class="type-signature"></span>identity<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Resets the matrix to identity values.
+    <p>Resets the matrix to identity values.</p>
 </div>
 
 
@@ -643,19 +669,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="multiply"><span class="type-signature"></span>multiply<span class="signature">(m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Multiples current matrix by m and stores result in current matrix.
+    <p>Multiples current matrix by m and stores result in current matrix.</p>
 </div>
 
 
@@ -702,12 +734,13 @@
 
             
 
-            <td class="description last">matrix to multiply the current matrix by</td>
+            <td class="description last"><p>matrix to multiply the current matrix by</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -768,19 +801,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="rotate"><span class="type-signature"></span>rotate<span class="signature">(a)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Applies rotation to matrix
+    <p>Applies rotation to matrix</p>
 </div>
 
 
@@ -827,12 +866,13 @@
 
             
 
-            <td class="description last">angle in radians</td>
+            <td class="description last"><p>angle in radians</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -893,19 +933,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="scale"><span class="type-signature"></span>scale<span class="signature">(sx, sy)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Applies scale to matrix
+    <p>Applies scale to matrix</p>
 </div>
 
 
@@ -952,7 +998,7 @@
 
             
 
-            <td class="description last">x scale</td>
+            <td class="description last"><p>x scale</p></td>
         </tr>
 
     
@@ -970,12 +1016,13 @@
 
             
 
-            <td class="description last">y scale</td>
+            <td class="description last"><p>y scale</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1036,19 +1083,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="setRotation"><span class="type-signature"></span>setRotation<span class="signature">(a, m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the rotation value.
+    <p>Sets the rotation value.</p>
 </div>
 
 
@@ -1095,7 +1148,7 @@
 
             
 
-            <td class="description last">angle in radians</td>
+            <td class="description last"><p>angle in radians</p></td>
         </tr>
 
     
@@ -1113,12 +1166,13 @@
 
             
 
-            <td class="description last">the matrix to set shear to, applies to `this` if ommited</td>
+            <td class="description last"><p>the matrix to set shear to, applies to <code>this</code> if ommited</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1179,19 +1233,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="setScale"><span class="type-signature"></span>setScale<span class="signature">(sx, sy, m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the scale values.
+    <p>Sets the scale values.</p>
 </div>
 
 
@@ -1238,7 +1298,7 @@
 
             
 
-            <td class="description last">x scale</td>
+            <td class="description last"><p>x scale</p></td>
         </tr>
 
     
@@ -1256,7 +1316,7 @@
 
             
 
-            <td class="description last">y scale</td>
+            <td class="description last"><p>y scale</p></td>
         </tr>
 
     
@@ -1274,12 +1334,13 @@
 
             
 
-            <td class="description last">the matrix to set scale to, applies to `this` if ommited</td>
+            <td class="description last"><p>the matrix to set scale to, applies to <code>this</code> if ommited</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1340,19 +1401,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="setShear"><span class="type-signature"></span>setShear<span class="signature">(sx, sy, m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the scale values.
+    <p>Sets the scale values.</p>
 </div>
 
 
@@ -1399,7 +1466,7 @@
 
             
 
-            <td class="description last">x shear</td>
+            <td class="description last"><p>x shear</p></td>
         </tr>
 
     
@@ -1417,7 +1484,7 @@
 
             
 
-            <td class="description last">y shear</td>
+            <td class="description last"><p>y shear</p></td>
         </tr>
 
     
@@ -1435,12 +1502,13 @@
 
             
 
-            <td class="description last">the matrix to set shear to, applies to `this` if ommited</td>
+            <td class="description last"><p>the matrix to set shear to, applies to <code>this</code> if ommited</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1501,19 +1569,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="setTranslation"><span class="type-signature"></span>setTranslation<span class="signature">(tx, ty, m)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the translation values.
+    <p>Sets the translation values.</p>
 </div>
 
 
@@ -1560,7 +1634,7 @@
 
             
 
-            <td class="description last">x translation</td>
+            <td class="description last"><p>x translation</p></td>
         </tr>
 
     
@@ -1578,7 +1652,7 @@
 
             
 
-            <td class="description last">y translation</td>
+            <td class="description last"><p>y translation</p></td>
         </tr>
 
     
@@ -1596,12 +1670,13 @@
 
             
 
-            <td class="description last">the matrix to set translation to, applies to this if ommited</td>
+            <td class="description last"><p>the matrix to set translation to, applies to this if ommited</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1662,19 +1737,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="setTRS"><span class="type-signature"></span>setTRS<span class="signature">(tx, ty, a, sx, sy)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the translation/rotation/scale values at once.
+    <p>Sets the translation/rotation/scale values at once.</p>
 </div>
 
 
@@ -1721,7 +1802,7 @@
 
             
 
-            <td class="description last">x translation</td>
+            <td class="description last"><p>x translation</p></td>
         </tr>
 
     
@@ -1739,7 +1820,7 @@
 
             
 
-            <td class="description last">y translation</td>
+            <td class="description last"><p>y translation</p></td>
         </tr>
 
     
@@ -1757,7 +1838,7 @@
 
             
 
-            <td class="description last">angle in radians</td>
+            <td class="description last"><p>angle in radians</p></td>
         </tr>
 
     
@@ -1775,7 +1856,7 @@
 
             
 
-            <td class="description last">x scale</td>
+            <td class="description last"><p>x scale</p></td>
         </tr>
 
     
@@ -1793,12 +1874,13 @@
 
             
 
-            <td class="description last">y scale</td>
+            <td class="description last"><p>y scale</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -1859,19 +1941,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="shear"><span class="type-signature"></span>shear<span class="signature">(sx, sy)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Applies shear to matrix
+    <p>Applies shear to matrix</p>
 </div>
 
 
@@ -1918,7 +2006,7 @@
 
             
 
-            <td class="description last">x shear</td>
+            <td class="description last"><p>x shear</p></td>
         </tr>
 
     
@@ -1936,12 +2024,13 @@
 
             
 
-            <td class="description last">y shear</td>
+            <td class="description last"><p>y shear</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -2002,19 +2091,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="transformVector"><span class="type-signature"></span>transformVector<span class="signature">(v)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Multiplies the vector by the matrix
+    <p>Multiplies the vector by the matrix</p>
 </div>
 
 
@@ -2061,12 +2156,13 @@
 
             
 
-            <td class="description last">vector to multiply</td>
+            <td class="description last"><p>vector to multiply</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -2124,11 +2220,13 @@
 
 
 
+
+
 <h5>Returns:</h5>
 
         
 <div class="param-desc">
-    the same vector as passed in the parameter, multiplied by this matrix
+    <p>the same vector as passed in the parameter, multiplied by this matrix</p>
 </div>
 
 
@@ -2137,19 +2235,23 @@
 
 
 
+
+
         
             
 
     
 
+    
     <h4 class="name" id="translate"><span class="type-signature"></span>translate<span class="signature">(tx, ty)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Applies translation to matrix
+    <p>Applies translation to matrix</p>
 </div>
 
 
@@ -2196,7 +2298,7 @@
 
             
 
-            <td class="description last">x translation</td>
+            <td class="description last"><p>x translation</p></td>
         </tr>
 
     
@@ -2214,12 +2316,13 @@
 
             
 
-            <td class="description last">y translation</td>
+            <td class="description last"><p>y translation</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -2280,6 +2383,10 @@
 
 
 
+
+
+
+
         
     
 
@@ -2296,13 +2403,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

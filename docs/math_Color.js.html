@@ -45,6 +45,13 @@ SQR.Color = function(r, g, b, a) {
 	if(typeof(r) == 'string') {
 		this.setHex(r);
 		this.a = (g == undefined) ? 1 : g; // if r is a hex color code, the next argument will be alpha
+	} else if(r &amp;&amp; r.r != undefined) {
+		this.setRGB(r.r, r.g, r.b);
+
+		if(r.a != undefined) this.a = r.a;
+		else if(g != undefined) this.a = g;
+		else this.a = 1; 
+
 	} else {
 		this.setRGB(r, g, b);
 		this.a = (a == undefined) ? 1 : a;
@@ -63,11 +70,12 @@ SQR.Color = function(r, g, b, a) {
  *
  *	@returns {Object} reference to this SQR.Color instance, for chaining
  */
-SQR.Color.prototype.setRGB = function(r, g, b) {
+SQR.Color.prototype.setRGB = function(r, g, b, a) {
 	var c = this;
 	c.r = r || 0;
 	c.g = g || 0;
 	c.b = b || 0;
+	c.a = a != null ? a : 1;
 	return c;
 }
 
@@ -95,6 +103,29 @@ SQR.Color.prototype.setHex = function(hex) {
 	c.r = (hex >> 16 &amp; 255 ) / 255;
 	c.g = (hex >> 8 &amp; 255) / 255;
 	c.b = (hex &amp; 255) / 255;
+	c.a = 1;
+
+	return c;
+}
+
+SQR.Color.prototype.setCSS = function(css) {
+
+	var c = this;
+
+	if(css.indexOf("#") > -1) {
+		this.setHex(css);
+	} else {
+		var v = css.match(/\(([^\)]+)\)/);
+		v = v[1].split(",");
+		
+		c.r = parseInt(v[0]) / 255;
+		c.g = parseInt(v[1]) / 255;
+		c.b = parseInt(v[2]) / 255;
+
+		var a = css.indexOf("a") > -1;
+		if(a) c.a = parseFloat(v[3]);
+		else c.a = 1;
+	}
 
 	return c;
 }
@@ -110,7 +141,21 @@ SQR.Color.prototype.toCSS = function() {
 	var ri = (c.r * 255) | 0;
 	var gi = (c.g * 255) | 0;
 	var bi = (c.b * 255) | 0;
-	return 'rgb(' + ri + ', ' + gi + ', ' + bi + ')';
+	var ai = (c.a &lt; 1) ? ', ' + c.a.toPrecision(2) : '';
+	var h =  (c.a &lt; 1) ? 'rgba' : 'rgb';
+	return h + '(' + ri + ', ' + gi + ', ' + bi + '' + ai + ')';
+}
+
+SQR.Color.prototype.toHex = function() {
+
+	var c = this;
+
+	var c2h = function(c) {
+		var hex = Math.round(c * 255).toString(16);
+		return hex.length == 1 ? "0" + hex : hex;
+	}
+
+	return "#" + c2h(c.r) + c2h(c.g) + c2h(c.b);
 }
 
 /**
@@ -223,13 +268,13 @@ SQR.Color.prototype.toUniform = function(type) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

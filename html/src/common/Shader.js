@@ -43,6 +43,8 @@ SQR.Shader = function(source, options) {
 
 		if(!s) throw "> SQR.Shader.parseGLSL - Shader source code missing";
 
+		s = s.replace(/\r/g, "");
+
 		var pp = "", pv = options ? options.directives : null;
 
 		if(pv && pv instanceof Array) {

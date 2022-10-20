@@ -29,7 +29,8 @@
 
 <article>
     <p>Shaders are fundamental building blocks for WebGL rendering. SQR does not provide any functionality similar to materials in other engines. Anything that is rendered on screen requires a custom shader. SQR does however include several features that make writing shaders easier, such as a rendering pipeline that sets up all the buffers and some built-in uniforms.</p>
-<h2>Sample shader</h2><p>Let's take a simple shader and analyze it step by step.</p>
+<h2>Sample shader</h2>
+<p>Let's take a simple shader and analyze it step by step.</p>
 <pre class="prettyprint source"><code>// normal2color.glsl
 //#vertex
 attribute vec3 aNormal;
@@ -41,7 +42,7 @@ uniform mat4 uProjection;
 uniform mat3 uNormalMatrix;
 
 varying vec3 vNormal;
-
+     
 void main() {
     vNormal = normalize(uNormalMatrix * aNormal);
     gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
@@ -51,34 +52,51 @@ void main() {
 #ifdef GL_ES
 precision highp float;
 #endif
-
+               
 varying vec3 vNormal;
-
+           
 void main() {
     gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);
-}</code></pre><p>First of all, in SQR the shader is typically defined in a separate file with an GLSL extension. This file contains both the vertext and the fragment shaders. Special comment format is used to instruct the the SQR shader compiler where the code for each shader is located.</p>
-<h3>Comments and SQR instructions</h3><p>Regular 1-line comments are allowed in GLSL files. Multiline comments are not supported, but a series of signle line comments will do the job ;) </p>
+}
+</code></pre>
+<p>First of all, in SQR the shader is typically defined in a separate file with an GLSL extension. This file contains both the vertext and the fragment shaders. Special comment format is used to instruct the the SQR shader compiler where the code for each shader is located.</p>
+<p>###Comments and SQR instructions
+Regular 1-line comments are allowed in GLSL files. Multiline comments are not supported, but a series of signle line comments will do the job ;)</p>
 <pre class="prettyprint source"><code>// A single line comment
-vec3 n = aNormal; // An inline comment</code></pre><p>SQR expects to find two special comments:</p>
-<pre class="prettyprint source"><code>//#vertex</code></pre><p>that marks the begining of the vertex shader and </p>
-<pre class="prettyprint source"><code>//#fragment</code></pre><p>that, as expected, marks the begining of the fragment shader code. </p>
+vec3 n = aNormal; // An inline comment
+</code></pre>
+<p>SQR expects to find two special comments:</p>
+<pre class="prettyprint source"><code>//#vertex
+</code></pre>
+<p>that marks the begining of the vertex shader and</p>
+<pre class="prettyprint source"><code>//#fragment
+</code></pre>
+<p>that, as expected, marks the begining of the fragment shader code.</p>
 <p><em>Mark that there is no space in those inscturtions. Inserting a space anywhere will make the compiler miss this instruction.</em></p>
 <p>By convention vertex shader code comes first, but it's not mandatory. Another special SQR instruction supported are includes:</p>
-<pre class="prettyprint source"><code>//#include lightingFunctions</code></pre><p>Includes are a powerful feature that allow shader code reuse. The way incldes for is that the compiler will look for a chunk of code stored under thename of the include (in the example above <code>lightingFunctions</code>) in two places:</p>
+<pre class="prettyprint source"><code>//#include lightingFunctions
+</code></pre>
+<p>Includes are a powerful feature that allow shader code reuse. The way incldes for is that the compiler will look for a chunk of code stored under thename of the include (in the example above <code>lightingFunctions</code>) in two places:</p>
 <ul>
 <li>in a global object called <code>SQR.GLSL</code>. In this case the incude will need to reside in a property <code>SQR.GLSL.lightingFunctions</code></li>
 <li>in the global list of assets loaded with <code>SQR.Loader</code>. This method will be deprecated soon though, so don't get used to it.</li>
 </ul>
-<h3>Atributes</h3><p>The vertex shader starts with a declaration of attributes that the shader expects:</p>
+<p>###Atributes
+The vertex shader starts with a declaration of attributes that the shader expects:</p>
 <pre class="prettyprint source"><code>attribute vec3 aNormal;
-attribute vec3 aPosition;</code></pre><p>In this case, the shader expects a geometry that has a 3d vector attribute for position and another one that defines a normal. It's important to understand that this shader will only work with a SQR.Buffer with a layout that defines those attributes in the same way. The buffer can have more attributes, ex. a set of UV coordinates and the shader does not have to make use of those. </p>
+attribute vec3 aPosition;
+</code></pre>
+<p>In this case, the shader expects a geometry that has a 3d vector attribute for position and another one that defines a normal. It's important to understand that this shader will only work with a SQR.Buffer with a layout that defines those attributes in the same way. The buffer can have more attributes, ex. a set of UV coordinates and the shader does not have to make use of those.</p>
 <p>During the rendering process, the engine will set the shader and the buffers ready ti be consumed in the the shader.</p>
-<h3>Uniforms</h3><p>Uniforms are variables that are set in a shader and used during drawing. They remain constan for every vertex within a single draw call, hence the name. Uniform can define a lot of properties of an object. In fact, a lot of material properties in any 3d software, such as color, shininness, light position, texture etc... would be uniforms in a context of a shader - so it's ok to think of uniforms as sort of 'material properties'.</p>
+<p>###Uniforms</p>
+<p>Uniforms are variables that are set in a shader and used during drawing. They remain constan for every vertex within a single draw call, hence the name. Uniform can define a lot of properties of an object. In fact, a lot of material properties in any 3d software, such as color, shininness, light position, texture etc... would be uniforms in a context of a shader - so it's ok to think of uniforms as sort of 'material properties'.</p>
 <p>A uniform can be defined in either the vertex shader or the fragment shader of both and it's definition looks like this:</p>
-<pre class="prettyprint source"><code>uniform vec3 uColor;</code></pre><p>This way the uniform variable uColor can be used inside the vertex or fragment functions.</p>
-<p>The values of the uniforms need to be set in Javascript. There are two ways of doing it. </p>
+<pre class="prettyprint source"><code>uniform vec3 uColor;
+</code></pre>
+<p>This way the uniform variable uColor can be used inside the vertex or fragment functions.</p>
+<p>The values of the uniforms need to be set in Javascript. There are two ways of doing it.</p>
 <p>First method is setting the value directly, using the <code>SQR.Shader.setUniform()</code> method (see <code>SQR.Shader</code> docs for details). This method is best for values that are either constant at all time or do not change for every object that is render using this shader. Imagine you have a hundred 3d objects all using the same texture or all lit but the same light - this are cases where <code>setUniform()</code> come in handy.</p>
-<p>In another scenario, you might have a hundred balls bouncing in your scene, and each ball would have a different color even thoug the all use the same shader (which is always a good idea - use as few shader as you can!). </p>
+<p>In another scenario, you might have a hundred balls bouncing in your scene, and each ball would have a different color even thoug the all use the same shader (which is always a good idea - use as few shader as you can!).</p>
 <p>In this case, it's easire to set the uniform per object, not per shader. This can be done by adding a <code>uniforms</code> property to an instance of <code>SQR.Transform</code>:</p>
 <pre class="prettyprint source"><code>var commonShader = SQR.Shader(shaderCode);
 var ballMesh = SQR.Primitives.createSphere(2);
@@ -90,14 +108,19 @@ for(var i = 0; i &lt; 100; i++) {
     t.buffer = ballMesh;
     t.uniforms = { uColor: [Math.random(), 0, 0] };
     root.add(t);
-}</code></pre><p>This code will create 100 balls and each will have a different tone of red color. Keep in mind the the <code>SQR.Transform</code> does not have a <code>uniforms</code> property by default. If you want to use it, you need to make one.</p>
-<h3>Built-in uniforms</h3><p>SQR offers a set of built in uniforms:</p>
+}
+</code></pre>
+<p>This code will create 100 balls and each will have a different tone of red color. Keep in mind the the <code>SQR.Transform</code> does not have a <code>uniforms</code> property by default. If you want to use it, you need to make one.</p>
+<p>###Built-in uniforms
+SQR offers a set of built in uniforms:</p>
 <pre class="prettyprint source"><code>uniform mat4 uMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjection;
 uniform mat3 uNormalMatrix;
 uniform float uTime;
-uniform vec3 uEyePosition;</code></pre><p>The uniforms are:</p>
+uniform vec3 uEyePosition;
+</code></pre>
+<p>The uniforms are:</p>
 <ul>
 <li><code>uMatrix</code> - object to world matrix</li>
 <li><code>uViewMatrix</code> - object to view matrix. The view matrix is a matrix where the camera is located at the center of the coordinate space facing forward. If the camera object is not moved anywhere in the scene from it's default position, the global and view matrices will be the same. This is also the case if the scene is rendered without a camera, which is common in orgothraphic or 2d rendering.</li>
@@ -108,14 +131,22 @@ uniform vec3 uEyePosition;</code></pre><p>The uniforms are:</p>
 </ul>
 <p>A typical shader for a 3d mesh will do the following transformations in the vertex shader:</p>
 <pre class="prettyprint source"><code>vNormal = normalize(uNormalMatrix * aNormal);
-gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);</code></pre><p>First, the normal is multiplied by the normal matrix and assigned to a varying (see below for varyings). The resulting vector is normalized to make sure it's fit for light/color calculations in the fragment shader (if the normals are normalized in JS, this step is not necessary).</p>
+gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);
+</code></pre>
+<p>First, the normal is multiplied by the normal matrix and assigned to a varying (see below for varyings). The resulting vector is normalized to make sure it's fit for light/color calculations in the fragment shader (if the normals are normalized in JS, this step is not necessary).</p>
 <p>The position is first multiplied by the view matrix, to bring the position from object space to view space. Then we multiply the vertex by the projection matrix to bring it into the clip space. The rest of the job, i.e. figuring out the screen space coordinates is handled by the WebGL rendering pipeline.</p>
 <p>Notice that the matrices require a 4 component vector for multiplication, but typically the position is defined in 3 component vectors. The is why a 4th component <code>w</code> is added before the operation. It should always be equal to <code>1.0</code>.</p>
-<h3>Varyings</h3><p>Varyings are variables passed from the vertex shader to the fragment shader. They are declared before the shader main function, ex. like this:</p>
-<pre class="prettyprint source"><code>varying vec3 vNormal;</code></pre><p>Notice that the same varying needs to be declared twice: in the vertex and in the fragment shader, otherwise the shader compiler will throw an error.</p>
-<h3>Fragment color</h3><p>The single purpose of the fragment shadetr is to calculate the color the current fragment - which is a fancy GL term for pixel (not quite, but it's good enough explanation for this purpose).</p>
-<p>Our simple shader takes the vertex normal value from the varying <code>vNormal</code> and derives a pixel color from it. </p>
-<pre class="prettyprint source"><code>gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);</code></pre><p>The little bit of offseting math is to make sure all face color values are positive even if the normal is facing in the negative direction.</p>
+<p>###Varyings</p>
+<p>Varyings are variables passed from the vertex shader to the fragment shader. They are declared before the shader main function, ex. like this:</p>
+<pre class="prettyprint source"><code>varying vec3 vNormal;
+</code></pre>
+<p>Notice that the same varying needs to be declared twice: in the vertex and in the fragment shader, otherwise the shader compiler will throw an error.</p>
+<p>###Fragment color</p>
+<p>The single purpose of the fragment shadetr is to calculate the color the current fragment - which is a fancy GL term for pixel (not quite, but it's good enough explanation for this purpose).</p>
+<p>Our simple shader takes the vertex normal value from the varying <code>vNormal</code> and derives a pixel color from it.</p>
+<pre class="prettyprint source"><code>gl_FragColor = vec4(vNormal * 0.5 + vec3(0.5), 1.0);
+</code></pre>
+<p>The little bit of offseting math is to make sure all face color values are positive even if the normal is facing in the negative direction.</p>
 </article>
 
 </section>
@@ -123,13 +154,13 @@ gl_Position = uProjection * uViewMatrix * vec4(aPosition, 1.0);</code></pre><p>F
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

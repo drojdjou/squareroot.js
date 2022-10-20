@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>
-        
-        Triangle
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>Triangle<span class="signature">(v1)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -43,18 +40,18 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
+    
     <h4 class="name" id="Triangle"><span class="type-signature"></span>new Triangle<span class="signature">(v1)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Represents a triangle composed on 3 vectors. 
-	Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.
+    <p>Represents a triangle composed on 3 vectors.
+Vectors can be of any size, though some of it methods only work with 2-dimensional vectors.</p>
 </div>
 
 
@@ -101,12 +98,13 @@
 
             
 
-            <td class="description last">Vector <a href="SQR.V2.html">SQR.V2</a> or <a href="SQR.V3.html">SQR.V3</a></td>
+            <td class="description last"><p>Vector <a href="SQR.V2.html">SQR.V2</a> or <a href="SQR.V3.html">SQR.V3</a></p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -154,7 +152,7 @@
 
             
 
-            <td class="description last">the centroid, undef until `calculateCentroid` is called.</td>
+            <td class="description last"><p>the centroid, undef until <code>calculateCentroid</code> is called.</p></td>
         </tr>
 
     
@@ -177,8 +175,8 @@
 
             
 
-            <td class="description last">the  radius of the 
-		circum-circle, undef until `calculateCircumCircle` is called.</td>
+            <td class="description last"><p>the  radius of the
+circum-circle, undef until <code>calculateCircumCircle</code> is called.</p></td>
         </tr>
 
     
@@ -201,8 +199,8 @@
 
             
 
-            <td class="description last">the center of the cirsum-circle, 
-		undef until `calculateCircumCircle` is called.</td>
+            <td class="description last"><p>the center of the cirsum-circle,
+undef until <code>calculateCircumCircle</code> is called.</p></td>
         </tr>
 
     
@@ -267,6 +265,10 @@
 
 
 
+
+
+
+
     
     </div>
 
@@ -276,7 +278,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -290,15 +294,17 @@
 
     
 
+    
     <h4 class="name" id="calculateCentroid"><span class="type-signature"></span>calculateCentroid<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Calculates the centroid for this triangle. Only works with 2d coordinates for now.
-	The resulting centroid is stored in the `centroid` property.
+    <p>Calculates the centroid for this triangle. Only works with 2d coordinates for now.
+The resulting centroid is stored in the <code>centroid</code> property.</p>
 </div>
 
 
@@ -368,24 +374,30 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="calculateCircumCircle"><span class="type-signature"></span>calculateCircumCircle<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Calculates circumcircle, only works with 2d coordinates.
-	<br><br>
-	Based on 
-	<a href="http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm">this</a>
-	and
-	<a href="http://www.exaflop.org/docs/cgafaq/cga1.html">this</a>.
+    <p>Calculates circumcircle, only works with 2d coordinates.
+<br><br>
+Based on
+<a href="http://jwilson.coe.uga.edu/emat6680/dunbar/assignment4/assignment4_kd.htm">this</a>
+and
+<a href="http://www.exaflop.org/docs/cgafaq/cga1.html">this</a>.</p>
 </div>
 
 
@@ -455,20 +467,26 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="vertexInCircumcircle"><span class="type-signature"></span>vertexInCircumcircle<span class="signature">(v)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Test whether the point v is inside the triangles circumcircle. 
-	If circum-circle was not calculated, calculateCircumCircle will be called first
+    <p>Test whether the point v is inside the triangles circumcircle.
+If circum-circle was not calculated, calculateCircumCircle will be called first</p>
 </div>
 
 
@@ -520,12 +538,13 @@
 
             
 
-            <td class="description last">vertex to be checked</td>
+            <td class="description last"><p>vertex to be checked</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -583,11 +602,13 @@
 
 
 
+
+
 <h5>Returns:</h5>
 
         
 <div class="param-desc">
-    true is vertex is in circumcircle
+    <p>true is vertex is in circumcircle</p>
 </div>
 
 
@@ -608,6 +629,8 @@
 
 
 
+
+
         
     
 
@@ -624,13 +647,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

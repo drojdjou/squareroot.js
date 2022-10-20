@@ -28,12 +28,16 @@
 </header>
 
 <article>
-    <h2>Buffers</h2><p>Buffer are a fundamental part of the engine - the define the shape of things to be rendered. The can do it in a variety of different ways. The shapes can be 3d meshes, triangles, lines or particles systems. The <code>SQR.Buffer</code> class allows you to create and manage any buffer possible. On top of that there is a utility called <code>SQR.Primitives</code> that has a bunch of functions to easily create primitives shapes such as cubes, spheres, cylinders etc...</p>
+    <p>##Buffers</p>
+<p>Buffer are a fundamental part of the engine - the define the shape of things to be rendered. The can do it in a variety of different ways. The shapes can be 3d meshes, triangles, lines or particles systems. The <code>SQR.Buffer</code> class allows you to create and manage any buffer possible. On top of that there is a utility called <code>SQR.Primitives</code> that has a bunch of functions to easily create primitives shapes such as cubes, spheres, cylinders etc...</p>
 <p>Please see this <a href="../tutorials/understanding-buffers.html">commented code</a> example for a very basic buffer setup.</p>
-<h2>Layouts</h2><p>The concept of a buffer layout is derived from WebGL strides. Strides are an alternative way to organize data in WebGL buffers.</p>
+<p>##Layouts</p>
+<p>The concept of a buffer layout is derived from WebGL strides. Strides are an alternative way to organize data in WebGL buffers.</p>
 <p>Typically every vertext attribute - such as position, normal or texture coordinate, is stored in a separate buffer. Stirdes allow to keep all the data in one buffer which is far more efficient. A stride represents all the attributes aligned one after the other in a pattern repeated as many times as the geometry has attributes.</p>
 <p>For example let's take a buffer that has the following layout:</p>
-<pre class="prettyprint source"><code>{ aPosition: 3, aColor: 3, aUV: 2 }</code></pre><p>This means that each vertex has 3 attributes: </p>
+<pre class="prettyprint source"><code>{ aPosition: 3, aColor: 3, aUV: 2 }
+</code></pre>
+<p>This means that each vertex has 3 attributes:</p>
 <ul>
 <li>a position defined in 3d space as x, y, z coordinates</li>
 <li>a color defined as r, g, b values</li>
@@ -45,15 +49,20 @@ SQR uses a convention for attribute naming. Every attribute name starts with a l
 -<code>aColor</code> the vertex color, either as a 3-component vector (rgb) or 4-component (rgba)</li>
 </ul>
 <p>After it is populated with data, the buffer array can look something like this:</p>
-<pre class="prettyprint source"><code>[192, 82, 54, 0, 0.4, 1.0, 0.1, 0.2 ...]</code></pre><p>The first 3 numbers are the position x, y, z <code>(192, 84, 54)</code>, the next 3 are the color <code>(0, 0.4, 1.0)</code> which defined a blue/green tint and the last two numbers represent the UV coordinte of this vertex. This pattern is repeated in the array for each vertext attribute. If the buffer has a size of 10 vertices, the array will have <code>(3 + 3 + 2) * 10 = 80</code> elements.</p>
+<pre class="prettyprint source"><code>[192, 82, 54, 0, 0.4, 1.0, 0.1, 0.2 ...]
+</code></pre>
+<p>The first 3 numbers are the position x, y, z <code>(192, 84, 54)</code>, the next 3 are the color <code>(0, 0.4, 1.0)</code> which defined a blue/green tint and the last two numbers represent the UV coordinte of this vertex. This pattern is repeated in the array for each vertext attribute. If the buffer has a size of 10 vertices, the array will have <code>(3 + 3 + 2) * 10 = 80</code> elements.</p>
 <p>Typically a buffer is created this way:</p>
-<pre class="prettyprint source"><code>var b = SQR.Buffer().layout({ aPosition: 3, aColor: 3 }, 1000);</code></pre><p>This sets up an SQR.Buffer instance with the given layout and a size of 1000. The actual size</p>
-<p>By default all the values in the buffer array are set to 0 and the WebGL buffer is NOT initialized, so rendering at this point will throw an error. Keep in mind this distinction: </p>
+<pre class="prettyprint source"><code>var b = SQR.Buffer().layout({ aPosition: 3, aColor: 3 }, 1000);
+</code></pre>
+<p>This sets up an SQR.Buffer instance with the given layout and a size of 1000. The actual size</p>
+<p>By default all the values in the buffer array are set to 0 and the WebGL buffer is NOT initialized, so rendering at this point will throw an error. Keep in mind this distinction:</p>
 <ul>
 <li>SQR.Buffer instance is an instance of the SQR.Buffer class</li>
 <li>WebGL buffer is a WebGL buffer object crearted with <code>gl.createBuffer()</code>. This object is used to transfer vertex data to the GPU. SQR.Buffer create and updates a WebGL buffer internally with the <code>update</code> method. After any changes to the data in the SQR.Buffer, <code>update</code> needs to be called to upload the new data to the GPU.</li>
 </ul>
-<h2>Data</h2><p>If we just call <code>update</code> on the buffer above, all the vertices will be uploaded to the GPU with the value 0. Rendering will not throw any error and if you're lucky you will see a point at 0,0,0 coordinates. Of course this is not the point. There are several ways to populate the buffer with meaningful data. </p>
+<p>##Data</p>
+<p>If we just call <code>update</code> on the buffer above, all the vertices will be uploaded to the GPU with the value 0. Rendering will not throw any error and if you're lucky you will see a point at 0,0,0 coordinates. Of course this is not the point. There are several ways to populate the buffer with meaningful data.</p>
 <p>For generative geometry, one possible method is the <code>interate</code> function. Here's how this could work for the above buffer:</p>
 <pre class="prettyprint source"><code>var v = new SQR.V3();
 b.iterate('aPosition', function(i, data, c) {
@@ -62,14 +71,18 @@ v.random().norm().mul(50);
     data[i+0] = v.x;
     data[i+1] = v.y;
     data[i+2] = v.z;
-});</code></pre><p>This will populate the the buffer with points randomly distributed on a sphere with a 50 unit radius.</p>
+});
+</code></pre>
+<p>This will populate the the buffer with points randomly distributed on a sphere with a 50 unit radius.</p>
 <p>Another case is loading geometry data exported from 3d authoring tools. Let's take a simple JSON format as example:</p>
 <pre class="prettyprint source"><code>var model = {
     &quot;vertices&quot;: [-0.3934088,1.648787....],
     &quot;normals&quot;: [-0.4570763,0.8326305,...],
     &quot;uv1&quot;: [0.5373289,0.6876651,0.5373289...],
     &quot;tris&quot;: [8182,1863,62,1862...]
-}</code></pre><p>It is composed of position (the <code>vertices</code> array), normals and texture coordinates (the <code>uv1</code> array). Typically meshes like this are indexed - the index values in this case are defined in the <code>tris</code> array. Indexed buffers are great for data optimization (even if they can be difficult to create manually), this is why most of the 3d authoring tools will export this way. </p>
+}
+</code></pre>
+<p>It is composed of position (the <code>vertices</code> array), normals and texture coordinates (the <code>uv1</code> array). Typically meshes like this are indexed - the index values in this case are defined in the <code>tris</code> array. Indexed buffers are great for data optimization (even if they can be difficult to create manually), this is why most of the 3d authoring tools will export this way.</p>
 <p>Here's how simple it is to create a buffer with the data from the model above:</p>
 <pre class="prettyprint source"><code>var b = SQR.Buffer()
     .layout(SQR.v3n3u2(), model.vertices.length / 3)
@@ -77,10 +90,15 @@ v.random().norm().mul(50);
     .data('aNormal',  model.normals)
     .data('aUV',  model.uv1)
     .index(model.tris)
-    .update();</code></pre><p>Notice the <code>SQR.v3n3u2()</code> function call which is a shorthand for saying:</p>
-<pre class="prettyprint source"><code>{ aPosition: 3, aNormal: 3, aUV: 2 }</code></pre><p>This one and a few similar functions are available in the top-level <code>SQR</code> object.</p>
+    .update();
+</code></pre>
+<p>Notice the <code>SQR.v3n3u2()</code> function call which is a shorthand for saying:</p>
+<pre class="prettyprint source"><code>{ aPosition: 3, aNormal: 3, aUV: 2 }
+</code></pre>
+<p>This one and a few similar functions are available in the top-level <code>SQR</code> object.</p>
 <p>Please note the ther is a function <code>SQR.Mesh.fromJSON</code> that helps you with loading meshes from J3D JSON files. It does more or less the same thng as the code snippet above and some more.</p>
-<h2>Drawing modes</h2><p>Following OpenGL, WebGL offers several ways to draw a buffer on screen. Here's a quick list of the 5 most common ones:</p>
+<p>##Drawing modes
+Following OpenGL, WebGL offers several ways to draw a buffer on screen. Here's a quick list of the 5 most common ones:</p>
 <ul>
 <li>Triangles (<code>gl.TRIANGLES</code>) is the default mode for SQR.Buffer. It will take the vertex data by group of 3 and draw a triangle between those points. Note that the triangle must face the camera to be drawn unless face culling in set to off (<code>gl.disable(gl.FACE_CULL)</code>). This means that the triangle vertices when looked at from the point of view of the camera are in clockwise order.</li>
 <li>Lines (<code>gl.LINES</code>) will take vertices 2 by 2 and draw a line between them. This mean that for 4 vertices there will be 2 lines, for 6 - there will be 3 etc..</li>
@@ -95,13 +113,13 @@ v.random().norm().mul(50);
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

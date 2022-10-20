@@ -37,14 +37,64 @@ SQR.Gyro = (function() {
 	var quaternion = { x:0, y:0, z:0, w:1 };
 	var gyro = {};
 	var gotReading = false;
+	var initialized = false;
 
-	gyro.getOrientation = function() {
+	var lastTime, deltaTime = 0, numReadings = 0, sumDelta = 0, maxFreq = 60; 
+	// if event fires less often than this, consider it beign to slow (60ms = 16.66Hz / fps)
+
+	gyro.getOrientation = function(dontinit, permissionFunc) {
+
+		if(!initialized &amp;&amp; !dontinit) {
+			if(permissionFunc) {
+				permissionFunc(init);
+			} else {
+				init();
+			}
+		}
+
 		return quaternion;
 	};
 
 	gyro.hasGyro = function() {
 		return gotReading;
 	};
+
+	gyro.isSlow = function() {
+		return initialized &amp;&amp; (numReadings &lt; 3 || gyro.delta() > maxFreq);
+	}
+
+	gyro.delta = function() {
+		return numReadings == 0 ? 0 : parseInt(sumDelta / numReadings);
+	}
+
+	gyro.externalProcess = function(alpha, beta, gamma, orientation) {
+		processGyroData(alpha, beta, gamma, orientation);
+	}	
+	
+	// -SHA
+	var offset = null;
+
+	gyro.getOffset = function() {
+		return offset ? offset : 0;
+	}
+
+	gyro.resetOffset = function() {
+		offset = null;
+	}
+
+	var calculateOffset = function() {
+		var q = quaternion;
+		var x = 2 * (q.x * q.z + q.w * q.y);
+		// var y = 2 * (q.y * q.z - q.w * q.x);
+		var z = 1 - 2 * (q.x * q.x + q.y * q.y);
+		return Math.atan2(z, x);
+	}
+
+	var logOffset = function(o, prefix) {
+		prefix = prefix || "";
+		var d = Math.round(o / Math.PI * 180);
+		console.log(prefix + 'gyro.offset: ' + d + 'deg (' + o + 'rad)');  
+	} 
 
 	var eulerToQuaternion = function(alpha, beta, gamma) {
 		var x = -beta, y = -alpha; z = gamma;
@@ -78,35 +128,57 @@ SQR.Gyro = (function() {
 		w: Math.cos(wo * 0.5),
 	};
 
-	var deviceOrientationListener = function (e) {
-
-		e.target.removeEventListener('deviceorientation', deviceOrientationListener, true);
-		e.target.addEventListener('deviceorientation', function(e) {
-
-			var raw = eulerToQuaternion(
-				e.alpha / 180 * Math.PI, 
-				e.beta / 180 * Math.PI, 
-				e.gamma / 180 * Math.PI
-			);
-
-			var wo = window.orientation / 180 * Math.PI;
-			var orientFix = {
-				x: 0,
-				y: 0,
-				z: Math.sin(wo * 0.5),
-				w: Math.cos(wo * 0.5)
-			};
-
-			quaternion = raw;
-			quaternion = quaternionMultiply(worldFix, quaternion);
-			quaternion = quaternionMultiply(orientFix, quaternion);
-
-			if(e.alpha != null) gotReading = true;
-
-		}, true);
+	var deviceOrientationListener = function(e) {
+		processGyroData(e.alpha, e.beta, e.gamma, window.orientation);		
 	}
 
-	window.addEventListener('deviceorientation', deviceOrientationListener, true);
+	var processGyroData = function(alpha, beta, gamma, orientation) {
+
+		if(lastTime) {
+			deltaTime = new Date().getTime() - lastTime;
+			numReadings++;
+			sumDelta += deltaTime;
+		}
+
+		lastTime = new Date().getTime();
+
+		if(alpha != null &amp;&amp; window.orientation != null) {
+			gotReading = true;
+		} else {
+			return;
+		}
+
+		var raw = eulerToQuaternion(
+			alpha / 180 * Math.PI, 
+			beta / 180 * Math.PI, 
+			gamma / 180 * Math.PI
+		);
+
+		var wo = window.orientation / 180 * Math.PI;
+		var orientFix = {
+			x: 0,
+			y: 0,
+			z: Math.sin(wo * 0.5),
+			w: Math.cos(wo * 0.5)
+		};
+
+		quaternion = raw;
+		quaternion = quaternionMultiply(worldFix, quaternion);
+		quaternion = quaternionMultiply(orientFix, quaternion);
+
+		if(offset == null &amp;&amp; numReadings > 2) {
+			offset = calculateOffset();
+			// logOffset(offset);
+		} else if(numReadings % 100 == 0) {
+			// logOffset(calculateOffset(), "----- ");
+		}
+	};
+
+	var init = function() {
+		window.addEventListener('deviceorientation', deviceOrientationListener, true);
+		initialized = true;
+		if(gyro.onInit) gyro.onInit();
+	}
 
 	return gyro;
 
@@ -120,13 +192,13 @@ SQR.Gyro = (function() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

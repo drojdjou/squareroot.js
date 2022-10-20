@@ -76,8 +76,10 @@ SQR.Loader = {
 	 *	@description Load an image file and return it's contents in the callback
 	 *	as Image object.
 	 */
-	loadImage: function(path, callback){
+	loadImage: function(path, callback, errorCallback){
 		var img = new Image();
+		img.crossOrigin = "Anonymous";
+
 		if(callback) {
 			var onload = function() {
 				img.removeEventListener('load', onload);
@@ -85,6 +87,17 @@ SQR.Loader = {
 			}
 			img.addEventListener('load', onload);
 		}
+
+		if(errorCallback) {
+			var onerror = function() {
+				img.src = '';
+				img.removeEventListener('error', onerror);
+				errorCallback(null, path);
+				return false;
+			}
+			img.addEventListener('error', onerror);
+		}
+
 		img.src = path;
 		return img;
 	},
@@ -114,9 +127,11 @@ SQR.Loader = {
 	    };
 
 	    var onVideo = function(stream) {
-	    	video.stream = stream;
-			video.src = window.URL.createObjectURL(stream);
-	        video.play();
+	    	video.srcObject = stream;
+
+			video.onloadedmetadata = () => { stream.play(); };
+
+			// video.play();
 	        video.addEventListener('canplaythrough', videoReady, false);
 	    }
 
@@ -191,8 +206,12 @@ SQR.Loader.loadAssets([
 	 *	The assets are passed as argument as in the example below.
 	 *	@param {function} progressCallback - called each time when on of the files is loaded
      */
-	loadAssets: function(paths, callback, progressCallback) {
+	loadAssets: function(paths, callback, progressCallback, options) {
+
+		options = options || {};
+
 		var toLoad = paths.length;
+		var assets = {};
 
 		if(toLoad == 0) {
 			if(progressCallback) progressCallback(1, 1);
@@ -200,11 +219,16 @@ SQR.Loader.loadAssets([
 			return;
 		}
 
-		SQR.Loader.assets = {};
 		var aliases = {}, includes = {};
 
+		var onShader = function(asset, p) {
+			SQR.GLSLInclude = SQR.GLSLInclude || {};
+			SQR.GLSLInclude[aliases[p]] = asset;
+			onAsset(asset, p);
+		}
+
 		var onAsset = function(asset, p) {
-			SQR.Loader.assets[aliases[p]] = asset;
+			assets[aliases[p]] = asset;
 			toLoad--;
 
 			if(progressCallback) {
@@ -212,7 +236,7 @@ SQR.Loader.loadAssets([
 			}
 
 			if(toLoad == 0) {
-				callback(SQR.Loader.assets);
+				callback(assets);
 			}
 		}
 		
@@ -222,16 +246,17 @@ SQR.Loader.loadAssets([
 			var hasAlias = typeof(p) != 'string';
 			var file = hasAlias ? p[0] : p;
 			var alias = hasAlias ? p[1] : p;
-			var fileType = file.substring(file.lastIndexOf('.') + 1);
+			var fileType = file.substring(file.lastIndexOf('.') + 1).toLowerCase();
 
 			aliases[file] = alias;
 			
 			switch(fileType) {
 				case 'glsl':
-					SQR.Loader.loadText(file, onAsset);
+					SQR.Loader.loadText(file, onShader);
 					break;
 				case 'png':
 				case 'jpg':
+				case 'jpeg':
 				case 'gif':
 					SQR.Loader.loadImage(file, onAsset);
 					break;
@@ -245,6 +270,9 @@ SQR.Loader.loadAssets([
 					break;
 				case 'webcam':
 					SQR.Loader.loadWebcam(onAsset);
+					break;
+				default:
+					console.warn("SQR.Loader / Unknown asset type: " + file);
 					break;
 			}
 		}
@@ -266,13 +294,13 @@ SQR.Loader.loadAssets([
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

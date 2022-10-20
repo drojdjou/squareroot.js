@@ -44,14 +44,15 @@
 	<article>
 		<h1>Squareroot.js</h1>
 
-		<p>Squareroot.js is a Javascript creative coding library based on the WebGL API. It is developed and maintained by <a href='http://holotype.co'>Holotype</a> and used in many of our <a href='http://holotype.co/work'>projects</a>.</p>
-
+		<p>Squareroot.js is a Javascript creative coding library based on the WebGL API. It was developed and is maintained by <a href='https://holotype.co'>Bartek Drozdz</a>.</p> 
+		
 		<p>Squareroot.js code was born out of many years of experience in building WebGL apps. It is written in a pragmatic way - with the goal of getting things done rather than complying to a praticular programming pattern or philosphy. It makes it very flexible, powerful and easy to use, once you get familiar with it.</a>
-
-		<p>The first version of this library was created 6 years ago - it was called <a href='https://github.com/drojdjou/J3D/'>J3D</a> back then. After that is was re-written from scratch... three times. Each iteration was was built with better understanding of the underlying WebGL API and the mathematics of 2d and 3d rendering.</p>
-
+		
+		<p>The first version of this library called <a href='https://github.com/drojdjou/J3D/'>J3D</a>. After that is was re-written from scratch... three times. Each iteration was was built with better understanding of the underlying WebGL API and the mathematics of 2d and 3d rendering.</p>
+		
 		<p>The structure is loosely based on Unity3d API, including the central concept of 'Transforms' as building blocks. It also features a Unity-to-WebGL exporter that can export meshes and skinned meshes, textures, animations and even entire scenes.</p>
-
+		
+		<p>The library was initially used in many of our <a href='https://holotype.co/work'>projects</a>, most notably it is used in the <a href="https://kuula.co">Kuula</a> as the basis for the 360 Virtual Tour player. Founded in 2016, Kuula is used by over 300,000 people woirldwide and hosts over 10 million panoramic photos (and counting!).</p>
 	</article>
 
 	<article>
@@ -93,17 +94,6 @@
 	</footer>
 
 </section>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-68827452-2', 'auto');
-  ga('send', 'pageview');
-
-</script>
 
 <script>
 if(location.host.indexOf('local') > -1 || location.host.indexOf('192.168') > -1) {

@@ -99,9 +99,11 @@ SQR.Loader = {
 	    };
 
 	    var onVideo = function(stream) {
-	    	video.stream = stream;
-			video.src = window.URL.createObjectURL(stream);
-	        video.play();
+	    	video.srcObject = stream;
+
+			video.onloadedmetadata = () => { stream.play(); };
+
+			// video.play();
 	        video.addEventListener('canplaythrough', videoReady, false);
 	    }
 

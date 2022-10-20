@@ -2,13 +2,13 @@
 
 A 2d/3d engine for WebGL and Canvas drawing and animation. 
 
-####Most important links
+#### Most important links
 
 - [Home page](http://sqr.holotype.co)
 - [Github repo](https://github.com/drojdjou/squareroot.js/)
 - [Examples and tests](../html/lab/)
 
-####Tutorials
+#### Tutorials
 
 - Getting Started tutorial {@tutorial basic-setup}
 - Understanding buffers {@tutorial understanding-buffers}
@@ -17,7 +17,7 @@ A 2d/3d engine for WebGL and Canvas drawing and animation.
 - 2d Canvas Rendering {@tutorial canvas-rendering}
 - C4D/Unity Bone Export HOWTO {@tutorial bone-export}
 
-####Workshops
+#### Workshops
 
 If you are running a web development company and would like me to come and make a presentation or workshop on WebGL, get in touch! Here is a sample presentation [WebGL basics presentation](../tutorials/gl-basics.html). 
 
@@ -28,7 +28,7 @@ If you are running a web development company and would like me to come and make 
 
 Guide:
 
-####GL 
+#### GL 
 
 Core WebGL rendering classes.
 
@@ -48,7 +48,7 @@ Canvas 2d rendering engine. See {@tutorial canvas-rendering} for details.
 - {@link SQR.CanvasRenderer} - a renderer to draw shapes on a 2d context
 - {@link SQR.SpriteSheet} - a utility to create sprite sheets for animation
 
-####Math
+#### Math
 
 All the math classes, incuding vectors, matrices and some other goodies.
     
@@ -64,7 +64,7 @@ All the math classes, incuding vectors, matrices and some other goodies.
 - {@link SQR.Spline} - a spline: multiple line segments smoothed with bezier function
 - {@link SQR.Delaunay} - delaunay triangulation utility
 
-####VR
+#### VR
 
 Highly experimental classes that should help build web based VR expriences.
 
@@ -72,7 +72,7 @@ Highly experimental classes that should help build web based VR expriences.
 - {@link SQR.VRPost} - a VR stereo post effect
 - {@link SQR.Gyro} - a gyroscope handler
 
-####Extras
+#### Extras
 
 Misc stuff. Some real gems can be found in here!
 

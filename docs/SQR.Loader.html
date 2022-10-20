@@ -29,10 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>
-        
-        Loader
-        </h2>
+            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>Loader</h2>
         
     
 </header>
@@ -41,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Utility to load different types of files (and also some WebRTC related stuff, see below)</div>
+            <div class="description"><p>Utility to load different types of files (and also some WebRTC related stuff, see below)</p></div>
         
 
         
@@ -98,7 +95,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -112,14 +111,16 @@
 
     
 
+    
     <h4 class="name" id=".load"><span class="type-signature">(static) </span>load<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Load a text file and return it's contents in the callback.
+    <p>Load a text file and return it's contents in the callback.</p>
 </div>
 
 
@@ -189,19 +190,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id=".loadAssets"><span class="type-signature">(static) </span>loadAssets<span class="signature">(paths, callback, progressCallback)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Load multiple assets of type:
+    <p>Load multiple assets of type:</p>
  <ul>
 		<li>text, including GLSL code</li>
 		<li>JSON, including model, geometry, scene. etc...</li>
@@ -209,11 +216,11 @@
 		<li>webcam (it will initiate the webcam,
 		ask user for permisions, and return a ready to use stream)</li>
 	</ul>
-	
-	Each file will be availabke from the asset object passed to the callback
-	under it's name, ex. assets['normal2color.glsl']
-	It's also possible ot specify an alias. Instead of a String, 
-	use an Array, where [0] is the path, and [1] is the alias.
+<pre><code>Each file will be availabke from the asset object passed to the callback
+under it's name, ex. assets['normal2color.glsl']
+It's also possible ot specify an alias. Instead of a String, 
+use an Array, where [0] is the path, and [1] is the alias.
+</code></pre>
 </div>
 
 
@@ -265,7 +272,7 @@
 
             
 
-            <td class="description last">list of file paths (with optinal aliases) to load, as in example below.</td>
+            <td class="description last"><p>list of file paths (with optinal aliases) to load, as in example below.</p></td>
         </tr>
 
     
@@ -288,8 +295,8 @@
 
             
 
-            <td class="description last">called when all the files are loaded. 
-	The assets are passed as argument as in the example below.</td>
+            <td class="description last"><p>called when all the files are loaded.
+The assets are passed as argument as in the example below.</p></td>
         </tr>
 
     
@@ -312,12 +319,13 @@
 
             
 
-            <td class="description last">called each time when on of the files is loaded</td>
+            <td class="description last"><p>called each time when on of the files is loaded</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -352,7 +360,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line132">line 132</a>
+        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line147">line 147</a>
     </li></ul></dd>
     
 
@@ -362,6 +370,10 @@
 
     
 </dl>
+
+
+
+
 
 
 
@@ -387,9 +399,7 @@
 	'webcam' // special case, but useful :)
 ], function(assets) {
 	var image = assets['image'];
-});
-
-	</code></pre>
+});	</code></pre>
 
 
 
@@ -398,15 +408,17 @@
 
     
 
+    
     <h4 class="name" id=".loadImage"><span class="type-signature">(static) </span>loadImage<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Load an image file and return it's contents in the callback
-	as Image object.
+    <p>Load an image file and return it's contents in the callback
+as Image object.</p>
 </div>
 
 
@@ -476,20 +488,26 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id=".loadJSON"><span class="type-signature">(static) </span>loadJSON<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Load a JSON file and return it's contents in the callback.
-	This function will parse the JSON data for you and return an Object.
+    <p>Load a JSON file and return it's contents in the callback.
+This function will parse the JSON data for you and return an Object.</p>
 </div>
 
 
@@ -559,19 +577,25 @@
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id=".loadVideo"><span class="type-signature">(static) </span>loadVideo<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Preload a video so that it can be used as a texture (typically)
+    <p>Preload a video so that it can be used as a texture (typically)</p>
 </div>
 
 
@@ -615,7 +639,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line107">line 107</a>
+        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line122">line 122</a>
     </li></ul></dd>
     
 
@@ -625,6 +649,10 @@
 
     
 </dl>
+
+
+
+
 
 
 
@@ -646,14 +674,16 @@
 
     
 
+    
     <h4 class="name" id=".loadWebcam"><span class="type-signature">(static) </span>loadWebcam<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Initiate user stream (webcam).
+    <p>Initiate user stream (webcam).</p>
 </div>
 
 
@@ -697,7 +727,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line64">line 64</a>
+        <a href="common_Loader.js.html">common/Loader.js</a>, <a href="common_Loader.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -707,6 +737,10 @@
 
     
 </dl>
+
+
+
+
 
 
 
@@ -739,13 +773,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

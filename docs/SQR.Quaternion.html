@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>
-        
-        Quaternion
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="SQR.html">SQR</a>.</span>Quaternion<span class="signature">()</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -43,20 +40,19 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
+    
     <h4 class="name" id="Quaternion"><span class="type-signature"></span>new Quaternion<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Represents a quaternion with optionally setting the values directly.
-
- Just as a reminder, given an angle `a` and an axis `x,y,z` 
- this is what the quaternion values are:
+    <p>Represents a quaternion with optionally setting the values directly.</p>
+<p>Just as a reminder, given an angle <code>a</code> and an axis <code>x,y,z</code>
+this is what the quaternion values are:</p>
 </div>
 
 
@@ -125,6 +121,10 @@
 
 
 
+
+
+
+
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>var q = new SQR.Quaternion();
@@ -145,7 +145,9 @@ q.w = Math.cos(a / 2);</code></pre>
 
     
 
-     
+    
+
+    
 
     
 
@@ -159,14 +161,16 @@ q.w = Math.cos(a / 2);</code></pre>
 
     
 
+    
     <h4 class="name" id=".slerp"><span class="type-signature">(static) </span>slerp<span class="signature">(qa, qb, t, qr)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Returns a spherical linear interpolation between two quaternions.
+    <p>Returns a spherical linear interpolation between two quaternions.</p>
 </div>
 
 
@@ -213,7 +217,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">first quaternion</td>
+            <td class="description last"><p>first quaternion</p></td>
         </tr>
 
     
@@ -231,7 +235,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">second quaternion</td>
+            <td class="description last"><p>second quaternion</p></td>
         </tr>
 
     
@@ -249,7 +253,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">interpolation value [0-1]</td>
+            <td class="description last"><p>interpolation value [0-1]</p></td>
         </tr>
 
     
@@ -267,12 +271,13 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">the quaterion to store the results in and return. If omitted results are returned in a new quaternion object.</td>
+            <td class="description last"><p>the quaterion to store the results in and return. If omitted results are returned in a new quaternion object.</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -307,7 +312,7 @@ q.w = Math.cos(a / 2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line243">line 243</a>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line261">line 261</a>
     </li></ul></dd>
     
 
@@ -333,19 +338,25 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="copyFrom"><span class="type-signature"></span>copyFrom<span class="signature">(q)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Copy the values from another quaternion.
+    <p>Copy the values from another quaternion.</p>
 </div>
 
 
@@ -392,12 +403,13 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">the quaternion to copy values from</td>
+            <td class="description last"><p>the quaternion to copy values from</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -458,19 +470,25 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="fromAngleAxis"><span class="type-signature"></span>fromAngleAxis<span class="signature">(a, x, y, z)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Creates a quaternion out of an angle axis representation.
+    <p>Creates a quaternion out of an angle axis representation.</p>
 </div>
 
 
@@ -517,7 +535,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">angle in radians</td>
+            <td class="description last"><p>angle in radians</p></td>
         </tr>
 
     
@@ -535,7 +553,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">x component of the axis</td>
+            <td class="description last"><p>x component of the axis</p></td>
         </tr>
 
     
@@ -553,7 +571,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">y component of the axis</td>
+            <td class="description last"><p>y component of the axis</p></td>
         </tr>
 
     
@@ -571,12 +589,13 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">z component of the axis</td>
+            <td class="description last"><p>z component of the axis</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -611,7 +630,7 @@ q.w = Math.cos(a / 2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line129">line 129</a>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -637,19 +656,25 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="identity"><span class="type-signature"></span>identity<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Resets the quaternion values to identity.
+    <p>Resets the quaternion values to identity.</p>
 </div>
 
 
@@ -693,7 +718,7 @@ q.w = Math.cos(a / 2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line55">line 55</a>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -719,19 +744,113 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
-    <h4 class="name" id="lookAt"><span class="type-signature"></span>lookAt<span class="signature">(_dir, _up)</span><span class="type-signature"></span></h4>
+    
+    <h4 class="name" id="inverse"><span class="type-signature"></span>inverse<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Sets the quaternion to point in the given direction.
+    <p>Inverses the quaternion.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line179">line 179</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="lookAt"><span class="type-signature"></span>lookAt<span class="signature">(_dir, _up)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Sets the quaternion to point in the given direction.</p>
 </div>
 
 
@@ -778,7 +897,7 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">the direction to look at</td>
+            <td class="description last"><p>the direction to look at</p></td>
         </tr>
 
     
@@ -796,12 +915,13 @@ q.w = Math.cos(a / 2);</code></pre>
 
             
 
-            <td class="description last">the up vector</td>
+            <td class="description last"><p>the up vector</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
 
 
 
@@ -836,7 +956,7 @@ q.w = Math.cos(a / 2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line89">line 89</a>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -862,326 +982,25 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="mag"><span class="type-signature"></span>mag<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Returns the magniture of the quaternion.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line141">line 141</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="mul"><span class="type-signature"></span>mul<span class="signature">(q, rq)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Multiplies rq (or this if no rq) by q
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>q</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rq</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if not defined this is multiplied by q</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line65">line 65</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="neg"><span class="type-signature"></span>neg<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Inverses the quaternion.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line161">line 161</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="normalize"><span class="type-signature"></span>normalize<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Normalizes the quaternion.
+    <p>Returns the magniture of the quaternion.</p>
 </div>
 
 
@@ -1251,19 +1070,351 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
-    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    <h4 class="name" id="mul"><span class="type-signature"></span>mul<span class="signature">(q, rq)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Set value of the Quaternion directly.
+    <p>Multiplies rq (or this if no rq) by q</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>q</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rq</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>if not defined this is multiplied by q</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line72">line 72</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="neg"><span class="type-signature"></span>neg<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Negates the quaternion.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="normalize"><span class="type-signature"></span>normalize<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Normalizes the quaternion.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line155">line 155</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Set value of the Quaternion directly.</p>
 </div>
 
 
@@ -1333,21 +1484,27 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
             
 
     
 
+    
     <h4 class="name" id="toMatrix"><span class="type-signature"></span>toMatrix<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    That method doesn't do anything. 
- Check {SQR.Matrix44.TQS()} to see how to turn a 
- Quanternion into a matrix representation.
+    <p>That method doesn't do anything.
+Check {SQR.Matrix44.TQS()} to see how to turn a
+Quanternion into a matrix representation.</p>
 </div>
 
 
@@ -1391,7 +1548,7 @@ q.w = Math.cos(a / 2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line176">line 176</a>
+        <a href="math_Quaternion.js.html">math/Quaternion.js</a>, <a href="math_Quaternion.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -1424,6 +1581,10 @@ q.w = Math.cos(a / 2);</code></pre>
 
 
 
+
+
+
+
         
     
 
@@ -1440,13 +1601,13 @@ q.w = Math.cos(a / 2);</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

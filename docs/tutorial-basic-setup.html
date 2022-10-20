@@ -28,18 +28,29 @@
 </header>
 
 <article>
-    <h3>Basic scene setup</h3><p>See the below code in action <a href="../tutorials/basic-setup.php">here</a>.</p>
-<p>To start, load all the files you need using. Each file will be available  from the asset object pasesd into the <code>onAssets</code> callback under it's name, ex. <code>assets['normal2color.glsl']</code>. </p>
+    <h3>Basic scene setup</h3>
+<p>See the below code in action <a href="../tutorials/basic-setup.php">here</a>.</p>
+<p>To start, load all the files you need using. Each file will be available  from the asset object pasesd into the <code>onAssets</code> callback under it's name, ex. <code>assets['normal2color.glsl']</code>.</p>
 <p>It's possible ot specify an alias: instead of a String, use an Array, where [0]is the path, and [1] is the alias:</p>
 <pre class="prettyprint source"><code>SQR.Loader.loadAssets([
     ['normal2color.glsl', 'n2c'],
-], onAssets);</code></pre><p>When the assets are loaded, the <code>onAssets</code> function will be invoked:</p>
-<pre class="prettyprint source"><code>var onAssets = function(assets) {</code></pre><p>Create the renderer based on the #id of the canvas element.</p>
-<pre class="prettyprint source"><code>var renderer = SQR.Renderer('#gl-canvas');</code></pre><p>There is no 'scene' object in SQR. The renderer takes any transform and renderes this transform and all it's childrend. It makes it very flexible as you can ex render a part of the scene any time. Let's create a root transform that will hold our entire scene:</p>
-<pre class="prettyprint source"><code>var root = SQR.Transform();</code></pre><p>In the same way as there is no special object for 'scene' there isn't one for a 'camera'. The camera is just another transform. Just make sure that it's added to the root (or any of it's children)if you want to move the camera around (otherwise the scene will render always as if the camera was 0,0,0)</p>
+], onAssets);
+</code></pre>
+<p>When the assets are loaded, the <code>onAssets</code> function will be invoked:</p>
+<pre class="prettyprint source"><code>var onAssets = function(assets) {
+</code></pre>
+<p>Create the renderer based on the #id of the canvas element.</p>
+<pre class="prettyprint source"><code>var renderer = SQR.Renderer('#gl-canvas');
+</code></pre>
+<p>There is no 'scene' object in SQR. The renderer takes any transform and renderes this transform and all it's childrend. It makes it very flexible as you can ex render a part of the scene any time. Let's create a root transform that will hold our entire scene:</p>
+<pre class="prettyprint source"><code>var root = SQR.Transform(); 
+</code></pre>
+<p>In the same way as there is no special object for 'scene' there isn't one for a 'camera'. The camera is just another transform. Just make sure that it's added to the root (or any of it's children)if you want to move the camera around (otherwise the scene will render always as if the camera was 0,0,0)</p>
 <pre class="prettyprint source"><code>var camera = SQR.Transform();
 camera.position.z = 5;
-root.add(camera);</code></pre><p>Now let's move on and handle the viewport size and a projection matrix. Those to things are linked together and both are modified inside the resize handler. At the end we register the listener and call it once for start.</p>
+root.add(camera);
+</code></pre>
+<p>Now let's move on and handle the viewport size and a projection matrix. Those to things are linked together and both are modified inside the resize handler. At the end we register the listener and call it once for start.</p>
 <pre class="prettyprint source"><code>var resize =function() {
     var w = window.innerWidth, h = window.innerHeight, aspect = w/h;
     ctx.size(w, h);
@@ -47,11 +58,15 @@ root.add(camera);</code></pre><p>Now let's move on and handle the viewport size 
 }
 
 window.addEventListener('resize', resize);
-resize();</code></pre><p>Now the fun begins. Let's add an object.</p>
+resize();
+</code></pre>
+<p>Now the fun begins. Let's add an object.</p>
 <pre class="prettyprint source"><code>var cube = SQR.Transform();
 cube.buffer = SQR.Primitives.createCube(2, 2, 2)
 cube.shader = SQR.Shader(assets.n2c);
-root.add(cube);</code></pre><p>A lot happens here, so let's go line-by-line:</p>
+root.add(cube);
+</code></pre>
+<p>A lot happens here, so let's go line-by-line:</p>
 <ul>
 <li>first create an empty transform A SQR.Transform is just a point in space - it has position, rotation and scale but no shape. To render a shape you need to attach a buffer and a shader to the transform</li>
 <li>the buffer is a cube created using the <code>createCube</code> function available from the Primitives object.</li>
@@ -65,9 +80,12 @@ root.add(cube);</code></pre><p>A lot happens here, so let's go line-by-line:</p>
     cube.rotation.y += 0.02;
     renderer.render(root, camera);
 }
-render();</code></pre><p>We render the scene from the root transform up, directly to screen using the <code>camera</code> as point of view. The cube is also rotated a bit on every frame which create a simple animation.</p>
+render();
+</code></pre>
+<p>We render the scene from the root transform up, directly to screen using the <code>camera</code> as point of view. The cube is also rotated a bit on every frame which create a simple animation.</p>
 <p>Finally, do not forget to close the function bracket!</p>
-<pre class="prettyprint source"><code>};</code></pre>
+<pre class="prettyprint source"><code>};
+</code></pre>
 </article>
 
 </section>
@@ -75,13 +93,13 @@ render();</code></pre><p>We render the scene from the root transform up, directl
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Tutorials</h3><ul><li>basic-setup</li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="SQR.html">SQR</a></li><li><a href="SQR.GeometryTools.html">GeometryTools</a></li><li><a href="SQR.GLSL.html">GLSL</a></li><li><a href="SQR.Interpolation.html">Interpolation</a></li><li><a href="SQR.Intersection.html">Intersection</a></li><li><a href="SQR.Loader.html">Loader</a></li><li><a href="SQR.Mesh.html">Mesh</a></li><li><a href="SQR.Primitives.html">Primitives</a></li><li><a href="SQR.SceneParser.html">SceneParser</a></li></ul><h3>Classes</h3><ul><li><a href="SQR.Animation.html">Animation</a></li><li><a href="SQR.Bezier.html">Bezier</a></li><li><a href="SQR.Buffer.html">Buffer</a></li><li><a href="SQR.CanvasRenderer.html">CanvasRenderer</a></li><li><a href="SQR.Clip.html">Clip</a></li><li><a href="SQR.Collider.html">Collider</a></li><li><a href="SQR.Color.html">Color</a></li><li><a href="SQR.Context.html">Context</a></li><li><a href="SQR.ConvexHull.html">ConvexHull</a></li><li><a href="SQR.Cubemap.html">Cubemap</a></li><li><a href="SQR.Delaunay.html">Delaunay</a></li><li><a href="SQR.Face.html">Face</a></li><li><a href="SQR.FrameBuffer.html">FrameBuffer</a></li><li><a href="SQR.Gyro.html">Gyro</a></li><li><a href="SQR.Matrix2D.html">Matrix2D</a></li><li><a href="SQR.Matrix33.html">Matrix33</a></li><li><a href="SQR.Matrix44.html">Matrix44</a></li><li><a href="SQR.PerlinNoise.html">PerlinNoise</a></li><li><a href="SQR.PerlinTexture.html">PerlinTexture</a></li><li><a href="SQR.ProjectionMatrix.html">ProjectionMatrix</a></li><li><a href="SQR.Quaternion.html">Quaternion</a></li><li><a href="SQR.Ray.html">Ray</a></li><li><a href="SQR.Renderer.html">Renderer</a></li><li><a href="SQR.Shader.html">Shader</a></li><li><a href="SQR.Spline.html">Spline</a></li><li><a href="SQR.SpriteSheet.html">SpriteSheet</a></li><li><a href="SQR.Texture.html">Texture</a></li><li><a href="SQR.TextureGenerator.html">TextureGenerator</a></li><li><a href="SQR.Trackball.html">Trackball</a></li><li><a href="SQR.Transform.html">Transform</a></li><li><a href="SQR.Transform2d.html">Transform2d</a></li><li><a href="SQR.Triangle.html">Triangle</a></li><li><a href="SQR.V2.html">V2</a></li><li><a href="SQR.V3.html">V3</a></li><li><a href="SQR.VRApp.html">VRApp</a></li><li><a href="SQR.VRPost.html">VRPost</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-basic-setup.html">basic-setup</a></li><li><a href="tutorial-bone-export.html">bone-export</a></li><li><a href="tutorial-canvas-rendering.html">canvas-rendering</a></li><li><a href="tutorial-home.html">home</a></li><li><a href="tutorial-post-effects.html">post-effects</a></li><li><a href="tutorial-understanding-buffers.html">understanding-buffers</a></li><li><a href="tutorial-understanding-shaders.html">understanding-shaders</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Nov 09 2015 18:46:59 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Oct 20 2022 12:37:29 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

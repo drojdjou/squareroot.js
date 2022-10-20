@@ -68,6 +68,8 @@ var jsifyShaders = function(folder) {
 		var docs = null;
 
 		var file = fs.readFileSync(f).toString();
+
+		file = file.replace(/\r/g, "");
 				
 		// Extract the docs
 		var d = file.match(/\/\*#docs([^\*]*)\*\//);

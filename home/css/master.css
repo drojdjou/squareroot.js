@@ -5,7 +5,7 @@ body {
   font-weight: 300;
   font-size: 15px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  font-smooth: antialiased;
 }
 @media (min-width: 800px) {
   body {
@@ -72,7 +72,7 @@ ul {
   font-weight: 700;
   font-size: 28px;
   letter-spacing: 0.05em;
-  -webkit-font-smoothing: subpixel-antialiased;
+  font-smooth: subpixel-antialiased;
   text-transform: uppercase;
   margin: 32px 0 16px 0;
 }
@@ -81,7 +81,7 @@ ul {
   font-weight: 300;
   font-size: 15px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  font-smooth: antialiased;
   margin: 16px 0 16px 0;
 }
 @media (min-width: 800px) {
