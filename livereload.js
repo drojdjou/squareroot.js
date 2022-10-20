@@ -9,7 +9,7 @@ var fs = require('fs');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix');
 
 var GLSL_HOME = __dirname + '/html/src/glsl/builtin/';
-var LRPORT = 35734;
+var LRPORT = 35934;
 var SHADER_REPO_BASE = 'https://github.com/drojdjou/squareroot.js/tree/master/html/src/glsl/builtin/';
 
 var compileLessFile = function(name) {
@@ -134,14 +134,14 @@ var rebuildShaders = function(event, filename) {
 // watch('dev/less', recompileStyles);
 // watch('dev/glsl', rebuildShaders);
 
-// chokidar.watch('dev/less', {ignored: /[\/\\]\./}).on('all', recompileStyles);
+chokidar.watch('dev/less', {ignored: /[\/\\]\./}).on('all', recompileStyles);
 chokidar.watch(GLSL_HOME, {ignored: /[\/\\]\./}).on('all', rebuildShaders);
 
-// var lrserver = livereload.createServer({ port: LRPORT });
-// lrserver.watch(__dirname + "/dev");
+var lrserver = livereload.createServer({ port: LRPORT });
+lrserver.watch(__dirname + "/dev");
 
-console.log('> Server ready', 'Version: ', VERSION); 
-// console.log('LR is running at port ', LRPORT);
+console.log('> Server ready', 'Version: ', VERSION, 'Post: ', LRPORT); 
+console.log('LR is running at port ', LRPORT);
 console.log('GLSL is watching', GLSL_HOME);
 
 

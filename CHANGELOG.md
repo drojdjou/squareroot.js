@@ -532,3 +532,9 @@ Added handler for Permissions API in Gyro
 
 Added jpeg extension to Loader (with an 'e')
 
+
+##### v3.0 b 264
+*Oct 20th 2022*
+
+Rebuilding after a longer pause!
+
