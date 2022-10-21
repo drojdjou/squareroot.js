@@ -43,7 +43,7 @@
 	], function(assets) {
 
 		var w, h;
-		var numDots = 100000;
+		var numDots = 200000;
 
 		var ctx = SQR.Context('#gl-canvas').create().clearColor(0, 0, 0, 1);
 
@@ -74,7 +74,7 @@
 		});
 
 		var isMouseDown = true;
-		var index = 0, dotsPerFrame = 30;
+		var index = 0, dotsPerFrame = 100;
 
 		var render = function() {
 
@@ -84,7 +84,7 @@
 			if(isMouseDown) {
 
 				for(var i = 0; i < dotsPerFrame; i++) {
-					mouse.lerp(mouseTarget, mouse, 0.9);
+					mouse.lerp(mouseTarget, mouse, 0.99);
 
 					dots.buffer.set('aPosition', index, 
 						mouse.x + r(10), 
@@ -120,7 +120,7 @@
 		var dots = new SQR.Transform();
 
 		dots.buffer = SQR.Buffer()
-			.layout({ aPosition: 2, aBirth: 1, aEnergy: 2, aSize: 1 }, numDots)
+			.layout({ aPosition: 2, aBirth: 1, aEnergy: 2, aSize: 1, aColor: 3 }, numDots)
 			.iterate('aEnergy', function(i, data) {
 				data[i+0] = (r() * 2 - 1) * 0.1;
 				data[i+1] = r() * 0.08;
@@ -130,6 +130,11 @@
 			})
 			.iterate('aSize', function(i, data) {
 				data[i+0] =  r();
+			})
+			.iterate('aColor', function(i, data) {
+				data[i+0] =  0.5 + r(0.5);
+				data[i+1] =  r(0.5);
+				data[i+2] =  0;
 			})
 			.setMode(SQR.gl.POINTS)
 			.update();
