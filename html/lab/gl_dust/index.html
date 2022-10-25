@@ -77,8 +77,8 @@
 		document.addEventListener(moveEvent, function(e) {
 			e.preventDefault();
 			e = e.targetTouches ? e.targetTouches[0] : e;
-			mouse.x = e.pageX;
-			mouse.y = e.pageY;
+			mouse.x = window.innerWidth - e.pageX;
+			mouse.y = window.innerHeight - e.pageY;
 		});
 
 

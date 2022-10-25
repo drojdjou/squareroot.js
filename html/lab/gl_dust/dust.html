@@ -64,7 +64,9 @@
 			return Math.random() * m; 
 		};
 
-		var mouseTarget = new SQR.V2(), mouse = new SQR.V2();
+		var w = window.innerWidth, h = window.innerHeight;
+
+		var mouseTarget = new SQR.V2(w/2, h/2), mouse = new SQR.V2(w/2, h/2);
 		var event = ('ontouchstart' in document) ? 'touchmove' : 'mousemove';
 		document.addEventListener(event, function(e) {
 			e.preventDefault();
@@ -73,7 +75,6 @@
 			mouseTarget.y = (window.innerHeight - e.pageY);
 		});
 
-		var isMouseDown = true;
 		var index = 0, dotsPerFrame = 100;
 
 		var render = function() {
@@ -81,23 +82,20 @@
 			requestAnimationFrame(render);
 			renderer.render(root);
 
-			if(isMouseDown) {
+			for(var i = 0; i < dotsPerFrame; i++) {
+				mouse.lerp(mouseTarget, mouse, 0.99);
 
-				for(var i = 0; i < dotsPerFrame; i++) {
-					mouse.lerp(mouseTarget, mouse, 0.99);
+				dots.buffer.set('aPosition', index, 
+					mouse.x + r(10), 
+					mouse.y + r(10)
+				);
 
-					dots.buffer.set('aPosition', index, 
-						mouse.x + r(10), 
-						mouse.y + r(10)
-					);
+				dots.buffer.set('aBirth', index, renderer.currentTime || 0);
+				index++;
+				if(index > numDots) index = 0;
+			}	
 
-					dots.buffer.set('aBirth', index, renderer.currentTime || 0);
-					index++;
-					if(index > numDots) index = 0;
-				}	
-
-				dots.buffer.update();
-			}
+			dots.buffer.update();
 
 			mouse.lerp(mouseTarget, mouse, 0.9);
 		}
